@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ai-branch-dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["_serve.js"],
+      "port": 3098
+    }
+  ]
+}

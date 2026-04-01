@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Enterprise AI</title>
+    <meta name="description" content="AI-powered insurance technology systems">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/ScrollTrigger.min.js" defer></script>
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
+    }}
+    </script>
+</head>
+<body>
+
+    <!-- ========== LOADING SCREEN ========== -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-center">
+            <svg class="loading-circle" viewBox="0 0 200 200">
+                <circle class="loading-circle-bg" cx="100" cy="100" r="90" />
+                <circle class="loading-circle-progress" cx="100" cy="100" r="90" />
+            </svg>
+            <span class="loading-counter" id="loadingCounter">0</span>
+        </div>
+    </div>
+
+    <!-- ========== THREE.JS CANVAS ========== -->
+    <canvas id="threeCanvas"></canvas>
+
+    <!-- ========== FIXED NAV ========== -->
+    <header id="siteHeader" class="site-header">
+        <div class="header-inner">
+            <a href="#" class="header-logo">PRO <span class="logo-accent">AI</span></a>
+            <div class="header-clock" id="headerClock"></div>
+            <a href="#" class="btn-pill header-cta">
+                <span>Get Started</span>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" stroke-width="1.5"/></svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main id="mainContent">
+
+        <!-- HERO -->
+        <section id="hero" class="section section-hero">
+            <div class="hero-content">
+                <div class="hero-center">
+                    <h1 class="hero-title">
+                        Lorem ipsum <em class="gradient-italic">dolor sit</em> amet.<br>
+                        Consectetur adipiscing?
+                    </h1>
+                    <a href="#" class="btn-pill hero-cta">
+                        <span>Book a Consultation</span>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </a>
+                </div>
+                <div class="hero-aside">
+                    <h2 class="hero-aside-title">Placeholder Headline Text Here</h2>
+                    <p class="hero-aside-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                    <div class="hero-scroll-hint">
+                        <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" stroke-width="1.5"/><circle class="scroll-dot" cx="8" cy="8" r="2" fill="currentColor"/></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHAT WE DO -->
+        <section id="whatWeDo" class="section section-what-we-do">
+            <div class="section-inner centered">
+                <h3 class="section-title serif-upper">What We Do</h3>
+                <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
+                <p class="section-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+            </div>
+        </section>
+
+        <!-- WHAT WE BUILD -->
+        <section id="whatWeBuild" class="section section-what-we-build">
+            <div class="section-inner">
+                <h3 class="section-title serif-upper centered">What We Build</h3>
+                <p class="section-subtitle centered">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <div class="build-grid">
+                    <div class="build-card">
+                        <div class="build-card-text">
+                            <h4 class="build-card-title">Product Alpha</h4>
+                            <p class="build-card-desc"><strong>Feature One:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.</p>
+                            <p class="build-card-desc"><strong>Feature Two:</strong> Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                        </div>
+                        <div class="build-card-image">
+                            <div class="build-placeholder">Screenshot</div>
+                        </div>
+                    </div>
+                    <div class="build-card">
+                        <div class="build-card-text">
+                            <h4 class="build-card-title">Product Beta</h4>
+                            <p class="build-card-desc"><strong>Feature One:</strong> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.</p>
+                        </div>
+                        <div class="build-card-image">
+                            <div class="build-placeholder">Screenshot</div>
+                        </div>
+                    </div>
+                    <div class="build-card">
+                        <div class="build-card-text">
+                            <h4 class="build-card-title">Product Gamma</h4>
+                            <p class="build-card-desc"><strong>Feature One:</strong> Excepteur sint occaecat cupidatat non proident, sunt in culpa.</p>
+                        </div>
+                        <div class="build-card-image">
+                            <div class="build-placeholder">Screenshot</div>
+                        </div>
+                    </div>
+                    <div class="build-card">
+                        <div class="build-card-text">
+                            <h4 class="build-card-title">Product Delta</h4>
+                            <p class="build-card-desc"><strong>Feature One:</strong> At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis.</p>
+                        </div>
+                        <div class="build-card-image">
+                            <div class="build-placeholder">Screenshot</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHO WE ARE -->
+        <section id="whoWeAre" class="section section-who-we-are">
+            <div class="section-inner split-layout">
+                <div class="split-left">
+                    <!-- 3D occupies this space via scroll camera angle -->
+                </div>
+                <div class="split-right">
+                    <h3 class="section-title serif-upper">Who We Are</h3>
+                    <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p class="section-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    <a href="#" class="btn-pill">
+                        <span>Learn More About Us</span>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE US -->
+        <section id="whyChooseUs" class="section section-why-choose">
+            <div class="section-inner split-layout">
+                <div class="why-left">
+                    <h3 class="section-title serif-upper">Why Choose Us</h3>
+                    <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                    <a href="#" class="btn-pill">
+                        <span>Tell Us What You Need</span>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </a>
+                </div>
+                <div class="why-right">
+                    <div class="why-card">
+                        <h4 class="why-card-title">Products Built for Real Use</h4>
+                        <p class="why-card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4 class="why-card-title">Deep Engineering Expertise</h4>
+                        <p class="why-card-desc">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4 class="why-card-title">Flexible & Integration-Friendly</h4>
+                        <p class="why-card-desc">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    </div>
+                    <div class="why-card">
+                        <h4 class="why-card-title">Globally Capable</h4>
+                        <p class="why-card-desc">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURE / AI SOLUTIONS -->
+        <section id="features" class="section section-features">
+            <div class="section-inner">
+                <div class="feature-hero-image">
+                    <div class="build-placeholder wide">AI Visual</div>
+                </div>
+                <div class="split-layout feature-split">
+                    <div class="feature-left">
+                        <h2 class="feature-quote">Every solution we develop is shaped by real operational challenges.</h2>
+                        <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+                        <a href="#" class="btn-pill">
+                            <span>Start Your Journey</span>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" stroke-width="1.5"/></svg>
+                        </a>
+                    </div>
+                    <div class="feature-right">
+                        <div class="why-card">
+                            <h4 class="why-card-title">Adaptive Intelligence</h4>
+                            <p class="why-card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                        <div class="why-card">
+                            <h4 class="why-card-title">Seamless Integration</h4>
+                            <p class="why-card-desc">Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLIENTS / TRUST -->
+        <section id="clients" class="section section-clients">
+            <div class="section-inner">
+                <h3 class="section-title serif-upper centered">Years of Trust & Loyalty</h3>
+                <div class="clients-grid">
+                    <div class="client-card"><span class="client-name">Client A</span></div>
+                    <div class="client-card"><span class="client-name">Client B</span></div>
+                    <div class="client-card"><span class="client-name">Client C</span></div>
+                    <div class="client-card"><span class="client-name">Client D</span></div>
+                    <div class="client-card"><span class="client-name">Client E</span></div>
+                    <div class="client-card"><span class="client-name">Client F</span></div>
+                    <div class="client-card"><span class="client-name">Client G</span></div>
+                    <div class="client-card"><span class="client-name">Client H</span></div>
+                    <div class="client-card"><span class="client-name">Client I</span></div>
+                    <div class="client-card"><span class="client-name">Client J</span></div>
+                    <div class="client-card"><span class="client-name">Client K</span></div>
+                    <div class="client-card"><span class="client-name">Client L</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIAL -->
+        <section id="testimonial" class="section section-testimonial">
+            <div class="section-inner centered">
+                <h2 class="testimonial-intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.</h2>
+                <div class="testimonial-card">
+                    <blockquote class="testimonial-quote">"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."</blockquote>
+                    <cite class="testimonial-cite">- Company Name -</cite>
+                </div>
+                <a href="#" class="btn-pill">
+                    <span>Contact Us Today</span>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" stroke-width="1.5"/></svg>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col footer-about">
+                <a href="#" class="footer-logo">PRO <span class="logo-accent">AI</span></a>
+                <p class="footer-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+            <div class="footer-col footer-nav">
+                <a href="#" class="footer-link">Home</a>
+                <a href="#" class="footer-link">Services</a>
+                <a href="#" class="footer-link">About Us</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+            <div class="footer-col footer-mission">
+                <h4 class="footer-mission-title">Powering the Next Chapter of Innovation</h4>
+                <p class="footer-desc">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span class="footer-copy">&copy; 2026 Pro Enterprise AI. All rights reserved.</span>
+            <div class="footer-social">
+                <a href="#" class="social-icon" aria-label="YouTube">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.5a3 3 0 00-2.1-2.1C19.5 4 12 4 12 4s-7.5 0-9.4.4A3 3 0 00.5 6.5 31.3 31.3 0 000 12a31.3 31.3 0 00.5 5.5 3 3 0 002.1 2.1c1.9.4 9.4.4 9.4.4s7.5 0 9.4-.4a3 3 0 002.1-2.1A31.3 31.3 0 0024 12a31.3 31.3 0 00-.5-5.5zM9.8 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="LinkedIn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3v9zM6.5 8.5A1.75 1.75 0 118.3 6.8 1.75 1.75 0 016.5 8.5zM20 19h-3v-4.7c0-1.1 0-2.6-1.6-2.6S13.8 13 13.8 14.2V19h-3v-9h2.9v1.2h0a3.2 3.2 0 012.8-1.5c3 0 3.5 2 3.5 4.5V19z"/></svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Facebook">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12a12 12 0 10-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.3l-.5 3.5h-2.8v8.4A12 12 0 0024 12z"/></svg>
+                </a>
+            </div>
+            <span class="footer-affiliate">An affiliated company</span>
+        </div>
+    </footer>
+
+    <script type="module" src="js/three-hero.js"></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html>
