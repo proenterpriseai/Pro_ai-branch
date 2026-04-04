@@ -5,3 +5,11 @@ Thumbs.db
 *.log
 
 .vercel
+
+# Reference files (not source code)
+/*.png
+/*.PNG
+/*.pdf
+!/assets/
+사진/
+claude-code-best-practice-main/
