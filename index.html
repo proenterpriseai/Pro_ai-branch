@@ -3881,11 +3881,11 @@
                   <div class="rounded-2xl rounded-tl-sm p-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
                     <p class="text-[13px] text-zinc-300 leading-relaxed">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br>보장분석, 금융계산, 상담 코칭 등 무엇이든 물어보세요.</p>
                   </div>
-                  <div class="flex flex-wrap gap-2 mt-3">
-                    <button class="text-[11px] px-3 py-1.5 rounded-lg bg-blue-600/8 text-blue-400 ring-1 ring-blue-600/15 hover:bg-blue-600/15 hover:ring-blue-600/30 transition-all cursor-pointer">보장분석 시스템은?</button>
-                    <button class="text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/8 text-blue-300 ring-1 ring-blue-500/15 hover:bg-blue-500/15 hover:ring-blue-500/30 transition-all cursor-pointer">금융계산기 기능</button>
-                    <button class="text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/8 text-emerald-300 ring-1 ring-emerald-500/15 hover:bg-emerald-500/15 hover:ring-emerald-500/30 transition-all cursor-pointer">상담 코칭 AI</button>
-                    <button class="text-[11px] px-3 py-1.5 rounded-lg bg-purple-500/8 text-purple-300 ring-1 ring-purple-500/15 hover:bg-purple-500/15 hover:ring-purple-500/30 transition-all cursor-pointer">보험금 산출</button>
+                  <div class="flex flex-wrap gap-2 mt-3 sol-quick-buttons">
+                    <button data-query="보장분석 시스템에 대해 알려줘" class="text-[11px] px-3 py-1.5 rounded-lg bg-blue-600/8 text-blue-400 ring-1 ring-blue-600/15 hover:bg-blue-600/15 hover:ring-blue-600/30 transition-all cursor-pointer">보장분석 시스템은?</button>
+                    <button data-query="통합금융계산기 기능을 설명해줘" class="text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/8 text-blue-300 ring-1 ring-blue-500/15 hover:bg-blue-500/15 hover:ring-blue-500/30 transition-all cursor-pointer">금융계산기 기능</button>
+                    <button data-query="상담 코칭 AI는 어떻게 활용하나요?" class="text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/8 text-emerald-300 ring-1 ring-emerald-500/15 hover:bg-emerald-500/15 hover:ring-emerald-500/30 transition-all cursor-pointer">상담 코칭 AI</button>
+                    <button data-query="보험금 산출 AI 기능을 알려줘" class="text-[11px] px-3 py-1.5 rounded-lg bg-purple-500/8 text-purple-300 ring-1 ring-purple-500/15 hover:bg-purple-500/15 hover:ring-purple-500/30 transition-all cursor-pointer">보험금 산출</button>
                   </div>
                 </div>
               </div>
@@ -6375,6 +6375,15 @@
       // ── 전송 버튼 ──
       if (sendBtn) sendBtn.addEventListener('click', function () { doSend(); chatInput.focus(); });
 
+      // ── 퀵 액션 버튼 ──
+      document.querySelectorAll('.sol-quick-buttons button[data-query]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          chatInput.value = this.getAttribute('data-query');
+          doSend();
+          chatInput.focus();
+        });
+      });
+
       // ── 현재 활성 시스템 컨텍스트 ──
       var activeSystem = 'all';
 
@@ -6385,11 +6394,24 @@
         chatInput.value = '';
         var typingId = 'typing-' + Date.now();
         appendTyping(typingId);
-        setTimeout(function () {
+        // Gemini API 호출
+        var ctx = activeSystem !== 'all' ? activeSystem : '보험 전문 AI 어시스턴트';
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, context: ctx })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
           removeTyping(typingId);
+          appendMessage('ai', data.reply || '응답을 생성할 수 없습니다.');
+        })
+        .catch(function() {
+          removeTyping(typingId);
+          // API 실패 시 로컬 fallback
           var reply = getAIResponse(text);
           appendMessage('ai', reply);
-        }, 800 + Math.random() * 600);
+        });
       }
 
       var systemResponses = {
