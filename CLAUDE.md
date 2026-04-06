@@ -65,6 +65,14 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - **네비 타겟 ID 매핑**: news(프로사업단총괄), about(관리자 소개), recruit(모집공고), top(로고)
 - **⚠️ `#team` ID 없음** — 관리자 소개는 `#about` 섹션임. `#ceo` ID도 없음(오버레이 방식)
 
+## ⚠️ 레이아웃 높이/패딩 규칙 (절대 원복 금지)
+- **7대 핵심 AI 쇼케이스** (#ai-showcase): `min-height` 없음 (제거됨, 콘텐츠 기반 자동)
+- **대시보드 패널** (#dashboard-container 내부 grid): `max-height:540px; overflow:hidden;` — 아래 빈 공간 방지
+- **대시보드 섹션 패딩**: `sm:py-12` + 내부 `sm:pt-6 sm:pb-6` (기존 py-24/pt-12에서 축소)
+- **네비 스크롤**: `scrollToContent()` 헬퍼가 섹션 paddingTop을 건너뛰고 콘텐츠 시작점으로 이동
+- **scroll-behavior**: CSS `html.smooth-scroll`에만 적용, 페이지 로드 완료 후 JS가 클래스 추가 (새로고침 깜빡임 방지)
+- 위 값들은 사용자가 직접 확인/승인한 수치임. **임의 변경 금지**
+
 ## Critical Notes
 - Three.js는 CDN `<script>` (global `THREE`), **importmap/ES Module 아님**
 - 모든 대시보드 JS는 `index.html` 인라인 IIFE — 외부 JS 파일 로드 없음
@@ -73,7 +81,7 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - `js/three-hero.js`, `js/main.js` — **orphaned** (index.html에서 로드하지 않음)
 - 모바일: terrain은 모든 사이즈에서 렌더 (별도 숨김 없음)
 - **네비 배경색**: `#27398c` (파란색 계열, v=20260406 변경)
-- **`html { scroll-behavior: smooth }` 설정됨** — JS scrollIntoView와 충돌 주의
+- **`html.smooth-scroll { scroll-behavior: smooth }`** — 로드 후 JS가 활성화, scrollIntoView 미사용 (scrollToContent 헬퍼 사용)
 
 ## 4대 규칙 (영구)
 1. **기존 기능 불변** — 신규 코드는 완전 독립 블록. 기존 함수 내부 수정 시 사전 승인 필수
@@ -81,7 +89,13 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 3. **CDN/외부 스크립트 비동기 필수** — 신규 `<script>` 태그는 `async`/`defer` 필수
 4. **Lazy Init 필수** — 외부 의존성 모듈 레벨 즉시 초기화 금지
 
+## Section Structure (v=20260406b)
+- Hero → 성과(#stats) → 7대 AI 시스템(#solutions) → **왜 PRO인가(#why-pro, 허브 레이아웃)** → 모집공고(#recruit) → 관리자 소개(#about) → 소식(#news) → 지도(#branch-map)
+- **기존 대시보드 패널(#dashboard-container) 삭제됨** — display:none으로 숨김 처리, 코드 보존
+- **왜 PRO인가**: 3컬럼 허브 레이아웃 (왼쪽:기존영업 빨간톤 / 중앙:PRO AI HUB 오비탈 / 오른쪽:PRO해결책 블루톤) + SVG animateMotion 라인
+
 ## Version
+- **v=20260406b** — WHY PRO 허브 레이아웃, CEO 서명, 숏츠 5개, Step1/3 문구, 데모콘텐츠 보강, 자동순환 버그 수정
 - **v=20260406a** — 네비 통합 핸들러, 배지/문의하기/소식카드 변경, 네비 배경색, CEO 배경 통일
 - **v=20260405e** — 대규모 고도화 (실제 시스템 재구현, 소식 섹션, 네비 전폭, 글로우, UI 개선 30+ 항목)
 - **v=20260404b** — 8대 AI 대시보드 프로덕션 고도화 (10개 항목 완료)

@@ -763,8 +763,10 @@
     }
 
     html {
-      scroll-behavior: smooth;
       scroll-padding-top: 96px;
+    }
+    html.smooth-scroll {
+      scroll-behavior: smooth;
     }
 
     /* Solutions Keyboard */
@@ -843,6 +845,11 @@
 
     .sol-cursor {
       animation: sol-blink 1s step-end infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     @keyframes sol-blink {
@@ -1076,9 +1083,9 @@
 
     <!-- ==================== PRO SOLUTION: 7대 AI 시스템 그리드 ==================== -->
     <section class="sm:px-6 lg:px-8 sm:py-24 animate-on-scroll max-w-7xl mr-auto ml-auto pt-16 pr-4 pb-16 pl-4"
-      id="solutions">
+      id="solutions" style="scroll-margin-top:60px;">
       <div
-        class="border-gradient glow-target sm:pt-12 sm:pb-12 sm:pl-12 sm:pr-12 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll rounded-3xl pt-8 pr-6 pb-8 pl-6" style="background:#0a0a14;">
+        id="solutions-inner" class="border-gradient glow-target sm:pt-12 sm:pb-12 sm:pl-12 sm:pr-12 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll rounded-3xl pt-8 pr-6 pb-8 pl-6" style="background:#0a0a14;scroll-margin-top:20px;">
         <div class="glow-border"></div>
         <!-- 헤더 -->
         <div class="text-center mb-10 relative">
@@ -1122,7 +1129,7 @@
           </div>
 
           <!-- Three-Panel Body -->
-          <div class="flex" style="min-height:440px;">
+          <div class="flex">
 
             <!-- Left Sidebar (lg에서만 보임) -->
             <div id="ai-sidebar" class="hidden lg:flex flex-col flex-shrink-0 py-3" style="width:210px;background:rgba(255,255,255,0.015);border-right:1px solid rgba(255,255,255,0.05);">
@@ -1157,19 +1164,279 @@
           </div>
         </div>
         <!-- // Desktop App Showcase 끝 -->
+        <div class="text-center mt-8">
+          <button data-nav="prosolution-open"
+            class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-full ring-1 ring-blue-400/30 transition-all hover:-translate-y-0.5 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            AI 시스템 직접 체험하기
+          </button>
+        </div>
       </div>
     </section>
 
 
 
 
-    <!-- ==================== 8대 AI 대시보드 (독립 섹션) ==================== -->
-    <section class="sm:px-6 lg:px-8 sm:py-24 animate-on-scroll max-w-7xl mr-auto ml-auto pt-16 pr-4 pb-16 pl-4" id="dashboard-container">
-      <div class="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll pt-8 pr-6 pb-8 pl-6 sm:pt-12 sm:pb-12 sm:pl-12 sm:pr-12">
-        <div class="sm:p-3 bg-neutral-950 border-neutral-800 border ring-0 rounded-3xl pt-2 pr-2 pb-2 pl-2 relative glow-target">
-            <div class="glow-border"></div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 relative">
+    <!-- ==================== WHY PRO: Before/After 허브 레이아웃 ==================== -->
+    <section class="sm:px-6 lg:px-8 sm:py-16 animate-on-scroll max-w-7xl mr-auto ml-auto pt-12 pr-4 pb-12 pl-4" id="why-pro" style="scroll-margin-top:20px;">
+      <div class="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
 
+        <!-- 헤더 -->
+        <div class="text-center mb-12">
+          <p class="text-zinc-400 text-sm sm:text-base mb-4">왜 프로사업단총괄인가?</p>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white" style="line-height:1.3;">같은 시간,<br><span class="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">다른 결과</span></h2>
+          <p class="text-zinc-400 mt-4 max-w-2xl mx-auto text-sm sm:text-base">같은 시간을 일해도 AI 시스템이 있으면 결과가 다릅니다.</p>
+        </div>
+
+        <!-- 3컬럼 허브 레이아웃 -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr_1fr] gap-6 lg:gap-8 xl:gap-12 items-center relative">
+
+          <!-- ===== 왼쪽: 기존 영업 (문제점) ===== -->
+          <ul class="flex flex-col gap-4 relative z-20">
+            <!-- 왼쪽 라벨 -->
+            <div class="text-center mb-4">
+              <span class="text-sm sm:text-base text-red-400/80 font-bold tracking-wide">기존 보험영업</span>
+            </div>
+
+            <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 left-full w-24 lg:w-32 xl:w-48 h-32 xl:h-48 -translate-y-8 pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-l1" d="M 0 10 C 40 10, 60 90, 100 90" fill="none" stroke="rgba(239,68,68,0.15)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(239,68,68,0.3)"></circle><circle r="1.5" fill="#ef4444"></circle>
+                    <animateMotion dur="3s" repeatCount="indefinite" begin="0s"><mpath href="#path-l1"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-red-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-zinc-300">DB 확보</h3>
+                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">비효율</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">콜드콜, 지인 영업, 직접 발굴. 시간 대비 성과가 낮고 소진이 빠릅니다.</p>
+            </li>
+
+            <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 left-full w-24 lg:w-32 xl:w-48 h-16 xl:h-24 -translate-y-4 pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-l2" d="M 0 20 C 40 20, 60 80, 100 80" fill="none" stroke="rgba(239,68,68,0.15)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(239,68,68,0.3)"></circle><circle r="1.5" fill="#ef4444"></circle>
+                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.5s"><mpath href="#path-l2"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-red-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-zinc-300">보장분석</h3>
+                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">시간 낭비</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">수기로 2~3시간 분석. 항목 누락 위험이 높고 고객 신뢰를 잃기 쉽습니다.</p>
+            </li>
+
+            <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 left-full w-24 lg:w-32 xl:w-48 h-16 xl:h-24 -translate-y-[calc(100%-1rem)] pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-l3" d="M 0 80 C 40 80, 60 20, 100 20" fill="none" stroke="rgba(239,68,68,0.15)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(239,68,68,0.3)"></circle><circle r="1.5" fill="#ef4444"></circle>
+                    <animateMotion dur="3.5s" repeatCount="indefinite" begin="1s"><mpath href="#path-l3"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-red-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-zinc-300">상담 전략</h3>
+                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">불확실</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">경험과 감에 의존. 거절 처리 화법이 준비되지 않으면 계약으로 이어지지 않습니다.</p>
+            </li>
+
+            <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.25s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 left-full w-24 lg:w-32 xl:w-48 h-32 xl:h-48 -translate-y-[calc(100%-2rem)] pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-l4" d="M 0 90 C 40 90, 60 10, 100 10" fill="none" stroke="rgba(239,68,68,0.15)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(239,68,68,0.3)"></circle><circle r="1.5" fill="#ef4444"></circle>
+                    <animateMotion dur="2.8s" repeatCount="indefinite" begin="0.2s"><mpath href="#path-l4"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-red-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-zinc-300">민원 대응</h3>
+                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">리스크</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">혼자 대응, 법적 근거 부족. 민원 한 건이 커리어 전체를 흔들 수 있습니다.</p>
+            </li>
+          </ul>
+
+          <!-- ===== 가운데: PRO AI 허브 ===== -->
+          <div class="z-10 flex flex-col min-h-[400px] lg:py-0 w-full pt-16 pb-16 relative items-center justify-center">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full border border-white/[0.05] pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60 rounded-full border border-white/[0.03] pointer-events-none"></div>
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 pointer-events-none flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border border-dashed border-blue-500/20" style="animation: spin 20s linear infinite;"></div>
+              <div class="absolute w-72 h-72 rounded-full border border-dotted border-blue-500/30 opacity-50" style="animation: spin 15s linear infinite reverse;"></div>
+              <div class="absolute inset-0 rounded-full" style="background: conic-gradient(from 0deg, transparent 40%, rgba(59,130,246,0.05) 80%, rgba(59,130,246,0.25) 100%); mix-blend-mode: screen; animation: spin 8s linear infinite;"></div>
+            </div>
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 h-52 rounded-full bg-blue-500/10 blur-2xl pointer-events-none"></div>
+
+            <div class="relative flex items-center justify-center w-36 h-36 rounded-full border border-white/10 bg-gradient-to-b from-white/[0.08] to-transparent backdrop-blur-xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_0_50px_rgba(59,130,246,0.1)] z-20" style="animation: spin 30s linear infinite;">
+              <div class="w-14 h-14 rounded-full bg-[#030407] border border-blue-500/40 shadow-[inset_0_0_20px_rgba(59,130,246,0.4)] flex items-center justify-center relative overflow-hidden" style="animation: spin 12s linear infinite reverse;">
+                <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-50"></div>
+                <div class="w-3.5 h-3.5 bg-blue-400 rounded-full shadow-[0_0_15px_rgba(96,165,250,1),0_0_30px_rgba(96,165,250,0.6)] relative z-10"></div>
+              </div>
+            </div>
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-28 flex flex-col items-center gap-1.5 z-30 pointer-events-none">
+              <span class="text-[10px] font-mono text-blue-400/90 uppercase tracking-[0.25em] font-medium drop-shadow-[0_0_8px_rgba(96,165,250,0.4)] bg-[#050505]/80 px-2 py-1 rounded border border-blue-500/20 backdrop-blur-md">PRO AI HUB</span>
+              <div class="h-[1px] w-8 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+            </div>
+          </div>
+
+          <!-- ===== 오른쪽: PRO 해결책 ===== -->
+          <ul class="flex flex-col gap-4 relative z-20">
+            <!-- 오른쪽 라벨 -->
+            <div class="text-center mb-4">
+              <span class="text-sm sm:text-base text-blue-400/80 font-bold tracking-wide">PRO 사업단총괄</span>
+            </div>
+
+            <li class="bg-[#0F172A]/80 border border-blue-500/15 rounded-xl p-4 flex flex-col relative group hover:border-blue-500/30 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 right-full w-24 lg:w-32 xl:w-48 h-32 xl:h-48 -translate-y-8 pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-r1" d="M 100 10 C 60 10, 40 90, 0 90" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(96,165,250,0.4)"></circle><circle r="1.5" fill="#60a5fa"></circle>
+                    <animateMotion dur="3s" repeatCount="indefinite" begin="0.3s"><mpath href="#path-r1"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white/90">AI DB 추천</h3>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_5px_rgba(59,130,246,0.5)]"></span>
+                    <span class="text-[9px] text-zinc-400 font-mono tracking-wider uppercase">Connected</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">AI가 최적 DB를 추천하고, 전환율을 예측합니다. 병목 구간을 자동 분석합니다.</p>
+              <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
+                <span>전환율 예측 AI</span>
+                <span class="text-blue-400/70">ACTIVE</span>
+              </div>
+            </li>
+
+            <li class="bg-[#0F172A]/80 border border-blue-500/15 rounded-xl p-4 flex flex-col relative group hover:border-blue-500/30 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 right-full w-24 lg:w-32 xl:w-48 h-16 xl:h-24 -translate-y-4 pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-r2" d="M 100 20 C 60 20, 40 80, 0 80" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(96,165,250,0.4)"></circle><circle r="1.5" fill="#60a5fa"></circle>
+                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.8s"><mpath href="#path-r2"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white/90">보장분석 AI</h3>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_5px_rgba(59,130,246,0.5)]"></span>
+                    <span class="text-[9px] text-zinc-400 font-mono tracking-wider uppercase">Active</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">증권 PDF만 올리면 보장 현황을 즉시 분석하고 리모델링 우선순위까지 제안합니다.</p>
+              <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
+                <span>즉시 분석 완료</span>
+                <span class="text-blue-400/70">SYNCED</span>
+              </div>
+            </li>
+
+            <li class="bg-[#0F172A]/80 border border-blue-500/15 rounded-xl p-4 flex flex-col relative group hover:border-blue-500/30 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 right-full w-24 lg:w-32 xl:w-48 h-16 xl:h-24 -translate-y-[calc(100%-1rem)] pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-r3" d="M 100 80 C 60 80, 40 20, 0 20" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(96,165,250,0.4)"></circle><circle r="1.5" fill="#60a5fa"></circle>
+                    <animateMotion dur="3.5s" repeatCount="indefinite" begin="1s"><mpath href="#path-r3"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white/90">코칭 AI 화법</h3>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
+                    <span class="text-[9px] text-zinc-400 font-mono tracking-wider uppercase">Live</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">고객 거절 유형별 맞춤 화법을 실시간 제안. 심리 분석 기반 Bias Breaker 탑재.</p>
+              <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
+                <span>24시간 전담 비서</span>
+                <span class="text-emerald-400/70">LIVE</span>
+              </div>
+            </li>
+
+            <li class="bg-[#0F172A]/80 border border-blue-500/15 rounded-xl p-4 flex flex-col relative group hover:border-blue-500/30 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
+              <div class="hidden lg:block absolute top-1/2 right-full w-24 lg:w-32 xl:w-48 h-32 xl:h-48 -translate-y-[calc(100%-2rem)] pointer-events-none z-[-1]">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path id="path-r4" d="M 100 90 C 60 90, 40 10, 0 10" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="1.5" vector-effect="non-scaling-stroke"></path>
+                  <g><circle r="3" fill="rgba(96,165,250,0.4)"></circle><circle r="1.5" fill="#60a5fa"></circle>
+                    <animateMotion dur="2.8s" repeatCount="indefinite" begin="0.2s"><mpath href="#path-r4"></mpath></animateMotion>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white/90">FSS AI 방어</h3>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_5px_rgba(59,130,246,0.5)]"></span>
+                    <span class="text-[9px] text-zinc-400 font-mono tracking-wider uppercase">Protected</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">FSS 출신 AI가 법적 근거 + 판례 기반 방어 로직을 자동 구축. 민원 리스크를 사전 차단.</p>
+              <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
+                <span>완전판매 / 민원 대응</span>
+                <span class="text-blue-400/70">SYNCED</span>
+              </div>
+            </li>
+          </ul>
+
+        </div><!-- end 3컬럼 grid -->
+      </div>
+
+    </section><!-- end why-pro -->
+
+    <!-- ===== 아래는 삭제 대상 (기존 대시보드 잔여) ===== -->
+    <div style="display:none;">
               <!-- Left Sidebar -->
               <aside
                 class="dashboard-reveal lg:col-span-3 flex flex-col bg-neutral-900/60 ring-neutral-800 ring-1 rounded-2xl p-3"
@@ -1216,15 +1483,6 @@
                   </div>
                 </div>
 
-                <!-- 프로솔루션 체험 CTA -->
-                <div class="mt-3 pt-3">
-                  <button
-                    onclick="document.getElementById('prosolution-overlay').classList.add('ceo-overlay--active');document.getElementById('prosolution-overlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';"
-                    class="w-full inline-flex items-center justify-center gap-2 text-xs text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition rounded-full px-3 py-2.5 ring-1 ring-blue-400 font-medium">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    AI 시스템 체험하기
-                  </button>
-                  </div>
 
                 <!-- KPI 요약 (우측에서 이동) -->
                 <div class="grid grid-cols-3 gap-2 mb-2 mt-3 pt-3" style="border-top:1px solid rgba(255,255,255,0.06);">
@@ -1234,7 +1492,7 @@
                   </div>
                   <div class="text-center p-2 rounded-xl bg-white/[0.02] ring-1 ring-white/5">
                     <div class="text-lg font-bold text-emerald-400">700+</div>
-                    <div class="text-[9px] text-zinc-500 mt-0.5">활성 구성원</div>
+                    <div class="text-[9px] text-zinc-500 mt-0.5">조직 구성원</div>
                   </div>
                   <div class="text-center p-2 rounded-xl bg-white/[0.02] ring-1 ring-white/5">
                     <div class="text-lg font-bold text-blue-400">99.2%</div>
@@ -2908,7 +3166,7 @@
             </div>
           </div>
         </div>
-    </section><!-- end dashboard-container -->
+    </div><!-- end hidden 기존 대시보드 잔여 -->
 
     <!-- ==================== HOW IT WORKS: 합류 3단계 (moved above 회사소개) ==================== -->
     <section class="sm:px-6 lg:px-8 sm:py-24 animate-on-scroll max-w-7xl mr-auto ml-auto pt-16 pr-4 pb-16 pl-4"
@@ -2930,7 +3188,7 @@
           </p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Step 1: 체계적인 교육 시스템 -->
+          <!-- Step 1: 프로를 만드는 교육 체계 -->
           <div
             class="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:ring-white/20 animate-on-scroll flex flex-col bg-neutral-900/40 h-full ring-white/10 ring-1 rounded-2xl relative"
             style="animation: fadeSlideIn 0.8s ease-out 0.3s both">
@@ -3000,9 +3258,8 @@
                 <div
                   class="mb-4 inline-flex items-center gap-1.5 rounded bg-blue-600/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-500 ring-1 ring-blue-600/20">
                   Step 1</div>
-                <h3 class="text-xl text-zinc-100 font-semibold tracking-tight mb-2">체계적인 교육 시스템</h3>
-                <p class="text-sm text-zinc-400 leading-relaxed">지원서 제출 후 1:1 면담을 진행합니다. AI 시스템 교육이 즉시 시작되어 빠르게 업무에 적응할
-                  수 있습니다.</p>
+                <h3 class="text-xl text-zinc-100 font-semibold tracking-tight mb-2">프로를 만드는 교육 체계</h3>
+                <p class="text-sm text-zinc-400 leading-relaxed">체계적인 교육 프로그램과 현장 중심 멘토링으로, 누구나 빠르게 전문 컨설턴트로 성장합니다.</p>
               </div>
             </div>
           </div>
@@ -3053,7 +3310,7 @@
                   class="mb-4 inline-flex items-center gap-1.5 rounded bg-blue-600/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-500 ring-1 ring-blue-600/20">
                   Step 2</div>
                 <h3 class="text-xl text-zinc-100 font-semibold tracking-tight mb-2">AI 시스템 활용</h3>
-                <p class="text-sm text-zinc-400 leading-relaxed">7대 AI 시스템이 보장분석부터 완전판매까지 자동 처리합니다. 당신은 고객 상담에만 집중하세요.</p>
+                <p class="text-sm text-zinc-400 leading-relaxed">7대 AI 시스템이 보장분석부터 완전판매까지 자동 처리하여 고객 상담에만 집중합니다.</p>
               </div>
             </div>
           </div>
@@ -3065,13 +3322,32 @@
               <div class="flex flex-col h-64 pt-6 pr-6 pb-6 pl-6 relative">
                 <div class="flex items-start justify-between z-10">
                   <div>
-                    <div class="flex items-baseline gap-3">
-                      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
-                        style="animation: fadeIn 0.8s ease-out forwards;"></span>
-                      <span data-counter class="text-5xl text-white font-light tracking-tighter">0</span>
+                    <div class="flex items-end gap-6">
+                      <!-- 인당 연봉 -->
+                      <div>
+                        <div class="flex items-center gap-2 mb-1">
+                          <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" style="animation: fadeIn 0.8s ease-out forwards;"></span>
+                          <span class="text-[10px] text-neutral-400 tracking-wide uppercase font-medium">인당 연봉</span>
+                        </div>
+                        <div class="flex items-baseline gap-1 whitespace-nowrap">
+                          <span data-counter class="text-4xl sm:text-5xl text-white font-bold tracking-tighter">0</span>
+                          <span class="text-sm text-white/50 font-bold">만원</span>
+                        </div>
+                      </div>
+                      <!-- 구분선 -->
+                      <div class="h-16 w-px bg-white/10 opacity-0" style="animation: fadeIn 0.8s ease-out 0.3s forwards;"></div>
+                      <!-- 조직 구성원 -->
+                      <div class="opacity-0" style="animation: fadeIn 0.8s ease-out 0.4s forwards;">
+                        <div class="flex items-center gap-2 mb-1">
+                          <span class="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.8)]"></span>
+                          <span class="text-[10px] text-neutral-400 tracking-wide uppercase font-medium">조직 구성원</span>
+                        </div>
+                        <div class="flex items-baseline gap-1">
+                          <span data-counter-sub class="text-4xl sm:text-5xl text-white font-bold tracking-tighter">0</span>
+                          <span class="text-sm text-white/50 font-bold">명+</span>
+                        </div>
+                      </div>
                     </div>
-                    <p class="text-xs text-neutral-400 mt-2 tracking-wide uppercase font-medium opacity-0"
-                      style="animation: fadeIn 0.8s ease-out 0.2s forwards;">활성 구성원</p>
                   </div>
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-40 overflow-hidden">
@@ -3095,21 +3371,15 @@
                         </feMerge>
                       </filter>
                     </defs>
-                    <path d="M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5 V100 H0 Z"
-                      fill="url(#graph-gradient-fill)" class="opacity-0"
-                      style="animation: fadeIn 1.5s ease-out 0.5s forwards;" />
-                    <path d="M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5" fill="none"
-                      stroke="currentColor" stroke-width="1.5" stroke-dasharray="600" stroke-dashoffset="600"
-                      style="animation: drawWave 2.5s ease-out forwards;" />
-                    <path d="M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5" fill="none"
-                      stroke="url(#line-shine)" stroke-width="2" stroke-dasharray="600" stroke-dashoffset="600"
-                      style="animation: drawWave 2.5s ease-out forwards;" />
-                    <g
-                      style="offset-path: path('M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5'); animation: markerTravel 6s linear infinite;">
-                      <g style="animation: markerBounce 2s ease-in-out infinite;">
-                        <circle r="4" fill="#1C49C8" filter="url(#glow-marker)" />
-                        <circle r="1.5" fill="white" />
-                      </g>
+                    <path id="graph-fill" d="M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5 V100 H0 Z"
+                      fill="url(#graph-gradient-fill)" opacity="0" />
+                    <path id="graph-line1" d="M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5" fill="none"
+                      stroke="currentColor" stroke-width="1.5" stroke-dasharray="600" stroke-dashoffset="600" />
+                    <path id="graph-line2" d="M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5" fill="none"
+                      stroke="url(#line-shine)" stroke-width="2" stroke-dasharray="600" stroke-dashoffset="600" />
+                    <g id="graph-marker">
+                      <circle r="4" fill="#1C49C8" filter="url(#glow-marker)" />
+                      <circle r="1.5" fill="white" />
                     </g>
                   </svg>
                 </div>
@@ -3119,7 +3389,7 @@
                   class="mb-4 inline-flex items-center gap-1.5 rounded bg-blue-600/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-blue-500 ring-1 ring-blue-600/20">
                   Step 3</div>
                 <h3 class="text-xl text-zinc-100 font-semibold tracking-tight mb-2">성과 & 성장</h3>
-                <p class="text-sm text-zinc-400 leading-relaxed">실시간 대시보드로 영업 성과를 추적하고, AI 인사이트로 지속 가능한 성장을 이어갑니다.</p>
+                <p class="text-sm text-zinc-400 leading-relaxed">체계적인 교육과 AI 시스템이 만나면, 압도적인 성과와 지속 가능한 성장이 따라옵니다.</p>
               </div>
             </div>
           </div>
@@ -3649,7 +3919,7 @@
             class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-sm text-zinc-400 mb-6">
             <span class="w-2 h-2 rounded-full bg-blue-600"></span>문의하기
           </span>
-          <h2 class="text-4xl sm:text-5xl font-bold text-white mt-4 leading-[1.8]">프로사업단총괄<br><span
+          <h2 class="text-4xl sm:text-5xl font-bold text-white mt-4" style="line-height:1.25;">프로사업단총괄<br><span
               class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">문의하기</span></h2>
           <div class="mt-8 max-w-2xl mx-auto space-y-4">
             <p class="text-white text-base leading-relaxed">더 나은 환경은 더 나은 결과를 만듭니다.</p>
@@ -3837,13 +4107,14 @@
     <div class="ceo-overlay__bg" style="background: linear-gradient(135deg, #020617 0%, #0a0e1a 30%, #050a14 60%, #020617 100%);"
       onclick="document.getElementById('prosolution-overlay').classList.remove('ceo-overlay--active');document.getElementById('prosolution-overlay').setAttribute('aria-hidden','true');document.body.style.overflow='';"></div>
     <div class="ceo-overlay__content">
-      <div class="max-w-7xl mx-auto px-4 sm:px-8 pt-20 pb-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 pt-28 pb-12">
         <!-- 헤더 (컴팩트) -->
         <div class="text-center mb-8">
           <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-600/5 ring-1 ring-blue-600/20 text-sm text-blue-400 mb-4">
             <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(28,73,200,0.6)]"></span>프로솔루션 · AI 인터랙티브
           </div>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">AI와 대화하세요, <span class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">키보드만으로</span></h2>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-[1.6]"><em class="italic font-bold">7대 핵심 AI 시스템, <span class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">먼저 만나보세요</span></em></h2>
+          <p class="text-zinc-400 text-sm sm:text-base mt-4">프로사업단총괄의 AI 시스템 체험형 시연 환경입니다.</p>
         </div>
 
         <!-- 메인 레이아웃: 좌(채팅+입력) / 우(시스템 상태) -->
@@ -4059,18 +4330,21 @@
             </div>
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-12 leading-[1.2]">당신을 위한 최고의<br><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-500">서포터가 되겠습니다.</span></h2>
             <div class="space-y-6" style="border-left: 2px solid rgba(28,73,200,0.2); padding-left: 24px;">
-              <p class="text-zinc-300 leading-[1.8] text-[15px]">안녕하세요.<br>인카금융서비스 프로사업단 총괄 대표 임형준입니다.</p>
-              <p class="text-zinc-300 leading-[1.8] text-[15px]">우리는 단순히 보험을 판매하는 조직이 아니라,<br>보험 그 이상의 성장을 만드는 GA 2.0 시대를 열고자 합니다.</p>
-              <p class="text-zinc-400 leading-[1.8] text-[14px]">지식과 경험이 자산이 되는 시대, 금융 전문가를 꿈꾸는 누구나 더 빠르게, 더 깊게 성장할 수 있는 새로운 환경이 필요합니다. 그래서 저희는 기존 GA의 한계를 넘어 시장 발굴, 교육, 보상 시스템을 완전히 재설계했습니다.</p>
-              <p class="text-zinc-400 leading-[1.8] text-[14px]">프로사업단총괄은 설계사가 홀로 고객을 찾고, 영업 방식을 스스로 만들어가야 했던 기존의 방식을 넘어, 성장을 시스템으로 구축한 GA 모델입니다.</p>
-              <p class="text-zinc-300 leading-[1.8] text-[15px]">그 결과, 프로사업단총괄은 인당 연봉 <span class="text-white font-bold text-lg">9,000만원</span>, 18회차 유지율 <span class="text-white font-bold text-lg">91.68%</span>라는 업계 최고 수준의 성과를 달성했습니다.</p>
-              <p class="text-zinc-400 leading-[1.8] text-[14px]">이제 우리는 더 나아가, 모든 영업인이 안정된 소득과 지속 가능한 커리어 성장을 쌓을 수 있는 길을 열고자 합니다. 그리고 그 여정을 여러분과 함께 하겠습니다.</p>
-              <p class="text-zinc-200 leading-[1.8] text-[15px] font-medium">프로사업단총괄은 여러분의 성장을 지원하는 최고의 파트너가 되겠습니다.</p>
+              <p class="text-white leading-[1.8] text-[15px]">안녕하세요.<br>인카금융서비스 프로사업단 총괄 대표 임형준입니다.</p>
+              <p class="text-white leading-[1.8] text-[15px]">우리는 단순히 보험을 판매하는 조직이 아니라,<br>보험 그 이상의 성장을 만드는 GA 2.0 시대를 열고자 합니다.</p>
+              <p class="text-white/80 leading-[1.8] text-[14px]">지식과 경험이 자산이 되는 시대, 금융 전문가를 꿈꾸는 누구나 더 빠르게, 더 깊게 성장할 수 있는 새로운 환경이 필요합니다. 그래서 저희는 기존 GA의 한계를 넘어 시장 발굴, 교육, 보상 시스템을 완전히 재설계했습니다.</p>
+              <p class="text-white/80 leading-[1.8] text-[14px]">프로사업단총괄은 설계사가 홀로 고객을 찾고, 영업 방식을 스스로 만들어가야 했던 기존의 방식을 넘어, 성장을 시스템으로 구축한 GA 모델입니다.</p>
+              <p class="text-white leading-[1.8] text-[15px]">그 결과, 프로사업단총괄은 인당 연봉 <span class="text-white font-bold text-lg">9,000만원</span>, 18회차 유지율 <span class="text-white font-bold text-lg">91.68%</span>라는 업계 최고 수준의 성과를 달성했습니다.</p>
+              <p class="text-white/80 leading-[1.8] text-[14px]">이제 우리는 더 나아가, 모든 영업인이 안정된 소득과 지속 가능한 커리어 성장을 쌓을 수 있는 길을 열고자 합니다. 그리고 그 여정을 여러분과 함께 하겠습니다.</p>
+              <p class="text-white leading-[1.8] text-[15px] font-medium">프로사업단총괄은 여러분의 성장을 지원하는 최고의 파트너가 되겠습니다.</p>
             </div>
-            <div class="mt-12 flex items-center gap-4" style="padding-left: 24px;">
-              <div>
-                <p class="text-xs text-zinc-500 tracking-wider uppercase">프로사업단총괄 대표</p>
-                <p class="text-2xl font-bold text-white mt-1 tracking-tight">임형준</p>
+            <div class="mt-12" style="padding-left: 24px;">
+              <div class="flex items-end gap-6">
+                <div>
+                  <p class="text-sm text-zinc-400 tracking-wider mb-3">프로사업단총괄 대표</p>
+                  <p class="text-2xl font-bold text-white tracking-tight" style="padding-left: 2.5em;">임형준</p>
+                </div>
+                <img src="대표님 서명.png" alt="임형준 서명" class="h-16 opacity-80 mb-1" style="filter: invert(1) brightness(1.2);">
               </div>
             </div>
           </div>
@@ -4088,23 +4362,37 @@
 
         <!-- Shorts 3개 (썸네일 + 커스텀 재생 아이콘, 클릭 시 재생) -->
         <div class="mt-16 pb-12">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div class="group relative rounded-2xl overflow-hidden bg-black news-video-card" data-yt="Lr-0frFm8O4" style="aspect-ratio:9/16; box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); cursor:pointer;">
-              <img src="https://img.youtube.com/vi/Lr-0frFm8O4/hqdefault.jpg" alt="Shorts 1" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div class="group relative rounded-2xl overflow-hidden bg-black news-video-card" data-yt="Gi1r49F1lQs" style="aspect-ratio:9/16; box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); cursor:pointer;">
+              <img src="https://img.youtube.com/vi/Gi1r49F1lQs/maxresdefault.jpg" alt="Shorts 1" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">
               <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 40%);"></div>
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
                 <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </div>
             </div>
             <div class="group relative rounded-2xl overflow-hidden bg-black news-video-card" data-yt="1YRJl9m6W5o" style="aspect-ratio:9/16; box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); cursor:pointer;">
-              <img src="https://img.youtube.com/vi/1YRJl9m6W5o/hqdefault.jpg" alt="Shorts 2" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+              <img src="https://img.youtube.com/vi/1YRJl9m6W5o/maxresdefault.jpg" alt="Shorts 2" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">
+              <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 40%);"></div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
+                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+            <div class="group relative rounded-2xl overflow-hidden bg-black news-video-card" data-yt="SrCiZDUSRF0" style="aspect-ratio:9/16; box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); cursor:pointer;">
+              <img src="https://img.youtube.com/vi/SrCiZDUSRF0/maxresdefault.jpg" alt="Shorts 3" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">
+              <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 40%);"></div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
+                <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+            <div class="group relative rounded-2xl overflow-hidden bg-black news-video-card" data-yt="Lr-0frFm8O4" style="aspect-ratio:9/16; box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); cursor:pointer;">
+              <img src="https://img.youtube.com/vi/Lr-0frFm8O4/maxresdefault.jpg" alt="Shorts 4" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">
               <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 40%);"></div>
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
                 <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </div>
             </div>
             <div class="group relative rounded-2xl overflow-hidden bg-black news-video-card" data-yt="XK8g7tteohA" style="aspect-ratio:9/16; box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); cursor:pointer;">
-              <img src="https://img.youtube.com/vi/XK8g7tteohA/hqdefault.jpg" alt="Shorts 3" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+              <img src="https://img.youtube.com/vi/XK8g7tteohA/maxresdefault.jpg" alt="Shorts 5" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" loading="lazy">
               <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 40%);"></div>
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
                 <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -4202,17 +4490,44 @@
     (function () {
       document.addEventListener('DOMContentLoaded', () => {
         const counter = document.querySelector('[data-counter]');
+        const counterSub = document.querySelector('[data-counter-sub]');
         if (!counter) return;
+        const duration = 4000;
         const observer = new IntersectionObserver(entries => {
           if (entries[0].isIntersecting) {
-            let start = 0; const end = 700; const duration = 2000; const startTime = performance.now();
+            observer.disconnect();
+            const startTime = performance.now();
+            // 그래프 동시 시작
+            var gFill = document.getElementById('graph-fill');
+            var gLine1 = document.getElementById('graph-line1');
+            var gLine2 = document.getElementById('graph-line2');
+            // 그래프 패스에서 특정 비율의 좌표를 구하기 위한 임시 path
+            var tempPath = document.createElementNS('http://www.w3.org/2000/svg','path');
+            tempPath.setAttribute('d','M0,88 C40,85 80,72 120,60 C160,48 200,32 240,20 C270,12 290,8 300,5');
+            var pathLength = tempPath.getTotalLength();
+            var gMarker = document.getElementById('graph-marker');
+
             function step(now) {
-              const elapsed = now - startTime; const progress = Math.min(elapsed / duration, 1);
-              const ease = 1 - Math.pow(1 - progress, 4);
-              counter.textContent = Math.floor(start + (end - start) * ease);
+              var elapsed = now - startTime;
+              var progress = Math.min(elapsed / duration, 1);
+              var ease = 1 - Math.pow(1 - progress, 3); // cubic ease-out
+              // 카운터 9000
+              counter.textContent = Math.floor(9000 * ease).toLocaleString();
+              // 카운터 700
+              if (counterSub) counterSub.textContent = Math.floor(700 * ease);
+              // 그래프 라인 동기화
+              var dashOffset = 600 - (600 * ease);
+              if (gLine1) gLine1.setAttribute('stroke-dashoffset', dashOffset);
+              if (gLine2) gLine2.setAttribute('stroke-dashoffset', dashOffset);
+              if (gFill) gFill.setAttribute('opacity', ease * 0.8);
+              // 마커 위치 동기화
+              if (gMarker && pathLength) {
+                var pt = tempPath.getPointAtLength(pathLength * ease);
+                gMarker.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
+              }
               if (progress < 1) requestAnimationFrame(step);
             }
-            requestAnimationFrame(step); observer.disconnect();
+            requestAnimationFrame(step);
           }
         });
         observer.observe(counter);
@@ -4504,26 +4819,28 @@
         // 1: 보장분석 시스템
         [ { r:'ai', t:'보험증권 PDF를 업로드해 주세요.' },
           { r:'user', t:'KB손해_증권.pdf 업로드' },
-          { r:'ai', t:'✅ 119항목 분석 완료' },
+          { r:'ai', t:'✅ 119개 보장항목 분석 완료. 종합 점수 37/100\n\n❌ 암 보장: 미가입 (업계 평균 3,000만 대비 0원)\n⚠️ 실손의료비: 1세대 가입 중 → 4세대 전환 시 보험료 40% 절감\n❌ 뇌혈관/심장질환: 진단금 미가입, 3대 질병 보장 공백\n✅ 사망보장: 2억 적정 수준\n\n📋 리모델링 우선순위: 암 → 뇌/심장 → 실비 전환 순서로 제안드립니다.' },
+          { r:'user', t:'리모델링 리포트 생성해줘' },
+          { r:'ai', t:'📊 종합 보장분석 리포트를 생성합니다.' },
           { type:'result', html:'__COVERAGE__' } ],
         // 2: DB 영업관리
-        [ { r:'ai', t:'고객 정보를 입력하세요.' },
+        [ { r:'ai', t:'고객 정보를 입력하세요. DB 유형, 연령, 지역을 포함해 주세요.' },
           { r:'user', t:'김민수 / 35세 / 강남 / 보장DB 20건' },
-          { r:'ai', t:'✅ 등록 완료. 전환율 분석을 시작합니다.' },
+          { r:'ai', t:'✅ 김민수 고객 등록 완료. 전환율 분석 결과:\n\n📊 보장DB 20건 중 1차 상담 완료 8건, 2차 미진행 7건\n🔴 병목 구간: 1차→2차 전환율 38% (업계 평균 52%)\n💡 AI 추천: 2차 미진행 7건에 보장분석 리포트 선제 발송 시 전환율 15%p 상승 예측\n\n상위 3건 우선 컨택을 권장합니다.' },
           { type:'result', html:'__DBSALES__' } ],
         // 3: 통합금융계산기
-        [ { r:'ai', t:'계산 유형을 선택하세요.' },
+        [ { r:'ai', t:'계산 유형을 선택하세요. 부동산, 상속증여, 은퇴, 대출 등 9개 모듈을 지원합니다.' },
           { r:'user', t:'목적자금 설계 / 김프로 / 40세 / 월 50만' },
-          { r:'ai', t:'📊 분석 완료' },
+          { r:'ai', t:'📊 목적자금 설계 분석 완료\n\n💰 월 50만원 × 10년 투자 시:\n· 투자 (연 7%): 8,654만원 (+2,654만 수익)\n· 적금 (연 3.5%): 7,089만원 (+1,089만 이자)\n· 차이: +1,565만원 (투자 우위)\n\n⚠️ 목표 1억 달성에는 월 58만원 필요. 8만원 추가 적립을 권장드립니다.' },
           { type:'result', html:'__CALCULATOR__' } ],
         // 4: 상담 코칭 AI — 실제 코칭 봇 Q&A
         [ { r:'ai', t:'반갑습니다! 저는 프로사업단총괄의 [2.0 시스템 수석 전략 코치]입니다.\n\n유형 A. [금융·투자 상품 & 경제·금융 환경 모드]\n유형 B. [상담 전략 & 거절 처리 화법 모드]\n유형 C. [(신인) 세일즈 프로세스 & 교육·학습 모드]\n\nLevel 1: [신인] | Level 2: [성장] | Level 3: [전문가]' },
           { r:'user', t:'B-1. 보험료가 너무 높아서 생각해보겠다' },
           { r:'ai', t:'[Bias Breaker: 심리 분석]\n고객이 [비싸다]고 말하는 본질은 당장 지출되는 [현금의 상실감]이 미래에 얻을 [보장의 안도감]보다 크게 느껴지기 때문입니다. 이를 [현상 유지 편향]이라고 합니다.\n\n💬 추천 화법:\n"고객님, 혹시 새로 지은 건물에 [소화기] 비치할 때 비싸다고 고민하는 건물주 보신 적 있으신가요?\n\n평소에는 소화기가 공간만 차지하고 돈 아깝게 느껴질 수 있습니다. 하지만 막상 [불]이 났을 때 소화기가 없으면 건물 전체가 타버리죠.\n\n보험료는 사라지는 돈이 아니라, 고객님의 [인생이라는 건물]이 전소되지 않도록 비치하는 최소한의 [소화기 구독료]입니다.\n\n불이 난 다음에 소화기를 사러 가면 이미 늦습니다."' } ],
         // 5: 보험금 산출 AI
-        [ { r:'ai', t:'진단명과 입원일수를 입력해 주세요.' },
-          { r:'user', t:'급성 심근경색 / 입원 14일' },
-          { r:'ai', t:'💰 산출 완료' },
+        [ { r:'ai', t:'진단명, 입원일수, 수술 여부를 입력해 주세요. 사고경위나 약관 PDF도 업로드 가능합니다.' },
+          { r:'user', t:'급성 심근경색 / 입원 14일 / 스텐트 시술' },
+          { r:'ai', t:'💰 급성 심근경색 예상 보험금 산출 완료\n\n🏥 진단금: 3,000만원 (CI 특약)\n🛏️ 입원비: 196만원 (14일 × 14만원/일)\n🔪 수술비: 500만원 (1종 수술)\n📋 합계: 3,696만원\n\n📌 청구 전략: 진단서 + 수술확인서 우선 접수 → 입원비는 퇴원 후 별도 청구가 유리합니다. 실손은 비급여 항목 영수증 반드시 첨부하세요.' },
           { type:'result', html:'__INSURANCE__' } ],
         // 6: 완전판매 AI — 실제 FSS 챗봇 Q&A
         [ { r:'ai', t:'안녕하십니까. 프로사업단총괄 구성원의 권익을 수호하고 보험 민원 분쟁의 논리적 방어 체계를 구축하는 FSS(금융감독원) 출신 전문 조사관입니다.\n\n[뱃지 시스템]\n✅ 법적근거 — 법 조항/약관 명시 (사실 존)\n⚖️ 판례해석 — 실제 판례/금감원 분쟁조정 (사실 존)\n🔍 AI추론 — 법리 기반 논리적 해석 (추론 주의)\n⚠️ 확인불가 — 근거 확인 어려운 실무 주의 (참고용)\n\nA. 완전판매 사전 모드\nB. 실제 민원 대응 모드' },
@@ -4531,9 +4848,9 @@
           { r:'ai', t:'[A. 완전판매 사전 모드] 선택됨.\n메트라이프 달러 종신보험 분석을 시작합니다...' },
           { type:'result', html:'__COMPLETESALES__' } ],
         // 7: 건강검진 분석 AI
-        [ { r:'ai', t:'건강검진 결과 PDF를 업로드해 주세요.' },
+        [ { r:'ai', t:'건강검진 결과 PDF를 업로드해 주세요. 국가검진, 종합검진 모두 분석 가능합니다.' },
           { r:'user', t:'2025_검진결과.pdf 업로드' },
-          { r:'ai', t:'📋 분석 완료' },
+          { r:'ai', t:'📋 건강검진 결과 분석 완료. 건강 점수 72/100\n\n🔴 주의 항목:\n· 공복혈당 118mg/dL → 경계 (정상 100 미만)\n· LDL 콜레스테롤 158mg/dL → 높음 (정상 130 미만)\n🟢 정상 항목: 혈압, 간기능, 신장기능, 시력/청력\n\n⚠️ 당뇨 + 심혈관 리스크 감지. 3대 질병(암/뇌/심장) 보장 강화와 실비 전환을 권장합니다.' },
           { type:'result', html:'__HEALTHCHECK__' } ]
       ];
 
@@ -4828,7 +5145,7 @@
         { name:'PRO 대시보드', short:'대시보드', badge:'ALL-IN-ONE', color:'cyan',
           icon:'<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>',
           desc:'7대 AI 통합 관제 대시보드',
-          stats:[{l:'AI 시스템',v:'7대'},{l:'금일 분석',v:'47건'},{l:'활성 구성원',v:'700+'},{l:'AI 응답률',v:'99.2%'}],
+          stats:[{l:'AI 시스템',v:'7대'},{l:'금일 분석',v:'47건'},{l:'조직 구성원',v:'700+'},{l:'AI 응답률',v:'99.2%'}],
           insight:'보장분석부터 DB 영업관리, 통합 금융 계산기, 전문 비서 챗봇까지 — 7대 핵심 AI 시스템을 한 곳에서 통합 관리합니다.' },
         { name:'보장분석 시스템', short:'보장분석', badge:'119항목', color:'blue',
           icon:'<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
@@ -5016,7 +5333,13 @@
         document.querySelectorAll('#ai-sidebar .ai-nav-item').forEach(function(el) { el.classList.toggle('active', parseInt(el.dataset.index) === idx); });
         document.querySelectorAll('#ai-mobile-tabs .ai-mobile-tab').forEach(function(el) { el.classList.toggle('active', parseInt(el.dataset.index) === idx); });
         var activeTab = document.querySelector('#ai-mobile-tabs .ai-mobile-tab.active');
-        if (activeTab) activeTab.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+        if (activeTab) {
+          var showcase = document.getElementById('ai-showcase');
+          var rect = showcase ? showcase.getBoundingClientRect() : null;
+          if (rect && rect.top < window.innerHeight && rect.bottom > 0) {
+            activeTab.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+          }
+        }
 
         var demoArea = document.getElementById('ai-demo-area');
         demoArea.classList.add('showcase-out');
@@ -5049,10 +5372,8 @@
         if (!item) return;
         var idx = parseInt(item.dataset.index);
         if (isNaN(idx) || idx === currentIndex) return;
-        stopAutoCycle();
+        autoCycleTimer = null;
         setActiveEngine(idx);
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(function() { autoCycleTimer = null; startAutoCycle(); }, 20000);
       });
 
       renderSidebar();
@@ -5101,6 +5422,13 @@
       });
     })();
 
+    // ─── 페이지 로드 완료 후 smooth scroll 활성화 (새로고침 시 깜빡임 방지) ───
+    window.addEventListener('load', function () {
+      requestAnimationFrame(function () {
+        document.documentElement.classList.add('smooth-scroll');
+      });
+    });
+
     // ─── 통합 네비게이션 핸들러 (data-nav) ───
     (function () {
       function closeAllOverlays() {
@@ -5124,8 +5452,16 @@
         if (mm) mm.classList.remove('active');
       }
 
+      // 섹션 패딩을 건너뛰고 콘텐츠 시작 지점으로 스크롤
+      function scrollToContent(el) {
+        var navH = 56;
+        var padTop = parseInt(getComputedStyle(el).paddingTop) || 0;
+        window.scrollTo({ top: el.offsetTop + padTop - navH });
+      }
+
       function navigateTo(target, pushHistory) {
         closeAllOverlays();
+        // 오버레이 타겟
         if (target === 'ceo') {
           var ceo = document.getElementById('ceo-overlay');
           document.body.classList.add('ceo-overlay-open');
@@ -5136,12 +5472,12 @@
           if (vid) vid.src = 'https://www.youtube.com/embed/Vft3wpiJKUE?autoplay=1&enablejsapi=1&vq=hd2160';
           return;
         }
-        if (target === 'ai-system') {
+        if (target === 'prosolution-open') {
           var pro = document.getElementById('prosolution-overlay');
           pro.classList.add('ceo-overlay--active');
           pro.setAttribute('aria-hidden', 'false');
           document.body.style.overflow = 'hidden';
-          if (pushHistory) history.pushState({ nav: 'ai-system' }, '', '#ai-system');
+          if (pushHistory) history.pushState({ nav: 'prosolution-open' }, '', '#prosolution');
           return;
         }
         if (target === 'contact') {
@@ -5150,14 +5486,23 @@
           if (pushHistory) history.pushState({ nav: 'contact' }, '', '#contact');
           return;
         }
+        // 스크롤 타겟
         if (target === 'top') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({ top: 0 });
           if (pushHistory) history.pushState({ nav: 'top' }, '', window.location.pathname);
           return;
         }
+        // AI 시스템 → #solutions 섹션
+        if (target === 'ai-system') {
+          var sol = document.getElementById('solutions');
+          if (sol) scrollToContent(sol);
+          if (pushHistory) history.pushState({ nav: 'ai-system' }, '', '#solutions');
+          return;
+        }
+        // 일반 섹션 (news, about, recruit 등)
         var el = document.getElementById(target);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          scrollToContent(el);
           if (pushHistory) history.pushState({ nav: target }, '', '#' + target);
         }
       }
@@ -5175,17 +5520,19 @@
         var hash = window.location.hash.replace('#', '');
         if (!hash) {
           closeAllOverlays();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({ top: 0 });
         } else if (hash === 'ceo') {
           navigateTo('ceo', false);
-        } else if (hash === 'ai-system') {
+        } else if (hash === 'ai-system' || hash === 'solutions') {
           navigateTo('ai-system', false);
+        } else if (hash === 'prosolution') {
+          navigateTo('prosolution-open', false);
         } else if (hash === 'contact') {
           navigateTo('contact', false);
         } else {
           closeAllOverlays();
           var el = document.getElementById(hash);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
+          if (el) scrollToContent(el);
         }
       });
     })();
