@@ -56,6 +56,15 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - **사용처**: coverage chat + coaching chat (keyword 매칭 실패 시 fallback)
 - **System prompt**: 보험 전문 AI 어시스턴트 (간결, 아이콘 사용, 원화 표시)
 
+## Navigation System (v=20260406)
+- **모든 네비 링크는 `data-nav` 속성 기반** — 인라인 onclick 금지
+- 통합 클릭 핸들러 1개가 `document.addEventListener('click')` 위임 방식으로 처리
+- **클릭 시 반드시 `closeAllOverlays()` 호출** → body overflow 복원 후 스크롤
+- 오버레이 종류: CEO(`ceo-overlay`), AI시스템(`prosolution-overlay`), 문의하기(`contact`)
+- `body.ceo-overlay-open` / `body.contact-overlay-open` → `overflow:hidden` 설정됨, **반드시 해제 필요**
+- **네비 타겟 ID 매핑**: news(프로사업단총괄), about(관리자 소개), recruit(모집공고), top(로고)
+- **⚠️ `#team` ID 없음** — 관리자 소개는 `#about` 섹션임. `#ceo` ID도 없음(오버레이 방식)
+
 ## Critical Notes
 - Three.js는 CDN `<script>` (global `THREE`), **importmap/ES Module 아님**
 - 모든 대시보드 JS는 `index.html` 인라인 IIFE — 외부 JS 파일 로드 없음
@@ -63,6 +72,8 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - CEO 오버레이: `#ceo` hash trigger → modal, body scroll lock, back 버튼 지원
 - `js/three-hero.js`, `js/main.js` — **orphaned** (index.html에서 로드하지 않음)
 - 모바일: terrain은 모든 사이즈에서 렌더 (별도 숨김 없음)
+- **네비 배경색**: `#27398c` (파란색 계열, v=20260406 변경)
+- **`html { scroll-behavior: smooth }` 설정됨** — JS scrollIntoView와 충돌 주의
 
 ## 4대 규칙 (영구)
 1. **기존 기능 불변** — 신규 코드는 완전 독립 블록. 기존 함수 내부 수정 시 사전 승인 필수
@@ -71,6 +82,7 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 4. **Lazy Init 필수** — 외부 의존성 모듈 레벨 즉시 초기화 금지
 
 ## Version
+- **v=20260406a** — 네비 통합 핸들러, 배지/문의하기/소식카드 변경, 네비 배경색, CEO 배경 통일
 - **v=20260405e** — 대규모 고도화 (실제 시스템 재구현, 소식 섹션, 네비 전폭, 글로우, UI 개선 30+ 항목)
 - **v=20260404b** — 8대 AI 대시보드 프로덕션 고도화 (10개 항목 완료)
   - #1: 검색창 → 카테고리 자동이동
