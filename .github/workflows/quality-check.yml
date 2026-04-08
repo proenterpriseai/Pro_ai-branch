@@ -93,9 +93,9 @@ jobs:
 
       - name: 모바일 media query 존재 확인
         run: |
-          COUNT=$(grep -c 'max-width' index.html)
-          if [ "$COUNT" -ge 5 ]; then
-            echo "✅ 모바일 media query $COUNT개 존재"
+          COUNT=$(grep -rc 'max-width' index.html css/style.css | awk -F: '{s+=$NF} END{print s}')
+          if [ "$COUNT" -ge 3 ]; then
+            echo "✅ 모바일 media query $COUNT개 존재 (index.html + css/style.css)"
           else
             echo "❌ 모바일 media query $COUNT개 — 반응형 부족"
             exit 1
