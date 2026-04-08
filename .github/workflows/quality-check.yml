@@ -1,0 +1,146 @@
+name: Quality Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  code-consistency:
+    name: 코드 일관성 검사
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: closeAllOverlays 네비게이션 안전장치 확인
+        run: |
+          COUNT=$(grep -c "closeAllOverlays" index.html)
+          if [ "$COUNT" -ge 3 ]; then
+            echo "✅ closeAllOverlays 함수 존재 ($COUNT회 참조)"
+          else
+            echo "❌ closeAllOverlays 참조 부족 ($COUNT회) — 네비 안전장치 손상 가능"
+            exit 1
+          fi
+
+      - name: data-nav 네비게이션 속성 확인
+        run: |
+          COUNT=$(grep -c 'data-nav' index.html)
+          if [ "$COUNT" -ge 15 ]; then
+            echo "✅ data-nav 속성 $COUNT개 존재 (8대 대시보드 네비 정상)"
+          else
+            echo "❌ data-nav 속성 $COUNT개 — 15개 이상 필요"
+            exit 1
+          fi
+
+      - name: Gemini API 연동 확인
+        run: |
+          COUNT=$(grep -c 'api/chat' index.html)
+          if [ "$COUNT" -ge 3 ]; then
+            echo "✅ api/chat 참조 $COUNT개 (Gemini 연동 정상)"
+          else
+            echo "❌ api/chat 참조 $COUNT개 — Gemini 연동 손상 가능"
+            exit 1
+          fi
+
+      - name: CDN 핵심 라이브러리 3종 확인
+        run: |
+          FAIL=0
+          if grep -q "three.min.js" index.html; then
+            echo "✅ Three.js CDN 존재"
+          else
+            echo "❌ Three.js CDN 미존재"
+            FAIL=1
+          fi
+          if grep -q "gsap.min.js" index.html; then
+            echo "✅ GSAP CDN 존재"
+          else
+            echo "❌ GSAP CDN 미존재"
+            FAIL=1
+          fi
+          if grep -q "ScrollTrigger" index.html; then
+            echo "✅ ScrollTrigger 존재"
+          else
+            echo "❌ ScrollTrigger 미존재"
+            FAIL=1
+          fi
+          if [ "$FAIL" -eq 1 ]; then exit 1; fi
+
+      - name: SEO meta description 확인
+        run: |
+          if grep -q 'meta name="description"' index.html; then
+            echo "✅ SEO meta description 존재"
+          else
+            echo "❌ SEO meta description 미존재"
+            exit 1
+          fi
+
+  mobile-check:
+    name: 모바일 반응형 검증
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: viewport meta 태그 확인
+        run: |
+          if grep -q 'name="viewport"' index.html; then
+            echo "✅ viewport meta 태그 존재"
+          else
+            echo "❌ viewport meta 태그 미존재 — 모바일 렌더링 불가"
+            exit 1
+          fi
+
+      - name: 모바일 media query 존재 확인
+        run: |
+          COUNT=$(grep -c 'max-width' index.html)
+          if [ "$COUNT" -ge 5 ]; then
+            echo "✅ 모바일 media query $COUNT개 존재"
+          else
+            echo "❌ 모바일 media query $COUNT개 — 반응형 부족"
+            exit 1
+          fi
+
+      - name: 모바일 메뉴 클래스 확인
+        run: |
+          if grep -q 'mobile-menu' index.html; then
+            echo "✅ mobile-menu 클래스 존재"
+          else
+            echo "❌ mobile-menu 클래스 미존재 — 모바일 네비 손상"
+            exit 1
+          fi
+
+  api-check:
+    name: 서버리스 함수 검증
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: api/chat.js 파일 존재 확인
+        run: |
+          if [ -f "api/chat.js" ]; then
+            echo "✅ api/chat.js 파일 존재"
+          else
+            echo "❌ api/chat.js 파일 미존재 — Gemini API 서버리스 함수 삭제됨"
+            exit 1
+          fi
+
+      - name: Gemini 엔드포인트 참조 확인
+        run: |
+          if grep -q "gemini" api/chat.js; then
+            echo "✅ Gemini API 엔드포인트 참조 존재"
+          else
+            echo "❌ Gemini API 엔드포인트 미참조 — 서버리스 함수 손상"
+            exit 1
+          fi
+
+  site-health:
+    name: 사이트 접속 확인
+    runs-on: ubuntu-latest
+    steps:
+      - name: ai-branch.vercel.app 접속
+        run: |
+          curl -f --max-time 15 --retry 3 --retry-delay 5 \
+            -o /dev/null -s -w "HTTP %{http_code}\n" \
+            https://ai-branch.vercel.app
+          echo "✅ ai-branch.vercel.app 정상"
