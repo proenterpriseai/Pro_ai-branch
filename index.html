@@ -1599,6 +1599,69 @@
     .pro-reward-stat-num { font-size:clamp(1.4rem,2.5vw,2rem); font-weight:700; color:#27398c; }
     .pro-reward-stat-label { font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; }
 
+    /* ── 교육 로드맵: Stillpoint Ritual Panels + Pipeline ── */
+
+    /* --- Stillpoint 4-Column Ritual Panels --- */
+    .ritual-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; max-width:1200px; margin:2rem auto 0; min-height:500px; }
+    .ritual-panel { position:relative; overflow:hidden; cursor:pointer; min-height:500px; }
+    .ritual-panel-bg { position:absolute; inset:0; background-size:cover; background-position:center; transition:transform .6s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .ritual-panel:hover .ritual-panel-bg { transform:scale(1.08); }
+    .ritual-panel-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.15) 100%); z-index:1; }
+    .ritual-panel-base { position:absolute; bottom:0; left:0; right:0; padding:32px 24px; z-index:2; transition:opacity .35s ease; }
+    .ritual-panel:hover .ritual-panel-base { opacity:0; }
+    .ritual-panel-idx { font-size:11px; font-weight:600; letter-spacing:0.15em; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:8px; }
+    .ritual-panel-title { font-size:clamp(1rem,1.6vw,1.25rem); font-weight:700; color:#fff; line-height:1.35; letter-spacing:-0.02em; }
+    .ritual-accent-line { width:0; height:2px; background:#27398c; margin-top:12px; transition:width .5s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .ritual-panel:hover .ritual-accent-line { width:100%; }
+
+    /* Glass detail slide-in */
+    .ritual-panel-detail { position:absolute; top:0; right:0; bottom:0; width:100%; z-index:3; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-left:1px solid rgba(255,255,255,0.08); padding:32px 20px; display:flex; flex-direction:column; justify-content:center; gap:16px; transform:translateX(100%); opacity:0; transition:transform .45s cubic-bezier(0.25,0.46,0.45,0.94), opacity .35s ease; pointer-events:none; }
+    .ritual-panel:hover .ritual-panel-detail { transform:translateX(0); opacity:1; pointer-events:auto; }
+    .ritual-detail-title { font-size:14px; font-weight:700; color:#fff; margin:0 0 4px; }
+    .ritual-detail-desc { font-size:12px; color:rgba(255,255,255,0.55); line-height:1.6; margin:0; }
+    .ritual-detail-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+    .ritual-tag { font-size:10px; color:rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.04); border-radius:20px; padding:3px 10px; white-space:nowrap; }
+
+    /* --- Pipeline Zigzag Roadmap --- */
+    .pipeline-wrap { position:relative; max-width:1100px; margin:4rem auto 0; padding:0 20px; }
+    .pipeline-svg { position:absolute; top:0; left:50%; transform:translateX(-50%); width:100%; height:100%; pointer-events:none; z-index:0; }
+    .pipeline-svg path { fill:none; stroke:rgba(39,57,140,0.15); stroke-width:2; }
+    .pipeline-svg .pipe-glow { fill:none; stroke:#27398c; stroke-width:2; filter:drop-shadow(0 0 6px rgba(39,57,140,0.6)); stroke-dasharray:1000; stroke-dashoffset:1000; transition:stroke-dashoffset 0s; }
+    .pipeline-cards { position:relative; z-index:1; display:flex; flex-direction:column; gap:60px; }
+    .pipeline-card { width:55%; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:28px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+    .pipeline-card:nth-child(odd) { align-self:flex-start; }
+    .pipeline-card:nth-child(even) { align-self:flex-end; }
+    .pipeline-stage { font-size:11px; font-weight:600; letter-spacing:0.15em; color:#27398c; text-transform:uppercase; margin-bottom:8px; }
+    .pipeline-card-title { font-size:clamp(1rem,1.8vw,1.3rem); font-weight:700; color:#fff; margin:0 0 8px; letter-spacing:-0.02em; }
+    .pipeline-card-desc { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.65; margin:0 0 16px; }
+
+    /* Horizontal scroll gallery */
+    .pipeline-gallery { display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:6px; scrollbar-width:thin; scrollbar-color:rgba(39,57,140,0.3) transparent; }
+    .pipeline-gallery::-webkit-scrollbar { height:4px; }
+    .pipeline-gallery::-webkit-scrollbar-track { background:transparent; }
+    .pipeline-gallery::-webkit-scrollbar-thumb { background:rgba(39,57,140,0.3); border-radius:2px; }
+    .pipeline-gallery-item { flex:0 0 auto; height:180px; scroll-snap-align:start; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); background:#0a0a0a; }
+    .pipeline-gallery-item img { height:100%; width:auto; object-fit:contain; display:block; }
+    .pipeline-gallery-item video { height:100%; width:auto; object-fit:contain; display:block; cursor:pointer; }
+    .pipeline-gallery-item.poster-item { height:180px; }
+    .pipeline-gallery-item.poster-item img { height:100%; width:auto; object-fit:contain; }
+
+    /* --- Mobile: Ritual + Pipeline --- */
+    @media(max-width:768px){
+      .ritual-grid { grid-template-columns:1fr; min-height:auto; }
+      .ritual-panel { min-height:320px; }
+      /* Mobile: no hover, always show detail */
+      .ritual-panel-base { opacity:0; }
+      .ritual-panel-detail { transform:translateX(0); opacity:1; pointer-events:auto; width:100%; }
+      .pipeline-wrap { padding:0 16px; }
+      .pipeline-svg { display:none; }
+      .pipeline-card { width:100% !important; align-self:center !important; }
+      .pipeline-card:nth-child(even) { align-self:center !important; }
+      .pipeline-gallery-item { height:140px; }
+      .pipeline-gallery-item.poster-item { height:140px; }
+      .pipeline-card { padding:20px; }
+    }
+
     /* ── 모바일 대응 ── */
     @media (max-width: 768px) {
       .pro-door-track { display: none; }
@@ -4305,8 +4368,8 @@
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Step 1: 프로를 만드는 교육 체계 -->
-          <div
-            class="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:ring-white/20 animate-on-scroll flex flex-col bg-neutral-900/40 h-full ring-white/10 ring-1 rounded-2xl relative"
+          <div data-nav="pro-intro" data-scroll-to="edu-panels"
+            class="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:ring-white/20 animate-on-scroll flex flex-col bg-neutral-900/40 h-full ring-white/10 ring-1 rounded-2xl relative cursor-pointer"
             style="animation: fadeSlideIn 0.8s ease-out 0.3s both">
             <div class="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
             <div class="flex flex-col h-full relative">
@@ -6870,7 +6933,18 @@
         var link = e.target.closest('[data-nav]');
         if (!link) return;
         e.preventDefault();
+        var scrollTarget = link.getAttribute('data-scroll-to');
         navigateTo(link.getAttribute('data-nav'), true);
+        // 오버레이 열린 후 특정 섹션으로 스크롤
+        if (scrollTarget) {
+          setTimeout(function () {
+            var overlay = document.getElementById('pro-intro-overlay');
+            var target = document.getElementById(scrollTarget);
+            if (overlay && target) {
+              overlay.scrollTop = target.offsetTop - 40;
+            }
+          }, 400);
+        }
       });
 
       // 뒤로가기/앞으로가기 핸들러
@@ -8345,40 +8419,214 @@
       </div>
     </div>
 
-    <!-- Block: 교육 인프라 -->
+    <!-- Block: 교육 로드맵 -->
     <div class="pro-section-block">
-      <div class="section-kicker">체계적 교육 시스템</div>
-      <h2 class="section-title">현장 중심 교육 인프라</h2>
-      <p class="section-desc">프로사업단총괄은 다양한 교육 프로그램을 통해 확실한 <strong style="color:#fff;">역량 강화와 지속적인 성장</strong>을 지원합니다.</p>
-      <div class="pro-info-cards">
-        <div class="pro-info-card">
-          <div class="pro-info-card-img">
-            <img src="프로 사진/SnapInsta.to_651581255_18568761139044475_1103611696124481972_n.jpg" alt="AI Strategy Workshop" loading="lazy" style="object-position:center 65%;">
+      <div class="section-kicker">체계적 성장 로드맵</div>
+      <h2 class="section-title">입문부터 전문가까지</h2>
+      <p class="section-desc">신입 입문부터 법인 전문가까지, 프로사업단총괄의 4단계 교육이 당신의 성장을 설계합니다.</p>
+
+      <!-- ── Stillpoint Ritual Panels (4-column grid) ── -->
+      <div class="ritual-grid" id="edu-panels">
+
+        <!-- Panel 01 -->
+        <div class="ritual-panel" data-panel-idx="0">
+          <div class="ritual-panel-bg" style="background-image:url('신입/SnapInsta.to_529646521_18518932852044475_3011110293151240933_n.jpg')"></div>
+          <div class="ritual-panel-overlay"></div>
+          <div class="ritual-panel-base">
+            <div class="ritual-panel-idx">Stage 01</div>
+            <div class="ritual-panel-title">신인 / 저차월 교육</div>
+            <div class="ritual-accent-line"></div>
           </div>
-          <h4>AI Strategy Workshop</h4>
-          <p>5대 핵심 AI TOOL과 자동보장분석, 금융·보험 챗봇을 활용한 실전 워크숍으로 디지털 역량을 강화합니다.</p>
-        </div>
-        <div class="pro-info-card">
-          <div class="pro-info-card-img">
-            <img src="사진/KakaoTalk_20260401_160431816_06.jpg" alt="본사 집합교육" loading="lazy">
+          <div class="ritual-panel-detail">
+            <div>
+              <div class="ritual-detail-title">신입 교육 (2주)</div>
+              <div class="ritual-detail-desc">매월 2회 정기 진행 · 독자 개발 교재 · 현장 중심 커리큘럼</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">세일즈 역량 강화 원데이 클래스</div>
+              <div class="ritual-detail-desc">실전 화법 · 거절 처리 · 니즈환기 트레이닝</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">저차월(2~12차월) 대상교육</div>
+              <div class="ritual-detail-desc">슬럼프 극복 · DB 전환율 개선 · AI 활용 루틴 구축</div>
+            </div>
+            <div class="ritual-detail-tags">
+              <span class="ritual-tag">2주 집중</span>
+              <span class="ritual-tag">독자교재</span>
+              <span class="ritual-tag">AI 루틴</span>
+            </div>
           </div>
-          <h4>본사 집합교육</h4>
-          <p>매주 진행되는 영업전략 워크숍과 상품 교육을 통해 현장 실무 역량을 체계적으로 다집니다.</p>
         </div>
-        <div class="pro-info-card">
-          <div class="pro-info-card-img">
-            <img src="프로 사진/SnapInsta.to_656141103_18571670287044475_4749928076943054148_n.jpg" alt="CROTONVILLE" loading="lazy" style="object-position:center 20%;">
+
+        <!-- Panel 02 -->
+        <div class="ritual-panel" data-panel-idx="1">
+          <div class="ritual-panel-bg" style="background-image:url('관리자/SnapInsta.to_523235892_18515821147044475_1577995994967421797_n.jpg')"></div>
+          <div class="ritual-panel-overlay"></div>
+          <div class="ritual-panel-base">
+            <div class="ritual-panel-idx">Stage 02</div>
+            <div class="ritual-panel-title">관리자 양성과정</div>
+            <div class="ritual-accent-line"></div>
           </div>
-          <h4>CROTONVILLE 리더십 프로그램</h4>
-          <p>4주간의 리더십 커리큘럼을 통해 조직 소통법, 성과 관리, 코칭 노하우를 배우는 관리자 양성 과정입니다.</p>
+          <div class="ritual-panel-detail">
+            <div>
+              <div class="ritual-detail-title">관리자 역량 강화 과정</div>
+              <div class="ritual-detail-desc">팀 빌딩 · 성과 코칭 · KPI 설계 실습</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">차세대 리더 과정</div>
+              <div class="ritual-detail-desc">조직 관리 · 리더십 커뮤니케이션 · 비전 수립</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">관리자 워크샵</div>
+              <div class="ritual-detail-desc">현장 사례 공유 · 상호 피드백 · 우수 사례 벤치마킹</div>
+            </div>
+            <div class="ritual-detail-tags">
+              <span class="ritual-tag">팀 빌딩</span>
+              <span class="ritual-tag">리더십</span>
+              <span class="ritual-tag">벤치마킹</span>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <!-- Panel 03 -->
+        <div class="ritual-panel" data-panel-idx="2">
+          <div class="ritual-panel-bg" style="background-image:url('db영업전문과과정/SnapInsta.to_486669384_18493265659044475_8063352989600581402_n.jpg')"></div>
+          <div class="ritual-panel-overlay"></div>
+          <div class="ritual-panel-base">
+            <div class="ritual-panel-idx">Stage 03</div>
+            <div class="ritual-panel-title">전문 역량 특화 과정</div>
+            <div class="ritual-accent-line"></div>
+          </div>
+          <div class="ritual-panel-detail">
+            <div>
+              <div class="ritual-detail-title">DB 영업 전문가 과정</div>
+              <div class="ritual-detail-desc">DB 유형 분류 · AI 전환율 예측 · 병목 구간 분석 실습</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">상담 마스터 과정</div>
+              <div class="ritual-detail-desc">니즈 환기 심화 · 보장분석 AI 활용 · 완전판매 체크리스트</div>
+            </div>
+            <div class="ritual-detail-tags">
+              <span class="ritual-tag">DB 전문</span>
+              <span class="ritual-tag">AI 활용</span>
+              <span class="ritual-tag">완전판매</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 04 -->
+        <div class="ritual-panel" data-panel-idx="3">
+          <div class="ritual-panel-bg" style="background-image:url('재무설계/SnapInsta.to_570551236_18533373706044475_5515075293047894191_n.jpg')"></div>
+          <div class="ritual-panel-overlay"></div>
+          <div class="ritual-panel-base">
+            <div class="ritual-panel-idx">Stage 04</div>
+            <div class="ritual-panel-title">금융 &amp; 법인 전문가 과정</div>
+            <div class="ritual-accent-line"></div>
+          </div>
+          <div class="ritual-panel-detail">
+            <div>
+              <div class="ritual-detail-title">재무설계학교 아카데미</div>
+              <div class="ritual-detail-desc">CFP · AFPK 사내 교수진 · 자격증 연계 커리큘럼</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">헥사곤 투자자문 경제 전망</div>
+              <div class="ritual-detail-desc">거시경제 분석 · 금융상품 설계 · 고객 포트폴리오 전략</div>
+            </div>
+            <div>
+              <div class="ritual-detail-title">법인컨설팅 아카데미</div>
+              <div class="ritual-detail-desc">법인 절세 설계 · CEO 플랜 · 퇴직금 전환 전략</div>
+            </div>
+            <div class="ritual-detail-tags">
+              <span class="ritual-tag">CFP/AFPK</span>
+              <span class="ritual-tag">경제전망</span>
+              <span class="ritual-tag">법인절세</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /ritual-grid -->
+
+      <!-- ── Pipeline Zigzag Roadmap ── -->
+      <div class="pipeline-wrap" id="edu-pipeline">
+        <svg class="pipeline-svg" id="pipe-svg" preserveAspectRatio="none" aria-hidden="true">
+          <path class="pipe-bg" d="" />
+          <path class="pipe-glow" d="" />
+        </svg>
+
+        <div class="pipeline-cards">
+
+          <!-- Card 01: 신인/저차월 -->
+          <div class="pipeline-card">
+            <div class="pipeline-stage">Stage 01</div>
+            <h3 class="pipeline-card-title">신인 / 저차월 교육</h3>
+            <p class="pipeline-card-desc">신입 교육(2주) · 세일즈 역량 강화 원데이 클래스 · 저차월(2~12차월) 대상교육</p>
+            <div class="pipeline-gallery">
+              <div class="pipeline-gallery-item poster-item"><img src="AI 홈페이지/포스터.PNG" alt="신입입문교재 포스터" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_456407783_18451560346044475_5203637569121072516_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_456423916_18451560355044475_3848122985020065341_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_471776817_18476677261044475_2058853521939057007_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_529646521_18518932852044475_3011110293151240933_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_529661379_18518932837044475_5024693559017231373_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_551078060_18527030641044475_7593483523123187588_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_573534756_18535275901044475_1317174382965377272_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_581774895_18537758704044475_1274972021437159003_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><video src="신입/SnapInsta.to_AQOGaG7nND2krX7Mett7ovXFCsbw-M3Ad-srbR9W-JpfpWvr2KUf6hPLrF9vT6yTHwtZ_8D0aG8f7HKBO0dyNN0X.mp4" muted playsinline preload="metadata"></video></div>
+              <div class="pipeline-gallery-item"><video src="신입/SnapInsta.to_AQOjgsmfjH1uobp4qpZ8fIq9Kgt5AG8xANvXQECd86wpUYOhflNqeJG0oCoP69nZ3xy3LRskfxIXSmM2AXcIMzg.mp4" muted playsinline preload="metadata"></video></div>
+            </div>
+          </div>
+
+          <!-- Card 02: 관리자 양성 -->
+          <div class="pipeline-card">
+            <div class="pipeline-stage">Stage 02</div>
+            <h3 class="pipeline-card-title">관리자 양성과정</h3>
+            <p class="pipeline-card-desc">관리자 역량 강화 과정 · 차세대 리더 과정 · 관리자 워크샵</p>
+            <div class="pipeline-gallery">
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_488081036_18494858635044475_8007968768522893103_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_488504211_18494858644044475_1823015919181616822_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_523235892_18515821147044475_1577995994967421797_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_539531083_18522442444044475_5901741666639269199_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_573853513_18534419344044475_1610757311692977324_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_575975059_18535137739044475_8299563707864216721_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_626957428_18556481050044475_3057239203861553995_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><video src="관리자/SnapInsta.to_AQNQyl5HdC9JuL1C6k_MiWXLKuX6hDVni18dcx6IFc9c9MnkxUvGEcrkVyH1M4p0-3QXcG1aq6IHP-W_W9zzcy0caJFIIxLsmw10yj4.mp4" muted playsinline preload="metadata"></video></div>
+              <div class="pipeline-gallery-item"><video src="관리자/SnapInsta.to_AQPxkU5Ms7WihNmHqe68JePqbA-XDnrVqUVFO-TE5DT-5ulCQQ7ILkFyZ0jRqZEtT3D0NsQLnX1Ve8W6TuIkbkUK28Fkj6GcqjuQwMs.mp4" muted playsinline preload="metadata"></video></div>
+            </div>
+          </div>
+
+          <!-- Card 03: 전문 역량 -->
+          <div class="pipeline-card">
+            <div class="pipeline-stage">Stage 03</div>
+            <h3 class="pipeline-card-title">전문 역량 특화 과정</h3>
+            <p class="pipeline-card-desc">DB 영업 전문가 과정 · 상담 마스터 과정</p>
+            <div class="pipeline-gallery">
+              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486669384_18493265659044475_8063352989600581402_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486750324_18493265674044475_3430770843359441565_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486759925_18493265701044475_9173470481056551615_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486760402_18493265704044475_8334572031290027537_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486839879_18493265692044475_3921533713343614809_n.jpg" alt="" loading="lazy"></div>
+              <div class="pipeline-gallery-item"><video src="db영업전문과과정/SnapInsta.to_AQOmDRQJagHg_hJgyzXdnwEzjQY0jEzBDhBweKmiZCsUUkdZWCDzSFzeZnbGTxMkLgg4bV7LFK1WLLudqGWQLwXeor9cMLjpMsvps3c.mp4" muted playsinline preload="metadata"></video></div>
+            </div>
+          </div>
+
+          <!-- Card 04: 금융/법인 (단일 이미지) -->
+          <div class="pipeline-card">
+            <div class="pipeline-stage">Stage 04</div>
+            <h3 class="pipeline-card-title">금융 &amp; 법인 전문가 과정</h3>
+            <p class="pipeline-card-desc">재무설계학교 아카데미(CFP·AFPK) · 헥사곤 투자자문 경제 전망 · 법인컨설팅 아카데미</p>
+            <div class="pipeline-gallery">
+              <div class="pipeline-gallery-item"><img src="재무설계/SnapInsta.to_570551236_18533373706044475_5515075293047894191_n.jpg" alt="" loading="lazy"></div>
+            </div>
+          </div>
+
+        </div><!-- /pipeline-cards -->
+      </div><!-- /pipeline-wrap -->
+
     </div>
 
     <!-- Block: 보상 체계 -->
     <div class="pro-section-block">
       <div class="section-kicker">성장하는 만큼 보상받는</div>
-      <h2 class="section-title">차별화된 보상 체계</h2>
+      <h2 class="section-title">성장을 지속 시키는 조직문화</h2>
       <p class="section-desc">프로사업단총괄은 다양한 행사와 시상식을 통해 확실한 <strong style="color:#fff;">동기부여와 지속적인 원동력</strong>을 제공합니다.</p>
       <div class="pro-info-cards">
         <div class="pro-info-card">
@@ -8463,6 +8711,106 @@
     </div>
   </div>
 </div>
+
+<!-- ═══ 교육 로드맵: Ritual Panels + Pipeline Glow + Gallery JS ═══ -->
+<script>
+(function(){
+  /* ── Guard: #edu-panels 없으면 즉시 return ── */
+  var panels = document.getElementById('edu-panels');
+  if(!panels) return;
+
+  /* ── 1. Pipeline SVG curve drawing ── */
+  var pipeWrap = document.getElementById('edu-pipeline');
+  var pipeSvg = document.getElementById('pipe-svg');
+  var cards = pipeWrap ? pipeWrap.querySelectorAll('.pipeline-card') : [];
+
+  function buildPipePath(){
+    if(!pipeWrap || !pipeSvg || cards.length < 2) return;
+    var wrapRect = pipeWrap.getBoundingClientRect();
+    var svgW = wrapRect.width;
+    var svgH = pipeWrap.scrollHeight;
+    pipeSvg.setAttribute('viewBox', '0 0 '+svgW+' '+svgH);
+    pipeSvg.style.height = svgH + 'px';
+
+    var points = [];
+    for(var i=0; i<cards.length; i++){
+      var cr = cards[i].getBoundingClientRect();
+      var cx = (cr.left - wrapRect.left) + cr.width/2;
+      var cy = (cr.top - wrapRect.top + pipeWrap.scrollTop) + cr.height/2;
+      points.push({x:cx, y:cy});
+    }
+
+    var d = 'M'+points[0].x+' '+points[0].y;
+    for(var j=1; j<points.length; j++){
+      var prev = points[j-1];
+      var curr = points[j];
+      var cpY = (prev.y + curr.y)/2;
+      d += ' C'+prev.x+' '+cpY+' '+curr.x+' '+cpY+' '+curr.x+' '+curr.y;
+    }
+
+    var bgPath = pipeSvg.querySelector('.pipe-bg');
+    var glowPath = pipeSvg.querySelector('.pipe-glow');
+    if(bgPath) bgPath.setAttribute('d', d);
+    if(glowPath){
+      glowPath.setAttribute('d', d);
+      var len = glowPath.getTotalLength ? glowPath.getTotalLength() : 1000;
+      glowPath.style.strokeDasharray = len;
+      glowPath.style.strokeDashoffset = len;
+    }
+  }
+
+  /* ── 2. Scroll-driven glow animation ── */
+  function updateGlow(){
+    if(!pipeWrap || !pipeSvg) return;
+    var glowPath = pipeSvg.querySelector('.pipe-glow');
+    if(!glowPath) return;
+    var len = glowPath.getTotalLength ? glowPath.getTotalLength() : 1000;
+
+    var wrapRect = pipeWrap.getBoundingClientRect();
+    var viewH = window.innerHeight;
+    var top = wrapRect.top;
+    var height = wrapRect.height;
+    if(height <= 0) return;
+
+    var progress = Math.min(Math.max((viewH - top) / (height + viewH), 0), 1);
+    glowPath.style.strokeDashoffset = len * (1 - progress);
+  }
+
+  /* ── 3. Gallery: video click-to-play/pause ── */
+  document.addEventListener('click', function(e){
+    var vid = e.target.closest('.pipeline-gallery-item video');
+    if(!vid) return;
+    if(vid.paused){
+      vid.play();
+      vid.muted = false;
+      vid.controls = true;
+    } else {
+      vid.pause();
+    }
+  });
+
+  /* ── 4. Init + listeners ── */
+  function onReady(){
+    buildPipePath();
+    updateGlow();
+  }
+
+  /* Wait for images to settle layout */
+  if(document.readyState === 'complete'){
+    setTimeout(onReady, 100);
+  } else {
+    window.addEventListener('load', function(){ setTimeout(onReady, 100); });
+  }
+
+  window.addEventListener('resize', function(){
+    buildPipePath();
+    updateGlow();
+  });
+
+  window.addEventListener('scroll', updateGlow, {passive:true});
+
+})();
+</script>
 
 <!-- ═══ 모바일 메뉴 오버레이 (body 직속, nav 밖 — CSS 간섭 제거) ═══ -->
 <div id="mobile-nav-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999;">
