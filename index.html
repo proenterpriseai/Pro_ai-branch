@@ -1601,65 +1601,77 @@
 
     /* ── 교육 로드맵: Stillpoint Ritual Panels + Pipeline ── */
 
-    /* --- Stillpoint 4-Column Ritual Panels --- */
-    .ritual-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; max-width:1200px; margin:2rem auto 0; min-height:500px; }
-    .ritual-panel { position:relative; overflow:hidden; cursor:pointer; min-height:500px; }
-    .ritual-panel-bg { position:absolute; inset:0; background-size:cover; background-position:center; transition:transform .6s cubic-bezier(0.25,0.46,0.45,0.94); }
-    .ritual-panel:hover .ritual-panel-bg { transform:scale(1.08); }
-    .ritual-panel-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.15) 100%); z-index:1; }
-    .ritual-panel-base { position:absolute; bottom:0; left:0; right:0; padding:32px 24px; z-index:2; transition:opacity .35s ease; }
-    .ritual-panel:hover .ritual-panel-base { opacity:0; }
-    .ritual-panel-idx { font-size:11px; font-weight:600; letter-spacing:0.15em; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:8px; }
-    .ritual-panel-title { font-size:clamp(1rem,1.6vw,1.25rem); font-weight:700; color:#fff; line-height:1.35; letter-spacing:-0.02em; }
-    .ritual-accent-line { width:0; height:2px; background:#27398c; margin-top:12px; transition:width .5s cubic-bezier(0.25,0.46,0.45,0.94); }
-    .ritual-panel:hover .ritual-accent-line { width:100%; }
+    /* --- OBLIQUE 히어로 --- */
+    .pro-hero { position:relative; min-height:80vh; display:flex; flex-direction:column; justify-content:center; padding:4rem 3rem; overflow:hidden; }
+    .pro-hero-bg { position:absolute; inset:0; z-index:0; }
+    .pro-hero-bg img { width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.05); }
+    .pro-hero-bg::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(5,5,10,0.65), rgba(5,5,10,0.85)); }
+    .pro-hero-content { position:relative; z-index:1; max-width:700px; }
+    .pro-hero-title { font-size:clamp(2.5rem,7vw,5rem); font-weight:700; line-height:1.05; letter-spacing:-0.04em; color:#fff; }
+    .pro-hero-desc { font-size:16px; color:rgba(255,255,255,0.55); line-height:1.75; max-width:560px; margin-top:24px; }
+    .pro-hero-scroll { margin-top:48px; display:flex; align-items:center; gap:8px; color:rgba(255,255,255,0.3); font-size:11px; letter-spacing:0.15em; text-transform:uppercase; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
 
-    /* Glass detail slide-in */
-    .ritual-panel-detail { position:absolute; top:0; right:0; bottom:0; width:100%; z-index:3; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-left:1px solid rgba(255,255,255,0.08); padding:32px 20px; display:flex; flex-direction:column; justify-content:center; gap:16px; transform:translateX(100%); opacity:0; transition:transform .45s cubic-bezier(0.25,0.46,0.45,0.94), opacity .35s ease; pointer-events:none; }
-    .ritual-panel:hover .ritual-panel-detail { transform:translateX(0); opacity:1; pointer-events:auto; }
-    .ritual-detail-title { font-size:14px; font-weight:700; color:#fff; margin:0 0 4px; }
-    .ritual-detail-desc { font-size:12px; color:rgba(255,255,255,0.55); line-height:1.6; margin:0; }
-    .ritual-detail-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
-    .ritual-tag { font-size:10px; color:rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.04); border-radius:20px; padding:3px 10px; white-space:nowrap; }
-
-    /* --- Pipeline Zigzag Roadmap --- */
-    .pipeline-wrap { position:relative; max-width:1100px; margin:4rem auto 0; padding:0 20px; }
-    .pipeline-svg { position:absolute; top:0; left:50%; transform:translateX(-50%); width:100%; height:100%; pointer-events:none; z-index:0; }
-    .pipeline-svg path { fill:none; stroke:rgba(39,57,140,0.15); stroke-width:2; }
-    .pipeline-svg .pipe-glow { fill:none; stroke:#27398c; stroke-width:2; filter:drop-shadow(0 0 6px rgba(39,57,140,0.6)); stroke-dasharray:1000; stroke-dashoffset:1000; transition:stroke-dashoffset 0s; }
-    .pipeline-cards { position:relative; z-index:1; display:flex; flex-direction:column; gap:60px; }
-    .pipeline-card { width:55%; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:28px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
-    .pipeline-card:nth-child(odd) { align-self:flex-start; }
-    .pipeline-card:nth-child(even) { align-self:flex-end; }
-    .pipeline-stage { font-size:11px; font-weight:600; letter-spacing:0.15em; color:#27398c; text-transform:uppercase; margin-bottom:8px; }
-    .pipeline-card-title { font-size:clamp(1rem,1.8vw,1.3rem); font-weight:700; color:#fff; margin:0 0 8px; letter-spacing:-0.02em; }
-    .pipeline-card-desc { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.65; margin:0 0 16px; }
-
-    /* Horizontal scroll gallery */
-    .pipeline-gallery { display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:6px; scrollbar-width:thin; scrollbar-color:rgba(39,57,140,0.3) transparent; }
-    .pipeline-gallery::-webkit-scrollbar { height:4px; }
-    .pipeline-gallery::-webkit-scrollbar-track { background:transparent; }
-    .pipeline-gallery::-webkit-scrollbar-thumb { background:rgba(39,57,140,0.3); border-radius:2px; }
-    .pipeline-gallery-item { flex:0 0 auto; height:180px; scroll-snap-align:start; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.06); background:#0a0a0a; }
-    .pipeline-gallery-item img { height:100%; width:auto; object-fit:contain; display:block; }
-    .pipeline-gallery-item video { height:100%; width:auto; object-fit:contain; display:block; cursor:pointer; }
-    .pipeline-gallery-item.poster-item { height:180px; }
-    .pipeline-gallery-item.poster-item img { height:100%; width:auto; object-fit:contain; }
-
-    /* --- Mobile: Ritual + Pipeline --- */
+    /* --- 교육 가로 스크롤 (sticky + vanilla scroll) --- */
+    #edu-horiz-scroll { position:relative; height:400vh; }
+    .edu-horiz-sticky { position:sticky; top:0; height:100vh; overflow:hidden; }
+    .edu-horiz-wrap { display:flex; height:100%; }
+    .edu-horiz-panel { width:100vw; min-width:100vw; height:100%; flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; align-items:center; padding:0; overflow:hidden; border-right:1px solid rgba(255,255,255,0.04); }
+    .edu-horiz-panel:last-child { border-right:none; }
+    .edu-hp-text { padding:4rem 3rem; display:flex; flex-direction:column; justify-content:center; height:100%; position:relative; }
+    .edu-hp-num { font-size:clamp(5rem,10vw,8rem); font-weight:800; color:rgba(255,255,255,0.04); line-height:0.85; letter-spacing:-0.06em; position:absolute; top:3rem; left:3rem; pointer-events:none; }
+    .edu-hp-kicker { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:1.5rem; }
+    .edu-hp-title { font-size:clamp(2rem,4vw,3.5rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.05; margin-bottom:1.5rem; }
+    .edu-hp-desc { font-size:15px; color:rgba(255,255,255,0.45); line-height:1.75; max-width:440px; margin-bottom:2rem; }
+    .edu-hp-courses { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
+    .edu-hp-course { padding:10px 14px; border-left:2px solid rgba(255,255,255,0.08); }
+    .edu-hp-course h4 { font-size:14px; font-weight:600; color:rgba(255,255,255,0.7); margin:0 0 3px; }
+    .edu-hp-course p { font-size:12px; color:rgba(255,255,255,0.35); margin:0; line-height:1.4; }
+    .edu-hp-tags { display:flex; gap:6px; flex-wrap:wrap; }
+    .edu-hp-tag { font-size:10px; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.45); letter-spacing:0.08em; }
+    .edu-hp-img { position:relative; overflow:hidden; margin:2rem; border-radius:16px; background:#0a0a16; height:calc(100vh - 8rem); display:flex; align-items:center; justify-content:center; }
+    .edu-hp-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; transition:opacity 1.2s ease; }
+    .edu-hp-course.active { border-left-color:rgba(255,255,255,0.7); }
+    .edu-hp-course.active h4 { color:#fff; }
+    .edu-hp-course.active p { color:rgba(255,255,255,0.6); }
+    .edu-hp-dots { position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:5; }
+    .edu-hp-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.2); transition:background 0.3s; cursor:pointer; }
+    .edu-hp-dot.active { background:rgba(255,255,255,0.8); }
+    .edu-nav-dots { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:10; }
+    .edu-nav-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); transition:all 0.3s; }
+    .edu-nav-dot.active { background:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.5); transform:scale(1.2); }
     @media(max-width:768px){
-      .ritual-grid { grid-template-columns:1fr; min-height:auto; }
-      .ritual-panel { min-height:320px; }
-      /* Mobile: no hover, always show detail */
-      .ritual-panel-base { opacity:0; }
-      .ritual-panel-detail { transform:translateX(0); opacity:1; pointer-events:auto; width:100%; }
-      .pipeline-wrap { padding:0 16px; }
-      .pipeline-svg { display:none; }
-      .pipeline-card { width:100% !important; align-self:center !important; }
-      .pipeline-card:nth-child(even) { align-self:center !important; }
-      .pipeline-gallery-item { height:140px; }
-      .pipeline-gallery-item.poster-item { height:140px; }
-      .pipeline-card { padding:20px; }
+      #edu-horiz-scroll { height:auto; }
+      .edu-horiz-sticky { position:static; height:auto; overflow:visible; }
+      .edu-horiz-wrap { flex-direction:column; width:100% !important; transform:none !important; }
+      .edu-horiz-panel { width:100%; min-width:100%; grid-template-columns:1fr; height:auto; min-height:auto; padding:0 1.5rem; gap:1rem; }
+      .edu-hp-img { max-height:40vh; border-radius:12px; }
+      .edu-hp-text { padding:2rem 0; }
+      .edu-hp-num { font-size:3.5rem; left:0; }
+      .edu-nav-dots { display:none; }
+    }
+
+    /* --- 보상 (삭제됨) / 기타 --- */
+    .reward-horiz { overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; display:flex; width:100%; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+    .reward-horiz::-webkit-scrollbar { display:none; }
+    .reward-panel { min-width:100%; min-height:60vh; flex-shrink:0; scroll-snap-align:start; display:flex; flex-direction:column; justify-content:center; padding:4rem 3rem; }
+    .reward-kicker { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:2rem; }
+    .reward-big { font-size:clamp(3rem,10vw,7rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:0.95; }
+    .reward-label { font-size:clamp(1rem,2vw,1.5rem); font-weight:600; color:rgba(255,255,255,0.4); margin-top:8px; letter-spacing:-0.02em; }
+    .reward-desc { font-size:16px; color:rgba(255,255,255,0.45); line-height:1.75; max-width:480px; margin-top:2rem; }
+    .reward-dots { display:flex; justify-content:center; gap:8px; margin-top:16px; }
+    .reward-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.15); transition:background 0.3s; }
+    .reward-dot.active { background:#27398c; }
+
+    /* --- Mobile: 새 섹션들 --- */
+    @media(max-width:768px){
+      .pro-hero { min-height:60vh; padding:3rem 1.5rem; }
+      .pro-hero-title { font-size:clamp(2rem,8vw,3rem); }
+      /* edu-horiz 제거됨 — edu-section 모바일 CSS는 위에 포함 */
+      .edu-grid { grid-template-columns:repeat(2,1fr); }
+      .edu-grid-col:nth-child(3) { display:none; }
+      .edu-grid-col:nth-child(1) { padding-top:40px; }
+      .reward-panel { min-height:50vh; padding:3rem 1.5rem; }
     }
 
     /* ── 모바일 대응 ── */
@@ -8386,311 +8398,166 @@
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
   <div class="ceo-overlay__content" style="background:#050505;">
-    <!-- Scene 1: 문 애니메이션 -->
-    <div id="pro-door-track" class="pro-door-track">
-      <div class="pro-door-sticky">
-        <div class="pro-door-ui" id="pro-door-ui">
-          <div class="pro-door-kicker">프로사업단총괄</div>
-          <h2 class="pro-door-title">새로운 시작의<br>문을 열다</h2>
-        </div>
-        <div class="pro-door-scene" id="pro-door-scene">
-          <div class="pro-door-portal" id="pro-door-portal">
-            <!-- 워크스루 슬라이드쇼: 건물 외관 → 로비 → 간판 → 라운지 → 사무실1 → 사무실2 -->
-            <!-- 워크스루: 외부→내부 순서 (스크롤 연동) -->
-            <div class="pro-walkthrough" id="pro-walkthrough">
-              <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519586542_18514520419044475_9163526631572029741_n.jpg" alt="1. 건물 외관">
-              <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_518833892_18514520467044475_1176112434704197527_n.jpg" alt="2. INCAR PRO ENTERPRISE 간판">
-              <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519571830_18514520431044475_8418636295818334696_n.jpg" alt="3. 로비 에스컬레이터">
-              <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_520971332_18514520449044475_9164603155049382195_n.jpg" alt="4. 확장 오픈 라운지">
-              <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519675232_18514520458044475_7410046597585279408_n.jpg" alt="5. 사무실 식물벽">
-              <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_518865609_18514520440044475_6845735112236070576_n.jpg" alt="6. 오픈 오피스">
-            </div>
-            <div class="pro-door-portal-grad"></div>
-            <div class="pro-door-portal-glow" id="pro-door-glow"></div>
-          </div>
-          <!-- 빛의 슬릿 (Light Slit) -->
-          <div class="pro-slit-mask" id="pro-slit-mask">
-            <div class="pro-slit-left"></div>
-            <div class="pro-slit-right"></div>
-          </div>
-          <div class="pro-slit-glow" id="pro-slit-glow"></div>
-        </div>
-        <div class="pro-door-transition" id="pro-door-transition"></div>
+    <!-- Section 1: 히어로 — 4장 자동 순환 슬라이드쇼 + 텍스트 아래 분리 -->
+    <div>
+      <div id="pro-hero-slideshow" style="width:100%; height:75vh; overflow:hidden; position:relative;">
+        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519571830_18514520431044475_8418636295818334696_n.jpg" alt="로비" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 60%; display:block; transition:opacity 1.2s ease; opacity:1;">
+        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_518833892_18514520467044475_1176112434704197527_n.jpg" alt="INCAR 간판" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 50%; display:block; transition:opacity 1.2s ease; opacity:0;">
+        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_520971332_18514520449044475_9164603155049382195_n.jpg" alt="오픈 오피스" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 55%; display:block; transition:opacity 1.2s ease; opacity:0;">
+        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519675232_18514520458044475_7410046597585279408_n.jpg" alt="식물벽 오피스" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 65%; display:block; transition:opacity 1.2s ease; opacity:0;">
+      </div>
+      <div style="padding:5rem 3rem 4rem; text-align:center; display:flex; flex-direction:column; align-items:center;">
+        <div class="pro-door-kicker" style="margin-bottom:24px;">프로사업단총괄</div>
+        <h2 style="font-size:clamp(2rem,5vw,3.5rem); font-weight:700; line-height:1.15; letter-spacing:-0.04em; color:#fff; margin:0 0 24px;">GA 2.0 시대를 여는 혁신,<br>성공의 정점에 서다</h2>
+        <p style="font-size:16px; color:rgba(255,255,255,0.55); line-height:1.8; max-width:560px; margin:0;">단순한 보험 영업을 넘어 AI와 데이터가 주도하는 지능형 비즈니스로의 전환. 프로사업단총괄이 설계사의 미래를 재정의합니다.</p>
       </div>
     </div>
 
-    <!-- Block: 교육 로드맵 -->
-    <div class="pro-section-block">
-      <div class="section-kicker">체계적 성장 로드맵</div>
-      <h2 class="section-title">입문부터 전문가까지</h2>
-      <p class="section-desc">신입 입문부터 법인 전문가까지, 프로사업단총괄의 4단계 교육이 당신의 성장을 설계합니다.</p>
+    <!-- ═══ 교육 가로 스크롤 (sticky + vanilla scroll) ═══ -->
+    <section id="edu-horiz-scroll">
+      <div class="edu-horiz-sticky">
+        <div class="edu-horiz-wrap">
 
-      <!-- ── Stillpoint Ritual Panels (4-column grid) ── -->
-      <div class="ritual-grid" id="edu-panels">
-
-        <!-- Panel 01 -->
-        <div class="ritual-panel" data-panel-idx="0">
-          <div class="ritual-panel-bg" style="background-image:url('신입/SnapInsta.to_529646521_18518932852044475_3011110293151240933_n.jpg')"></div>
-          <div class="ritual-panel-overlay"></div>
-          <div class="ritual-panel-base">
-            <div class="ritual-panel-idx">Stage 01</div>
-            <div class="ritual-panel-title">신인 / 저차월 교육</div>
-            <div class="ritual-accent-line"></div>
-          </div>
-          <div class="ritual-panel-detail">
-            <div>
-              <div class="ritual-detail-title">신입 교육 (2주)</div>
-              <div class="ritual-detail-desc">매월 2회 정기 진행 · 독자 개발 교재 · 현장 중심 커리큘럼</div>
+          <!-- Panel 01: 신인 / 저차월 교육 -->
+          <div class="edu-horiz-panel" style="background:#060610;">
+            <div class="edu-hp-text">
+              <div class="edu-hp-num">01</div>
+              <div class="edu-hp-kicker">01 — Education</div>
+              <h2 class="edu-hp-title">신인 / 저차월<br>교육</h2>
+              <p class="edu-hp-desc">입사 첫 2주가 3년을 결정합니다. 7단계 표준 화법부터 AI 보장분석 도구까지, 현장에서 바로 통하는 실전형 커리큘럼으로 시작합니다.</p>
+              <div class="edu-hp-courses">
+                <div class="edu-hp-course"><h4>신입 교육 (2주)</h4><p>매월 2회 정기 진행 · 독자 개발 교재</p></div>
+                <div class="edu-hp-course"><h4>세일즈 역량 강화 원데이 클래스</h4><p>실전 화법 · 거절 처리 · 니즈환기</p></div>
+                <div class="edu-hp-course"><h4>저차월(2~12차월) 대상교육</h4><p>슬럼프 극복 · DB 전환율 개선</p></div>
+              </div>
+              <div class="edu-hp-tags"><span class="edu-hp-tag">#실전도입</span><span class="edu-hp-tag">#7단계화법</span><span class="edu-hp-tag">#AI루틴</span></div>
             </div>
-            <div>
-              <div class="ritual-detail-title">세일즈 역량 강화 원데이 클래스</div>
-              <div class="ritual-detail-desc">실전 화법 · 거절 처리 · 니즈환기 트레이닝</div>
-            </div>
-            <div>
-              <div class="ritual-detail-title">저차월(2~12차월) 대상교육</div>
-              <div class="ritual-detail-desc">슬럼프 극복 · DB 전환율 개선 · AI 활용 루틴 구축</div>
-            </div>
-            <div class="ritual-detail-tags">
-              <span class="ritual-tag">2주 집중</span>
-              <span class="ritual-tag">독자교재</span>
-              <span class="ritual-tag">AI 루틴</span>
+            <div class="edu-hp-img" data-slideshow>
+              <img src="신입/SnapInsta.to_456407783_18451560346044475_5203637569121072516_n.jpg" alt="신입 교육" style="opacity:1;">
+              <img src="신입/SnapInsta.to_529646521_18518932852044475_3011110293151240933_n.jpg" alt="신입 교육" style="opacity:0;">
+              <img src="신입/SnapInsta.to_551078060_18527030641044475_7593483523123187588_n.jpg" alt="신입 교육" style="opacity:0;">
+              <img src="신입/SnapInsta.to_573534756_18535275901044475_1317174382965377272_n.jpg" alt="신입 교육" style="opacity:0;">
+              <img src="신입/SnapInsta.to_581774895_18537758704044475_1274972021437159003_n.jpg" alt="신입 교육" style="opacity:0;">
             </div>
           </div>
+
+          <!-- Panel 02: 관리자 양성과정 -->
+          <div class="edu-horiz-panel" style="background:#080814;">
+            <div class="edu-hp-text">
+              <div class="edu-hp-num">02</div>
+              <div class="edu-hp-kicker">02 — Education</div>
+              <h2 class="edu-hp-title">관리자<br>양성과정</h2>
+              <p class="edu-hp-desc">'운에 맡기지 않는 조직 성장'의 표준을 만듭니다. 팀 빌딩의 원리부터 KPI 설계까지, 현장 리더가 갖춰야 할 모든 역량을 체계적으로 전수합니다.</p>
+              <div class="edu-hp-courses">
+                <div class="edu-hp-course"><h4>관리자 역량 강화 과정</h4><p>팀 빌딩 · 성과 코칭 · KPI 설계</p></div>
+                <div class="edu-hp-course"><h4>차세대 리더 과정</h4><p>조직 관리 · 리더십 커뮤니케이션</p></div>
+                <div class="edu-hp-course"><h4>관리자 워크샵</h4><p>현장 사례 공유 · 우수 사례 벤치마킹</p></div>
+              </div>
+              <div class="edu-hp-tags"><span class="edu-hp-tag">#조직심리학</span><span class="edu-hp-tag">#성장코칭</span><span class="edu-hp-tag">#KPI설계</span></div>
+            </div>
+            <div class="edu-hp-img" data-slideshow>
+              <img src="관리자/SnapInsta.to_626957428_18556481050044475_3057239203861553995_n.jpg" alt="관리자 양성" style="opacity:1;">
+              <img src="관리자/SnapInsta.to_523235892_18515821147044475_1577995994967421797_n.jpg" alt="관리자 양성" style="opacity:0;">
+              <img src="관리자/SnapInsta.to_539531083_18522442444044475_5901741666639269199_n.jpg" alt="관리자 양성" style="opacity:0;">
+              <img src="관리자/SnapInsta.to_573853513_18534419344044475_1610757311692977324_n.jpg" alt="관리자 양성" style="opacity:0;">
+              <img src="관리자/SnapInsta.to_575975059_18535137739044475_8299563707864216721_n.jpg" alt="관리자 양성" style="opacity:0;">
+            </div>
+          </div>
+
+          <!-- Panel 03: 전문 역량 특화 과정 -->
+          <div class="edu-horiz-panel" style="background:#0a0a18;">
+            <div class="edu-hp-text">
+              <div class="edu-hp-num">03</div>
+              <div class="edu-hp-kicker">03 — Education</div>
+              <h2 class="edu-hp-title">전문 역량<br>특화 과정</h2>
+              <p class="edu-hp-desc">22가지 DB 라인업을 꿰뚫고, AI가 예측하는 전환율로 승부합니다. 데이터가 주도하는 영업의 새로운 표준, 여기서 시작됩니다.</p>
+              <div class="edu-hp-courses">
+                <div class="edu-hp-course"><h4>DB 영업 전문가 과정</h4><p>DB 유형 분류 · AI 전환율 예측</p></div>
+                <div class="edu-hp-course"><h4>상담 마스터 과정</h4><p>니즈환기 심화 · 보장분석 AI 활용</p></div>
+                <div class="edu-hp-course"><h4>장기보험 보상 과정</h4><p>보험금 산출 · 보상 실무</p></div>
+                <div class="edu-hp-course"><h4>연금 / 은퇴설계 전문가</h4><p>은퇴 플래닝 · 연금 포트폴리오</p></div>
+              </div>
+              <div class="edu-hp-tags"><span class="edu-hp-tag">#데이터영업</span><span class="edu-hp-tag">#전환율극대화</span><span class="edu-hp-tag">#심리화법</span></div>
+            </div>
+            <div class="edu-hp-img" data-slideshow>
+              <img src="db영업전문과과정/SnapInsta.to_486760402_18493265704044475_8334572031290027537_n.jpg" alt="전문 역량" style="opacity:1;">
+            </div>
+          </div>
+
+          <!-- Panel 04: 경제 / 법인 전문가 과정 -->
+          <div class="edu-horiz-panel" style="background:#050510;">
+            <div class="edu-hp-text">
+              <div class="edu-hp-num">04</div>
+              <div class="edu-hp-kicker">04 — Education</div>
+              <h2 class="edu-hp-title">경제 / 법인<br>전문가 과정</h2>
+              <p class="edu-hp-desc">CFP·AFPK 사내 교수진의 직강과 헥사곤 투자자문의 거시경제 통찰. 보험을 넘어 종합 자산관리 전문가로 도약하는 최상위 과정입니다.</p>
+              <div class="edu-hp-courses">
+                <div class="edu-hp-course"><h4>펀드투자권유대행인 자격 특강</h4><p>자격증 연계 · 단기 집중 완성</p></div>
+                <div class="edu-hp-course"><h4>헥사곤 경제전망</h4><p>거시경제 분석 · 금융상품 설계</p></div>
+                <div class="edu-hp-course"><h4>법인컨설팅 아카데미</h4><p>법인 절세 · CEO 플랜 · 상속/증여</p></div>
+              </div>
+              <div class="edu-hp-tags"><span class="edu-hp-tag">#법인컨설팅</span><span class="edu-hp-tag">#CFP직강</span><span class="edu-hp-tag">#경제전망</span></div>
+            </div>
+            <div class="edu-hp-img" data-slideshow>
+              <img src="법인/SnapInsta.to_625842837_18555626203044475_4854604312253705588_n.jpg" alt="경제 법인" style="opacity:1;">
+              <img src="법인/SnapInsta.to_657618779_17972314239001735_5279105896218004550_n.jpg" alt="경제 법인" style="opacity:0;">
+            </div>
+          </div>
+
         </div>
-
-        <!-- Panel 02 -->
-        <div class="ritual-panel" data-panel-idx="1">
-          <div class="ritual-panel-bg" style="background-image:url('관리자/SnapInsta.to_523235892_18515821147044475_1577995994967421797_n.jpg')"></div>
-          <div class="ritual-panel-overlay"></div>
-          <div class="ritual-panel-base">
-            <div class="ritual-panel-idx">Stage 02</div>
-            <div class="ritual-panel-title">관리자 양성과정</div>
-            <div class="ritual-accent-line"></div>
-          </div>
-          <div class="ritual-panel-detail">
-            <div>
-              <div class="ritual-detail-title">관리자 역량 강화 과정</div>
-              <div class="ritual-detail-desc">팀 빌딩 · 성과 코칭 · KPI 설계 실습</div>
-            </div>
-            <div>
-              <div class="ritual-detail-title">차세대 리더 과정</div>
-              <div class="ritual-detail-desc">조직 관리 · 리더십 커뮤니케이션 · 비전 수립</div>
-            </div>
-            <div>
-              <div class="ritual-detail-title">관리자 워크샵</div>
-              <div class="ritual-detail-desc">현장 사례 공유 · 상호 피드백 · 우수 사례 벤치마킹</div>
-            </div>
-            <div class="ritual-detail-tags">
-              <span class="ritual-tag">팀 빌딩</span>
-              <span class="ritual-tag">리더십</span>
-              <span class="ritual-tag">벤치마킹</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel 03 -->
-        <div class="ritual-panel" data-panel-idx="2">
-          <div class="ritual-panel-bg" style="background-image:url('db영업전문과과정/SnapInsta.to_486669384_18493265659044475_8063352989600581402_n.jpg')"></div>
-          <div class="ritual-panel-overlay"></div>
-          <div class="ritual-panel-base">
-            <div class="ritual-panel-idx">Stage 03</div>
-            <div class="ritual-panel-title">전문 역량 특화 과정</div>
-            <div class="ritual-accent-line"></div>
-          </div>
-          <div class="ritual-panel-detail">
-            <div>
-              <div class="ritual-detail-title">DB 영업 전문가 과정</div>
-              <div class="ritual-detail-desc">DB 유형 분류 · AI 전환율 예측 · 병목 구간 분석 실습</div>
-            </div>
-            <div>
-              <div class="ritual-detail-title">상담 마스터 과정</div>
-              <div class="ritual-detail-desc">니즈 환기 심화 · 보장분석 AI 활용 · 완전판매 체크리스트</div>
-            </div>
-            <div class="ritual-detail-tags">
-              <span class="ritual-tag">DB 전문</span>
-              <span class="ritual-tag">AI 활용</span>
-              <span class="ritual-tag">완전판매</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel 04 -->
-        <div class="ritual-panel" data-panel-idx="3">
-          <div class="ritual-panel-bg" style="background-image:url('재무설계/SnapInsta.to_570551236_18533373706044475_5515075293047894191_n.jpg')"></div>
-          <div class="ritual-panel-overlay"></div>
-          <div class="ritual-panel-base">
-            <div class="ritual-panel-idx">Stage 04</div>
-            <div class="ritual-panel-title">금융 &amp; 법인 전문가 과정</div>
-            <div class="ritual-accent-line"></div>
-          </div>
-          <div class="ritual-panel-detail">
-            <div>
-              <div class="ritual-detail-title">재무설계학교 아카데미</div>
-              <div class="ritual-detail-desc">CFP · AFPK 사내 교수진 · 자격증 연계 커리큘럼</div>
-            </div>
-            <div>
-              <div class="ritual-detail-title">헥사곤 투자자문 경제 전망</div>
-              <div class="ritual-detail-desc">거시경제 분석 · 금융상품 설계 · 고객 포트폴리오 전략</div>
-            </div>
-            <div>
-              <div class="ritual-detail-title">법인컨설팅 아카데미</div>
-              <div class="ritual-detail-desc">법인 절세 설계 · CEO 플랜 · 퇴직금 전환 전략</div>
-            </div>
-            <div class="ritual-detail-tags">
-              <span class="ritual-tag">CFP/AFPK</span>
-              <span class="ritual-tag">경제전망</span>
-              <span class="ritual-tag">법인절세</span>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /ritual-grid -->
-
-      <!-- ── Pipeline Zigzag Roadmap ── -->
-      <div class="pipeline-wrap" id="edu-pipeline">
-        <svg class="pipeline-svg" id="pipe-svg" preserveAspectRatio="none" aria-hidden="true">
-          <path class="pipe-bg" d="" />
-          <path class="pipe-glow" d="" />
-        </svg>
-
-        <div class="pipeline-cards">
-
-          <!-- Card 01: 신인/저차월 -->
-          <div class="pipeline-card">
-            <div class="pipeline-stage">Stage 01</div>
-            <h3 class="pipeline-card-title">신인 / 저차월 교육</h3>
-            <p class="pipeline-card-desc">신입 교육(2주) · 세일즈 역량 강화 원데이 클래스 · 저차월(2~12차월) 대상교육</p>
-            <div class="pipeline-gallery">
-              <div class="pipeline-gallery-item poster-item"><img src="AI 홈페이지/포스터.PNG" alt="신입입문교재 포스터" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_456407783_18451560346044475_5203637569121072516_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_456423916_18451560355044475_3848122985020065341_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_471776817_18476677261044475_2058853521939057007_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_529646521_18518932852044475_3011110293151240933_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_529661379_18518932837044475_5024693559017231373_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_551078060_18527030641044475_7593483523123187588_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_573534756_18535275901044475_1317174382965377272_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="신입/SnapInsta.to_581774895_18537758704044475_1274972021437159003_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><video src="신입/SnapInsta.to_AQOGaG7nND2krX7Mett7ovXFCsbw-M3Ad-srbR9W-JpfpWvr2KUf6hPLrF9vT6yTHwtZ_8D0aG8f7HKBO0dyNN0X.mp4" muted playsinline preload="metadata"></video></div>
-              <div class="pipeline-gallery-item"><video src="신입/SnapInsta.to_AQOjgsmfjH1uobp4qpZ8fIq9Kgt5AG8xANvXQECd86wpUYOhflNqeJG0oCoP69nZ3xy3LRskfxIXSmM2AXcIMzg.mp4" muted playsinline preload="metadata"></video></div>
-            </div>
-          </div>
-
-          <!-- Card 02: 관리자 양성 -->
-          <div class="pipeline-card">
-            <div class="pipeline-stage">Stage 02</div>
-            <h3 class="pipeline-card-title">관리자 양성과정</h3>
-            <p class="pipeline-card-desc">관리자 역량 강화 과정 · 차세대 리더 과정 · 관리자 워크샵</p>
-            <div class="pipeline-gallery">
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_488081036_18494858635044475_8007968768522893103_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_488504211_18494858644044475_1823015919181616822_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_523235892_18515821147044475_1577995994967421797_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_539531083_18522442444044475_5901741666639269199_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_573853513_18534419344044475_1610757311692977324_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_575975059_18535137739044475_8299563707864216721_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="관리자/SnapInsta.to_626957428_18556481050044475_3057239203861553995_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><video src="관리자/SnapInsta.to_AQNQyl5HdC9JuL1C6k_MiWXLKuX6hDVni18dcx6IFc9c9MnkxUvGEcrkVyH1M4p0-3QXcG1aq6IHP-W_W9zzcy0caJFIIxLsmw10yj4.mp4" muted playsinline preload="metadata"></video></div>
-              <div class="pipeline-gallery-item"><video src="관리자/SnapInsta.to_AQPxkU5Ms7WihNmHqe68JePqbA-XDnrVqUVFO-TE5DT-5ulCQQ7ILkFyZ0jRqZEtT3D0NsQLnX1Ve8W6TuIkbkUK28Fkj6GcqjuQwMs.mp4" muted playsinline preload="metadata"></video></div>
-            </div>
-          </div>
-
-          <!-- Card 03: 전문 역량 -->
-          <div class="pipeline-card">
-            <div class="pipeline-stage">Stage 03</div>
-            <h3 class="pipeline-card-title">전문 역량 특화 과정</h3>
-            <p class="pipeline-card-desc">DB 영업 전문가 과정 · 상담 마스터 과정</p>
-            <div class="pipeline-gallery">
-              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486669384_18493265659044475_8063352989600581402_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486750324_18493265674044475_3430770843359441565_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486759925_18493265701044475_9173470481056551615_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486760402_18493265704044475_8334572031290027537_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><img src="db영업전문과과정/SnapInsta.to_486839879_18493265692044475_3921533713343614809_n.jpg" alt="" loading="lazy"></div>
-              <div class="pipeline-gallery-item"><video src="db영업전문과과정/SnapInsta.to_AQOmDRQJagHg_hJgyzXdnwEzjQY0jEzBDhBweKmiZCsUUkdZWCDzSFzeZnbGTxMkLgg4bV7LFK1WLLudqGWQLwXeor9cMLjpMsvps3c.mp4" muted playsinline preload="metadata"></video></div>
-            </div>
-          </div>
-
-          <!-- Card 04: 금융/법인 (단일 이미지) -->
-          <div class="pipeline-card">
-            <div class="pipeline-stage">Stage 04</div>
-            <h3 class="pipeline-card-title">금융 &amp; 법인 전문가 과정</h3>
-            <p class="pipeline-card-desc">재무설계학교 아카데미(CFP·AFPK) · 헥사곤 투자자문 경제 전망 · 법인컨설팅 아카데미</p>
-            <div class="pipeline-gallery">
-              <div class="pipeline-gallery-item"><img src="재무설계/SnapInsta.to_570551236_18533373706044475_5515075293047894191_n.jpg" alt="" loading="lazy"></div>
-            </div>
-          </div>
-
-        </div><!-- /pipeline-cards -->
-      </div><!-- /pipeline-wrap -->
-
-    </div>
-
-    <!-- Block: 보상 체계 -->
-    <div class="pro-section-block">
-      <div class="section-kicker">성장하는 만큼 보상받는</div>
-      <h2 class="section-title">성장을 지속 시키는 조직문화</h2>
-      <p class="section-desc">프로사업단총괄은 다양한 행사와 시상식을 통해 확실한 <strong style="color:#fff;">동기부여와 지속적인 원동력</strong>을 제공합니다.</p>
-      <div class="pro-info-cards">
-        <div class="pro-info-card">
-          <div class="pro-info-card-img">
-            <img src="프로 사진/SnapInsta.to_609209788_18548645803044475_1784252764972083977_n.jpg" alt="파리 해외연수" loading="lazy" style="object-position:center 30%;">
-          </div>
-          <h4>매년 1회 진행되는 리크루팅시책</h4>
-          <p>조직성장과 리크루팅 독려를 위해 진행되는 해외여행 시책으로 프로사업단총괄의 성장원동력 중 하나입니다.</p>
-        </div>
-        <div class="pro-info-card">
-          <div class="pro-info-card-img">
-            <img src="프로 사진/SnapInsta.to_623109360_18110806729650683_3492483222495657654_n.jpg" alt="코스닥 상장" loading="lazy" style="object-position:center 25%;">
-          </div>
-          <h4>코스닥 상장사 인카금융서비스</h4>
-          <p>KRX 한국거래소 코스닥 상장으로 안정적 기반을 갖춘 대한민국 대표 보험대리점입니다.</p>
-        </div>
-        <div class="pro-info-card">
-          <div class="pro-info-card-img">
-            <img src="프로 사진/SnapInsta.to_645446871_18567064273044475_659110489197144112_n.jpg" alt="연합 세미나" loading="lazy" style="object-position:center 30%;">
-          </div>
-          <h4>4개 지점 연합 진짜영업 세미나</h4>
-          <p>COT·MDRT 출신 강사진의 영업 노하우를 한자리에서 공유하는 실전 세미나를 정기 개최합니다.</p>
+        <!-- 패널 네비게이션 dots -->
+        <div class="edu-nav-dots" id="edu-nav-dots">
+          <div class="edu-nav-dot active"></div>
+          <div class="edu-nav-dot"></div>
+          <div class="edu-nav-dot"></div>
+          <div class="edu-nav-dot"></div>
         </div>
       </div>
-      <div class="pro-reward-stats">
-        <div style="text-align:center;">
-          <div class="pro-reward-stat-num">3회/년</div>
-          <div class="pro-reward-stat-label">해외연수</div>
-        </div>
-        <div style="text-align:center;">
-          <div class="pro-reward-stat-num">120+명</div>
-          <div class="pro-reward-stat-label">누적 연수자</div>
-        </div>
-        <div style="text-align:center;">
-          <div class="pro-reward-stat-num">KOSDAQ</div>
-          <div class="pro-reward-stat-label">상장법인</div>
-        </div>
-      </div>
-    </div>
+    </section>
 
     <!-- Scene 2: 가로 스크롤 캐러셀 -->
     <div id="pro-carousel-overlay" style="background:#050505; padding-bottom:4rem;">
       <div style="padding:3rem 3rem 1.5rem;">
         <div class="pro-carousel-kicker">전국 네트워크</div>
         <h2 class="pro-carousel-title" style="margin-top:8px;">전국으로 확장하는<br>프로사업단총괄</h2>
+        <p style="font-size:clamp(12px,1.4vw,14px); color:rgba(255,255,255,0.45); max-width:560px; line-height:1.7; margin-top:12px; letter-spacing:-0.01em;">어디서든 동일한 품질의 DB와 교육 시스템. AI 도입 후 지방 거점의 평균 생산성이 40% 이상 향상되었습니다.</p>
       </div>
       <div class="pro-carousel-mask" style="padding-bottom:2rem;">
       <div class="pro-carousel-auto" id="pro-carousel-auto">
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_480555216_18486389035044475_5864857882588538982_n.jpg" alt="천안"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">천안</span><h3>다미본부 천안지사</h3><p>신규 오픈</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_487907354_18494429746044475_6822488276694192828_n.jpg" alt="하남"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">하남</span><h3>행복지점 하남지사</h3><p>넓은 회의실</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_488476436_18495026956044475_5138488651792882962_n.jpg" alt="일산"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">일산</span><h3>도약지점 일산지사</h3><p>확장 이전</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_503658173_18510173311044475_7747044559720016238_n.jpg" alt="다산"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">다산</span><h3>다온지점 다산지사</h3><p>간판+축하화환</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_505374120_18511250893044475_255991899910992209_n.jpg" alt="구미"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">구미</span><h3>구미본부 구미지사</h3><p>단체사진 12명</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_529685325_18519418372044475_8501219250524993644_n.jpg" alt="수원"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">수원</span><h3>워너비본부 수원 S1지점</h3><p>개소식 단체사진</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_534403531_18520910029044475_6003089725500412866_n.jpg" alt="영등포"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">영등포</span><h3>아너사업단 확장</h3><p>100평 대형 오피스</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_542224506_18524451025044475_363482378010657968_n.jpg" alt="부산"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">부산</span><h3>원더지점 부산지사</h3><p>서면역 인근</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_554954792_18528152494044475_1528770754987668598_n.jpg" alt="성수"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">성수</span><h3>성수지점 개소식</h3><p>12년차 베테랑</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_558252826_18529452004044475_2674490153879181259_n.jpg" alt="구리"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">구리</span><h3>구리지점 개소식</h3><p>단체사진 14명</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_564246736_18531233995044475_3317217042662909428_n.jpg" alt="세종"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">세종</span><h3>아너사업단 세종지사</h3><p>정부청사 인근</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_588648733_18544473640044475_5398755627660013981_n.jpg" alt="울산"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">울산</span><h3>써니본부 울산지사</h3><p>카페풍 라운지</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_630409157_18559011022044475_7327856581181125036_n.jpg" alt="광주"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">광주</span><h3>아너사업단 광주지사</h3><p>전라도 진출</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_589907986_18543177430044475_2912944270728361731_n.jpg" alt="경북"><div class="pro-card-overlay"></div><div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div><div class="pro-card-content"><span class="pro-card-badge">경북</span><h3>경북도청지사</h3><p>COT관리자</p><div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div></div></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_480555216_18486389035044475_5864857882588538982_n.jpg" alt="천안"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_487907354_18494429746044475_6822488276694192828_n.jpg" alt="하남"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_488476436_18495026956044475_5138488651792882962_n.jpg" alt="일산"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_503658173_18510173311044475_7747044559720016238_n.jpg" alt="다산"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_505374120_18511250893044475_255991899910992209_n.jpg" alt="구미"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_529685325_18519418372044475_8501219250524993644_n.jpg" alt="수원"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_534403531_18520910029044475_6003089725500412866_n.jpg" alt="영등포"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_542224506_18524451025044475_363482378010657968_n.jpg" alt="부산"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_554954792_18528152494044475_1528770754987668598_n.jpg" alt="성수"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_558252826_18529452004044475_2674490153879181259_n.jpg" alt="구리"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_564246736_18531233995044475_3317217042662909428_n.jpg" alt="세종"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_588648733_18544473640044475_5398755627660013981_n.jpg" alt="울산"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_630409157_18559011022044475_7327856581181125036_n.jpg" alt="광주"></div>
+        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_589907986_18543177430044475_2912944270728361731_n.jpg" alt="경북"></div>
       </div><!-- end pro-carousel-auto -->
       </div><!-- end pro-carousel-mask -->
+    </div>
+
+    <!-- ═══ 조직 문화 섹션 ═══ -->
+    <div style="background:#050508; padding:5rem 3rem;">
+      <div style="text-align:center; margin-bottom:3rem;">
+        <div style="font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:1rem;">Culture</div>
+        <h2 style="font-size:clamp(2rem,4vw,3rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.15; margin:0 0 1rem;">'사람 중심' 의 조직 문화 성장</h2>
+        <p style="font-size:16px; color:rgba(255,255,255,0.5); margin:0;">종합금융 도약 박차</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; max-width:1200px; margin:0 auto;">
+        <div style="grid-row:span 2; border-radius:12px; overflow:hidden;"><img src="프로 사진/SnapInsta.to_553366514_18527788099044475_834571941900801774_n.jpg" alt="조직문화" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="border-radius:12px; overflow:hidden;"><img src="프로 사진/SnapInsta.to_609209788_18548645803044475_1784252764972083977_n.jpg" alt="조직문화" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="border-radius:12px; overflow:hidden;"><img src="프로 사진/SnapInsta.to_645446871_18567064273044475_659110489197144112_n.jpg" alt="조직문화" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="border-radius:12px; overflow:hidden;"><img src="프로 사진/SnapInsta.to_623109360_18110806729650683_3492483222495657654_n.jpg" alt="조직문화" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="border-radius:12px; overflow:hidden;"><img src="프로 사진/SnapInsta.to_651775926_18570006598044475_96331775240662280_n.jpg" alt="조직문화" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="grid-column:span 2; border-radius:12px; overflow:hidden; max-height:280px;"><img src="관리자/관리자 워크샵.jpg" alt="관리자 워크샵" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+        <div style="border-radius:12px; overflow:hidden; max-height:280px;"><img src="프로 사진/SnapInsta.to_656141103_18571670287044475_4749928076943054148_n.jpg" alt="조직문화" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
+      </div>
     </div>
 
     <!-- 오버레이 하단 푸터 -->
@@ -8712,103 +8579,146 @@
   </div>
 </div>
 
-<!-- ═══ 교육 로드맵: Ritual Panels + Pipeline Glow + Gallery JS ═══ -->
+<!-- ═══ 프로사업단총괄 오버레이: 스택카드 + 패럴랙스 + 보상 dot JS ═══ -->
 <script>
 (function(){
-  /* ── Guard: #edu-panels 없으면 즉시 return ── */
-  var panels = document.getElementById('edu-panels');
-  if(!panels) return;
+  var overlay = document.getElementById('pro-intro-overlay');
+  if(!overlay) return;
+  var scrollContainer = overlay.querySelector('.ceo-overlay__content') || overlay;
 
-  /* ── 1. Pipeline SVG curve drawing ── */
-  var pipeWrap = document.getElementById('edu-pipeline');
-  var pipeSvg = document.getElementById('pipe-svg');
-  var cards = pipeWrap ? pipeWrap.querySelectorAll('.pipeline-card') : [];
+  /* ── 0. 히어로 4장 자동 순환 슬라이드쇼 ── */
+  (function(){
+    var ss = document.getElementById('pro-hero-slideshow');
+    if(!ss) return;
+    var imgs = ss.querySelectorAll('img');
+    if(imgs.length < 2) return;
+    var cur = 0;
+    setInterval(function(){
+      imgs[cur].style.opacity = '0';
+      cur = (cur + 1) % imgs.length;
+      imgs[cur].style.opacity = '1';
+    }, 4000);
+  })();
 
-  function buildPipePath(){
-    if(!pipeWrap || !pipeSvg || cards.length < 2) return;
-    var wrapRect = pipeWrap.getBoundingClientRect();
-    var svgW = wrapRect.width;
-    var svgH = pipeWrap.scrollHeight;
-    pipeSvg.setAttribute('viewBox', '0 0 '+svgW+' '+svgH);
-    pipeSvg.style.height = svgH + 'px';
+  /* ── 1. 교육 가로 스크롤 (sticky + vanilla scroll) ── */
+  var eduInited = false;
+  function initEduScroll(){
+    if(eduInited) return;
+    if(window.innerWidth <= 768) return;
 
-    var points = [];
-    for(var i=0; i<cards.length; i++){
-      var cr = cards[i].getBoundingClientRect();
-      var cx = (cr.left - wrapRect.left) + cr.width/2;
-      var cy = (cr.top - wrapRect.top + pipeWrap.scrollTop) + cr.height/2;
-      points.push({x:cx, y:cy});
-    }
+    var section = overlay.querySelector('#edu-horiz-scroll');
+    var wrap = section ? section.querySelector('.edu-horiz-wrap') : null;
+    if(!section || !wrap) return;
 
-    var d = 'M'+points[0].x+' '+points[0].y;
-    for(var j=1; j<points.length; j++){
-      var prev = points[j-1];
-      var curr = points[j];
-      var cpY = (prev.y + curr.y)/2;
-      d += ' C'+prev.x+' '+cpY+' '+curr.x+' '+cpY+' '+curr.x+' '+curr.y;
-    }
+    var ow = overlay.clientWidth;
+    if(ow <= 0) return;
 
-    var bgPath = pipeSvg.querySelector('.pipe-bg');
-    var glowPath = pipeSvg.querySelector('.pipe-glow');
-    if(bgPath) bgPath.setAttribute('d', d);
-    if(glowPath){
-      glowPath.setAttribute('d', d);
-      var len = glowPath.getTotalLength ? glowPath.getTotalLength() : 1000;
-      glowPath.style.strokeDasharray = len;
-      glowPath.style.strokeDashoffset = len;
-    }
+    var panels = wrap.querySelectorAll('.edu-horiz-panel');
+    var panelCount = panels.length;
+    var totalW = panelCount * ow;
+    wrap.style.width = totalW + 'px';
+    panels.forEach(function(p){ p.style.width = ow + 'px'; p.style.minWidth = ow + 'px'; });
+
+    var dots = overlay.querySelectorAll('#edu-nav-dots .edu-nav-dot');
+
+    /* 좌표 캐시 — resize 시 갱신 */
+    var cachedTop = section.offsetTop;
+    var cachedRange = section.offsetHeight - overlay.clientHeight;
+    var maxX = (panelCount - 1) * ow;
+    var prevIdx = 0;
+
+    window.addEventListener('resize', function(){
+      ow = overlay.clientWidth;
+      totalW = panelCount * ow;
+      maxX = (panelCount - 1) * ow;
+      wrap.style.width = totalW + 'px';
+      panels.forEach(function(p){ p.style.width = ow + 'px'; p.style.minWidth = ow + 'px'; });
+      cachedTop = section.offsetTop;
+      cachedRange = section.offsetHeight - overlay.clientHeight;
+    });
+
+    var ticking = false;
+    var snapTimer = null;
+    var isSnapping = false;
+    overlay.addEventListener('scroll', function(){
+      if(!ticking){
+        ticking = true;
+        requestAnimationFrame(function(){
+          if(cachedRange <= 0){ ticking = false; return; }
+          var progress = (overlay.scrollTop - cachedTop) / cachedRange;
+          progress = Math.max(0, Math.min(1, progress));
+          wrap.style.transform = 'translate3d(' + (-maxX * progress) + 'px,0,0)';
+          var idx = Math.round(progress * (panelCount - 1));
+          if(idx !== prevIdx){
+            dots.forEach(function(d,i){ d.classList.toggle('active', i === idx); });
+            prevIdx = idx;
+          }
+          ticking = false;
+        });
+      }
+      /* 스냅: 스크롤 멈춘 후 200ms 뒤 가장 가까운 패널로 부드럽게 정렬 */
+      if(!isSnapping){
+        clearTimeout(snapTimer);
+        snapTimer = setTimeout(function(){
+          if(cachedRange <= 0) return;
+          var p = (overlay.scrollTop - cachedTop) / cachedRange;
+          p = Math.max(0, Math.min(1, p));
+          var nearest = Math.round(p * (panelCount - 1));
+          var snapP = nearest / (panelCount - 1);
+          var snapTop = Math.round(cachedTop + snapP * cachedRange);
+          if(Math.abs(overlay.scrollTop - snapTop) > 10){
+            isSnapping = true;
+            var startY = overlay.scrollTop;
+            var dist = snapTop - startY;
+            var dur = 400;
+            var startT = null;
+            function animSnap(ts){
+              if(!startT) startT = ts;
+              var elapsed = ts - startT;
+              var t = Math.min(elapsed / dur, 1);
+              t = t < 0.5 ? 2*t*t : -1+(4-2*t)*t; /* easeInOut */
+              overlay.scrollTop = startY + dist * t;
+              if(t < 1) requestAnimationFrame(animSnap);
+              else { isSnapping = false; }
+            }
+            requestAnimationFrame(animSnap);
+          }
+        }, 200);
+      }
+    });
+    eduInited = true;
   }
 
-  /* ── 2. Scroll-driven glow animation ── */
-  function updateGlow(){
-    if(!pipeWrap || !pipeSvg) return;
-    var glowPath = pipeSvg.querySelector('.pipe-glow');
-    if(!glowPath) return;
-    var len = glowPath.getTotalLength ? glowPath.getTotalLength() : 1000;
+  /* ── 2. 각 패널 사진 자동 순환 (3초 크로스페이드) + 과정 항목 하이라이트 ── */
+  (function(){
+    var slideshows = overlay.querySelectorAll('[data-slideshow]');
+    slideshows.forEach(function(container){
+      var imgs = container.querySelectorAll('img');
+      if(imgs.length < 2) return;
+      var panel = container.closest('.edu-horiz-panel');
+      var courses = panel ? panel.querySelectorAll('.edu-hp-course') : [];
+      var cur = 0;
+      /* 첫 번째 과정 초기 하이라이트 */
+      if(courses.length > 0) courses[0].classList.add('active');
+      setInterval(function(){
+        imgs[cur].style.opacity = '0';
+        if(courses.length > 0) courses[cur % courses.length].classList.remove('active');
+        cur = (cur + 1) % imgs.length;
+        imgs[cur].style.opacity = '1';
+        if(courses.length > 0) courses[cur % courses.length].classList.add('active');
+      }, 3000);
+    });
+  })();
 
-    var wrapRect = pipeWrap.getBoundingClientRect();
-    var viewH = window.innerHeight;
-    var top = wrapRect.top;
-    var height = wrapRect.height;
-    if(height <= 0) return;
-
-    var progress = Math.min(Math.max((viewH - top) / (height + viewH), 0), 1);
-    glowPath.style.strokeDashoffset = len * (1 - progress);
-  }
-
-  /* ── 3. Gallery: video click-to-play/pause ── */
-  document.addEventListener('click', function(e){
-    var vid = e.target.closest('.pipeline-gallery-item video');
-    if(!vid) return;
-    if(vid.paused){
-      vid.play();
-      vid.muted = false;
-      vid.controls = true;
-    } else {
-      vid.pause();
-    }
+  /* MutationObserver: 오버레이 활성화 감지 → 교육 스크롤 초기화 */
+  var overlayObserver = new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      if(m.attributeName === 'class' && overlay.classList.contains('ceo-overlay--active')){
+        setTimeout(initEduScroll, 300);
+      }
+    });
   });
-
-  /* ── 4. Init + listeners ── */
-  function onReady(){
-    buildPipePath();
-    updateGlow();
-  }
-
-  /* Wait for images to settle layout */
-  if(document.readyState === 'complete'){
-    setTimeout(onReady, 100);
-  } else {
-    window.addEventListener('load', function(){ setTimeout(onReady, 100); });
-  }
-
-  window.addEventListener('resize', function(){
-    buildPipePath();
-    updateGlow();
-  });
-
-  window.addEventListener('scroll', updateGlow, {passive:true});
-
+  overlayObserver.observe(overlay, { attributes: true, attributeFilter: ['class'] });
 })();
 </script>
 
