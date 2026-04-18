@@ -19,7 +19,7 @@ Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 8�
 ```
 index.html          — Main SPA (~3,486 lines, all JS inline)
 css/style.css       — Dark theme, glass-panel, HUD footer (434 lines)
-api/chat.js         — Vercel Serverless Function: Gemini API proxy (53 lines)
+api/chat.js         — Vercel Serverless Function: Gemini API proxy + 보안 레이어 (Origin 화이트리스트 + IP 레이트리밋 + 메시지 검증)
 assets/images/      — Logo SVG, CEO portrait
 _serve.js           — Dev server (port 3098)
 js/three-hero.js    — [ORPHANED] 미사용, 이전 Icosahedron ES Module
@@ -53,8 +53,15 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - **Endpoint**: `/api/chat` (Vercel Serverless Function)
 - **Model**: `gemini-2.0-flash`, temperature 0.7, maxOutputTokens 500
 - **Env var**: `GEMINI_API_KEY` (Vercel Dashboard > Settings > Environment Variables)
-- **사용처**: coverage chat + coaching chat (keyword 매칭 실패 시 fallback)
+- **사용처**: coverage chat + coaching chat + insurance-calc + complete-sales + prosolution-overlay (총 5곳, keyword 매칭 실패 시 fallback)
 - **System prompt**: 보험 전문 AI 어시스턴트 (간결, 아이콘 사용, 원화 표시)
+
+### 보안 레이어 (api/chat.js, v=20260418)
+- **Origin 화이트리스트**: `localhost:3098` + `ALLOWED_ORIGINS` 환경변수 + `*.vercel.app` 정규식. 미허용 Origin은 403
+- **CORS**: 와일드카드 금지 — 허용된 Origin만 반사 (`Access-Control-Allow-Origin: <origin>`), `Vary: Origin`
+- **IP 레이트리밋**: 분당 10회 (인메모리 `Map`, X-Forwarded-For 우선). 초과 시 429 + `Retry-After: 60`
+- **메시지 검증**: `typeof === 'string'` + 길이 ≤ 2000자. 미충족 시 400
+- **환경변수**: `ALLOWED_ORIGINS` (쉼표 구분, 커스텀 도메인 추가 시 사용)
 
 ## Navigation System (v=20260406)
 - **모든 네비 링크는 `data-nav` 속성 기반** — 인라인 onclick 금지
@@ -148,10 +155,14 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - `closeAllOverlays()`에 `pro-intro-overlay` 닫기 포함
 - 모바일 메뉴에도 연동 완료
 
-### _serve.js (v=20260411)
-- MP4 MIME 타입 + 바탕화면 폴더 fallback (신입/관리자/db영업전문과과정/법인/ 서빙)
+### _serve.js (v=20260418)
+- MP4 MIME 타입 + **fallback 체인 3단계**:
+  1. 1차: `ai-branch/AI 홈페이지/<path>` — 신입/저차월교육 사진 (`AI 홈페이지/신입/*.jpg`) 서빙
+  2. 2차: 바탕화면(`DESKTOP/<path>`) — 관리자/db영업전문과과정/법인/ 등
+  3. 3차: SPA fallback (`index.html`)
 
 ## Version
+- **v=20260418** — api/chat.js 보안 레이어 (Origin 화이트리스트+레이트리밋+메시지 검증), _serve.js AI홈페이지 폴더 fallback, 프로사업단총괄 오버레이 세로폭+텍스트 미세조정
 - **v=20260412b** — 교육 가로 스크롤 전면 교체 (GSAP→sticky+scroll), 사진 contain/스냅/과정하이라이트, 조직문화 섹션 추가
 - **v=20260412** — 프로사업단총괄 오버레이 전면 리디자인 (OBLIQUE 히어로+교육4섹션+보상삭제+지사텍스트삭제)
 - **v=20260411a** — 교육 로드맵 Stillpoint+Pipeline 전면 재설계, 보상 체계 문구 변경, Step1→교육 연동, _serve.js MP4+fallback

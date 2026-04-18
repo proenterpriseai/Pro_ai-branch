@@ -28,24 +28,34 @@ http.createServer((req, res) => {
   const ext = path.extname(filePath).toLowerCase();
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      // 바탕화면 폴더 fallback (신입/관리자/db영업전문과과정/재무설계 등)
-      const desktopPath = path.join(DESKTOP, decodeURIComponent(req.url.split('?')[0]));
-      fs.readFile(desktopPath, (err2, data2) => {
-        if (!err2) {
+      const rel = decodeURIComponent(req.url.split('?')[0]);
+      // 1차 fallback: ai-branch/AI 홈페이지/ (신입/관리자/db영업전문과과정/법인/재무설계 등)
+      const aiHomePath = path.join(ROOT, 'AI 홈페이지', rel);
+      fs.readFile(aiHomePath, (errA, dataA) => {
+        if (!errA) {
           res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
-          res.end(data2);
+          res.end(dataA);
           return;
         }
-        // SPA fallback
-        if (ext === '' || ext === '.html') {
-          fs.readFile(path.join(ROOT, 'index.html'), (e3, d3) => {
-            if (e3) { res.writeHead(404); res.end('Not Found'); return; }
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            res.end(d3);
-          });
-          return;
-        }
-        res.writeHead(404); res.end('Not Found'); return;
+        // 2차 fallback: 바탕화면 폴더
+        const desktopPath = path.join(DESKTOP, rel);
+        fs.readFile(desktopPath, (err2, data2) => {
+          if (!err2) {
+            res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+            res.end(data2);
+            return;
+          }
+          // SPA fallback
+          if (ext === '' || ext === '.html') {
+            fs.readFile(path.join(ROOT, 'index.html'), (e3, d3) => {
+              if (e3) { res.writeHead(404); res.end('Not Found'); return; }
+              res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+              res.end(d3);
+            });
+            return;
+          }
+          res.writeHead(404); res.end('Not Found'); return;
+        });
       });
       return;
     }
