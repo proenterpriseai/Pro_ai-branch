@@ -162,6 +162,14 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
   3. 3차: SPA fallback (`index.html`)
 
 ## Version
+- **v=20260504a/b** — 인재 양성 오버레이(`#talent-overlay`) 5단계 로드맵 동적 시퀀스 + spotlight 무한 순환, 조직문화 섹션 4카드 자동 순환 캐러셀(`culture-carousel-*`) 신규, 카드 크기 확대(360→560px) + 텍스트 강화, "종합 금융전문가" 그라데이션 + 띄어쓰기 통일, PARIS 카드 `object-position:center top` 위쪽 정렬
+  - **5단계 로드맵 시퀀스**: `playRoadmapSequence()` — talent-open 시 `is-playing` + dots stagger(300+i*450ms), 라인 fill 0→80%(2.4s)
+  - **5단계 spotlight loop**: `startRoadmapSpotLoop()` / `stopRoadmapSpotLoop()` — 1.2s 간격 1→2→3→4→5→1 순환, `closeAllOverlays()`에서 leak 정리
+  - **조직문화 4카드 캐러셀**: PRO ENTERPRISE AWARD(`AI 홈페이지/PRO ENTERPRISE AWARD.jpg` 신규) → 리크루팅 시책 → 리더십 양성과정 → 연합 세미나(신규). 60s linear infinite, 4개×2배 복제 무한 루프, hover pause, prefers-reduced-motion 대응
+  - **카드 사양**: 560×350px (16:10), gap 32px, 제목 22px/800, 본문 15px/#6b6b70 line-height 1.7. 반응형 1024/768 분기
+  - **헤드라인**: `talent-overlay`의 EXPERTISE 섹션 — "단순 보험 판매를 넘어 <span gradient>종합 금융전문가</span>로" + 하단 li `종합 금융전문가 양성` 띄어쓰기 통일
+  - **PARIS 카드**: `object-position:center top` (PTA IN PARIS 글자 노출, 개선문 frame 아래쪽 배치)
+  - **Channel Talk SDK 통합 코드는 placeholder 상태로 보류** (`_CHANNEL_IO_PLUGIN_KEY = '<<INSERT_...>>'` — 발급 후 1줄 교체 시 즉시 활성. 현재는 fallback으로 `#contact` 폼 모달이 열림)
 - **v=20260418** — api/chat.js 보안 레이어 (Origin 화이트리스트+레이트리밋+메시지 검증), _serve.js AI홈페이지 폴더 fallback, 프로사업단총괄 오버레이 세로폭+텍스트 미세조정
 - **v=20260412b** — 교육 가로 스크롤 전면 교체 (GSAP→sticky+scroll), 사진 contain/스냅/과정하이라이트, 조직문화 섹션 추가
 - **v=20260412** — 프로사업단총괄 오버레이 전면 리디자인 (OBLIQUE 히어로+교육4섹션+보상삭제+지사텍스트삭제)

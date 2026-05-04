@@ -1635,6 +1635,68 @@
       mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
     }
 
+    /* ── 조직문화 4 카드 자동 순환 캐러셀 (v=20260504b) ── */
+    @keyframes culture-carousel-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .culture-carousel-mask {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    }
+    .culture-carousel-auto {
+      display: flex;
+      gap: 32px;
+      animation: culture-carousel-scroll 60s linear infinite;
+      width: max-content;
+      padding: 0 32px;
+    }
+    .culture-carousel-auto:hover { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) {
+      .culture-carousel-auto { animation: none; }
+    }
+    .culture-card {
+      width: 560px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .culture-card-img {
+      border-radius: 14px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      margin-bottom: 22px;
+      background: #e5e5ea;
+    }
+    .culture-card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+    }
+    .culture-card-title {
+      font-size: 22px; font-weight: 800;
+      color: #111; margin: 0 0 12px;
+      letter-spacing: -0.02em;
+      line-height: 1.35;
+    }
+    .culture-card-desc {
+      font-size: 15px; color: #6b6b70;
+      line-height: 1.7; margin: 0;
+      letter-spacing: -0.01em;
+    }
+    @media (max-width: 1024px) {
+      .culture-card { width: 440px; }
+      .culture-card-title { font-size: 20px; }
+      .culture-card-desc { font-size: 14px; }
+    }
+    @media (max-width: 768px) {
+      .culture-card { width: 320px; }
+      .culture-card-title { font-size: 18px; }
+      .culture-card-desc { font-size: 13px; }
+      .culture-carousel-auto { gap: 20px; padding: 0 20px; animation-duration: 45s; }
+    }
+
     /* ── 교육 인프라 + 보상 체계 공통 ── */
     .pro-section-block { background:#050505; padding:4rem 3rem 3rem; border-top:1px solid rgba(255,255,255,0.06); text-align:center; }
     .pro-section-block .section-kicker { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#27398c; }
@@ -1750,6 +1812,215 @@
       }
       .pro-carousel-header { padding: 0 1rem; }
     }
+
+    /* ==================== STORIES 캐러셀 + 라이트박스 (v=20260504a) ==================== */
+    #stories { scroll-margin-top: 120px; }
+    .story-carousel { position: relative; }
+    .story-viewport { overflow: hidden; border-radius: 24px; }
+    .story-track {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+      will-change: transform;
+    }
+    .story-card {
+      flex: 0 0 50%;
+      padding: 0 12px;
+      box-sizing: border-box;
+    }
+    .story-card-inner {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(10,12,20,0.95), rgba(15,18,30,0.9));
+      border: 1.5px solid rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .story-card-inner:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 80px -20px rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.85);
+    }
+    .story-thumb-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      background: #111;
+      overflow: hidden;
+    }
+    .story-thumb-wrap img,
+    .story-thumb-wrap video {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0.85;
+      transition: opacity 0.5s ease, transform 0.8s ease;
+    }
+    .story-card-inner:hover .story-thumb-wrap img,
+    .story-card-inner:hover .story-thumb-wrap video { opacity: 1; transform: scale(1.04); }
+    .story-thumb-wrap::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%);
+    }
+    .story-play {
+      position: absolute; top: 14px; right: 14px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+      z-index: 2;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .story-play svg { fill: #0a0a0a; width: 11px; height: 11px; margin-left: 1.5px; }
+    .story-card-inner:hover .story-play { transform: scale(1.12); background: #fff; }
+    .story-meta { padding: 18px 20px 22px; }
+    .story-meta .label-chip {
+      display: inline-block; font-size: 9px; padding: 2px 8px; border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, monospace; margin-bottom: 8px;
+    }
+    .story-meta .label-chip.tone-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+    .story-meta .label-chip.tone-cyan { background: rgba(6,182,212,0.15); color: #22d3ee; border: 1px solid rgba(6,182,212,0.2); }
+    .story-meta h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 4px; }
+    .story-meta p { font-size: 11px; color: #71717a; line-height: 1.6; margin: 0; }
+
+    .story-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff; font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 5;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .story-nav:hover { background: rgba(255,255,255,0.18); transform: translateY(-50%) scale(1.08); }
+    .story-prev { left: -12px; }
+    .story-next { right: -12px; }
+    .story-dots {
+      display: flex; justify-content: center; gap: 8px;
+      margin-top: 32px;
+    }
+    .story-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      cursor: pointer; border: 0; padding: 0;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+    .story-dot.active { width: 28px; border-radius: 4px; background: #fff; }
+
+    /* 모바일: 1장씩 */
+    @media (max-width: 768px) {
+      .story-card { flex: 0 0 100%; padding: 0 6px; }
+      .story-prev { left: 4px; }
+      .story-next { right: 4px; }
+      .story-nav { width: 40px; height: 40px; font-size: 16px; }
+      .story-play { width: 52px; height: 52px; }
+    }
+
+    /* 라이트박스 모달 */
+    body.story-lightbox-open { overflow: hidden; }
+    #story-lightbox {
+      position: fixed; inset: 0; z-index: 100000;
+      background: rgba(0,0,0,0.96);
+      backdrop-filter: blur(12px);
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #story-lightbox.active { display: block; opacity: 1; }
+    #story-lightbox .lb-header {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 28px;
+      z-index: 10;
+    }
+    #story-lightbox .lb-counter { color: rgba(255,255,255,0.7); font-size: 14px; font-variant-numeric: tabular-nums; }
+    #story-lightbox .lb-actions { display: flex; gap: 8px; }
+    #story-lightbox .lb-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease;
+    }
+    #story-lightbox .lb-btn:hover { background: rgba(255,255,255,0.18); }
+    #story-lightbox .lb-stage {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 80px 80px 60px;
+    }
+    #story-lightbox .lb-stage-inner {
+      width: 100%; max-width: 1280px;
+      aspect-ratio: 16 / 9;
+      background: #000; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+    }
+    #story-lightbox iframe,
+    #story-lightbox video { width: 100%; height: 100%; border: 0; display: block; }
+    #story-lightbox .lb-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff; font-size: 22px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+      z-index: 10;
+    }
+    #story-lightbox .lb-arrow:hover { background: rgba(255,255,255,0.2); transform: translateY(-50%) scale(1.08); }
+    #story-lightbox .lb-arrow-prev { left: 24px; }
+    #story-lightbox .lb-arrow-next { right: 24px; }
+    #story-lightbox .lb-toast {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.95); color: #0a0a0a;
+      padding: 10px 20px; border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    #story-lightbox .lb-toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+    @media (max-width: 768px) {
+      #story-lightbox .lb-stage { padding: 70px 12px 40px; }
+      #story-lightbox .lb-arrow { width: 44px; height: 44px; font-size: 18px; }
+      #story-lightbox .lb-arrow-prev { left: 8px; }
+      #story-lightbox .lb-arrow-next { right: 8px; }
+      #story-lightbox .lb-header { padding: 14px 16px; }
+    }
+
+    /* STORIES 헤더 */
+    .stories-header { text-align: center; }
+    .stories-label-pill {
+      display: inline-block;
+      padding: 8px 22px;
+      border-radius: 999px;
+      background: #fff;
+      color: #0a0a0a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+    }
+    .stories-headline {
+      margin-top: 36px;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .stories-divider {
+      width: 1px; height: 64px;
+      background: rgba(255,255,255,0.3);
+      margin: 40px auto;
+    }
+    .stories-sub {
+      font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+      color: rgba(255,255,255,0.85);
+      line-height: 1.65;
+    }
+    .stories-caption {
+      margin-top: 14px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
   </style>
 </head>
 
@@ -1771,19 +2042,19 @@
             <a href="#" data-nav="ai-system" class="text-[15px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">AI 시스템</a>
             <a href="#" data-nav="ceo" class="text-[15px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">CEO 인사말</a>
             <a href="#" data-nav="about" class="text-[15px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">관리자 소개</a>
-            <a href="#" data-nav="recruit" class="text-[15px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">모집공고</a>
+            <a href="#" data-nav="talent-open" class="text-[15px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">인재 양성</a>
             <a href="#" data-nav="contact" class="text-[15px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">문의하기</a>
           </div>
           <!-- 우: 그라데이션 버튼 + 모바일 햄버거 -->
           <div class="flex gap-2 items-center">
-            <button type="button" data-nav="contact" class="hidden sm:inline-flex group relative shadow-[0_8px_16px_-4px_rgba(151,65,252,0.2)] hover:shadow-[0_12px_20px_-6px_rgba(151,65,252,0.28)] transition duration-300 ease-out select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 transform-gpu hover:-translate-y-0.5 text-white rounded-md p-[1px]" style="background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);">
+            <button type="button" onclick="_openSupportChat()" class="hidden sm:inline-flex group relative shadow-[0_8px_16px_-4px_rgba(151,65,252,0.2)] hover:shadow-[0_12px_20px_-6px_rgba(151,65,252,0.28)] transition duration-300 ease-out select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 transform-gpu hover:-translate-y-0.5 text-white rounded-md p-[1px]" style="background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);">
               <span class="flex items-center justify-center gap-1.5 text-[13px] leading-none min-w-[84px] h-full transition-colors duration-300 group-hover:bg-transparent font-medium bg-[#0b0f17] rounded-md py-1.5 px-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m9 18 6-6-6-6"></path></svg>
                 지원하기
               </span>
             </button>
-            <!-- 모바일 지원하기 버튼 (proenterprise.co.kr "채팅상담" 위치) -->
-            <button data-nav="contact" class="sm:hidden inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white rounded-md" style="background:#27398c; border:none;">지원하기</button>
+            <!-- 모바일 지원하기 버튼 -->
+            <button onclick="_openSupportChat()" class="sm:hidden inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white rounded-md" style="background:#27398c; border:none;">지원하기</button>
             <button onclick="document.getElementById('mobile-nav-overlay').style.display='block';"
               class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full text-zinc-100 hover:bg-white/10" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -4430,8 +4701,8 @@
           </p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Step 1: 프로를 만드는 교육 체계 -->
-          <div data-nav="pro-intro" data-scroll-to="edu-panels"
+          <!-- Step 1: 프로를 만드는 교육 체계 (원본 복원, click → #talent-overlay) -->
+          <div data-nav="talent-open"
             class="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:ring-white/20 animate-on-scroll flex flex-col bg-neutral-900/40 h-full ring-white/10 ring-1 rounded-2xl relative cursor-pointer"
             style="animation: fadeSlideIn 0.8s ease-out 0.3s both">
             <div class="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
@@ -4635,6 +4906,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -4793,8 +5065,19 @@
     </section>
 
 
+    <!-- ==================== STORIES 헤더 (v=20260504a) ==================== -->
+    <section id="stories-header" class="relative max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 pt-32 pb-12 sm:pt-40 sm:pb-16 animate-on-scroll">
+      <div class="stories-header">
+        <span class="stories-label-pill">PEOPLE</span>
+        <h2 class="stories-headline">압도적 격차는 사람이 만듭니다.</h2>
+        <div class="stories-divider"></div>
+        <p class="stories-sub">7대 AI 시스템과 함께 성장한 PRO 사람들의 진짜 이야기.</p>
+        <p class="stories-caption">월례 시상식 · 교육 현장 · 1등 FA — 같은 출발선의 다른 결과.</p>
+      </div>
+    </section>
+
     <!-- ==================== 프로사업단총괄 소식 (Apple 스타일) ==================== -->
-    <section class="sm:px-6 lg:px-8 sm:py-24 animate-on-scroll max-w-7xl mr-auto ml-auto pt-16 pr-4 pb-16 pl-4" id="news">
+    <section class="sm:px-6 lg:px-8 animate-on-scroll max-w-7xl mr-auto ml-auto pt-4 pr-4 pb-8 pl-4 sm:pt-6 sm:pb-12" id="news">
 
       <!-- 1단: 메인 Kick off 영상 (전체 너비, 자동재생) -->
       <div class="relative rounded-3xl overflow-hidden mb-8 animate-on-scroll" style="animation: fadeSlideIn 0.8s ease-out 0.1s both;">
@@ -4817,72 +5100,17 @@
         </div>
       </div>
 
-      <!-- 2단: 3개 카드 (마우스 글로우 효과) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-on-scroll" style="animation: fadeSlideIn 0.8s ease-out 0.3s both;">
+    </section>
 
-        <!-- 카드 1: 월례 시상식 (클릭 시 인라인 재생) -->
-        <div class="group relative rounded-2xl overflow-hidden glow-target transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]"
-          style="background:linear-gradient(135deg,rgba(10,12,20,0.95),rgba(15,18,30,0.9));border:1px solid rgba(255,255,255,0.06);">
-          <div class="glow-border"></div>
-          <div class="relative news-video-card" data-yt="UV4gcGuM5oo" style="padding-bottom:56.25%;background:#111;cursor:pointer;">
-            <img src="https://img.youtube.com/vi/UV4gcGuM5oo/hqdefault.jpg" alt="프로사업단 월례 시상식"
-              class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" loading="lazy">
-            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
-              <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-          </div>
-          <div class="p-5">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-[9px] px-2 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/20 font-mono">YouTube</span>
-            </div>
-            <h3 class="text-sm font-bold text-white mb-1">프로사업단 월례 시상식</h3>
-            <p class="text-[11px] text-zinc-500 leading-relaxed">매월 성과를 인정하고, 함께 성장하는 조직 문화</p>
-          </div>
+    <!-- ==================== STORIES 캐러셀 (v=20260504a) ==================== -->
+    <section id="stories" class="relative max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 pt-12 pb-24 sm:pt-16 sm:pb-32 animate-on-scroll">
+      <div class="story-carousel" data-stories>
+        <button class="story-nav story-prev" data-story-prev aria-label="이전 영상">❮</button>
+        <div class="story-viewport">
+          <div class="story-track" data-story-track></div>
         </div>
-
-        <!-- 카드 2: AI Workshop (클릭 시 재생, 자동재생 없음) -->
-        <div class="group relative rounded-2xl overflow-hidden glow-target transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]"
-          style="background:linear-gradient(135deg,rgba(10,12,20,0.95),rgba(15,18,30,0.9));border:1px solid rgba(255,255,255,0.06);">
-          <div class="glow-border"></div>
-          <div class="relative news-video-card" data-mp4="사진/KakaoTalk_20260401_160417398.mp4" style="padding-bottom:56.25%;background:#111;cursor:pointer;">
-            <video src="사진/KakaoTalk_20260401_160417398.mp4" muted playsinline preload="metadata"
-              class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"></video>
-            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
-              <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-          </div>
-          <div class="p-5">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-[9px] px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/20 font-mono">현장 영상</span>
-            </div>
-            <h3 class="text-sm font-bold text-white mb-1">PRO 7대 AI 시스템 Workshop</h3>
-            <p class="text-[11px] text-zinc-500 leading-relaxed">7대 AI 시스템으로 만드는 압도적 격차, 그 교육 현장</p>
-          </div>
-        </div>
-
-        <!-- 카드 3: ITA 임성미FA (클릭 시 인라인 재생) -->
-        <div class="group relative rounded-2xl overflow-hidden glow-target transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]"
-          style="background:linear-gradient(135deg,rgba(10,12,20,0.95),rgba(15,18,30,0.9));border:1px solid rgba(255,255,255,0.06);">
-          <div class="glow-border"></div>
-          <div class="relative news-video-card" data-yt="KUWgdv7DGqQ" data-start="301" style="padding-bottom:56.25%;background:#111;cursor:pointer;">
-            <img src="https://img.youtube.com/vi/KUWgdv7DGqQ/hqdefault.jpg" alt="ITA 2회 달성 임성미FA"
-              class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" loading="lazy">
-            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-blue-600/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="box-shadow:0 0 30px rgba(59,130,246,0.4);">
-              <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-          </div>
-          <div class="p-5">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-[9px] px-2 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/20 font-mono">YouTube</span>
-            </div>
-            <h3 class="text-sm font-bold text-white mb-1">ITA 2회 달성 임성미FA</h3>
-            <p class="text-[11px] text-zinc-500 leading-relaxed">2회 연속 ITA, 우연이 아닌 시스템의 힘</p>
-          </div>
-        </div>
-
+        <button class="story-nav story-next" data-story-next aria-label="다음 영상">❯</button>
+        <div class="story-dots" data-story-dots></div>
       </div>
     </section>
 
@@ -6870,6 +7098,227 @@
       });
     })();
 
+    // ─── STORIES 캐러셀 + 라이트박스 (v=20260504a) ───
+    function _initStoriesCarousel() {
+      var root = document.querySelector('[data-stories]');
+      if (!root) return;
+
+      var STORIES = [
+        {
+          id: 'monthly-awards', type: 'youtube', src: 'UV4gcGuM5oo',
+          thumb: 'https://img.youtube.com/vi/UV4gcGuM5oo/maxresdefault.jpg',
+          label: 'YouTube', tone: 'red',
+          title: '프로사업단 월례 시상식',
+          subtitle: '매월 성과를 인정하고, 함께 성장하는 조직 문화'
+        },
+        {
+          id: 'workshop', type: 'mp4', src: '사진/KakaoTalk_20260401_160417398.mp4',
+          thumb: '', label: '현장 영상', tone: 'cyan',
+          title: 'PRO 7대 AI 시스템 Workshop',
+          subtitle: '7대 AI 시스템으로 만드는 압도적 격차, 그 교육 현장'
+        },
+        {
+          id: 'ita-imseongmi', type: 'youtube', src: 'KUWgdv7DGqQ', start: 301,
+          thumb: 'https://img.youtube.com/vi/KUWgdv7DGqQ/maxresdefault.jpg',
+          label: 'YouTube', tone: 'red',
+          title: 'ITA 2회 달성 임성미FA',
+          subtitle: '2회 연속 ITA, 우연이 아닌 시스템의 힘'
+        }
+      ];
+
+      var track = root.querySelector('[data-story-track]');
+      var dotsWrap = root.querySelector('[data-story-dots]');
+      var btnPrev = root.querySelector('[data-story-prev]');
+      var btnNext = root.querySelector('[data-story-next]');
+      var perView = window.matchMedia('(max-width: 768px)').matches ? 1 : 2;
+      var pageCount = Math.max(1, STORIES.length - perView + 1);
+      var idx = 0;
+      var autoTimer = null;
+      var AUTO_MS = 6000;
+
+      function buildCard(s) {
+        var thumbHtml = s.type === 'youtube'
+          ? '<img src="' + s.thumb + '" alt="' + s.title + '" loading="lazy" onerror="this.src=\'https://img.youtube.com/vi/' + s.src + '/hqdefault.jpg\'">'
+          : '<video src="' + s.src + '" muted playsinline preload="metadata"></video>';
+        return ''
+          + '<div class="story-card">'
+          +   '<div class="story-card-inner" data-story-card data-id="' + s.id + '">'
+          +     '<div class="story-thumb-wrap">'
+          +       thumbHtml
+          +       '<div class="story-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>'
+          +     '</div>'
+          +     '<div class="story-meta">'
+          +       '<span class="label-chip tone-' + s.tone + '">' + s.label + '</span>'
+          +       '<h3>' + s.title + '</h3>'
+          +       '<p>' + s.subtitle + '</p>'
+          +     '</div>'
+          +   '</div>'
+          + '</div>';
+      }
+      track.innerHTML = STORIES.map(buildCard).join('');
+
+      // 페이지네이션 점
+      var dotsHtml = '';
+      for (var i = 0; i < pageCount; i++) {
+        dotsHtml += '<button class="story-dot' + (i === 0 ? ' active' : '') + '" data-story-dot="' + i + '" aria-label="페이지 ' + (i + 1) + '"></button>';
+      }
+      dotsWrap.innerHTML = dotsHtml;
+
+      function update() {
+        var shift = -(100 / perView) * idx;
+        track.style.transform = 'translateX(' + shift + '%)';
+        var dots = dotsWrap.querySelectorAll('.story-dot');
+        for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === idx);
+      }
+      function go(n) {
+        idx = (n + pageCount) % pageCount;
+        update();
+      }
+      function next() { go(idx + 1); }
+      function prev() { go(idx - 1); }
+
+      btnPrev.addEventListener('click', function () { prev(); resetAuto(); });
+      btnNext.addEventListener('click', function () { next(); resetAuto(); });
+      dotsWrap.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-story-dot]');
+        if (!b) return;
+        go(parseInt(b.dataset.storyDot, 10));
+        resetAuto();
+      });
+
+      // 자동순환
+      function startAuto() { stopAuto(); autoTimer = setInterval(next, AUTO_MS); }
+      function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+      function resetAuto() { startAuto(); }
+      root.addEventListener('pointerenter', stopAuto);
+      root.addEventListener('pointerleave', startAuto);
+      startAuto();
+
+      // 모바일 스와이프
+      var sx = 0, sy = 0, dragging = false;
+      track.addEventListener('pointerdown', function (e) {
+        dragging = true; sx = e.clientX; sy = e.clientY; stopAuto();
+      });
+      track.addEventListener('pointerup', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        var dx = e.clientX - sx, dy = e.clientY - sy;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) next(); else prev();
+        }
+        startAuto();
+      });
+      track.addEventListener('pointercancel', function () { dragging = false; startAuto(); });
+
+      // viewport 리사이즈 시 perView 갱신
+      var mq = window.matchMedia('(max-width: 768px)');
+      function onMq() {
+        var newPv = mq.matches ? 1 : 2;
+        if (newPv !== perView) {
+          perView = newPv;
+          pageCount = Math.max(1, STORIES.length - perView + 1);
+          // 점 다시 생성
+          var html = '';
+          for (var i = 0; i < pageCount; i++) html += '<button class="story-dot" data-story-dot="' + i + '"></button>';
+          dotsWrap.innerHTML = html;
+          if (idx >= pageCount) idx = pageCount - 1;
+          update();
+        }
+      }
+      if (mq.addEventListener) mq.addEventListener('change', onMq);
+      else if (mq.addListener) mq.addListener(onMq);
+
+      update();
+
+      // ─── 라이트박스 ───
+      var lb = document.getElementById('story-lightbox');
+      var lbStage = lb && lb.querySelector('[data-lb-stage]');
+      var lbCounter = lb && lb.querySelector('[data-lb-counter]');
+      var lbToast = lb && lb.querySelector('[data-lb-toast]');
+      var currentLbIdx = 0;
+
+      function lbRender() {
+        if (!lbStage) return;
+        var s = STORIES[currentLbIdx];
+        var inner;
+        if (s.type === 'youtube') {
+          var startParam = s.start ? '&start=' + s.start : '';
+          inner = '<iframe src="https://www.youtube.com/embed/' + s.src + '?autoplay=1&rel=0&modestbranding=1' + startParam + '" frameborder="0" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';
+        } else {
+          inner = '<video src="' + s.src + '" controls autoplay playsinline></video>';
+        }
+        lbStage.innerHTML = '<div class="lb-stage-inner">' + inner + '</div>';
+        if (lbCounter) lbCounter.textContent = (currentLbIdx + 1) + ' / ' + STORIES.length;
+      }
+      function lbOpen(id) {
+        currentLbIdx = STORIES.findIndex(function (s) { return s.id === id; });
+        if (currentLbIdx < 0) currentLbIdx = 0;
+        stopAuto();
+        document.body.classList.add('story-lightbox-open');
+        lb.classList.add('active');
+        lbRender();
+      }
+      function lbClose() {
+        if (!lb) return;
+        lb.classList.remove('active');
+        document.body.classList.remove('story-lightbox-open');
+        if (lbStage) lbStage.innerHTML = '';
+        startAuto();
+      }
+      function lbNext() { currentLbIdx = (currentLbIdx + 1) % STORIES.length; lbRender(); }
+      function lbPrev() { currentLbIdx = (currentLbIdx - 1 + STORIES.length) % STORIES.length; lbRender(); }
+      function lbShare() {
+        var s = STORIES[currentLbIdx];
+        var url = s.type === 'youtube'
+          ? 'https://www.youtube.com/watch?v=' + s.src + (s.start ? '&t=' + s.start : '')
+          : window.location.href + '#' + s.id;
+        if (navigator.share) {
+          navigator.share({ title: s.title, text: s.subtitle, url: url }).catch(function () {});
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(function () {
+            if (!lbToast) return;
+            lbToast.textContent = '링크가 복사되었습니다';
+            lbToast.classList.add('show');
+            setTimeout(function () { lbToast.classList.remove('show'); }, 1800);
+          });
+        }
+      }
+      function lbFullscreen() {
+        var inner = lbStage && lbStage.querySelector('.lb-stage-inner');
+        if (!inner) return;
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (inner.requestFullscreen) {
+          inner.requestFullscreen();
+        }
+      }
+
+      // 카드 클릭 → 라이트박스
+      track.addEventListener('click', function (e) {
+        var card = e.target.closest('[data-story-card]');
+        if (!card) return;
+        e.preventDefault();
+        lbOpen(card.dataset.id);
+      });
+
+      if (lb) {
+        lb.querySelector('[data-lb-close]').addEventListener('click', lbClose);
+        lb.querySelector('[data-lb-prev]').addEventListener('click', lbPrev);
+        lb.querySelector('[data-lb-next]').addEventListener('click', lbNext);
+        lb.querySelector('[data-lb-share]').addEventListener('click', lbShare);
+        lb.querySelector('[data-lb-fullscreen]').addEventListener('click', lbFullscreen);
+        lb.addEventListener('click', function (e) { if (e.target === lb) lbClose(); });
+        document.addEventListener('keydown', function (e) {
+          if (!lb.classList.contains('active')) return;
+          if (e.key === 'Escape') lbClose();
+          else if (e.key === 'ArrowRight') lbNext();
+          else if (e.key === 'ArrowLeft') lbPrev();
+        });
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _initStoriesCarousel);
+    else _initStoriesCarousel();
+
     // ─── 네비 배경 스크롤 전환 (Hero: glass 투명 → 스크롤: 진한 반투명) ───
     (function () {
       var navBar = document.getElementById('nav-bar');
@@ -6924,6 +7373,13 @@
           proIntro.classList.remove('ceo-overlay--active');
           proIntro.setAttribute('aria-hidden', 'true');
         }
+        var talentOv = document.getElementById('talent-overlay');
+        if (talentOv && talentOv.classList.contains('ceo-overlay--active')) {
+          talentOv.classList.remove('ceo-overlay--active');
+          talentOv.setAttribute('aria-hidden', 'true');
+          // spotlight 무한 loop 정리 (setInterval leak 방지)
+          if (typeof stopRoadmapSpotLoop === 'function') stopRoadmapSpotLoop();
+        }
         var contact = document.getElementById('contact');
         if (contact) contact.classList.remove('active');
         document.body.classList.remove('ceo-overlay-open', 'contact-overlay-open');
@@ -6938,6 +7394,75 @@
         var navH = 56;
         var padTop = parseInt(getComputedStyle(el).paddingTop) || 0;
         window.scrollTo({ top: el.offsetTop + padTop - navH });
+      }
+
+      // 5단계 로드맵 시퀀스 애니메이션 (v=20260504a)
+      // talent-overlay 열릴 때마다 점이 단계별로 켜지고 라인이 채워짐
+      var roadmapSpotInterval = null;
+      var roadmapSpotIdx = -1;
+      function stopRoadmapSpotLoop() {
+        if (roadmapSpotInterval) {
+          clearInterval(roadmapSpotInterval);
+          roadmapSpotInterval = null;
+        }
+        var spots = document.querySelectorAll('#talent-overlay .roadmap-step.is-spot');
+        spots.forEach(function(s){ s.classList.remove('is-spot'); });
+        roadmapSpotIdx = -1;
+      }
+      function startRoadmapSpotLoop() {
+        // 항상 fresh 시작
+        stopRoadmapSpotLoop();
+        // reduced motion 시 spotlight loop 스킵
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var steps = document.querySelectorAll('#talent-overlay .roadmap-step');
+        if (!steps.length) return;
+        // 0번부터 시작
+        steps[0].classList.add('is-spot');
+        roadmapSpotIdx = 0;
+        // 1.2초 간격으로 다음 노드로 spotlight 이동 (1→2→3→4→5→1→...)
+        roadmapSpotInterval = setInterval(function(){
+          var stepsNow = document.querySelectorAll('#talent-overlay .roadmap-step');
+          if (!stepsNow.length) { stopRoadmapSpotLoop(); return; }
+          if (roadmapSpotIdx >= 0 && roadmapSpotIdx < stepsNow.length) {
+            stepsNow[roadmapSpotIdx].classList.remove('is-spot');
+          }
+          roadmapSpotIdx = (roadmapSpotIdx + 1) % stepsNow.length;
+          stepsNow[roadmapSpotIdx].classList.add('is-spot');
+        }, 1200);
+      }
+      function playRoadmapSequence() {
+        var track = document.querySelector('#talent-overlay .roadmap-track');
+        if (!track) return;
+        // 재진입 가드 — 짧은 시간 내 다중 호출(클릭 핸들러 다중 등록 등) 시 첫 호출만 처리
+        if (track.dataset.playing === '1') return;
+        track.dataset.playing = '1';
+        // 이전 spotlight loop 정리 (재오픈 대비)
+        stopRoadmapSpotLoop();
+        var steps = track.querySelectorAll('.roadmap-step');
+        // 리셋
+        steps.forEach(function(s){ s.classList.remove('is-lit'); });
+        track.classList.remove('is-playing');
+        void track.offsetWidth; // reflow → transition 재시작 보장
+        // reduced motion: 즉시 점등 (spotlight loop는 startRoadmapSpotLoop에서 자체 스킵)
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          steps.forEach(function(s){ s.classList.add('is-lit'); });
+          track.classList.add('is-playing');
+          setTimeout(function(){ track.dataset.playing = ''; }, 50);
+          return;
+        }
+        // 정상 시퀀스: line-fill 0→80% (2.4s), dots stagger 300ms + i*450ms
+        // setTimeout(0)으로 reflow 후 다음 task에서 add → transition 발화 보장 (rAF는 page hidden 시 throttle 됨)
+        setTimeout(function(){
+          track.classList.add('is-playing');
+          steps.forEach(function(s, i){
+            setTimeout(function(){ s.classList.add('is-lit'); }, 300 + i * 450);
+          });
+          // 시퀀스 종료 후 가드 해제 + spotlight 무한 loop 시작 (1.2s 간격으로 1→2→3→4→5→1 순환)
+          setTimeout(function(){
+            track.dataset.playing = '';
+            startRoadmapSpotLoop();
+          }, 2600);
+        }, 0);
       }
 
       function navigateTo(target, pushHistory) {
@@ -6989,6 +7514,18 @@
             document.body.style.overflow = 'hidden';
           }
           if (pushHistory) history.pushState({ nav: 'pro-intro' }, '', '#pro-intro');
+          return;
+        }
+        // 인재 양성 → talent-overlay 열기 (v=20260504a)
+        if (target === 'talent-open') {
+          var talentOverlay = document.getElementById('talent-overlay');
+          if (talentOverlay) {
+            talentOverlay.classList.add('ceo-overlay--active');
+            talentOverlay.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('ceo-overlay-open');
+            playRoadmapSequence();
+          }
+          if (pushHistory) history.pushState({ nav: 'talent-open' }, '', '#talent');
           return;
         }
         // 일반 섹션 (news, about, recruit 등)
@@ -8446,9 +8983,349 @@
           onLeaveBack: function() { dashRevealCards.forEach(function(card) { gsap.to(card, { opacity: 0, y: 60, scale: 0.95, filter: 'blur(12px)', duration: 0.5, ease: 'power2.in' }); }); }
         });
       }
+
+      // ─── Channel Talk SDK + 지원하기 버튼 통합 (v=20260504a) ───
+      // plugin key는 channel.io 어드민 → 일반 → 보안에서 발급 후 아래 변수만 교체
+      var _CHANNEL_IO_PLUGIN_KEY = '<<INSERT_CHANNEL_IO_PLUGIN_KEY_HERE>>';
+      function _hasChannelKey() {
+        return !!_CHANNEL_IO_PLUGIN_KEY && _CHANNEL_IO_PLUGIN_KEY.charAt(0) !== '<';
+      }
+      // Channel.io SDK loader (공식 boot snippet, 비동기)
+      (function () {
+        var w = window;
+        if (w.ChannelIO) return;
+        var ch = function () { ch.c(arguments); };
+        ch.q = []; ch.c = function (args) { ch.q.push(args); };
+        w.ChannelIO = ch;
+        function l() {
+          if (w.ChannelIOInitialized) return;
+          w.ChannelIOInitialized = true;
+          var s = document.createElement('script');
+          s.type = 'text/javascript'; s.async = true;
+          s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+          var x = document.getElementsByTagName('script')[0];
+          if (x.parentNode) x.parentNode.insertBefore(s, x);
+        }
+        if (document.readyState === 'complete') l();
+        else { w.addEventListener('DOMContentLoaded', l); w.addEventListener('load', l); }
+      })();
+      // plugin key가 실제로 설정되어 있으면 자동 boot + 떠 있는 버블 숨김 (옵션 A)
+      if (_hasChannelKey()) {
+        ChannelIO('boot', { pluginKey: _CHANNEL_IO_PLUGIN_KEY });
+        ChannelIO('hideChannelButton');
+      }
+      // 헤더 "지원하기" 버튼 onclick 핸들러
+      window._openSupportChat = function () {
+        if (_hasChannelKey() && typeof ChannelIO === 'function') {
+          ChannelIO('show');
+        } else {
+          // plugin key 미설정 fallback: contact 오버레이 (문의하기) 열기
+          var contact = document.getElementById('contact');
+          if (contact) {
+            contact.classList.add('active');
+            document.body.classList.add('contact-overlay-open');
+          }
+        }
+      };
+
+      // (Step 4 3D scrollTrigger 제거됨 — 콘텐츠는 #talent-overlay로 이동)
     })();
 
   </script>
+
+<!-- ═══ 인재 양성 풀스크린 오버레이 (3 섹션: 로드맵 + 지원 인프라 + 자격증, v=20260504a) ═══ -->
+<style>
+  #talent-overlay .talent-section { padding: 96px 24px; max-width: 1200px; margin: 0 auto; }
+  #talent-overlay .talent-section + .talent-section { border-top: 1px solid rgba(255,255,255,0.06); }
+  #talent-overlay .talent-header { text-align: center; margin-bottom: 64px; }
+  #talent-overlay .talent-label {
+    display: inline-block; padding: 7px 22px; border-radius: 999px;
+    background: #fff; color: #0a0a0a; font-size: 11px;
+    font-weight: 700; letter-spacing: 0.22em;
+  }
+  #talent-overlay .talent-headline {
+    margin-top: 28px;
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    font-weight: 800; color: #fff;
+    line-height: 1.25; letter-spacing: -0.02em;
+  }
+  #talent-overlay .talent-divider {
+    width: 1px; height: 48px; background: rgba(255,255,255,0.25);
+    margin: 32px auto;
+  }
+  #talent-overlay .talent-sub {
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+    color: rgba(255,255,255,0.78); line-height: 1.7;
+    max-width: 780px; margin: 0 auto;
+  }
+  #talent-overlay .talent-sub strong {
+    color: #fff; font-weight: 700;
+  }
+  /* 섹션 1 — 5단계 가로 타임라인 (v=20260504a 동적 시퀀스) */
+  #talent-overlay .roadmap-track {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 0; position: relative; padding-top: 28px;
+  }
+  /* 베이스 트랙 (어두운 회색) */
+  #talent-overlay .roadmap-line {
+    position: absolute; top: 38px; left: 10%; right: 10%;
+    height: 2px; background: rgba(255,255,255,0.08);
+    z-index: 0;
+  }
+  /* 진행 fill (왼→오 채워짐, .is-playing 시 0→80%) */
+  #talent-overlay .roadmap-line-fill {
+    position: absolute; top: 38px; left: 10%;
+    height: 2px; width: 0;
+    background: linear-gradient(to right, rgba(59,130,246,0.4), rgba(59,130,246,0.7), rgba(96,165,250,0.9));
+    z-index: 0;
+    transition: width 2400ms cubic-bezier(.4,0,.2,1);
+  }
+  #talent-overlay .roadmap-track.is-playing .roadmap-line-fill { width: 80%; }
+  #talent-overlay .roadmap-step {
+    position: relative; z-index: 1; text-align: center; padding: 0 6px;
+  }
+  /* 기본(어두운) 상태 — 시퀀스 시작 전 */
+  #talent-overlay .roadmap-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #050505;
+    border: 3px solid rgba(255,255,255,0.2);
+    margin: 0 auto 22px;
+    box-shadow: none;
+    opacity: 0.35;
+    transition: opacity 600ms ease, border-color 600ms ease, box-shadow 600ms ease, background 600ms ease;
+  }
+  /* 켜진 상태 (.is-lit) — 일반 4개 노드 */
+  #talent-overlay .roadmap-step.is-lit .roadmap-dot {
+    border-color: #3b82f6;
+    box-shadow: 0 0 16px rgba(59,130,246,0.5);
+    opacity: 1;
+  }
+  /* 켜진 상태 + 마지막 노드 — 청록색 글로우 */
+  #talent-overlay .roadmap-step.is-final.is-lit .roadmap-dot {
+    background: #60a5fa; border-color: #93c5fd;
+    box-shadow: 0 0 24px rgba(96,165,250,0.9);
+  }
+  /* spotlight 순환 — 1.2초 간격으로 한 노드만 강조 (시퀀스 종료 후 무한 loop) */
+  #talent-overlay .roadmap-step.is-spot .roadmap-dot {
+    background: #60a5fa;
+    border-color: #93c5fd;
+    box-shadow: 0 0 28px rgba(96,165,250,1), 0 0 14px rgba(255,255,255,0.55);
+    transform: scale(1.15);
+    transition: background 400ms ease, border-color 400ms ease, box-shadow 400ms ease, transform 400ms ease;
+  }
+  #talent-overlay .roadmap-step.is-spot .roadmap-stepname { color: #fff; }
+  #talent-overlay .roadmap-stepname {
+    font-size: 15px; font-weight: 700; color: #60a5fa;
+    margin-bottom: 8px; letter-spacing: -0.01em;
+    opacity: 0.4;
+    transition: opacity 600ms ease, color 600ms ease;
+  }
+  #talent-overlay .roadmap-step.is-lit .roadmap-stepname { opacity: 1; }
+  #talent-overlay .roadmap-step.is-final.is-lit .roadmap-stepname { color: #fff; }
+  #talent-overlay .roadmap-stepdesc {
+    font-size: 12px; color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+    opacity: 0.4;
+    transition: opacity 600ms ease;
+  }
+  #talent-overlay .roadmap-step.is-lit .roadmap-stepdesc { opacity: 1; }
+  /* prefers-reduced-motion: 트랜지션 제거 (JS는 즉시 클래스 부여) */
+  @media (prefers-reduced-motion: reduce) {
+    #talent-overlay .roadmap-dot,
+    #talent-overlay .roadmap-line-fill,
+    #talent-overlay .roadmap-stepname,
+    #talent-overlay .roadmap-stepdesc { transition: none !important; }
+  }
+  /* 섹션 2 — 4-카드 grid */
+  #talent-overlay .support-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  #talent-overlay .support-card {
+    padding: 28px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(20,20,28,0.85), rgba(15,15,22,0.9));
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  #talent-overlay .support-card:hover {
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-4px);
+  }
+  #talent-overlay .support-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  #talent-overlay .support-card-name {
+    font-size: 18px; font-weight: 700; color: #fff;
+  }
+  #talent-overlay .support-card-tag {
+    font-size: 10px; padding: 3px 10px; border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  #talent-overlay .support-card-divider {
+    height: 1px; background: rgba(255,255,255,0.08); margin: 0 0 16px;
+  }
+  #talent-overlay .support-card-desc {
+    font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65;
+  }
+  /* 섹션 3 — 2-칼럼 박스 */
+  #talent-overlay .expertise-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+  #talent-overlay .expertise-card {
+    padding: 36px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(20,20,28,0.85), rgba(15,15,22,0.9));
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  #talent-overlay .expertise-card h3 {
+    font-size: 19px; font-weight: 700; color: #fff;
+    padding-bottom: 18px; margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  #talent-overlay .expertise-card ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  #talent-overlay .expertise-card li {
+    font-size: 14.5px; color: rgba(255,255,255,0.78);
+    padding-left: 22px; position: relative; line-height: 1.6;
+  }
+  #talent-overlay .expertise-card li::before {
+    content: ''; position: absolute; left: 4px; top: 9px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #60a5fa;
+  }
+  @media (max-width: 768px) {
+    #talent-overlay .talent-section { padding: 64px 18px; }
+    #talent-overlay .roadmap-track { grid-template-columns: 1fr; gap: 24px; }
+    #talent-overlay .roadmap-line { display: none; }
+    #talent-overlay .support-grid,
+    #talent-overlay .expertise-grid { grid-template-columns: 1fr; }
+  }
+</style>
+<div id="talent-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="인재 양성">
+  <div class="ceo-overlay__bg" style="background:#050505;"></div>
+  <button class="ceo-overlay__close" aria-label="닫기" onclick="document.getElementById('talent-overlay').classList.remove('ceo-overlay--active');document.getElementById('talent-overlay').setAttribute('aria-hidden','true');document.body.classList.remove('ceo-overlay-open');">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="ceo-overlay__content" style="background:#050505;">
+
+    <!-- 섹션 1: 단계별 성장 로드맵 -->
+    <section class="talent-section">
+      <header class="talent-header">
+        <span class="talent-label">ROADMAP</span>
+        <h2 class="talent-headline">단계별로, 확실하게 키웁니다</h2>
+        <div class="talent-divider"></div>
+        <p class="talent-sub">타사가 1~2주 교육 후 현장에 투입할 때, PRO는 입사부터 WM 마스터까지 <strong>5단계로 끝까지 책임집니다.</strong></p>
+      </header>
+      <div class="roadmap-track">
+        <div class="roadmap-line"></div>
+        <div class="roadmap-line-fill"></div>
+        <div class="roadmap-step">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-stepname">01 · 입사 교육</div>
+          <div class="roadmap-stepdesc">사이버 입문<br>서울 본사 집합</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-stepname">02 · 신인 교육</div>
+          <div class="roadmap-stepdesc">2주 집중 코스<br>실전 RP 트레이닝</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-stepname">03 · 관리자 양성</div>
+          <div class="roadmap-stepdesc">예비 리더십<br>조직 관리 솔루션</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-stepname">04 · 전문 역량 특화</div>
+          <div class="roadmap-stepdesc">재무 · 메디컬 · DB<br>분야별 스페셜리스트</div>
+        </div>
+        <div class="roadmap-step is-final">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-stepname">05 · WM 마스터</div>
+          <div class="roadmap-stepdesc">종합 자산관리<br>전문 에이전트 완성</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 2: All-in-one 지원 인프라 -->
+    <section class="talent-section">
+      <header class="talent-header">
+        <span class="talent-label">SUPPORT</span>
+        <h2 class="talent-headline">상담 전, 이미 신뢰가 만들어집니다</h2>
+        <div class="talent-divider"></div>
+        <p class="talent-sub">설계사가 혼자 알리는 시대는 끝났습니다. <strong>회사가 4축 브랜드로 고객을 먼저 설득합니다.</strong></p>
+      </header>
+      <div class="support-grid">
+        <div class="support-card">
+          <div class="support-card-head">
+            <span class="support-card-name">유튜브 채널</span>
+            <span class="support-card-tag" style="background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25);">콘텐츠</span>
+          </div>
+          <div class="support-card-divider"></div>
+          <p class="support-card-desc">전용 유튜브 채널을 통한 외부 유입 강화 및 조직원 전문성 노출</p>
+        </div>
+        <div class="support-card">
+          <div class="support-card-head">
+            <span class="support-card-name">프로매거진</span>
+            <span class="support-card-tag" style="background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.25);">콘텐츠</span>
+          </div>
+          <div class="support-card-divider"></div>
+          <p class="support-card-desc">정기 웹 매거진 발행으로 현장 상담 시 공신력 있는 자료로 활용</p>
+        </div>
+        <div class="support-card">
+          <div class="support-card-head">
+            <span class="support-card-name">브랜드 디자인</span>
+            <span class="support-card-tag" style="background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.25);">디자인</span>
+          </div>
+          <div class="support-card-divider"></div>
+          <p class="support-card-desc">프로사업단총괄 소속 조직의 브랜딩 및 마케팅 툴킷 제작 지원</p>
+        </div>
+        <div class="support-card">
+          <div class="support-card-head">
+            <span class="support-card-name">이벤트 기획</span>
+            <span class="support-card-tag" style="background:rgba(244,63,94,0.12);color:#fb7185;border:1px solid rgba(244,63,94,0.25);">행사</span>
+          </div>
+          <div class="support-card-divider"></div>
+          <p class="support-card-desc">채용 설명회, 시상식 등 대내외 행사를 통한 대외 이미지 구축</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 3: 엘리트 FA 양성 인프라 -->
+    <section class="talent-section">
+      <header class="talent-header">
+        <span class="talent-label">EXPERTISE</span>
+        <h2 class="talent-headline">단순 보험 판매를 넘어 <span class="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">종합 금융전문가</span>로</h2>
+        <div class="talent-divider"></div>
+        <p class="talent-sub">보험 한 분야에 갇히지 않습니다. <strong>CFP·AFPK 자격증으로 부동산·세무·자산관리까지 가능한 컨설턴트를 키웁니다.</strong></p>
+      </header>
+      <div class="expertise-grid">
+        <div class="expertise-card">
+          <h3>CFP(국제공인재무설계사) 프로젝트</h3>
+          <ul>
+            <li>금융 전문 유튜브 채널 운영</li>
+            <li>전문 지식 기반의 금융 교육</li>
+            <li>종합 금융전문가 양성</li>
+          </ul>
+        </div>
+        <div class="expertise-card">
+          <h3>지적 자산이 곧 소득의 크기가 되는 시스템</h3>
+          <ul>
+            <li>AFPK · CFP 등 금융전문가 자격증 시험 준비</li>
+            <li>조직내 자격 소지자 증가</li>
+            <li>다가올 금융전문가 시대에 대한 준비</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
 
 <!-- ═══ 프로사업단총괄 풀스크린 오버레이 (문 애니메이션 + 캐러셀) ═══ -->
 <div id="pro-intro-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="프로사업단총괄">
@@ -8583,30 +9460,60 @@
       </div>
     </section>
 
-    <!-- ═══ 조직 문화 섹션 (3열 카드) ═══ -->
-    <div style="background:#f5f5f7; padding:5rem 3rem;">
-      <div style="text-align:center; margin-bottom:3rem; max-width:700px; margin-left:auto; margin-right:auto;">
+    <!-- ═══ 조직 문화 섹션 (4카드 자동 순환 캐러셀, v=20260504b) ═══ -->
+    <div style="background:#f5f5f7; padding:5rem 0;">
+      <div style="text-align:center; margin-bottom:3rem; max-width:700px; margin-left:auto; margin-right:auto; padding:0 3rem;">
         <h2 style="font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:800; color:#111; letter-spacing:-0.04em; line-height:1.2; margin:0 0 1.2rem;">성장을 지속시키는 조직문화</h2>
         <p style="font-size:15px; color:#666; line-height:1.75; margin:0;">프로사업단총괄은 다양한 행사와 시상식을 통해<br>확실한 <strong style="color:#111;">동기부여와 지속적인 원동력</strong>을 제공합니다.</p>
       </div>
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; max-width:1100px; margin:0 auto;">
-        <!-- 카드 1: 연도대상 시상식 -->
-        <div style="display:flex; flex-direction:column;">
-          <div style="border-radius:12px; overflow:hidden; aspect-ratio:16/10; margin-bottom:16px;"><img src="프로 사진/SnapInsta.to_553366514_18527788099044475_834571941900801774_n.jpg" alt="연도대상 시상식" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
-          <h3 style="font-size:17px; font-weight:700; color:#111; margin:0 0 8px; letter-spacing:-0.02em;">압도적인 스케일의 연도대상시상식</h3>
-          <p style="font-size:13px; color:#888; line-height:1.65; margin:0;">매년 호텔 대연회장에서 성대하게 진행되는 프로사업단총괄의 연도대상 시상식입니다.</p>
-        </div>
-        <!-- 카드 2: 월간 시상식 -->
-        <div style="display:flex; flex-direction:column;">
-          <div style="border-radius:12px; overflow:hidden; aspect-ratio:16/10; margin-bottom:16px;"><img src="프로 사진/SnapInsta.to_609209788_18548645803044475_1784252764972083977_n.jpg" alt="월간 시상식" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
-          <h3 style="font-size:17px; font-weight:700; color:#111; margin:0 0 8px; letter-spacing:-0.02em;">영화관 전체 대관 월간 시상식</h3>
-          <p style="font-size:13px; color:#888; line-height:1.65; margin:0;">신규 관리자 승격자, 프로모션 달성자, W 달성자, 기네스 달성자, 장기 근속자 등을 위한 명예로운 시상식입니다.</p>
-        </div>
-        <!-- 카드 3: 리크루팅시책 -->
-        <div style="display:flex; flex-direction:column;">
-          <div style="border-radius:12px; overflow:hidden; aspect-ratio:16/10; margin-bottom:16px;"><img src="프로 사진/SnapInsta.to_645446871_18567064273044475_659110489197144112_n.jpg" alt="리크루팅시책" style="width:100%; height:100%; object-fit:cover; display:block;"></div>
-          <h3 style="font-size:17px; font-weight:700; color:#111; margin:0 0 8px; letter-spacing:-0.02em;">매년 1회 진행되는 리크루팅시책</h3>
-          <p style="font-size:13px; color:#888; line-height:1.65; margin:0;">조직성장과 리크루팅 독려를 위해 진행되는 해외여행 시책으로 프로사업단총괄의 성장원동력 중 하나입니다.</p>
+      <div class="culture-carousel-mask">
+        <div class="culture-carousel-auto">
+          <!-- ── 4 카드 (1차) ── -->
+          <!-- 카드 1: PRO ENTERPRISE AWARD -->
+          <div class="culture-card">
+            <div class="culture-card-img"><img src="AI 홈페이지/PRO ENTERPRISE AWARD.jpg" alt="PRO ENTERPRISE AWARD" loading="lazy"></div>
+            <h3 class="culture-card-title">PRO ENTERPRISE AWARD</h3>
+            <p class="culture-card-desc">매년 호텔 대연회장에서 성대하게 진행되는 프로사업단총괄의 상징적 행사로서 단순한 축하를 넘어 모든 조직 구성원이 자부심을 고취시키는 동기부여의 장입니다.</p>
+          </div>
+          <!-- 카드 2: 리크루팅 시책 (PARIS) — 4:3 비율로 사진 전체 노출 -->
+          <div class="culture-card">
+            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_609209788_18548645803044475_1784252764972083977_n.jpg" alt="리크루팅 시책" style="object-position:center top;" loading="lazy"></div>
+            <h3 class="culture-card-title">매년 1회 진행되는 리크루팅 시책</h3>
+            <p class="culture-card-desc">조직성장과 리크루팅 독려를 위해 진행되는 해외여행 시책으로 프로사업단총괄의 성장원동력 중 하나입니다.</p>
+          </div>
+          <!-- 카드 3: 리더십 양성과정 -->
+          <div class="culture-card">
+            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_553366514_18527788099044475_834571941900801774_n.jpg" alt="리더십 양성과정" loading="lazy"></div>
+            <h3 class="culture-card-title">리더십 양성과정</h3>
+            <p class="culture-card-desc">관리자의 마인드, 역할, 조직 운영의 기준, 성과를 만드는 리더 교육 시스템입니다.</p>
+          </div>
+          <!-- 카드 4: 연합 세미나 -->
+          <div class="culture-card">
+            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_645446871_18567064273044475_659110489197144112_n.jpg" alt="연합 세미나" loading="lazy"></div>
+            <h3 class="culture-card-title">연합 세미나</h3>
+            <p class="culture-card-desc">서로의 영업 경험을 나누고, 서로의 방식을 배우며 한 단계 더 성장하기 위한 세미나입니다.</p>
+          </div>
+          <!-- ── 4 카드 (2차 복제, 무한 루프용) ── -->
+          <div class="culture-card" aria-hidden="true">
+            <div class="culture-card-img"><img src="AI 홈페이지/PRO ENTERPRISE AWARD.jpg" alt="" loading="lazy"></div>
+            <h3 class="culture-card-title">PRO ENTERPRISE AWARD</h3>
+            <p class="culture-card-desc">매년 호텔 대연회장에서 성대하게 진행되는 프로사업단총괄의 상징적 행사로서 단순한 축하를 넘어 모든 조직 구성원이 자부심을 고취시키는 동기부여의 장입니다.</p>
+          </div>
+          <div class="culture-card" aria-hidden="true">
+            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_609209788_18548645803044475_1784252764972083977_n.jpg" alt="" style="object-position:center top;" loading="lazy"></div>
+            <h3 class="culture-card-title">매년 1회 진행되는 리크루팅 시책</h3>
+            <p class="culture-card-desc">조직성장과 리크루팅 독려를 위해 진행되는 해외여행 시책으로 프로사업단총괄의 성장원동력 중 하나입니다.</p>
+          </div>
+          <div class="culture-card" aria-hidden="true">
+            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_553366514_18527788099044475_834571941900801774_n.jpg" alt="" loading="lazy"></div>
+            <h3 class="culture-card-title">리더십 양성과정</h3>
+            <p class="culture-card-desc">관리자의 마인드, 역할, 조직 운영의 기준, 성과를 만드는 리더 교육 시스템입니다.</p>
+          </div>
+          <div class="culture-card" aria-hidden="true">
+            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_645446871_18567064273044475_659110489197144112_n.jpg" alt="" loading="lazy"></div>
+            <h3 class="culture-card-title">연합 세미나</h3>
+            <p class="culture-card-desc">서로의 영업 경험을 나누고, 서로의 방식을 배우며 한 단계 더 성장하기 위한 세미나입니다.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -8832,6 +9739,28 @@
 })();
 </script>
 
+<!-- ═══ STORIES 라이트박스 모달 (body 직속, v=20260504a) ═══ -->
+<div id="story-lightbox" aria-hidden="true" role="dialog" aria-label="영상 재생">
+  <header class="lb-header">
+    <span class="lb-counter" data-lb-counter>1 / 3</span>
+    <div class="lb-actions">
+      <button class="lb-btn" data-lb-share aria-label="공유" title="공유">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </button>
+      <button class="lb-btn" data-lb-fullscreen aria-label="확대" title="전체화면">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      </button>
+      <button class="lb-btn" data-lb-close aria-label="닫기" title="닫기">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+  <button class="lb-arrow lb-arrow-prev" data-lb-prev aria-label="이전">←</button>
+  <div class="lb-stage" data-lb-stage></div>
+  <button class="lb-arrow lb-arrow-next" data-lb-next aria-label="다음">→</button>
+  <div class="lb-toast" data-lb-toast></div>
+</div>
+
 <!-- ═══ 모바일 메뉴 오버레이 (body 직속, nav 밖 — CSS 간섭 제거) ═══ -->
 <div id="mobile-nav-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999;">
   <div onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5);"></div>
@@ -8846,7 +9775,7 @@
       <a href="#" data-nav="ai-system" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">AI 시스템</a>
       <a href="#" data-nav="ceo" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">CEO 인사말</a>
       <a href="#" data-nav="about" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">관리자 소개</a>
-      <a href="#" data-nav="recruit" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">모집공고</a>
+      <a href="#" data-nav="talent-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">인재 양성</a>
       <a href="#" data-nav="contact" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; text-decoration:none;">문의하기</a>
     </div>
   </div>
