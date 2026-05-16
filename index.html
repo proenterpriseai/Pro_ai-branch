@@ -1768,6 +1768,73 @@
       letter-spacing: -0.01em;
     }
 
+    /* 서브타입 탭 (예적금: 예금/적금, 부동산: 취득/보유/양도 등) */
+    .sol-calc-subtype-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.18);
+      flex-wrap: wrap;
+    }
+    .sol-calc-subtype-btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      letter-spacing: -0.01em;
+    }
+    .sol-calc-subtype-btn:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      color: #fff;
+    }
+    .sol-calc-subtype-btn.active {
+      background: linear-gradient(135deg, #06b6d4 0%, #1e3a8a 100%);
+      border-color: rgba(6, 182, 212, 0.6);
+      color: #fff;
+      box-shadow: 0 2px 8px -2px rgba(6, 182, 212, 0.5);
+    }
+
+    /* 결과 카드 헤더 (3종 비교 시) */
+    .sol-calc-result-multi {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .sol-calc-result-multi-item {
+      padding: 10px 8px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .sol-calc-result-multi-item.best {
+      border-color: rgba(34, 197, 94, 0.55);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    .sol-calc-result-multi-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 4px;
+    }
+    .sol-calc-result-multi-value {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #67e8f9;
+      letter-spacing: -0.01em;
+    }
+    .sol-calc-result-multi-item.best .sol-calc-result-multi-value {
+      color: #86efac;
+    }
+
     /* 모바일 — 3컬럼 → 2컬럼 (한 줄에 3개 너무 좁음) */
     @media (max-width: 600px) {
       .sol-calc-grid {
@@ -1775,6 +1842,9 @@
       }
       .sol-calc-result-big {
         font-size: 22px;
+      }
+      .sol-calc-result-multi {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -10535,85 +10605,215 @@
       }
 
       // ═══════════════════════════════════════════════════════════════════
-      // Phase 3-B-2 — 통합금융계산기 (v=20260517b)
-      //   9개 모듈 카드 grid + 모달 오버레이 + 입력 폼 + 결과 카드
+      // Phase 3-B-2 — 통합금융계산기 (v=20260517c, 운영 시스템 매칭)
+      //   참고: https://pro-financecalculator.vercel.app/
+      //   11 메인 카드 + 서브타입 4 (예적금, 부동산, 상속증여, 전월세전환)
       //   Flag _isProsolutionPdfOn() 게이트, sysKey === 'calculator' 진입
       // ═══════════════════════════════════════════════════════════════════
 
+      var CALC_TAX_OPTS = [
+        { v: 'normal', t: '일반과세 (15.4%)' },
+        { v: 'low',    t: '세금우대 (9.5%)'  },
+        { v: 'none',   t: '비과세'          }
+      ];
+
       var CALC_MODULES = [
+        // 1. 예적금 (서브: 예금 / 적금)
         {
-          key: 'savings', icon: '💰', title: '예적금', desc: '월 납입 + 이율 → 만기금',
+          key: 'savings', icon: '💰', title: '예적금', desc: '예금·적금 만기 수령액',
+          subTypes: [
+            { v: 'install', t: '적금 (월 납입)' },
+            { v: 'deposit', t: '예금 (단순 예치)' }
+          ],
+          defaultSubType: 'install',
+          fieldsBySubType: {
+            install: [
+              { key: 'monthly', label: '월 납입액', unit: '만원', val: 50 },
+              { key: 'rate',    label: '연 이율',  unit: '%',   val: 3.5, step: 0.1 },
+              { key: 'years',   label: '납입 기간', unit: '년',  val: 3, integer: true },
+              { key: 'tax',     label: '과세 구분', select: CALC_TAX_OPTS, val: 'normal' }
+            ],
+            deposit: [
+              { key: 'amount', label: '예치 금액', unit: '만원', val: 5000 },
+              { key: 'rate',   label: '연 이율',  unit: '%',   val: 3.5, step: 0.1 },
+              { key: 'years',  label: '예치 기간', unit: '년',  val: 3, integer: true },
+              { key: 'tax',    label: '과세 구분', select: CALC_TAX_OPTS, val: 'normal' }
+            ]
+          }
+        },
+        // 2. 대출 상환 설계 (3 방식 동시 비교)
+        {
+          key: 'loan', icon: '🏦', title: '대출 상환 설계', desc: '원리금/원금/만기일시 3종 비교',
           fields: [
-            { key: 'monthly', label: '월 납입액', unit: '만원', val: 50 },
-            { key: 'months',  label: '가입 기간', unit: '개월', val: 36, integer: true },
-            { key: 'rate',    label: '연 이율',  unit: '%',   val: 3.5, step: 0.1 }
+            { key: 'principal', label: '대출 원금', unit: '만원', val: 30000 },
+            { key: 'rate',      label: '연 이자율', unit: '%',   val: 4.5, step: 0.1 },
+            { key: 'years',     label: '대출 기간', unit: '년',  val: 10, integer: true }
           ]
         },
+        // 3. 전월세 전환 설계 (서브: 전세→월세 / 월세→전세)
         {
-          key: 'loan', icon: '🏦', title: '대출', desc: '원금 + 이율 → 월 상환액',
+          key: 'leaseConv', icon: '🏘️', title: '전·월세 전환 설계', desc: '전세↔월세 전환 + 유불리',
+          subTypes: [
+            { v: 'toMonthly', t: '전세 → 월세 전환' },
+            { v: 'toJeonse',  t: '월세 → 전세 전환' }
+          ],
+          defaultSubType: 'toMonthly',
+          fieldsBySubType: {
+            toMonthly: [
+              { key: 'jeonse',     label: '전세 보증금',  unit: '만원', val: 50000 },
+              { key: 'newDeposit', label: '월세 보증금',  unit: '만원', val: 10000 },
+              { key: 'convRate',   label: '전월세 전환율', unit: '%',   val: 5.5, step: 0.1 },
+              { key: 'yieldRate',  label: '투자 기대수익률', unit: '%', val: 3.0, step: 0.1 }
+            ],
+            toJeonse: [
+              { key: 'deposit',    label: '월세 보증금',  unit: '만원', val: 10000 },
+              { key: 'monthly',    label: '월세',         unit: '만원', val: 100 },
+              { key: 'convRate',   label: '전월세 전환율', unit: '%',   val: 5.5, step: 0.1 },
+              { key: 'yieldRate',  label: '투자 기대수익률', unit: '%', val: 3.0, step: 0.1 }
+            ]
+          }
+        },
+        // 4. 부동산 세금 (서브: 취득 / 보유 / 양도)
+        {
+          key: 'realestate', icon: '🏠', title: '부동산 세금', desc: '취득세·보유세·양도세 통합',
+          subTypes: [
+            { v: 'acquire', t: '취득세' },
+            { v: 'hold',    t: '보유세' },
+            { v: 'transfer',t: '양도세' }
+          ],
+          defaultSubType: 'transfer',
+          fieldsBySubType: {
+            acquire: [
+              { key: 'price',  label: '취득 가액', unit: '만원', val: 80000 },
+              { key: 'houses', label: '주택수', select: [
+                { v: '1',  t: '1주택 (실수요)' },
+                { v: '2',  t: '2주택 (조정대상)' },
+                { v: '3+', t: '3주택+ (중과)' }
+              ], val: '1' },
+              { key: 'isFirst', label: '생애최초 주택', select: [
+                { v: 'no', t: '해당 없음' },
+                { v: 'yes', t: '생애최초 (취득세 50% 감면)' }
+              ], val: 'no' }
+            ],
+            hold: [
+              { key: 'gongsi', label: '주택 공시가격', unit: '만원', val: 80000 },
+              { key: 'age',    label: '연령',          unit: '세',  val: 50, integer: true },
+              { key: 'years',  label: '보유 기간',     unit: '년',  val: 5, integer: true }
+            ],
+            transfer: [
+              { key: 'sell',       label: '양도 가액',       unit: '만원', val: 120000 },
+              { key: 'buy',        label: '취득 가액',       unit: '만원', val: 80000 },
+              { key: 'expense',    label: '필요 경비',       unit: '만원', val: 1000 },
+              { key: 'years',      label: '보유 기간',       unit: '년',  val: 5, integer: true },
+              { key: 'liveYears',  label: '거주 기간',       unit: '년',  val: 5, integer: true },
+              { key: 'isOneHouse', label: '1세대 1주택', select: [
+                { v: 'no',  t: '비과세 미적용 (다주택 또는 미요건)' },
+                { v: 'yes', t: '1세대 1주택 비과세 (12억 이하)' }
+              ], val: 'no' }
+            ]
+          }
+        },
+        // 5. 상속·증여세 (서브: 증여 / 상속)
+        {
+          key: 'inherit', icon: '👨‍👩‍👧', title: '상속·증여세', desc: '증여세·상속세 누진 세금',
+          subTypes: [
+            { v: 'gift',     t: '증여세' },
+            { v: 'estate',   t: '상속세' }
+          ],
+          defaultSubType: 'gift',
+          fieldsBySubType: {
+            gift: [
+              { key: 'amount',   label: '증여 가액',        unit: '만원', val: 30000 },
+              { key: 'prior',    label: '10년 내 사전증여', unit: '만원', val: 0 },
+              { key: 'relation', label: '수증자 관계', select: [
+                { v: 'spouse', t: '배우자 (공제 6억 원)' },
+                { v: 'direct', t: '직계존비속 성년 (공제 5천만 원)' },
+                { v: 'minor',  t: '미성년 직계비속 (공제 2천만 원)' },
+                { v: 'other',  t: '기타 친족 (공제 1천만 원)' }
+              ], val: 'direct' }
+            ],
+            estate: [
+              { key: 'amount',     label: '상속 재산',     unit: '만원', val: 200000 },
+              { key: 'debt',       label: '공제 채무',     unit: '만원', val: 0 },
+              { key: 'funeral',    label: '장례비',        unit: '만원', val: 500 },
+              { key: 'children',   label: '자녀 수',       unit: '명',  val: 2, integer: true },
+              { key: 'spouseAlive',label: '배우자 생존',  select: [
+                { v: 'yes', t: '배우자 생존 (공제 최대 30억)' },
+                { v: 'no',  t: '배우자 사망 또는 부재' }
+              ], val: 'yes' }
+            ]
+          }
+        },
+        // 6. 은퇴자금 설계
+        {
+          key: 'retire', icon: '🌅', title: '은퇴자금 설계', desc: '월 생활비 + 물가 → 필요 자산',
           fields: [
-            { key: 'principal', label: '대출 원금', unit: '만원', val: 10000 },
-            { key: 'months',    label: '상환 기간', unit: '개월', val: 60, integer: true },
-            { key: 'rate',      label: '연 이율',  unit: '%',   val: 4.5, step: 0.1 }
+            { key: 'age',        label: '현재 나이',     unit: '세',   val: 40, integer: true },
+            { key: 'retireAge',  label: '은퇴 목표 나이', unit: '세',  val: 60, integer: true },
+            { key: 'lifeExp',    label: '기대 수명',     unit: '세',   val: 90, integer: true },
+            { key: 'monthLife',  label: '희망 월 생활비', unit: '만원', val: 300 },
+            { key: 'inflate',    label: '물가상승률',     unit: '%',   val: 2.5, step: 0.1 },
+            { key: 'yieldRate',  label: '투자 수익률',   unit: '%',   val: 5.0, step: 0.1 }
           ]
         },
+        // 7. 목적자금 설계 (3종 비교: 적금 / 펀드 / 변액)
         {
-          key: 'retire', icon: '🌅', title: '은퇴 자산', desc: '현재 자산 + 월 적립 → FV',
+          key: 'goal', icon: '🎯', title: '목적자금 설계', desc: '적금·펀드·변액 3종 비교',
           fields: [
-            { key: 'current', label: '현재 자산',  unit: '만원', val: 5000 },
-            { key: 'monthly', label: '월 적립액',  unit: '만원', val: 100 },
-            { key: 'years',   label: '운용 기간',  unit: '년',   val: 20, integer: true },
-            { key: 'rate',    label: '연 수익률',  unit: '%',   val: 5.0, step: 0.1 }
+            { key: 'target',   label: '목표 금액',     unit: '만원', val: 100000 },
+            { key: 'years',    label: '준비 기간',     unit: '년',   val: 10, integer: true },
+            { key: 'rateA',    label: '적금 금리',     unit: '%',   val: 3.5, step: 0.1 },
+            { key: 'rateF',    label: '펀드 기대수익률', unit: '%', val: 6.0, step: 0.1 },
+            { key: 'rateV',    label: '변액 기대수익률', unit: '%', val: 7.0, step: 0.1 }
           ]
         },
+        // 8. 달러종신보험 시뮬레이터
         {
-          key: 'realestate', icon: '🏠', title: '부동산 양도세', desc: '양도 + 보유 → 세금',
+          key: 'dollarLife', icon: '💵', title: '달러종신보험', desc: '환율 시나리오 + 환차익률',
           fields: [
-            { key: 'sell',  label: '양도 가액',  unit: '만원', val: 80000 },
-            { key: 'buy',   label: '취득 가액',  unit: '만원', val: 50000 },
-            { key: 'years', label: '보유 기간',  unit: '년',   val: 5, integer: true }
+            { key: 'monthlyUSD', label: '월 납입 보험료', unit: '$',     val: 200 },
+            { key: 'payYears',   label: '납입 기간',       unit: '년',  val: 20, integer: true },
+            { key: 'currentFx',  label: '현재 환율',       unit: '원/$', val: 1380 },
+            { key: 'avgFx',      label: 'AI 평균 환율',   unit: '원/$', val: 1450 },
+            { key: 'downFx',     label: '비관 시나리오',  unit: '원/$', val: 1200 },
+            { key: 'upFx',       label: '낙관 시나리오',  unit: '원/$', val: 1700 }
           ]
         },
+        // 9. 실손보험 갱신 시뮬레이션
         {
-          key: 'inherit', icon: '👨‍👩‍👧', title: '상속·증여세', desc: '금액 + 관계 → 누진 세금',
+          key: 'silson', icon: '🩺', title: '실손보험 갱신', desc: '연도별 보험료 추이 시뮬레이션',
           fields: [
-            { key: 'amount',   label: '증여(상속) 금액', unit: '만원', val: 30000 },
-            { key: 'relation', label: '관계', select: [
-              { v: 'direct',  t: '직계존비속 (공제 5,000만 원)' },
-              { v: 'spouse',  t: '배우자 (공제 6억 원)' },
-              { v: 'other',   t: '기타 (공제 1,000만 원)' }
-            ], val: 'direct' }
+            { key: 'current',  label: '현재 월 보험료', unit: '원',  val: 35000 },
+            { key: 'age',      label: '현재 나이',     unit: '세',  val: 45, integer: true },
+            { key: 'expiry',   label: '보장 만기',     unit: '세',  val: 100, integer: true },
+            { key: 'raisePct', label: '연 인상률',     unit: '%',  val: 7.0, step: 0.1 },
+            { key: 'cycle',    label: '갱신 주기',     unit: '년',  val: 1, integer: true }
           ]
         },
+        // 10. 갱신형 vs 비갱신형 보험료 비교
         {
-          key: 'goal', icon: '🎯', title: '목적 자금', desc: '목표 + 기간 → 월 적립',
+          key: 'renewCmp', icon: '⚖️', title: '갱신 vs 비갱신', desc: '평생 총 납입 비교',
           fields: [
-            { key: 'target', label: '목표 금액',  unit: '만원', val: 100000 },
-            { key: 'years',  label: '기간',       unit: '년',   val: 10, integer: true },
-            { key: 'rate',   label: '연 수익률',  unit: '%',   val: 4.0, step: 0.1 }
+            { key: 'renewM',   label: '갱신형 월 보험료',   unit: '원',  val: 30000 },
+            { key: 'fixedM',   label: '비갱신형 월 보험료', unit: '원',  val: 50000 },
+            { key: 'age',      label: '현재 나이',          unit: '세',  val: 40, integer: true },
+            { key: 'payYears', label: '비갱신 납입 기간',   unit: '년',  val: 20, integer: true },
+            { key: 'expiry',   label: '보장 만기',          unit: '세',  val: 100, integer: true },
+            { key: 'raisePct', label: '평균 갱신 상승률',   unit: '%',  val: 8.0, step: 0.1 },
+            { key: 'cycle',    label: '갱신 주기',          unit: '년',  val: 3, integer: true }
           ]
         },
+        // 11. 종합소득세 시뮬레이터
         {
-          key: 'dollar', icon: '💵', title: '달러 환산', desc: '환율 -15% / 현재 / +15% 비교',
+          key: 'income', icon: '🧾', title: '종합소득세', desc: '종합 vs 분리 과세 비교',
           fields: [
-            { key: 'krw',  label: '원화 금액',  unit: '만원', val: 1000 },
-            { key: 'rate', label: '현재 환율',  unit: '원/$', val: 1380 }
-          ]
-        },
-        {
-          key: 'lease', icon: '🔑', title: '전·월세 부담', desc: '보증금+월세 → 총 비용',
-          fields: [
-            { key: 'deposit', label: '보증금',    unit: '만원',  val: 10000 },
-            { key: 'monthly', label: '월세',      unit: '만원',  val: 80 },
-            { key: 'mgmt',    label: '관리비(월)', unit: '만원',  val: 15 },
-            { key: 'months',  label: '거주 기간', unit: '개월',  val: 24, integer: true }
-          ]
-        },
-        {
-          key: 'income', icon: '📊', title: '종합소득세', desc: '연 소득 → 누진 세금',
-          fields: [
-            { key: 'income',    label: '연 소득',      unit: '만원', val: 8000 },
-            { key: 'deduction', label: '공제 합계',    unit: '만원', val: 1500 }
+            { key: 'salary',    label: '근로(총급여)', unit: '만원', val: 8000 },
+            { key: 'interest',  label: '이자소득',     unit: '만원', val: 500 },
+            { key: 'dividend',  label: '배당소득',     unit: '만원', val: 800 },
+            { key: 'business',  label: '사업소득금액', unit: '만원', val: 0 },
+            { key: 'pension',   label: '연금소득금액', unit: '만원', val: 0 },
+            { key: 'other',     label: '기타소득금액', unit: '만원', val: 0 },
+            { key: 'deduction', label: '인적·기본공제', unit: '만원', val: 1500 }
           ]
         }
       ];
@@ -10623,190 +10823,578 @@
       }
       function _solCalcNum(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
       function _solCalcInt(v) { var n = parseInt(v, 10); return isFinite(n) && n > 0 ? n : 0; }
+      function _solCalcTaxRate(t) { return t === 'none' ? 0 : (t === 'low' ? 0.095 : 0.154); }
+      function _solCalcTaxLabel(t) { return t === 'none' ? '비과세' : (t === 'low' ? '세금우대 9.5%' : '일반과세 15.4%'); }
 
-      // ─── 9 모듈 계산 함수 ───
-      function _solCalcCompute(key, inp) {
+      // 종합소득 누진세 (2024+ 8단계) — 과세표준 단위: 만원, 누진공제 차감 방식
+      function _solCalcIncTax(tt) {
+        if (tt <= 0) return 0;
+        var t;
+        if (tt <= 1400) t = tt * 0.06;
+        else if (tt <= 5000) t = tt * 0.15 - 126;
+        else if (tt <= 8800) t = tt * 0.24 - 576;
+        else if (tt <= 15000) t = tt * 0.35 - 1544;
+        else if (tt <= 30000) t = tt * 0.38 - 1994;
+        else if (tt <= 50000) t = tt * 0.40 - 2594;
+        else if (tt <= 100000) t = tt * 0.42 - 3594;
+        else t = tt * 0.45 - 6594;
+        return t < 0 ? 0 : t;
+      }
+      // 상속·증여 누진세 (5단계) — 단위: 만원
+      function _solCalcGiftTax(tt) {
+        if (tt <= 0) return 0;
+        if (tt <= 10000)  return tt * 0.1;
+        if (tt <= 50000)  return tt * 0.2 - 1000;
+        if (tt <= 100000) return tt * 0.3 - 6000;
+        if (tt <= 300000) return tt * 0.4 - 16000;
+        return tt * 0.5 - 46000;
+      }
+
+      // ─── 11 메인 (+ 서브타입) 계산 dispatcher ───
+      function _solCalcCompute(key, inp, subType) {
+        // ───────────── 1. 예적금 ─────────────
         if (key === 'savings') {
-          var m = _solCalcNum(inp.monthly), n = _solCalcInt(inp.months), r = _solCalcNum(inp.rate) / 100;
-          var principal = m * n;
-          var interest = m * (n * (n + 1) / 2) * (r / 12);
-          var tax = interest * 0.154;
-          var net = interest - tax;
+          var taxKey = inp.tax || 'normal';
+          var taxR = _solCalcTaxRate(taxKey);
+          var rate = _solCalcNum(inp.rate) / 100;
+          var years = _solCalcInt(inp.years);
+          if (subType === 'deposit') {
+            var amt = _solCalcNum(inp.amount);
+            var interest = amt * rate * years; // 단리 예금
+            var taxAmt = interest * taxR;
+            var net = interest - taxAmt;
+            return {
+              bigLabel: '만기 수령액 (세후)', big: amt + net, unit: '만원',
+              rows: [
+                { lbl: '예치 금액', val: _solCalcFmt(amt) + ' 만원' },
+                { lbl: '세전 이자', val: _solCalcFmt(interest) + ' 만원' },
+                { lbl: '이자 소득세 (' + _solCalcTaxLabel(taxKey) + ')', val: '-' + _solCalcFmt(taxAmt) + ' 만원' },
+                { lbl: '세후 이자', val: _solCalcFmt(net) + ' 만원' }
+              ],
+              note: '※ 단리 예금. 만기 일시지급 가정. ' + _solCalcTaxLabel(taxKey)
+            };
+          }
+          // install 적금 (단리)
+          var monthly = _solCalcNum(inp.monthly);
+          var months = years * 12;
+          var principal = monthly * months;
+          var interest2 = monthly * (months * (months + 1) / 2) * (rate / 12);
+          var taxAmt2 = interest2 * taxR;
+          var net2 = interest2 - taxAmt2;
           return {
-            bigLabel: '만기 수령액 (세후)', big: principal + net, unit: '만원',
+            bigLabel: '만기 수령액 (세후)', big: principal + net2, unit: '만원',
             rows: [
-              { lbl: '원금 합계', val: _solCalcFmt(principal) + ' 만원' },
-              { lbl: '세전 이자', val: _solCalcFmt(interest) + ' 만원' },
-              { lbl: '이자 소득세 (15.4%)', val: '-' + _solCalcFmt(tax) + ' 만원' }
+              { lbl: '총 납입액', val: _solCalcFmt(principal) + ' 만원 (' + months + ' 회)' },
+              { lbl: '세전 이자', val: _solCalcFmt(interest2) + ' 만원' },
+              { lbl: '이자 소득세 (' + _solCalcTaxLabel(taxKey) + ')', val: '-' + _solCalcFmt(taxAmt2) + ' 만원' },
+              { lbl: '세후 이자', val: _solCalcFmt(net2) + ' 만원' }
             ],
-            note: '※ 단리 적금 계산. 세전 이자에 이자 소득세 15.4% 적용'
+            note: '※ 단리 적금 (단리이자 = 월액 × n(n+1)/2 × r/12). ' + _solCalcTaxLabel(taxKey)
           };
         }
+
+        // ───────────── 2. 대출 (3 방식 비교) ─────────────
         if (key === 'loan') {
-          var P = _solCalcNum(inp.principal), N = _solCalcInt(inp.months), R = _solCalcNum(inp.rate) / 100 / 12;
-          var pmt = R === 0 ? P / N : P * (R * Math.pow(1+R, N)) / (Math.pow(1+R, N) - 1);
-          var total = pmt * N;
+          var P = _solCalcNum(inp.principal);
+          var Y = _solCalcInt(inp.years);
+          var N = Y * 12;
+          var R = _solCalcNum(inp.rate) / 100 / 12;
+          // (a) 원리금균등 — PMT
+          var pmtEqual = R === 0 ? P / N : P * (R * Math.pow(1+R, N)) / (Math.pow(1+R, N) - 1);
+          var totalEqual = pmtEqual * N;
+          // (b) 원금균등 — 초회 = P/N + P*R, 이후 감소
+          var firstPrincEqual = P / N + P * R;
+          var lastPrincEqual = P / N + (P / N) * R;
+          var totalInterestPrincEqual = (P / N * N) + P * R * (N + 1) / 2; // sum
+          var totalPrincEqual = P + P * R * (N + 1) / 2;
+          // (c) 만기일시 — 월 이자만, 만기 원금
+          var bulletMonthly = P * R;
+          var totalBullet = bulletMonthly * N + P;
+          // Best (작은 총 상환액)
+          var totals = [
+            { key: 'equal', total: totalEqual },
+            { key: 'principal', total: totalPrincEqual },
+            { key: 'bullet', total: totalBullet }
+          ];
+          totals.sort(function (a, b) { return a.total - b.total; });
+          var bestKey = totals[0].key;
           return {
-            bigLabel: '월 상환액', big: pmt, unit: '만원',
+            bigLabel: '원리금균등 월 상환액', big: pmtEqual, unit: '만원',
+            multi: [
+              { lbl: '원리금균등 월', val: _solCalcFmt(pmtEqual) + ' 만원', best: bestKey === 'equal' },
+              { lbl: '원금균등 초회', val: _solCalcFmt(firstPrincEqual) + ' 만원', best: bestKey === 'principal' },
+              { lbl: '만기일시 월이자', val: _solCalcFmt(bulletMonthly) + ' 만원', best: bestKey === 'bullet' }
+            ],
             rows: [
               { lbl: '대출 원금', val: _solCalcFmt(P) + ' 만원' },
-              { lbl: '총 상환액', val: _solCalcFmt(total) + ' 만원' },
-              { lbl: '총 이자',   val: _solCalcFmt(total - P) + ' 만원' },
-              { lbl: '상환 기간', val: N + ' 개월' }
+              { lbl: '대출 기간', val: Y + ' 년 (' + N + ' 회)' },
+              { lbl: '원리금균등 총상환', val: _solCalcFmt(totalEqual) + ' 만원 (이자 ' + _solCalcFmt(totalEqual - P) + ')' },
+              { lbl: '원금균등 총상환',  val: _solCalcFmt(totalPrincEqual) + ' 만원 (이자 ' + _solCalcFmt(totalPrincEqual - P) + ', 말회 ' + _solCalcFmt(lastPrincEqual) + ')' },
+              { lbl: '만기일시 총상환',  val: _solCalcFmt(totalBullet) + ' 만원 (이자 ' + _solCalcFmt(totalBullet - P) + ', 만기 원금 ' + _solCalcFmt(P) + ')' }
             ],
-            note: '※ 원리금 균등상환 방식 (PMT = P × r(1+r)ⁿ / ((1+r)ⁿ-1))'
+            note: '※ 3종 비교 — 총 상환액 최소 방식이 🟢 표시. 실제 선택은 현금흐름·세제·중도상환 가능성 고려 필요'
           };
         }
-        if (key === 'retire') {
-          var PV = _solCalcNum(inp.current), PMT = _solCalcNum(inp.monthly),
-              Y = _solCalcInt(inp.years), rate = _solCalcNum(inp.rate) / 100;
-          var nn = Y * 12, rr = rate / 12;
-          var fvPV = PV * Math.pow(1 + rr, nn);
-          var fvAn = rr === 0 ? PMT * nn : PMT * ((Math.pow(1 + rr, nn) - 1) / rr);
-          var FV = fvPV + fvAn;
+
+        // ───────────── 3. 전월세 전환 ─────────────
+        if (key === 'leaseConv') {
+          var convRate = _solCalcNum(inp.convRate) / 100;
+          var yieldRate = _solCalcNum(inp.yieldRate) / 100;
+          if (subType === 'toJeonse') {
+            var dep = _solCalcNum(inp.deposit);
+            var mon = _solCalcNum(inp.monthly);
+            var newJeonse = dep + (mon * 12) / convRate;
+            var jeonseLost = newJeonse * yieldRate; // 전세 전환 시 보증금 운용 손실(연)
+            var monthlyTotal = mon * 12;
+            var advice = jeonseLost < monthlyTotal ? '전세 전환 유리 (월세 부담 > 보증금 기회비용)' : '월세 유지 유리 (보증금 운용 가능성 ↑)';
+            return {
+              bigLabel: '월세 → 전세 전환 보증금', big: newJeonse, unit: '만원',
+              rows: [
+                { lbl: '월세 보증금 (입력)', val: _solCalcFmt(dep) + ' 만원' },
+                { lbl: '월세 (입력)',        val: _solCalcFmt(mon) + ' 만원/월' },
+                { lbl: '연간 월세 부담',     val: _solCalcFmt(monthlyTotal) + ' 만원' },
+                { lbl: '전세 보증금 기회비용 (연 ' + (yieldRate*100).toFixed(1) + '%)', val: _solCalcFmt(jeonseLost) + ' 만원' },
+                { lbl: '유불리 분석',        val: advice }
+              ],
+              note: '※ 전환 공식: 전세 = 월세보증금 + (월세 × 12) / 전월세 전환율'
+            };
+          }
+          // toMonthly 전세→월세
+          var je = _solCalcNum(inp.jeonse);
+          var nd = _solCalcNum(inp.newDeposit);
+          var convertMonthly = (je - nd) * convRate / 12;
+          var newDepYield = nd * yieldRate; // 보증금 일부 회수 운용 수익(연)
+          var jeonseYield = je * yieldRate; // 기존 전세 보증금 운용 가능 수익(연)
+          var monthlyAnnual = convertMonthly * 12;
+          var netCost = monthlyAnnual - (jeonseYield - newDepYield);
+          var advice2 = netCost < 0 ? '월세 전환 유리 (운용 수익 > 월세 부담)' : '전세 유지 유리 (월세 부담이 운용 수익 초과)';
           return {
-            bigLabel: Y + '년 후 은퇴 자산', big: FV, unit: '만원',
+            bigLabel: '전세 → 월세 환산액', big: convertMonthly, unit: '만원/월',
             rows: [
-              { lbl: '현재 자산', val: _solCalcFmt(PV) + ' 만원' },
-              { lbl: '월 적립 누계', val: _solCalcFmt(PMT * nn) + ' 만원' },
-              { lbl: '운용 수익', val: _solCalcFmt(FV - PV - PMT * nn) + ' 만원' }
+              { lbl: '전세 보증금 (입력)',  val: _solCalcFmt(je) + ' 만원' },
+              { lbl: '월세 보증금 (입력)',  val: _solCalcFmt(nd) + ' 만원' },
+              { lbl: '연간 월세 부담',      val: _solCalcFmt(monthlyAnnual) + ' 만원' },
+              { lbl: '보증금 차액 운용 수익 (연 ' + (yieldRate*100).toFixed(1) + '%)', val: _solCalcFmt(jeonseYield - newDepYield) + ' 만원' },
+              { lbl: '유불리 분석',         val: advice2 }
             ],
-            note: '※ FV = PV(1+r)ⁿ + PMT × ((1+r)ⁿ-1)/r, 월 복리 가정'
+            note: '※ 전환 공식: 월세 = (전세 - 월세보증금) × 전월세 전환율 / 12'
           };
         }
+
+        // ───────────── 4. 부동산 세금 ─────────────
         if (key === 'realestate') {
-          var s = _solCalcNum(inp.sell), b = _solCalcNum(inp.buy), yy = _solCalcInt(inp.years);
-          var gain = s - b;
+          // (a) 취득세
+          if (subType === 'acquire') {
+            var price = _solCalcNum(inp.price);
+            var hh = inp.houses || '1';
+            var base;
+            if (hh === '1') {
+              if (price <= 60000) base = 0.01;
+              else if (price <= 90000) base = 0.02;
+              else base = 0.03;
+            } else if (hh === '2') base = 0.08;
+            else base = 0.12;
+            if (inp.isFirst === 'yes' && hh === '1') base = Math.max(base * 0.5, 0.005);
+            var acqTax = price * base;
+            var eduTax = acqTax * 0.1;
+            var agrTax = base >= 0.02 ? price * 0.002 : 0;
+            var total = acqTax + eduTax + agrTax;
+            return {
+              bigLabel: '취득세 합계', big: total, unit: '만원',
+              rows: [
+                { lbl: '취득 가액', val: _solCalcFmt(price) + ' 만원' },
+                { lbl: '적용 세율', val: (base * 100).toFixed(1) + '%' + (inp.isFirst === 'yes' ? ' (생애최초 50% 감면)' : '') },
+                { lbl: '취득세 본세',  val: _solCalcFmt(acqTax) + ' 만원' },
+                { lbl: '지방교육세 (10%)', val: _solCalcFmt(eduTax) + ' 만원' },
+                { lbl: '농어촌특별세 (0.2%)', val: _solCalcFmt(agrTax) + ' 만원' }
+              ],
+              note: '※ 주택 기준 단순 누진(6억/9억). 조정대상지역·1세대1주택 특례·전용85㎡ 농특세 면제 등 미반영'
+            };
+          }
+          // (b) 보유세
+          if (subType === 'hold') {
+            var gongsi = _solCalcNum(inp.gongsi);
+            var age = _solCalcInt(inp.age);
+            var hy = _solCalcInt(inp.years);
+            var fairValue = gongsi * 0.6; // 공정시장가액 60%
+            // 재산세 누진 (만원 기준)
+            var propRate;
+            if (fairValue <= 6000)  propRate = 0.001;
+            else if (fairValue <= 15000) propRate = 0.0015;
+            else if (fairValue <= 30000) propRate = 0.0025;
+            else propRate = 0.004;
+            var propertyTax = fairValue * propRate;
+            // 종부세 (11억 초과 단순)
+            var jongbu = 0;
+            if (gongsi > 110000) {
+              var excess = gongsi - 110000;
+              if (excess <= 60000) jongbu = excess * 0.005;
+              else if (excess <= 110000) jongbu = 300 + (excess - 60000) * 0.007;
+              else jongbu = 300 + 350 + (excess - 110000) * 0.01;
+            }
+            // 고령자·장기보유 세액공제 단순화
+            var elderDed = 0, longDed = 0;
+            if (age >= 60) elderDed = jongbu * (age >= 70 ? 0.4 : (age >= 65 ? 0.3 : 0.2));
+            if (hy >= 5)  longDed = jongbu * (hy >= 15 ? 0.5 : (hy >= 10 ? 0.4 : 0.2));
+            jongbu = Math.max(jongbu - elderDed - longDed, 0);
+            var totalHold = propertyTax + jongbu;
+            return {
+              bigLabel: '보유세 합계 (연)', big: totalHold, unit: '만원',
+              rows: [
+                { lbl: '공시 가격',  val: _solCalcFmt(gongsi) + ' 만원' },
+                { lbl: '공정시장가액 (60%)', val: _solCalcFmt(fairValue) + ' 만원' },
+                { lbl: '재산세 세율', val: (propRate * 100).toFixed(2) + '%' },
+                { lbl: '재산세',     val: _solCalcFmt(propertyTax) + ' 만원' },
+                { lbl: '종합부동산세', val: _solCalcFmt(jongbu) + ' 만원' + (age >= 60 || hy >= 5 ? ' (고령·장기 공제)' : '') }
+              ],
+              note: '※ 1주택 기준 단순화. 공정시장가액·세부담 상한·도시지역분·재산세과세특례 등 미반영'
+            };
+          }
+          // (c) 양도세
+          var sell = _solCalcNum(inp.sell), buy = _solCalcNum(inp.buy);
+          var expense = _solCalcNum(inp.expense), tyears = _solCalcInt(inp.years);
+          var liveY = _solCalcInt(inp.liveYears);
+          var gain = sell - buy - expense;
           if (gain <= 0) {
             return {
               bigLabel: '양도세', big: 0, unit: '만원',
               rows: [
-                { lbl: '양도 차익', val: _solCalcFmt(gain) + ' 만원' },
-                { lbl: '안내', val: '손실 또는 동가 거래' }
+                { lbl: '양도 차익 (필요경비 차감)', val: _solCalcFmt(gain) + ' 만원' },
+                { lbl: '안내', val: '손실 또는 동가 거래 — 양도세 없음' }
               ],
-              note: '※ 양도차익 0 이하 — 양도세 없음 (손실금은 다른 양도소득과 통산 가능)'
+              note: '※ 손실금은 다른 양도소득과 통산 가능 (5년 이월공제)'
             };
           }
+          // 1세대1주택 비과세 (12억 이하, 보유 2년 + 거주 2년)
+          if (inp.isOneHouse === 'yes' && tyears >= 2 && liveY >= 2 && sell <= 120000) {
+            return {
+              bigLabel: '양도세 (비과세)', big: 0, unit: '만원',
+              rows: [
+                { lbl: '양도 차익', val: _solCalcFmt(gain) + ' 만원' },
+                { lbl: '비과세 사유', val: '1세대 1주택 (12억 이하 + 보유 2년 + 거주 2년)' }
+              ],
+              note: '※ 12억 초과 부분은 고가주택 양도세 별도 적용. 조정대상지역 거주 요건 미반영'
+            };
+          }
+          // 장기보유특별공제
+          var ldc = 0;
+          if (tyears >= 15) ldc = 0.30;
+          else if (tyears >= 10) ldc = 0.20;
+          else if (tyears >= 5)  ldc = 0.10;
+          else if (tyears >= 3)  ldc = 0.06;
+          var taxable = gain * (1 - ldc) - 250;
+          if (taxable < 0) taxable = 0;
+          // 누진세율 (단기 보유 가산)
           var sr;
-          if (yy < 1) sr = 0.5;
-          else if (yy < 2) sr = 0.4;
-          else if (gain <= 1400) sr = 0.06;
-          else if (gain <= 5000) sr = 0.15;
-          else if (gain <= 8800) sr = 0.24;
-          else if (gain <= 15000) sr = 0.35;
-          else if (gain <= 30000) sr = 0.38;
-          else if (gain <= 50000) sr = 0.40;
-          else if (gain <= 100000) sr = 0.42;
-          else sr = 0.45;
-          var stax = gain * sr;
+          if (tyears < 1) sr = 0.5;
+          else if (tyears < 2) sr = 0.4;
+          else {
+            if (taxable <= 1400) sr = 0.06;
+            else if (taxable <= 5000) sr = 0.15;
+            else if (taxable <= 8800) sr = 0.24;
+            else if (taxable <= 15000) sr = 0.35;
+            else if (taxable <= 30000) sr = 0.38;
+            else if (taxable <= 50000) sr = 0.40;
+            else if (taxable <= 100000) sr = 0.42;
+            else sr = 0.45;
+          }
+          var stax = taxable * sr;
           var ltax = stax * 0.1;
+          var afterTax = sell - buy - expense - stax - ltax;
           return {
             bigLabel: '양도세 (지방세 포함)', big: stax + ltax, unit: '만원',
             rows: [
-              { lbl: '양도 차익', val: _solCalcFmt(gain) + ' 만원' },
-              { lbl: '적용 세율', val: (sr * 100).toFixed(0) + '%' + (yy < 2 ? ' (단기 보유)' : '') },
+              { lbl: '양도 차익 (경비 차감)', val: _solCalcFmt(gain) + ' 만원' },
+              { lbl: '장기보유특별공제 (' + (ldc * 100).toFixed(0) + '%)', val: '-' + _solCalcFmt(gain * ldc) + ' 만원' },
+              { lbl: '과세 표준', val: _solCalcFmt(taxable) + ' 만원' },
+              { lbl: '적용 세율', val: (sr * 100).toFixed(0) + '%' + (tyears < 2 ? ' (단기 보유)' : '') },
               { lbl: '양도소득세', val: _solCalcFmt(stax) + ' 만원' },
-              { lbl: '지방소득세 (10%)', val: _solCalcFmt(ltax) + ' 만원' }
+              { lbl: '지방소득세 (10%)', val: _solCalcFmt(ltax) + ' 만원' },
+              { lbl: '세후 실수령', val: _solCalcFmt(afterTax) + ' 만원' }
             ],
-            note: '※ 단순 누진 적용. 장기보유특별공제·1세대1주택 비과세·기본공제 250만 등 미반영'
+            note: '※ 기본공제 250만 적용. 다주택 중과·조정대상지역 추가과세·재차 양도 등 별도 적용'
           };
         }
+
+        // ───────────── 5. 상속·증여세 ─────────────
         if (key === 'inherit') {
-          var amt = _solCalcNum(inp.amount);
-          var rel = inp.relation || 'direct';
-          var ded = rel === 'spouse' ? 60000 : (rel === 'direct' ? 5000 : 1000);
-          var tx = Math.max(amt - ded, 0);
-          var itax;
-          if (tx <= 0) itax = 0;
-          else if (tx <= 10000) itax = tx * 0.1;
-          else if (tx <= 50000) itax = 1000 + (tx - 10000) * 0.2;
-          else if (tx <= 100000) itax = 9000 + (tx - 50000) * 0.3;
-          else if (tx <= 300000) itax = 24000 + (tx - 100000) * 0.4;
-          else itax = 104000 + (tx - 300000) * 0.5;
+          // (a) 증여세
+          if (subType === 'gift') {
+            var gAmt = _solCalcNum(inp.amount), gPrior = _solCalcNum(inp.prior);
+            var grel = inp.relation || 'direct';
+            var gDed = grel === 'spouse' ? 60000
+                     : (grel === 'direct' ? 5000
+                     : (grel === 'minor' ? 2000 : 1000));
+            var totalGift = gAmt + gPrior;
+            var gTaxable = Math.max(totalGift - gDed, 0);
+            var gRaw = _solCalcGiftTax(gTaxable);
+            var gReport = gRaw * 0.97; // 신고세액공제 3%
+            return {
+              bigLabel: '증여세 산출세액 (신고세액공제 적용)', big: gReport, unit: '만원',
+              rows: [
+                { lbl: '증여 가액', val: _solCalcFmt(gAmt) + ' 만원' },
+                { lbl: '10년 내 사전증여 합산', val: '+' + _solCalcFmt(gPrior) + ' 만원' },
+                { lbl: '관계 공제',  val: '-' + _solCalcFmt(gDed) + ' 만원' },
+                { lbl: '과세 표준',  val: _solCalcFmt(gTaxable) + ' 만원' },
+                { lbl: '산출세액 (누진)', val: _solCalcFmt(gRaw) + ' 만원' },
+                { lbl: '신고세액공제 (3%)', val: '-' + _solCalcFmt(gRaw * 0.03) + ' 만원' }
+              ],
+              note: '※ 누진세율 10/20/30/40/50% 5단계. 세대생략 할증·국외재산·창업자금 특례 등 별도 적용'
+            };
+          }
+          // (b) 상속세
+          var eAmt = _solCalcNum(inp.amount), eDebt = _solCalcNum(inp.debt);
+          var eFun = Math.min(_solCalcNum(inp.funeral), 1500); // 장례비 최대 1500만원
+          var children = _solCalcInt(inp.children);
+          var spouseAlive = inp.spouseAlive === 'yes';
+          // 과세 가액 = 상속재산 - 채무 - 장례비
+          var grossEstate = eAmt - eDebt - eFun;
+          if (grossEstate < 0) grossEstate = 0;
+          // 공제 단순화: 일괄공제 5억 + 배우자 공제 (생존 시 최대 30억) + 자녀당 5천만(미성년 등 무시)
+          var lumpDed = 50000; // 5억
+          var spouseDed = spouseAlive ? Math.min(grossEstate * 0.5, 300000) : 0; // 배우자 최대 30억 또는 절반
+          spouseDed = Math.max(spouseDed, spouseAlive ? 50000 : 0); // 최소 5억 보장 (배우자 생존 시)
+          var childDed = children * 5000;
+          // 일괄공제 5억 vs (기초+인적) 비교 → 큰 쪽 (단순화: lump 우선)
+          var totalDed = lumpDed + childDed + spouseDed;
+          var eTaxable = Math.max(grossEstate - totalDed, 0);
+          var eRaw = _solCalcGiftTax(eTaxable);
+          var eReport = eRaw * 0.97;
           return {
-            bigLabel: '증여·상속 산출 세액', big: itax, unit: '만원',
+            bigLabel: '상속세 산출세액 (신고세액공제 적용)', big: eReport, unit: '만원',
             rows: [
-              { lbl: '증여(상속) 금액', val: _solCalcFmt(amt) + ' 만원' },
-              { lbl: '관계 공제', val: '-' + _solCalcFmt(ded) + ' 만원' },
-              { lbl: '과세 표준', val: _solCalcFmt(tx) + ' 만원' }
+              { lbl: '상속 재산',     val: _solCalcFmt(eAmt) + ' 만원' },
+              { lbl: '채무·장례비 차감', val: '-' + _solCalcFmt(eDebt + eFun) + ' 만원' },
+              { lbl: '일괄공제',      val: '-' + _solCalcFmt(lumpDed) + ' 만원 (5억)' },
+              { lbl: '배우자 공제',   val: '-' + _solCalcFmt(spouseDed) + ' 만원' + (spouseAlive ? '' : ' (배우자 부재)') },
+              { lbl: '자녀 공제 (' + children + '명 × 5천)', val: '-' + _solCalcFmt(childDed) + ' 만원' },
+              { lbl: '과세 표준',     val: _solCalcFmt(eTaxable) + ' 만원' },
+              { lbl: '산출세액 (누진)', val: _solCalcFmt(eRaw) + ' 만원' }
             ],
-            note: '※ 누진세율 10/20/30/40/50% 5단계. 신고세액공제(3%) 등 별도 적용 가능'
+            note: '※ 일괄공제 5억 + 배우자 최대 30억(법정상속분 한도). 동거주택·가업상속·금융재산 공제 등 미반영'
           };
         }
-        if (key === 'goal') {
-          var T = _solCalcNum(inp.target), Yg = _solCalcInt(inp.years), rg = _solCalcNum(inp.rate) / 100;
-          var ng = Yg * 12, rgm = rg / 12;
-          var monthlyNeed = rgm === 0 ? T / ng : T * rgm / (Math.pow(1 + rgm, ng) - 1);
+
+        // ───────────── 6. 은퇴자금 설계 ─────────────
+        if (key === 'retire') {
+          var rAge = _solCalcInt(inp.age), rRet = _solCalcInt(inp.retireAge);
+          var rLife = _solCalcInt(inp.lifeExp);
+          var rMon = _solCalcNum(inp.monthLife);
+          var infl = _solCalcNum(inp.inflate) / 100;
+          var ry = _solCalcNum(inp.yieldRate) / 100;
+          var preY = Math.max(rRet - rAge, 1);
+          var postY = Math.max(rLife - rRet, 1);
+          // 은퇴 시점 인플레 적용 월 생활비
+          var inflatedMon = rMon * Math.pow(1 + infl, preY);
+          // 은퇴 후 실질 수익률
+          var realRate = (ry - infl);
+          var rMonthRate = realRate / 12;
+          var postMonths = postY * 12;
+          var neededAssets;
+          if (Math.abs(rMonthRate) < 1e-9) neededAssets = inflatedMon * postMonths;
+          else neededAssets = inflatedMon * (1 - Math.pow(1 + rMonthRate, -postMonths)) / rMonthRate;
+          // 납입 기간 동안 월 적립 필요액 (FV)
+          var preMonths = preY * 12;
+          var preRate = ry / 12;
+          var monthlyNeed;
+          if (preRate === 0) monthlyNeed = neededAssets / preMonths;
+          else monthlyNeed = neededAssets * preRate / (Math.pow(1 + preRate, preMonths) - 1);
           return {
             bigLabel: '월 필요 적립액', big: monthlyNeed, unit: '만원',
             rows: [
-              { lbl: '목표 금액', val: _solCalcFmt(T) + ' 만원' },
-              { lbl: '기간', val: Yg + ' 년 (' + ng + ' 개월)' },
-              { lbl: '연 수익률', val: (rg * 100).toFixed(1) + '%' },
-              { lbl: '총 적립 원금', val: _solCalcFmt(monthlyNeed * ng) + ' 만원' }
+              { lbl: '납입 기간',           val: preY + ' 년 (' + preMonths + ' 회)' },
+              { lbl: '은퇴 후 사용 기간',  val: postY + ' 년' },
+              { lbl: '은퇴 시점 월 생활비 (인플레 적용)', val: _solCalcFmt(inflatedMon) + ' 만원' },
+              { lbl: '필요 은퇴 자산 (현가)', val: _solCalcFmt(neededAssets) + ' 만원' }
             ],
-            note: '※ 월 복리 가정. PMT = FV × r / ((1+r)ⁿ-1)'
+            note: '※ 물가 ' + (infl * 100).toFixed(1) + '% / 운용 ' + (ry * 100).toFixed(1) + '% 가정. 실질 수익률 ' + ((ry - infl) * 100).toFixed(1) + '%로 은퇴 후 자산 운용'
           };
         }
-        if (key === 'dollar') {
-          var krwMan = _solCalcNum(inp.krw); // 만원
-          var er = _solCalcNum(inp.rate) || 1380;
-          var krw = krwMan * 10000;
-          var usdNow = krw / er;
-          var usdDown = krw / (er * 0.85);
-          var usdUp = krw / (er * 1.15);
+
+        // ───────────── 7. 목적자금 (3종 비교) ─────────────
+        if (key === 'goal') {
+          var T = _solCalcNum(inp.target), Y = _solCalcInt(inp.years);
+          var rA = _solCalcNum(inp.rateA) / 100;
+          var rF = _solCalcNum(inp.rateF) / 100;
+          var rV = _solCalcNum(inp.rateV) / 100;
+          var nn = Y * 12;
+          // 적금 (단리): T = monthly × n + monthly × n(n+1)/2 × r/12
+          // → monthly = T / (n + n(n+1)/2 × r/12)
+          var aMo = T / (nn + nn * (nn + 1) / 2 * (rA / 12));
+          // 펀드/변액 (월 복리): PMT = T × r/12 / ((1+r/12)^n - 1)
+          var fRate = rF / 12;
+          var vRate = rV / 12;
+          var fMo = fRate === 0 ? T / nn : T * fRate / (Math.pow(1 + fRate, nn) - 1);
+          var vMo = vRate === 0 ? T / nn : T * vRate / (Math.pow(1 + vRate, nn) - 1);
+          // Best (가장 적은 월 적립으로 목표 달성)
+          var monthlies = [
+            { k: 'a', m: aMo }, { k: 'f', m: fMo }, { k: 'v', m: vMo }
+          ];
+          monthlies.sort(function (x, y) { return x.m - y.m; });
+          var bestK = monthlies[0].k;
           return {
-            bigLabel: '현재 환율 환전 (USD)', bigStr: '$' + _solCalcFmt(usdNow), unit: 'USD',
-            rows: [
-              { lbl: '원화 (입력)', val: _solCalcFmt(krwMan) + ' 만원 (₩' + _solCalcFmt(krw) + ')' },
-              { lbl: '환율 -15% (₩' + (er * 0.85).toFixed(0) + ')', val: '$' + _solCalcFmt(usdDown) },
-              { lbl: '환율 현재 (₩' + er.toFixed(0) + ')', val: '$' + _solCalcFmt(usdNow) },
-              { lbl: '환율 +15% (₩' + (er * 1.15).toFixed(0) + ')', val: '$' + _solCalcFmt(usdUp) }
+            bigLabel: '월 필요 적립액 (변액 기준)', big: vMo, unit: '만원',
+            multi: [
+              { lbl: '적금 (' + (rA*100).toFixed(1) + '%)',  val: _solCalcFmt(aMo) + ' 만원', best: bestK === 'a' },
+              { lbl: '펀드 (' + (rF*100).toFixed(1) + '%)',  val: _solCalcFmt(fMo) + ' 만원', best: bestK === 'f' },
+              { lbl: '변액 (' + (rV*100).toFixed(1) + '%)',  val: _solCalcFmt(vMo) + ' 만원', best: bestK === 'v' }
             ],
-            note: '※ 3개 환율 시나리오 비교 — 향후 변동성 시뮬레이션 (가격 효과 ±15%)'
+            rows: [
+              { lbl: '목표 금액',    val: _solCalcFmt(T) + ' 만원' },
+              { lbl: '준비 기간',    val: Y + ' 년 (' + nn + ' 회)' },
+              { lbl: '적금 총 적립',  val: _solCalcFmt(aMo * nn) + ' 만원' },
+              { lbl: '펀드 총 적립',  val: _solCalcFmt(fMo * nn) + ' 만원' },
+              { lbl: '변액 총 적립',  val: _solCalcFmt(vMo * nn) + ' 만원' }
+            ],
+            note: '※ 수익률이 높을수록 월 적립액이 낮아짐 (복리 효과). 실제 수익률은 시장 상황에 따라 변동'
           };
         }
-        if (key === 'lease') {
-          var dep = _solCalcNum(inp.deposit), mn = _solCalcNum(inp.monthly),
-              mg = _solCalcNum(inp.mgmt), mnt = _solCalcInt(inp.months);
-          var opp = dep * 0.03 * (mnt / 12);
-          var rentTotal = (mn + mg) * mnt;
+
+        // ───────────── 8. 달러종신보험 ─────────────
+        if (key === 'dollarLife') {
+          var mUSD = _solCalcNum(inp.monthlyUSD);
+          var pY = _solCalcInt(inp.payYears);
+          var totUSD = mUSD * pY * 12;
+          var curFx = _solCalcNum(inp.currentFx) || 1380;
+          var avgFx = _solCalcNum(inp.avgFx) || curFx;
+          var dnFx = _solCalcNum(inp.downFx) || curFx * 0.9;
+          var upFx = _solCalcNum(inp.upFx) || curFx * 1.2;
+          // KRW 환산 (만원 단위로 결과 표시)
+          var krwAvg = (totUSD * avgFx) / 10000;
+          var krwDn = (totUSD * dnFx) / 10000;
+          var krwUp = (totUSD * upFx) / 10000;
+          var krwCur = (totUSD * curFx) / 10000;
+          // 환차익률
+          var gainPct = ((avgFx - curFx) / curFx) * 100;
+          // 손익분기 환율 (납입 평균 환율 기준 단순 = 현재)
+          var breakeven = curFx;
           return {
-            bigLabel: mnt + '개월 총 부담', big: rentTotal + opp, unit: '만원',
-            rows: [
-              { lbl: '월세+관리비 합계', val: _solCalcFmt(rentTotal) + ' 만원' },
-              { lbl: '보증금 기회비용 (연 3%)', val: _solCalcFmt(opp) + ' 만원' },
-              { lbl: '보증금 (회수 가능)', val: _solCalcFmt(dep) + ' 만원' }
+            bigLabel: 'AI 평균 환율 만기 가치', big: krwAvg, unit: '만원',
+            multi: [
+              { lbl: '비관 (₩' + _solCalcFmt(dnFx) + ')', val: _solCalcFmt(krwDn) + ' 만원' },
+              { lbl: '평균 (₩' + _solCalcFmt(avgFx) + ')', val: _solCalcFmt(krwAvg) + ' 만원', best: true },
+              { lbl: '낙관 (₩' + _solCalcFmt(upFx) + ')', val: _solCalcFmt(krwUp) + ' 만원' }
             ],
-            note: '※ 보증금은 계약 만료 시 회수. 기회비용은 보증금이 연 3% 수익을 낼 수 있다고 가정'
+            rows: [
+              { lbl: '월 납입',  val: '$' + _solCalcFmt(mUSD) + ' × ' + pY + '년 = $' + _solCalcFmt(totUSD) },
+              { lbl: '현재 환산', val: _solCalcFmt(krwCur) + ' 만원 (현재 환율)' },
+              { lbl: '환차익률 vs 현재', val: (gainPct >= 0 ? '+' : '') + gainPct.toFixed(1) + '%' },
+              { lbl: '손익분기 환율', val: '₩' + _solCalcFmt(breakeven) + ' / $' }
+            ],
+            note: '※ 달러 자산 분산 효과 + 환율 상승 시 추가 수익. 보장성 보험 특성상 사망 시 지급 보장 별도'
           };
         }
+
+        // ───────────── 9. 실손보험 갱신 시뮬레이션 ─────────────
+        if (key === 'silson') {
+          var sCur = _solCalcNum(inp.current); // 원
+          var sAge = _solCalcInt(inp.age);
+          var sExp = _solCalcInt(inp.expiry);
+          var sR = _solCalcNum(inp.raisePct) / 100;
+          var sCyc = Math.max(_solCalcInt(inp.cycle), 1);
+          var yrsLeft = Math.max(sExp - sAge, 1);
+          var cycles = Math.floor(yrsLeft / sCyc);
+          var finalMo = sCur * Math.pow(1 + sR, cycles);
+          // 누적 (단순: 매년 (1+r)^year × 12)
+          var totalSum = 0;
+          for (var yi = 0; yi < yrsLeft; yi++) {
+            var cIdx = Math.floor(yi / sCyc);
+            totalSum += sCur * Math.pow(1 + sR, cIdx) * 12;
+          }
+          return {
+            bigLabel: sExp + '세 시점 월 보험료', big: finalMo / 10000, unit: '만원',
+            rows: [
+              { lbl: '현재 월 보험료', val: _solCalcFmt(sCur) + ' 원' },
+              { lbl: '남은 기간',     val: yrsLeft + ' 년 (' + cycles + ' 회 갱신)' },
+              { lbl: '인상 배율',     val: '× ' + Math.pow(1 + sR, cycles).toFixed(2) },
+              { lbl: '만기 월 보험료', val: _solCalcFmt(finalMo) + ' 원' },
+              { lbl: '남은 기간 총 납입', val: _solCalcFmt(totalSum) + ' 원' }
+            ],
+            note: '※ 실손은 연 평균 ' + (sR * 100).toFixed(1) + '% 인상 가정 (' + sCyc + '년 주기). 4세대 이후 도수치료 등 비급여 갱신 변동성 ↑'
+          };
+        }
+
+        // ───────────── 10. 갱신 vs 비갱신 ─────────────
+        if (key === 'renewCmp') {
+          var rM = _solCalcNum(inp.renewM);
+          var fM = _solCalcNum(inp.fixedM);
+          var cAge = _solCalcInt(inp.age);
+          var pY2 = _solCalcInt(inp.payYears);
+          var cExp = _solCalcInt(inp.expiry);
+          var cR = _solCalcNum(inp.raisePct) / 100;
+          var cCyc = Math.max(_solCalcInt(inp.cycle), 1);
+          var yrs = Math.max(cExp - cAge, 1);
+          // 갱신형 누적
+          var renewSum = 0;
+          for (var yj = 0; yj < yrs; yj++) {
+            var ci = Math.floor(yj / cCyc);
+            renewSum += rM * Math.pow(1 + cR, ci) * 12;
+          }
+          // 비갱신 누적 (납입 기간 동안만)
+          var fixedSum = fM * pY2 * 12;
+          var diff = renewSum - fixedSum;
+          var winner = diff > 0 ? '비갱신형 유리' : '갱신형 유리';
+          return {
+            bigLabel: winner, big: Math.abs(diff) / 10000, unit: '만원 (차액)',
+            multi: [
+              { lbl: '갱신형 총 납입',   val: _solCalcFmt(renewSum) + ' 원', best: diff < 0 },
+              { lbl: '비갱신형 총 납입', val: _solCalcFmt(fixedSum) + ' 원', best: diff > 0 },
+              { lbl: '차액',             val: _solCalcFmt(Math.abs(diff)) + ' 원' }
+            ],
+            rows: [
+              { lbl: '비교 기간',         val: yrs + ' 년 (' + cAge + '세 → ' + cExp + '세)' },
+              { lbl: '갱신형 (' + cCyc + '년 주기 ' + (cR * 100).toFixed(0) + '% 인상)', val: _solCalcFmt(rM) + ' → ' + _solCalcFmt(rM * Math.pow(1 + cR, Math.floor(yrs / cCyc))) + ' 원' },
+              { lbl: '비갱신형 (' + pY2 + '년 완납 후 보장 지속)', val: _solCalcFmt(fM) + ' 원/월' }
+            ],
+            note: '※ 갱신형은 초기 부담 적지만 평생 누적 ↑. 비갱신은 납입 완료 후 추가 부담 0. 보장 동일 가정'
+          };
+        }
+
+        // ───────────── 11. 종합소득세 ─────────────
         if (key === 'income') {
-          var inc = _solCalcNum(inp.income), de = _solCalcNum(inp.deduction);
-          var tt = Math.max(inc - de, 0);
-          var itx;
-          if (tt <= 1400) itx = tt * 0.06;
-          else if (tt <= 5000) itx = tt * 0.15 - 126;
-          else if (tt <= 8800) itx = tt * 0.24 - 576;
-          else if (tt <= 15000) itx = tt * 0.35 - 1544;
-          else if (tt <= 30000) itx = tt * 0.38 - 1994;
-          else if (tt <= 50000) itx = tt * 0.40 - 2594;
-          else if (tt <= 100000) itx = tt * 0.42 - 3594;
-          else itx = tt * 0.45 - 6594;
-          if (itx < 0) itx = 0;
-          var ltax2 = itx * 0.1;
+          var sal = _solCalcNum(inp.salary);
+          var intr = _solCalcNum(inp.interest);
+          var div = _solCalcNum(inp.dividend);
+          var biz = _solCalcNum(inp.business);
+          var pen = _solCalcNum(inp.pension);
+          var oth = _solCalcNum(inp.other);
+          var ded = _solCalcNum(inp.deduction);
+          var fin = intr + div; // 금융소득
+          var totalInc = sal + fin + biz + pen + oth;
+          // 종합과세 (전체 합산)
+          var taxableAll = Math.max(totalInc - ded, 0);
+          var taxAll = _solCalcIncTax(taxableAll);
+          var localAll = taxAll * 0.1;
+          var totalAll = taxAll + localAll;
+          // 분리과세 (금융소득 < 2000만 시 가능)
+          var canSep = fin < 2000;
+          var sepFinTax = fin * 0.154; // 원천징수 15.4%
+          var sepOther = sal + biz + pen + oth - ded;
+          if (sepOther < 0) sepOther = 0;
+          var sepOtherTax = _solCalcIncTax(sepOther);
+          var sepLocal = sepOtherTax * 0.1;
+          var sepTotal = sepFinTax + sepOtherTax + sepLocal;
+          var advice = canSep
+            ? (sepTotal < totalAll ? '분리과세 유리 (절세 ' + _solCalcFmt(totalAll - sepTotal) + ' 만원)' : '종합과세 유리 (절세 ' + _solCalcFmt(sepTotal - totalAll) + ' 만원)')
+            : '금융소득 2,000만 초과 — 종합과세 의무';
           return {
-            bigLabel: '연 소득세 (지방세 포함)', big: itx + ltax2, unit: '만원',
-            rows: [
-              { lbl: '연 소득', val: _solCalcFmt(inc) + ' 만원' },
-              { lbl: '공제 합계', val: '-' + _solCalcFmt(de) + ' 만원' },
-              { lbl: '과세 표준', val: _solCalcFmt(tt) + ' 만원' },
-              { lbl: '소득세', val: _solCalcFmt(itx) + ' 만원' },
-              { lbl: '지방소득세 (10%)', val: _solCalcFmt(ltax2) + ' 만원' }
+            bigLabel: '종합과세 총 납부 (지방세 포함)', big: totalAll, unit: '만원',
+            multi: [
+              { lbl: '종합과세',  val: _solCalcFmt(totalAll) + ' 만원', best: !canSep || sepTotal >= totalAll },
+              { lbl: '분리과세',  val: canSep ? _solCalcFmt(sepTotal) + ' 만원' : '불가', best: canSep && sepTotal < totalAll }
             ],
-            note: '※ 2024+ 누진세율 8단계 (6/15/24/35/38/40/42/45%). 근로소득공제·인적공제 등 미반영'
+            rows: [
+              { lbl: '총 소득금액',  val: _solCalcFmt(totalInc) + ' 만원' },
+              { lbl: '인적·기본 공제', val: '-' + _solCalcFmt(ded) + ' 만원' },
+              { lbl: '과세 표준',    val: _solCalcFmt(taxableAll) + ' 만원' },
+              { lbl: '산출세액',     val: _solCalcFmt(taxAll) + ' 만원' },
+              { lbl: '지방소득세 (10%)', val: _solCalcFmt(localAll) + ' 만원' },
+              { lbl: '유불리 분석',   val: advice }
+            ],
+            note: '※ 누진 8단계 (6~45%). 금융소득 2,000만 초과 시 종합과세 의무. 근로소득공제·세액공제 미반영'
           };
         }
+
         return { bigLabel: '결과', big: 0, unit: '', rows: [], note: '' };
       }
 
@@ -10945,13 +11533,19 @@
         return modal;
       }
 
+      // 모달 현재 상태 — 서브타입 전환 시 form 재렌더에 사용
+      var _solCalcModalState = { mod: null, subType: null };
+
       function _solCalcOpenModal(key) {
         var mod = CALC_MODULES.filter(function (x) { return x.key === key; })[0];
         if (!mod) return;
         var modal = _solCalcEnsureModal();
         modal.querySelector('#sol-calc-modal-icon').textContent = mod.icon;
         modal.querySelector('#sol-calc-modal-name').textContent = mod.title;
-        modal.querySelector('#sol-calc-modal-body').innerHTML = _solCalcBuildFormHtml(mod);
+        var initialSub = mod.subTypes ? (mod.defaultSubType || mod.subTypes[0].v) : null;
+        _solCalcModalState.mod = mod;
+        _solCalcModalState.subType = initialSub;
+        modal.querySelector('#sol-calc-modal-body').innerHTML = _solCalcBuildFormHtml(mod, initialSub);
         _solCalcBindFormEvents(mod, modal);
         modal.classList.add('active');
       }
@@ -10961,10 +11555,27 @@
         if (modal) modal.classList.remove('active');
       }
 
-      function _solCalcBuildFormHtml(mod) {
+      function _solCalcGetFields(mod, subType) {
+        if (mod.subTypes && mod.fieldsBySubType) {
+          return mod.fieldsBySubType[subType] || mod.fieldsBySubType[mod.defaultSubType] || [];
+        }
+        return mod.fields || [];
+      }
+
+      function _solCalcBuildFormHtml(mod, subType) {
         var h = '';
+        // 서브타입 탭 (subTypes 있는 모듈만)
+        if (mod.subTypes && mod.subTypes.length) {
+          h += '<div class="sol-calc-subtype-tabs">';
+          mod.subTypes.forEach(function (st) {
+            var cls = (st.v === subType) ? ' active' : '';
+            h += '  <button type="button" class="sol-calc-subtype-btn' + cls + '" data-calc-subtype="' + _solEscHtml(st.v) + '">' + _solEscHtml(st.t) + '</button>';
+          });
+          h += '</div>';
+        }
         h += '<form class="sol-calc-form" id="sol-calc-form" onsubmit="return false;">';
-        mod.fields.forEach(function (f) {
+        var fields = _solCalcGetFields(mod, subType);
+        fields.forEach(function (f) {
           h += '  <div class="sol-calc-field">';
           h += '    <label class="sol-calc-field-label">' + _solEscHtml(f.label) + '</label>';
           if (f.select) {
@@ -10990,6 +11601,15 @@
       }
 
       function _solCalcBindFormEvents(mod, modal) {
+        // 서브타입 탭 클릭 → 폼 재렌더
+        modal.querySelectorAll('.sol-calc-subtype-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var sub = btn.getAttribute('data-calc-subtype');
+            _solCalcModalState.subType = sub;
+            modal.querySelector('#sol-calc-modal-body').innerHTML = _solCalcBuildFormHtml(mod, sub);
+            _solCalcBindFormEvents(mod, modal);
+          });
+        });
         var form = modal.querySelector('#sol-calc-form');
         if (!form) return;
         form.addEventListener('submit', function (e) {
@@ -10998,7 +11618,7 @@
           form.querySelectorAll('[data-calc-field]').forEach(function (el) {
             inp[el.getAttribute('data-calc-field')] = el.value;
           });
-          var result = _solCalcCompute(mod.key, inp);
+          var result = _solCalcCompute(mod.key, inp, _solCalcModalState.subType);
           var slot = modal.querySelector('#sol-calc-result-slot');
           slot.innerHTML = _solCalcBuildResultHtml(result);
         });
@@ -11010,6 +11630,18 @@
         h += '  <div class="sol-calc-result-label">' + _solEscHtml(r.bigLabel || '결과') + '</div>';
         var bigStr = r.bigStr ? r.bigStr : (_solCalcFmt(r.big) + (r.unit ? ' ' + _solEscHtml(r.unit) : ''));
         h += '  <div class="sol-calc-result-big">' + bigStr + '</div>';
+        // 다중 결과 카드 (대출 3종, 목적자금 3종, 달러종신 3환율 등)
+        if (r.multi && r.multi.length) {
+          h += '  <div class="sol-calc-result-multi">';
+          r.multi.forEach(function (m) {
+            var cls = m.best ? ' best' : '';
+            h += '    <div class="sol-calc-result-multi-item' + cls + '">';
+            h += '      <div class="sol-calc-result-multi-label">' + _solEscHtml(m.lbl) + (m.best ? ' 🟢' : '') + '</div>';
+            h += '      <div class="sol-calc-result-multi-value">' + _solEscHtml(String(m.val)) + '</div>';
+            h += '    </div>';
+          });
+          h += '  </div>';
+        }
         (r.rows || []).forEach(function (row) {
           h += '  <div class="sol-calc-result-row">';
           h += '    <span class="lbl">' + _solEscHtml(row.lbl) + '</span>';
