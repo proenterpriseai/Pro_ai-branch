@@ -14068,36 +14068,42 @@
         });
         html += '  </div>';
         html += '</div>';
-        // 잠금 teaser (캘큘레이터 풀 기능)
-        html += '<div>';
-        html += '  <div class="sol-pdf-section-title">🔒 풀 시스템에서 추가로 보이는 것</div>';
-        html += '  <div class="sol-pdf-locked-grid">';
+        // v=20260518j — 잠금+CTA 메인 grid에서 제거 (모듈 계산 결과 모달 안으로 이전)
+        return html;
+      }
+
+      // 계산기 잠금+CTA HTML (계산 결과 모달 안에 inject 용도)
+      function _solCalcBuildLockedCtaHtml() {
+        var h = '';
+        h += '<div style="margin-top:16px;">';
+        h += '  <div class="sol-pdf-section-title">🔒 풀 시스템에서 추가로 보이는 것</div>';
+        h += '  <div class="sol-pdf-locked-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
         var locks = [
           { icon: '📈', title: '시나리오 비교',   desc: '동일 모듈을 3개 시나리오(보수/기본/공격)로 동시 시뮬레이션' },
           { icon: '📄', title: '보고서 출력',     desc: 'A4 1장 컨설팅 보고서 자동 생성 — 고객 제공용 PDF' },
           { icon: '💾', title: '고객 저장',       desc: '계산 결과를 고객 카드에 자동 저장 + 후속 상담 시 재조회' },
           { icon: '🧠', title: 'AI 통합 컨설팅',  desc: '9개 모듈을 한 번에 분석 — 자산 흐름·세금·은퇴 종합 시나리오' },
-          { icon: '🏆', title: '맞춤 보험 매칭',   desc: '계산 결과에 맞는 보험·금융 상품 자동 매칭 (700명 사용 노하우 반영)' }
+          { icon: '🏆', title: '맞춤 보험 매칭',  desc: '계산 결과에 맞는 보험·금융 상품 자동 매칭 (700명 사용 노하우)' }
         ];
-        locks.forEach(function (l) {
-          html += '    <div class="sol-pdf-locked-item">';
-          html += '      <div class="sol-pdf-locked-icon">' + l.icon + '</div>';
-          html += '      <div class="sol-pdf-locked-text">';
-          html += '        <div class="sol-pdf-locked-title">' + _solEscHtml(l.title) + '</div>';
-          html += '        <div class="sol-pdf-locked-desc">' + _solEscHtml(l.desc) + '</div>';
-          html += '      </div>';
-          html += '      <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>';
-          html += '    </div>';
+        locks.forEach(function (l, idx) {
+          var fullRow = (idx === 4) ? 'grid-column: 1 / -1;' : '';
+          h += '    <div class="sol-pdf-locked-item" style="' + fullRow + '">';
+          h += '      <div class="sol-pdf-locked-icon">' + l.icon + '</div>';
+          h += '      <div class="sol-pdf-locked-text">';
+          h += '        <div class="sol-pdf-locked-title">' + _solEscHtml(l.title) + '</div>';
+          h += '        <div class="sol-pdf-locked-desc">' + _solEscHtml(l.desc) + '</div>';
+          h += '      </div>';
+          h += '      <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>';
+          h += '    </div>';
         });
-        html += '  </div>';
-        html += '</div>';
-        // CTA
-        html += '<div class="sol-pdf-cta-card">';
-        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 수백 건의 시뮬레이션을 즉시 처리할 수 있습니다.</div>';
-        html += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
-        html += '  <button class="sol-pdf-cta-btn" id="sol-calc-cta-btn">입사 상담 신청하기 →</button>';
-        html += '</div>';
-        return html;
+        h += '  </div>';
+        h += '</div>';
+        h += '<div class="sol-pdf-cta-card" style="margin-top:12px;">';
+        h += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 수백 건의 시뮬레이션을 즉시 처리할 수 있습니다.</div>';
+        h += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
+        h += '  <button class="sol-pdf-cta-btn" data-chat-cta>입사 상담 신청하기 →</button>';
+        h += '</div>';
+        return h;
       }
 
       function _solCalcBindPanelEvents(report) {
@@ -14247,6 +14253,20 @@
           var result = _solCalcCompute(mod.key, inp, _solCalcModalState.subType);
           var slot = modal.querySelector('#sol-calc-result-slot');
           slot.innerHTML = _solCalcBuildResultHtml(result);
+          // v=20260518j — 결과 모달 안 CTA 버튼 이벤트 바인딩
+          slot.querySelectorAll('[data-chat-cta]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var pro = document.getElementById('prosolution-overlay');
+              if (pro) { pro.classList.remove('ceo-overlay--active'); pro.setAttribute('aria-hidden', 'true'); }
+              document.body.style.overflow = '';
+              if (modal) modal.classList.remove('active');
+              var contactEl = document.getElementById('contact');
+              if (contactEl) {
+                setTimeout(function () { window.scrollTo({ top: contactEl.offsetTop - 80, behavior: 'smooth' }); }, 200);
+              }
+              try { window.location.hash = '#contact'; } catch (e) {}
+            });
+          });
         });
       }
 
@@ -14278,6 +14298,8 @@
           h += '  <div class="sol-calc-result-note">' + _solEscHtml(r.note) + '</div>';
         }
         h += '</div>';
+        // v=20260518j — 계산 결과 직후 잠금 5종 + CTA 자동 노출 (건강검진/보장분석과 통일)
+        h += _solCalcBuildLockedCtaHtml();
         return h;
       }
 
