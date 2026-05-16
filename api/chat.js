@@ -140,13 +140,29 @@ export default async function handler(req, res) {
   try {
     // 모드 분기: PDF 있으면 보장분석 모드, 없으면 기존 텍스트 채팅 모드
     const isPdfMode = !!pdfPart;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // v=20260516c — gemini-2.5-pro로 격상 (사용자 명시 요청).
+    //   Pro는 thinkingBudget을 0으로 설정 시 HTTP 400 "Budget 0 is invalid"
+    //   에러가 발생하므로 dynamic(-1) 또는 양수 설정 필수.
+    //   PDF 모드는 더 긴 추론(분석)이 필요하므로 thinkingBudget을 충분히 부여.
+    const MODEL = 'gemini-2.5-pro';
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
     const parts = isPdfMode
       ? [{ text: pdfAnalysisPrompt }, pdfPart, { text: '\n\n사용자 요청: ' + message }]
       : [{ text: systemPrompt + '\n\n사용자 질문: ' + message }];
     const generationConfig = isPdfMode
-      ? { temperature: 0.2, maxOutputTokens: 2500, topP: 0.9, responseMimeType: 'application/json' }
-      : { temperature: 0.7, maxOutputTokens: 500, topP: 0.9 };
+      ? {
+          temperature: 0.2,
+          maxOutputTokens: 8192, // Pro + JSON 응답 + thinking 토큰 여유 (2.5 Flash 대비 증가)
+          topP: 0.9,
+          responseMimeType: 'application/json',
+          thinkingConfig: { thinkingBudget: -1 } // dynamic — Pro 호환 필수
+        }
+      : {
+          temperature: 0.7,
+          maxOutputTokens: 1024,
+          topP: 0.9,
+          thinkingConfig: { thinkingBudget: -1 }
+        };
 
     const response = await fetch(apiUrl, {
       method: 'POST',
