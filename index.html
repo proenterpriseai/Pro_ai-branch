@@ -932,8 +932,155 @@
     }
 
     .sol-system-item.active {
-      background: rgba(6, 182, 212, 0.1) !important;
-      border-left: 2px solid #1a3fa0;
+      background: rgba(6, 182, 212, 0.12) !important;
+      border-left: 2px solid #06b6d4;
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(6, 182, 212, 0.08);
+      transition: all 0.25s ease;
+    }
+
+    /* + 버튼 disabled 상태 (Phase 1, Phase 2A) */
+    .sol-plus-btn {
+      transition: all 0.2s ease;
+    }
+    .sol-plus-btn.disabled,
+    .sol-plus-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.03) !important;
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+    .sol-plus-btn.disabled:hover,
+    .sol-plus-btn:disabled:hover {
+      background: rgba(255, 255, 255, 0.03) !important;
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+    /* + 버튼 활성 상태 — 보장분석 카드 선택 시 */
+    .sol-plus-btn:not(.disabled):not(:disabled) {
+      background: rgba(6, 182, 212, 0.15) !important;
+      color: #06b6d4 !important;
+      border-color: rgba(6, 182, 212, 0.4) !important;
+    }
+    .sol-plus-btn:not(.disabled):not(:disabled):hover {
+      background: rgba(6, 182, 212, 0.25) !important;
+      color: #67e8f9 !important;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+    }
+
+    /* PDF 분석 진행률 바 (Phase 2A) */
+    #sol-pdf-progress {
+      padding: 0 20px 8px;
+    }
+    .sol-pdf-progress-track {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .sol-pdf-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+    .sol-pdf-progress-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 6px;
+      text-align: right;
+      letter-spacing: 0.02em;
+    }
+
+    /* 우측 PDF 리포트 패널 (Phase 2A) */
+    #sol-pdf-report {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .sol-pdf-summary-card {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(59, 130, 246, 0.05));
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .sol-pdf-score {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sol-pdf-meta {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 4px;
+    }
+    .sol-pdf-category-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .sol-pdf-category-row .name {
+      flex: 1;
+      color: #fff;
+    }
+    .sol-pdf-category-row .pct {
+      color: rgba(255, 255, 255, 0.55);
+      font-variant-numeric: tabular-nums;
+      width: 36px;
+      text-align: right;
+    }
+    .sol-pdf-top3-item {
+      padding: 10px 12px;
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.06), rgba(244, 63, 94, 0.02));
+      border: 1px solid rgba(244, 63, 94, 0.18);
+      border-radius: 10px;
+    }
+    .sol-pdf-top3-rank {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      background: #f43f5e;
+      color: #fff;
+      border-radius: 999px;
+      margin-right: 6px;
+    }
+    .sol-pdf-top3-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .sol-pdf-top3-amount {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 2px;
+    }
+    .sol-pdf-top3-reason {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .sol-pdf-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
     }
 
     /* ═══════════════════════════════════════════════
@@ -8874,15 +9021,24 @@
       }
 
       // ── 우측 시스템 목록 클릭 → 좌측 채팅 컨텍스트 전환 ──
-      // v=20260516a (Phase 0 bug fix) — 카드 클릭이 작동하지 않던 버그 3건 수정:
-      //  (1) systemItems selector `#solutions .lg\\:col-span-4 .space-y-1\.5 > div`
-      //      → `#prosolution-overlay .lg\\:col-span-4 .space-y-2 > div`
-      //      이유: 카드는 #solutions가 아닌 #prosolution-overlay 안에 있고, 컨테이너는 .space-y-2
-      //  (2) 카드 이름 selector `.text-zinc-300` → `.text-white.font-medium`
-      //      이유: 실제 카드 내 시스템명 span 클래스가 `text-white font-medium`
-      //  (3) systemNameMap에 실제 DOM 카드 이름 7종 정확 매핑 (이전엔 'AI' 접미사 빠진 4개가 매칭 실패 → 'all' fallback)
-      //  (4) chatHeader selector도 #prosolution-overlay 안의 span으로 교정
-      //  (5) 채팅 헤더에 이미 'AI' 접미사 있는 경우 중복 추가 회피 (/AI$/.test)
+      // v=20260516a (2026-05-16 Phase 0 bug fix):
+      //  (1) selector `.space-y-1\.5` → `.space-y-2` (실제 DOM 일치)
+      //  (2) 시스템 이름 selector `.text-zinc-300` → `.text-white.font-medium` (실제 DOM 일치)
+      //  (3) systemNameMap에 실제 DOM 카드 이름 7종 정확 매핑 (이전엔 'AI' 접미사 빠져 매칭 실패 → 'all' fallback)
+      // v=20260516b (Phase 1 UX 강화, FEATURE_PROSOLUTION_PDF_UPLOAD Flag 게이트):
+      //  - 카드 클릭 시 채팅 리셋 + 시스템별 인사말/빠른액션/placeholder/+버튼 활성 동기화
+      //  - Flag=false 기본값에서는 기존(Phase 0) 동작 그대로 — 700명 영향 0
+      // ─────────────────────────────────────────────────────────────────────
+      var FEATURE_PROSOLUTION_PDF_UPLOAD = false;
+      function _isProsolutionPdfOn() {
+        try {
+          var v = sessionStorage.getItem('_flag_sol_pdf');
+          if (v === 'true') return true;
+          if (v === 'false') return false;
+        } catch (e) {}
+        return FEATURE_PROSOLUTION_PDF_UPLOAD;
+      }
+
       var systemNameMap = {
         '보장분석 시스템': 'coverage',
         'DB 영업관리': 'dbsales',
@@ -8892,8 +9048,459 @@
         '완전판매 AI': 'complete-sales',
         '건강검진 분석 AI': 'healthcheck'
       };
+
+      // ── 시스템별 빠른 액션 / placeholder / 인사말 데이터 (Phase 1) ──
+      var SYSTEM_QUICK_QUERIES = {
+        all: [
+          { text: '보장분석 시스템은?', query: '보장분석 시스템에 대해 알려줘' },
+          { text: '금융계산기 기능', query: '통합금융계산기 기능을 설명해줘' },
+          { text: '상담 코칭 AI', query: '상담 코칭 AI는 어떻게 활용하나요?' },
+          { text: '보험금 산출', query: '보험금 산출 AI 기능을 알려줘' }
+        ],
+        coverage: [
+          { text: '📎 PDF 업로드 분석', query: '__open_pdf_picker__' },
+          { text: '어떤 보험사 지원?', query: '보장분석은 어떤 보험사 PDF를 지원하나요?' },
+          { text: '119개 항목이란?', query: '119개 표준 항목이 무엇인가요?' },
+          { text: '분석 정확도?', query: '보장분석 정확도는 어느 정도인가요?' }
+        ],
+        dbsales: [
+          { text: '전환율 분석법', query: 'DB 전환율은 어떻게 분석하나요?' },
+          { text: '병목 진단', query: '병목 구간 진단 방법은?' },
+          { text: '고객 등급', query: 'VIP/A/B 등급 기준은?' },
+          { text: 'DB 가져오기', query: '기존 고객 DB를 어떻게 가져오나요?' }
+        ],
+        calculator: [
+          { text: '9개 모듈 소개', query: '통합금융계산기 9개 모듈을 알려줘' },
+          { text: '상속세 계산', query: '상속세는 어떻게 계산하나요?' },
+          { text: '은퇴 시뮬레이션', query: '은퇴 자금 시뮬레이션 방법' },
+          { text: '현장 시연 팁', query: '고객 앞에서 계산기 활용 팁' }
+        ],
+        coaching: [
+          { text: '거절 처리', query: '"보험료 비싸요" 거절 처리는?' },
+          { text: 'Bias Breaker', query: 'Bias Breaker 기능은?' },
+          { text: '시나리오 종류', query: '어떤 상담 시나리오가 있나요?' },
+          { text: '맞춤 화법', query: '고객 맞춤 화법 생성 방법' }
+        ],
+        'insurance-calc': [
+          { text: '산출 흐름', query: '예상 보험금 산출 절차는?' },
+          { text: '사고경위 활용', query: '사고경위 입력이 왜 중요한가요?' },
+          { text: '청구 전략', query: '청구 전략 도출 방법' },
+          { text: '면책 방어', query: '면책 방어 논리는?' }
+        ],
+        'complete-sales': [
+          { text: 'FSS 체크 항목', query: 'FSS 완전판매 체크 항목은?' },
+          { text: 'A/B 모드 차이', query: '사전 모드와 대응 모드 차이' },
+          { text: '법적 근거', query: '법적 근거 태깅 어떻게?' },
+          { text: '민원 사전 차단', query: '민원 사전 차단 방법' }
+        ],
+        healthcheck: [
+          { text: 'PDF 업로드', query: '건강검진 PDF 업로드 방법' },
+          { text: '질병 리스크', query: '질병 리스크 산출 기준' },
+          { text: '권장 담보 매핑', query: '검진 결과 → 권장 담보 매핑' },
+          { text: '수동 슬라이더', query: '수동 슬라이더 사용법' }
+        ]
+      };
+
+      var SYSTEM_PLACEHOLDERS = {
+        all: 'AI에게 질문해 보세요... (입력 후 Enter)',
+        coverage: '보장분석에 대해 물어보거나, + 버튼으로 PDF 올려보세요',
+        dbsales: 'DB 관리/전환율에 대해 물어보세요',
+        calculator: '금융 계산 도구에 대해 물어보세요',
+        coaching: '상담 화법/시나리오에 대해 물어보세요',
+        'insurance-calc': '보험금 산출/청구 전략에 대해 물어보세요',
+        'complete-sales': '완전판매/민원 방어에 대해 물어보세요',
+        healthcheck: '건강검진 분석에 대해 물어보세요'
+      };
+
+      var SYSTEM_GREETINGS = {
+        all: '안녕하세요! 프로사업단총괄 AI 어시스턴트입니다. 보장분석, 금융계산, 상담 코칭 등 무엇이든 물어보세요.',
+        coverage: '안녕하세요. 보장분석 AI입니다. 보험 증권 PDF를 + 버튼으로 올려주시면 119개 항목을 즉시 분석해 드립니다.',
+        dbsales: 'DB 영업관리 AI입니다. 고객 데이터베이스 관리와 전환율 분석을 도와드립니다.',
+        calculator: '통합금융계산기 AI입니다. 예적금, 부동산, 상속증여 등 9개 금융 모듈을 시뮬레이션합니다.',
+        coaching: '상담 코칭 AI입니다. 거절 처리부터 니즈 환기까지, 실전 상담 화법을 실시간으로 제안합니다.',
+        'insurance-calc': '보험금 산출 AI입니다. 진단명·입원일수·사고경위로 예상 수령액과 청구 전략을 도출합니다.',
+        'complete-sales': '완전판매 AI입니다. FSS 출신 조사관의 시선으로 민원을 사전 차단합니다.',
+        healthcheck: '건강검진 분석 AI입니다. 검진 결과지를 분석해 질병 리스크와 권장 담보를 시각화합니다.'
+      };
+
+      // PDF 업로드 활성 시스템 (Phase 2A는 coverage만, Phase 2B/2C에서 healthcheck/insurance-calc 추가 예정)
+      var PDF_ENABLED_SYSTEMS = ['coverage'];
+
+      // ── Phase 1 헬퍼 함수 ──
+      function _solClearChat() {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (msgs) msgs.innerHTML = '';
+      }
+
+      function _solAppendGreeting(text) {
+        // appendMessage('ai', text) 와 유사하나 별도 함수로 분리 (향후 확장 위해)
+        if (typeof appendMessage === 'function') appendMessage('ai', text);
+      }
+
+      function _solRenderQuickButtonsForSystem(sysKey) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        // 기존 시스템 전용 빠른 액션 제거
+        var existing = msgs.querySelector('.sol-quick-buttons-dynamic');
+        if (existing) existing.remove();
+        var queries = SYSTEM_QUICK_QUERIES[sysKey] || SYSTEM_QUICK_QUERIES['all'];
+        if (!queries || !queries.length) return;
+        // 색상 팔레트 (4개 버튼 — 시스템 무관 일관)
+        var palette = [
+          { bg: 'bg-blue-600/8', text: 'text-blue-400', ring: 'ring-blue-600/15', hoverBg: 'hover:bg-blue-600/15', hoverRing: 'hover:ring-blue-600/30' },
+          { bg: 'bg-blue-500/8', text: 'text-blue-300', ring: 'ring-blue-500/15', hoverBg: 'hover:bg-blue-500/15', hoverRing: 'hover:ring-blue-500/30' },
+          { bg: 'bg-emerald-500/8', text: 'text-emerald-300', ring: 'ring-emerald-500/15', hoverBg: 'hover:bg-emerald-500/15', hoverRing: 'hover:ring-emerald-500/30' },
+          { bg: 'bg-purple-500/8', text: 'text-purple-300', ring: 'ring-purple-500/15', hoverBg: 'hover:bg-purple-500/15', hoverRing: 'hover:ring-purple-500/30' }
+        ];
+        var btnGroup = document.createElement('div');
+        btnGroup.className = 'flex flex-wrap gap-2 mt-3 px-12 sol-quick-buttons-dynamic';
+        queries.forEach(function (q, idx) {
+          var p = palette[idx % palette.length];
+          var btn = document.createElement('button');
+          btn.className = 'text-[11px] px-3 py-1.5 rounded-lg ' + p.bg + ' ' + p.text + ' ring-1 ' + p.ring + ' ' + p.hoverBg + ' ' + p.hoverRing + ' transition-all cursor-pointer';
+          btn.setAttribute('data-query', q.query);
+          btn.textContent = q.text;
+          btn.addEventListener('click', function () {
+            var qv = this.getAttribute('data-query');
+            if (qv === '__open_pdf_picker__') {
+              var fi = document.getElementById('sol-pdf-file-input');
+              if (fi) fi.click();
+              return;
+            }
+            var ci = document.getElementById('sol-chat-input');
+            if (ci) {
+              ci.value = qv;
+              var sb = document.getElementById('sol-send-btn');
+              if (sb) sb.click();
+            }
+          });
+          btnGroup.appendChild(btn);
+        });
+        msgs.appendChild(btnGroup);
+      }
+
+      function _solUpdatePlaceholder(sysKey) {
+        var ci = document.getElementById('sol-chat-input');
+        if (ci) ci.placeholder = SYSTEM_PLACEHOLDERS[sysKey] || SYSTEM_PLACEHOLDERS['all'];
+      }
+
+      function _solUpdatePlusButton(sysKey) {
+        var btn = document.getElementById('sol-plus-btn-el');
+        if (!btn) return;
+        var enabled = PDF_ENABLED_SYSTEMS.indexOf(sysKey) >= 0;
+        if (enabled) {
+          btn.classList.remove('disabled');
+          btn.disabled = false;
+          btn.setAttribute('title', 'PDF 업로드 → 보장분석');
+        } else {
+          btn.classList.add('disabled');
+          btn.disabled = true;
+          btn.setAttribute('title', 'PDF 업로드는 보장분석 시스템에서만 지원됩니다');
+        }
+      }
+
+      // ── Phase 2A: + 버튼 / file input / 진행률 바 lazy inject ──
+      //   Flag=true 옵트인 시에만 호출 (Flag=false 시 호출 안 되므로 영향 0).
+      function _solInitPlusButton() {
+        var inputEl = document.getElementById('sol-chat-input');
+        if (!inputEl) return;
+        var container = inputEl.closest('div.flex.items-end') || inputEl.parentElement;
+        if (!container) return;
+        var plusBtn = container.querySelector('button');
+        if (!plusBtn) return;
+        // 이미 init되었으면 skip
+        if (plusBtn.id === 'sol-plus-btn-el') return;
+        plusBtn.id = 'sol-plus-btn-el';
+        plusBtn.classList.add('sol-plus-btn');
+        plusBtn.classList.add('disabled');
+        plusBtn.disabled = true;
+        plusBtn.setAttribute('title', 'PDF 업로드는 보장분석 시스템에서만 지원됩니다');
+        plusBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (this.disabled || this.classList.contains('disabled')) return;
+          var fi = document.getElementById('sol-pdf-file-input');
+          if (fi) fi.click();
+        });
+
+        // file input hidden inject (body 직속)
+        if (!document.getElementById('sol-pdf-file-input')) {
+          var fi = document.createElement('input');
+          fi.type = 'file';
+          fi.id = 'sol-pdf-file-input';
+          fi.accept = 'application/pdf';
+          fi.style.display = 'none';
+          document.body.appendChild(fi);
+          fi.addEventListener('change', function () {
+            if (!this.files || !this.files.length) return;
+            var f = this.files[0];
+            if (typeof _solPdfHandleFile === 'function') _solPdfHandleFile(f);
+            this.value = ''; // reset (같은 파일 재선택 가능하게)
+          });
+        }
+
+        // 진행률 바 inject (입력 영역 위)
+        if (!document.getElementById('sol-pdf-progress')) {
+          var prog = document.createElement('div');
+          prog.id = 'sol-pdf-progress';
+          prog.style.display = 'none';
+          prog.innerHTML = '<div class="sol-pdf-progress-track"><div class="sol-pdf-progress-fill"></div></div><div class="sol-pdf-progress-label">PDF 분석 중... 0%</div>';
+          var inputBox = container.closest('.relative.rounded-2xl') || container.closest('.relative');
+          if (inputBox && inputBox.parentElement) {
+            inputBox.parentElement.insertBefore(prog, inputBox);
+          }
+        }
+      }
+
+      function _solResetForSystem(sysKey, sysName) {
+        _solClearChat();
+        var greeting = SYSTEM_GREETINGS[sysKey] || SYSTEM_GREETINGS['all'];
+        _solAppendGreeting(greeting);
+        _solRenderQuickButtonsForSystem(sysKey);
+        _solUpdatePlaceholder(sysKey);
+        _solUpdatePlusButton(sysKey);
+      }
+
+      // ── Phase 2A: PDF 업로드 → Gemini 분석 → 채팅 요약 + 우측 리포트 ──
+
+      function _solPdfShowProgress(percent, label) {
+        var prog = document.getElementById('sol-pdf-progress');
+        if (!prog) return;
+        prog.style.display = 'block';
+        var fill = prog.querySelector('.sol-pdf-progress-fill');
+        var lbl = prog.querySelector('.sol-pdf-progress-label');
+        if (fill) fill.style.width = percent + '%';
+        if (lbl) lbl.textContent = (label || 'PDF 분석 중...') + ' ' + percent + '%';
+      }
+
+      function _solPdfHideProgress() {
+        var prog = document.getElementById('sol-pdf-progress');
+        if (prog) prog.style.display = 'none';
+      }
+
+      function _solPdfStartFakeProgress() {
+        _solPdfShowProgress(5, '파일 준비 중...');
+        var step = 5;
+        var interval = setInterval(function () {
+          step += 2 + Math.random() * 4;
+          if (step >= 92) step = 92;
+          _solPdfShowProgress(Math.round(step), 'AI 분석 중...');
+        }, 600);
+        return interval;
+      }
+
+      function _solPdfBlobToBase64(file) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function () {
+            var dataUrl = reader.result || '';
+            var idx = dataUrl.indexOf(',');
+            resolve(idx >= 0 ? dataUrl.slice(idx + 1) : dataUrl);
+          };
+          reader.onerror = function () { reject(new Error('파일 읽기 실패')); };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function _solPdfHandleError(err) {
+        _solPdfHideProgress();
+        var msg = err && err.message ? err.message : '알 수 없는 오류가 발생했습니다.';
+        appendMessage('ai', '⚠️ ' + msg + ' 다른 PDF로 다시 시도해 보세요.');
+      }
+
+      async function _solPdfHandleFile(file) {
+        // 1) 검증
+        if (!file) return;
+        var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
+        if (!isPdf) {
+          appendMessage('ai', '⚠️ PDF 파일만 지원합니다. (.pdf 확장자)');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          appendMessage('ai', '⚠️ 파일이 너무 큽니다. 5MB 이하 PDF만 지원합니다. (현재: ' + (file.size / 1024 / 1024).toFixed(1) + 'MB)');
+          return;
+        }
+
+        // 2) 채팅에 분석 중 메시지
+        appendMessage('user', '📎 ' + file.name);
+        appendMessage('ai', file.name + ' 분석을 시작합니다. 잠시만 기다려 주세요...');
+
+        // 3) 진행률 바 시작
+        var progressInterval = _solPdfStartFakeProgress();
+
+        try {
+          // 4) base64 인코딩
+          _solPdfShowProgress(15, '파일 변환 중...');
+          var base64 = await _solPdfBlobToBase64(file);
+          _solPdfShowProgress(30, 'AI 분석 중...');
+
+          // 5) API 호출
+          var data = await _solPdfCallAnalyze(base64, file.name);
+
+          // 6) 진행률 마무리
+          clearInterval(progressInterval);
+          _solPdfShowProgress(100, '완료');
+          setTimeout(_solPdfHideProgress, 600);
+
+          // 7) 결과 렌더
+          _solPdfRenderChatResult(data, file.name);
+          _solPdfInjectReportPanel();
+          _solPdfRenderReport(data);
+        } catch (err) {
+          clearInterval(progressInterval);
+          _solPdfHandleError(err);
+        }
+      }
+
+      async function _solPdfCallAnalyze(base64, filename) {
+        var resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: '보장분석',
+            context: 'coverage-pdf',
+            pdf: {
+              mime_type: 'application/pdf',
+              data: base64,
+              filename: filename
+            }
+          })
+        });
+        if (!resp.ok) {
+          var errText = '';
+          try { var ej = await resp.json(); errText = ej.error || ej.detail || ''; } catch (e) {}
+          throw new Error('AI 분석 실패 (' + resp.status + ') ' + errText);
+        }
+        var data = await resp.json();
+        var raw = data.reply || '';
+        // JSON 추출 (응답이 JSON 텍스트 또는 markdown 코드블록)
+        var jsonText = raw.trim();
+        var m = jsonText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+        if (m) jsonText = m[1];
+        var parsed;
+        try {
+          parsed = JSON.parse(jsonText);
+        } catch (e) {
+          throw new Error('AI 응답 형식 오류입니다. 다시 시도해 주세요.');
+        }
+        return parsed;
+      }
+
+      function _solPdfRenderChatResult(data, filename) {
+        var summary = (data && data.chatSummary) ? data.chatSummary : '분석을 완료했습니다. 우측 리포트를 확인해 주세요.';
+        appendMessage('ai', summary);
+      }
+
+      function _solPdfInjectReportPanel() {
+        if (document.getElementById('sol-pdf-report')) return; // 이미 inject됨
+        // 우측 패널 (시스템 현황 카드 그리드) 부모 찾기
+        var rightCol = document.querySelector('#prosolution-overlay .lg\\:col-span-4');
+        if (!rightCol) return;
+        var listArea = rightCol.querySelector('.flex-1.overflow-y-auto.p-4.space-y-2');
+        if (!listArea) return;
+        // 시스템 카드 영역 숨기고 리포트 영역으로 교체 (또는 위에 prepend)
+        var report = document.createElement('section');
+        report.id = 'sol-pdf-report';
+        listArea.parentElement.insertBefore(report, listArea);
+        // 시스템 카드 영역 숨김 (분석 결과가 우선 표시되도록)
+        listArea.style.display = 'none';
+        // 카드 영역으로 되돌리는 버튼
+        var backBtn = document.createElement('button');
+        backBtn.className = 'sol-pdf-back-btn text-[11px] text-zinc-400 hover:text-white mt-2 mx-4 mb-2';
+        backBtn.textContent = '← 시스템 목록으로 돌아가기';
+        backBtn.style.cssText = 'background: transparent; border: none; cursor: pointer; padding: 4px 0; align-self: flex-start;';
+        backBtn.addEventListener('click', function () {
+          report.style.display = 'none';
+          listArea.style.display = '';
+          backBtn.style.display = 'none';
+        });
+        listArea.parentElement.insertBefore(backBtn, listArea);
+      }
+
+      function _solPdfRenderReport(data) {
+        var report = document.getElementById('sol-pdf-report');
+        if (!report) return;
+        report.style.display = 'flex';
+        var listArea = report.parentElement.querySelector('.flex-1.overflow-y-auto.p-4.space-y-2');
+        if (listArea) listArea.style.display = 'none';
+        var backBtn = report.parentElement.querySelector('.sol-pdf-back-btn');
+        if (backBtn) backBtn.style.display = '';
+
+        var summary = (data && data.summary) || {};
+        var categories = (data && data.categories) || [];
+        var top3 = (data && data.top3Gaps) || [];
+
+        var html = '';
+        // 가입 요약 카드
+        html += '<div class="sol-pdf-summary-card">';
+        html += '  <div class="sol-pdf-section-title">가입 요약</div>';
+        html += '  <div class="sol-pdf-score">' + (summary.score != null ? summary.score : '-') + '<span style="font-size:14px;color:rgba(255,255,255,0.4);font-weight:500;"> / 100</span></div>';
+        html += '  <div class="sol-pdf-meta">' + (summary.scoreLabel || '') + '</div>';
+        html += '  <div class="sol-pdf-meta" style="margin-top:8px;">보유 계약 <strong style="color:#fff;">' + (summary.totalContracts || 0) + '건</strong>' +
+                '  · 월 보험료 <strong style="color:#fff;">' + _solFmtNum(summary.totalMonthlyPrem || 0) + '원</strong></div>';
+        html += '</div>';
+
+        // 8 카테고리
+        if (categories.length) {
+          html += '<div>';
+          html += '  <div class="sol-pdf-section-title">8 카테고리 보장 현황</div>';
+          html += '  <div style="display:flex;flex-direction:column;gap:6px;">';
+          categories.slice(0, 8).forEach(function (c) {
+            var pct = c.coverage != null ? c.coverage : 0;
+            var status = c.status || (pct >= 80 ? '✅' : pct >= 40 ? '⚠️' : '❌');
+            html += '    <div class="sol-pdf-category-row">';
+            html += '      <span>' + status + '</span>';
+            html += '      <span class="name">' + _solEscHtml(c.name || '-') + '</span>';
+            html += '      <span class="pct">' + pct + '%</span>';
+            html += '    </div>';
+          });
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        // TOP 3 부족 담보
+        if (top3.length) {
+          html += '<div>';
+          html += '  <div class="sol-pdf-section-title">⚠️ 부족 담보 TOP 3</div>';
+          html += '  <div style="display:flex;flex-direction:column;gap:8px;">';
+          top3.slice(0, 3).forEach(function (g, i) {
+            var rank = g.rank || (i + 1);
+            html += '    <div class="sol-pdf-top3-item">';
+            html += '      <div><span class="sol-pdf-top3-rank">' + rank + '</span><span class="sol-pdf-top3-name">' + _solEscHtml(g.name || '-') + '</span></div>';
+            if (g.recommendedAmount != null) {
+              html += '      <div class="sol-pdf-top3-amount">현재 ' + _solFmtNum(g.currentAmount || 0) + '만 → 권장 <strong style="color:#06b6d4;">' + _solFmtNum(g.recommendedAmount) + '만</strong></div>';
+            }
+            if (g.reason) {
+              html += '      <div class="sol-pdf-top3-reason">' + _solEscHtml(g.reason) + '</div>';
+            }
+            html += '    </div>';
+          });
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        report.innerHTML = html;
+      }
+
+      function _solFmtNum(n) {
+        try { return Number(n).toLocaleString('ko-KR'); } catch (e) { return String(n); }
+      }
+      function _solEscHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+
       var chatHeader = document.querySelector('#prosolution-overlay .lg\\:col-span-8 span.text-white.text-sm.font-semibold');
       var systemItems = document.querySelectorAll('#prosolution-overlay .lg\\:col-span-4 .space-y-2 > div');
+
+      // ── 페이지 로드 시 Flag=true 옵트인 자동 init (Flag=false 시 호출 안 됨) ──
+      if (_isProsolutionPdfOn()) {
+        _solInitPlusButton();
+        _solUpdatePlusButton('all'); // 기본 상태 disabled
+      }
+
       systemItems.forEach(function (item) {
         item.classList.add('sol-system-item');
         item.addEventListener('click', function () {
@@ -8908,9 +9515,15 @@
           activeSystem = sysKey;
           // 채팅 헤더 업데이트 (이미 'AI' 접미사 포함이면 중복 회피)
           if (chatHeader) chatHeader.textContent = /AI$/.test(name) ? name : name + ' AI';
-          // 자동 인사 메시지
-          var greeting = systemResponses[sysKey] ? systemResponses[sysKey][0] : '무엇이든 물어보세요!';
-          appendMessage('ai', '[' + name + '] ' + greeting);
+
+          // v=20260516b — Flag=true 시: 채팅 리셋 + 시스템 전용 화면으로 전환 (새창 효과)
+          //                Flag=false 시: 기존 Phase 0 동작 (인사말 1줄만 추가)
+          if (_isProsolutionPdfOn()) {
+            _solResetForSystem(sysKey, name);
+          } else {
+            var greeting = systemResponses[sysKey] ? systemResponses[sysKey][0] : '무엇이든 물어보세요!';
+            appendMessage('ai', '[' + name + '] ' + greeting);
+          }
           chatInput.focus();
         });
       });

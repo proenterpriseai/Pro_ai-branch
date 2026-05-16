@@ -161,6 +161,29 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
   2. 2차: 바탕화면(`DESKTOP/<path>`) — 관리자/db영업전문과과정/법인/ 등
   3. 3차: SPA fallback (`index.html`)
 
+## 📋 Pending Feature (설계 완료, 미구현 — 2026-05-15 설계 마감)
+
+### Prosolution PDF 업로드 → 보장분석 데모 (영상 더빙용 핵심)
+- **목적**: ai-branch 랜딩 prosolution-overlay 안에서 사용자가 본인 PDF 직접 업로드 → Gemini가 즉시 분석 → 채팅 요약 + 우측 리포트 카드. 영상 더빙 시 "데모가 아닌 실제 동작" 시연 가능.
+- **진입점**: `#prosolution-overlay` 채팅창 + 버튼 (index.html:5612) — 현재 onclick 없음, lazy attach 예정
+- **Feature Flag**: `FEATURE_PROSOLUTION_PDF_UPLOAD = false` (ai-branch에 Flag 패턴 신규 도입 — 현재 0개)
+- **신규 함수**: `_solPdf*` 8개 (index.html +400~500줄)
+  - `_isProsolutionPdfOn` / `_solPdfInit` / `_solPdfHandleFile` / `_solPdfCallAnalyze` / `_solPdfRenderChatResult` / `_solPdfInjectReportPanel` / `_solPdfRenderReport` / `_solPdfHandleError`
+- **API 확장**: `api/chat.js` PDF inline_data 모드 (+20~30줄)
+  - 옵셔널 `pdf: { mime_type, data }` body 수신, MIME 화이트리스트(`application/pdf`만), base64 크기 제한(5MB 원본 ≈ 6.7M chars), `responseMimeType: 'application/json'`, `maxOutputTokens: 2500`
+- **결과**: 채팅 한 두 문장 요약 + 우측 신규 리포트 패널 (가입 요약 + 8 카테고리 SVG 레이더 + TOP 3 부족 담보)
+- **재사용**: Coverage dashboard panel(index.html:3060~3319)의 SVG/카드 구조를 `_solPdfRender*` 함수에 복사. `appendMessage` 패턴 차용.
+- **검증 환경**: **Vercel 배포만** (`ai-branch.vercel.app`). 로컬 `_serve.js`는 Serverless Function 미지원 → `/api/chat`이 SPA fallback으로 HTML 반환됨.
+- **회귀 방지**: Flag=false 시 + 버튼 onclick 미부착 → 기존 placeholder 그대로, doSend/appendMessage/coverage 패널 모두 무수정
+- **상세 설계**: [C:\Users\SAMSUNG\.claude\plans\ai-functional-garden.md](file:///C:/Users/SAMSUNG/.claude/plans/ai-functional-garden.md) "ai-branch Prosolution Overlay PDF 업로드" 섹션
+- **구현 시작 전 결정 3가지**: + 버튼 UI(호버+파일 아이콘 vs 그대로) / 진행 인디케이터(스피너 vs 진행률바) / 결과 캐싱(해시 기반 vs 매번 호출)
+
+### CLOVA Dubbing 영상 더빙 작업 (병행)
+- 14분 분량 13개 장면 대본 작성 완료 (transcript 보관)
+- 녹화 환경: `ai-branch.vercel.app` (Vercel 배포)
+- 녹화 도구: PowerPoint 화면 녹화 또는 Win+G (Xbox Game Bar)
+- Scene 9(PROSOLUTION OVERLAY) 대본은 위 PDF 업로드 기능 구현 후 보강 (Q25.5/Q26 수정/Q26.5 신규 큐 — plan 파일 참조)
+
 ## Version
 - **v=20260504a/b** — 인재 양성 오버레이(`#talent-overlay`) 5단계 로드맵 동적 시퀀스 + spotlight 무한 순환, 조직문화 섹션 4카드 자동 순환 캐러셀(`culture-carousel-*`) 신규, 카드 크기 확대(360→560px) + 텍스트 강화, "종합 금융전문가" 그라데이션 + 띄어쓰기 통일, PARIS 카드 `object-position:center top` 위쪽 정렬
   - **5단계 로드맵 시퀀스**: `playRoadmapSequence()` — talent-open 시 `is-playing` + dots stagger(300+i*450ms), 라인 fill 0→80%(2.4s)
