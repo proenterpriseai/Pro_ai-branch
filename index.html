@@ -1057,6 +1057,20 @@
       gap: 8px;
     }
 
+    /* 타이핑 커서 (v=20260516f — Phase 3-A) */
+    .sol-typing-cursor {
+      display: inline-block;
+      color: #67e8f9;
+      font-weight: 700;
+      animation: sol-cursor-blink 0.9s steps(2) infinite;
+      margin-left: 1px;
+      transform: translateY(-1px);
+    }
+    @keyframes sol-cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     /* sticky 백 버튼 — 분석 결과 상단 항상 고정 */
     .sol-pdf-back-sticky {
       position: sticky;
@@ -9156,13 +9170,23 @@
         .then(function(r) { return r.json(); })
         .then(function(data) {
           removeTyping(typingId);
-          appendMessage('ai', data.reply || '응답을 생성할 수 없습니다.');
+          var reply = data.reply || '응답을 생성할 수 없습니다.';
+          // v=20260516f — Flag=true 옵트인 시 타이핑 효과 (영상 시연 임팩트)
+          if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
+            _solTypewriterAppend(reply);
+          } else {
+            appendMessage('ai', reply);
+          }
         })
         .catch(function() {
           removeTyping(typingId);
           // API 실패 시 로컬 fallback
           var reply = getAIResponse(text);
-          appendMessage('ai', reply);
+          if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
+            _solTypewriterAppend(reply);
+          } else {
+            appendMessage('ai', reply);
+          }
         });
       }
 
@@ -9324,8 +9348,59 @@
       }
 
       function _solAppendGreeting(text) {
-        // appendMessage('ai', text) 와 유사하나 별도 함수로 분리 (향후 확장 위해)
-        if (typeof appendMessage === 'function') appendMessage('ai', text);
+        // Flag=true 시 타이핑 효과 적용 (v=20260516f), Flag=false 시 즉시 표시
+        if (_isProsolutionPdfOn()) {
+          _solTypewriterAppend(text);
+        } else if (typeof appendMessage === 'function') {
+          appendMessage('ai', text);
+        }
+      }
+
+      // ── 타이핑 효과 헬퍼 (v=20260516f Phase 3-A) ──
+      //   AI 메시지를 글자 하나씩 표시하여 영상 시연 임팩트 향상.
+      //   빈 텍스트 메시지 div 먼저 추가 → setInterval로 textContent 채워가기.
+      //   speed: ms per char (기본 22ms — 분당 약 2700자, 자연스러운 속도)
+      var _solTypingInterval = null;
+      function _solTypewriterAppend(text, speed) {
+        if (!text) text = '';
+        speed = speed || 22;
+        if (typeof appendMessage !== 'function') return;
+        // 이전 타이핑 작업 정리 (중복 호출 방지)
+        if (_solTypingInterval) {
+          clearInterval(_solTypingInterval);
+          _solTypingInterval = null;
+        }
+        // 빈 메시지 div 먼저 생성 (말풍선 구조 그대로)
+        appendMessage('ai', '');
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var lastDiv = msgs.lastElementChild;
+        if (!lastDiv) return;
+        var pEl = lastDiv.querySelector('p');
+        if (!pEl) return;
+        // 깜빡이는 커서 추가 (시각 효과)
+        pEl.innerHTML = '<span class="sol-typing-cursor">▍</span>';
+        var i = 0;
+        var safeText = String(text);
+        _solTypingInterval = setInterval(function () {
+          if (i >= safeText.length) {
+            clearInterval(_solTypingInterval);
+            _solTypingInterval = null;
+            // 커서 제거 + 최종 텍스트 확정
+            pEl.textContent = safeText;
+            return;
+          }
+          // textContent로 안전하게 누적 (XSS 차단) + 커서 끝에 표시
+          var typed = safeText.slice(0, i + 1);
+          pEl.textContent = typed; // 이걸로 cursor span은 자동 제거됨
+          // 커서 span 다시 붙이기 (마지막 글자 옆)
+          var cursor = document.createElement('span');
+          cursor.className = 'sol-typing-cursor';
+          cursor.textContent = '▍';
+          pEl.appendChild(cursor);
+          i++;
+          msgs.scrollTop = msgs.scrollHeight;
+        }, speed);
       }
 
       function _solRenderQuickButtonsForSystem(sysKey) {
@@ -9577,8 +9652,11 @@
       }
 
       function _solPdfRenderChatResult(data, filename) {
-        var summary = (data && data.chatSummary) ? data.chatSummary : '분석을 완료했습니다. 우측 리포트를 확인해 주세요.';
-        appendMessage('ai', summary);
+        var summary = (data && data.chatSummary) ? data.chatSummary : '분석을 완료했습니다. 결과를 확인해 주세요.';
+        // 분석 모드(좌측이 리포트로 전환)에서는 채팅 메시지가 안 보이므로 그냥 콘솔 로그만
+        // 또는 타이핑으로 표시할 수도 있으나 옵션 Y에서는 채팅 영역이 가려진 상태라 의미 적음.
+        // 그래도 향후 hybrid 표시 대비하여 보존.
+        if (typeof appendMessage === 'function') appendMessage('ai', summary);
       }
 
       function _solPdfInjectReportPanel() {
