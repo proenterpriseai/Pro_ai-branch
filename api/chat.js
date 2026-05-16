@@ -94,6 +94,51 @@ export default async function handler(req, res) {
 
 컨텍스트: ${context || '보장분석 시스템'}`;
 
+  // 건강검진 분석 프롬프트 (v=20260516g — Phase 3-B-1)
+  const healthcheckPrompt = `당신은 30년 경력의 건강검진 분석 전문가입니다.
+첨부된 PDF는 고객의 건강검진 결과지입니다.
+
+다음 JSON 스키마로만 응답하세요. JSON 외 텍스트 절대 금지.
+
+{
+  "summary": {
+    "overallScore": 0~100,             // 종합 건강 점수 (대략적)
+    "scoreLabel": "양호" | "주의" | "위험",
+    "totalVitals": 정수,                // 추출한 검사 항목 수
+    "abnormalVitals": 정수              // 이상 수치(주의/경계/위험) 항목 수
+  },
+  "vitals": [
+    { "name": "수축기 혈압", "value": 130, "unit": "mmHg", "status": "정상" | "주의" | "경계" | "위험" },
+    { "name": "이완기 혈압", "value": 85, "unit": "mmHg", "status": "..." },
+    { "name": "공복 혈당", "value": 95, "unit": "mg/dL", "status": "..." },
+    { "name": "총 콜레스테롤", "value": 240, "unit": "mg/dL", "status": "..." },
+    { "name": "LDL 콜레스테롤", ... },
+    { "name": "HDL 콜레스테롤", ... },
+    { "name": "중성지방", ... },
+    { "name": "간 수치 ALT", ... },
+    { "name": "간 수치 AST", ... },
+    { "name": "BMI", ... }
+  ],  // 8~12개 핵심 검사 항목 (PDF에 있는 만큼)
+  "risks": [
+    { "name": "심혈관 질환", "level": "낮음" | "중간" | "높음", "reason": "한 줄 사유 (40자 이내)" },
+    { "name": "당뇨병", "level": "...", "reason": "..." },
+    { "name": "간 질환", "level": "...", "reason": "..." }
+  ],  // 3~5개 (PDF 결과에서 의미 있는 것만)
+  "recommendedCoverages": [
+    { "name": "뇌혈관 진단비", "amount": 3000, "reason": "고혈압 경계, 50대 권장" },
+    { "name": "심장 질환 진단비", "amount": 2000, "reason": "..." },
+    { "name": "성인병 보장 강화", "amount": 1500, "reason": "..." }
+  ],  // 3개 고정 — 검진 결과에 기반한 보험 담보 추천 (만원 단위)
+  "chatSummary": "한 두 문장 요약 (건강 상태 + 권장 조치)"
+}
+
+분석 원칙:
+- PDF에서 추출 가능한 검사 항목 모두 표시 (없으면 vitals 배열 짧게)
+- 정상범위: 혈압 <130/85, 공복혈당 <100, 총 콜레스테롤 <200, LDL <130, HDL >40, 중성지방 <150, 간수치(ALT/AST) <40, BMI 18.5~25
+- 경계: 정상범위 약간 초과, 위험: 명확히 초과
+- recommendedCoverages는 검진 결과 이상 항목에 직접 연결되는 보장만 (예: 콜레스테롤 높음 → 심혈관 진단비)
+- 50~60대 고객 가정`;
+
   const pdfAnalysisPrompt = `당신은 30년 경력의 보험 보장분석 전문가입니다.
 첨부된 PDF는 고객의 보험 가입 내역(신정원 통합 PDF 또는 가입제안서)입니다.
 
@@ -156,8 +201,12 @@ export default async function handler(req, res) {
     //   preview 모델은 안정 모델 대비 변경 가능성 있으나 SOTA reasoning 가치가 큼.
     const MODEL = 'gemini-3.1-pro-preview';
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+    // PDF 모드 — context별 프롬프트 분기 (Phase 3-B-1)
+    //   'healthcheck-pdf' → 건강검진 프롬프트
+    //   기타 (기본 'coverage-pdf') → 보장분석 프롬프트
+    const selectedPdfPrompt = (context === 'healthcheck-pdf') ? healthcheckPrompt : pdfAnalysisPrompt;
     const parts = isPdfMode
-      ? [{ text: pdfAnalysisPrompt }, pdfPart, { text: '\n\n사용자 요청: ' + message }]
+      ? [{ text: selectedPdfPrompt }, pdfPart, { text: '\n\n사용자 요청: ' + message }]
       : [{ text: systemPrompt + '\n\n사용자 질문: ' + message }];
     const generationConfig = isPdfMode
       ? {

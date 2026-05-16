@@ -9317,7 +9317,7 @@
         coaching: '상담 화법/시나리오에 대해 물어보세요',
         'insurance-calc': '보험금 산출/청구 전략에 대해 물어보세요',
         'complete-sales': '완전판매/민원 방어에 대해 물어보세요',
-        healthcheck: '건강검진 분석에 대해 물어보세요'
+        healthcheck: '건강검진에 대해 물어보거나, + 버튼으로 검진 결과지 PDF 올려보세요'
       };
 
       var SYSTEM_GREETINGS = {
@@ -9328,11 +9328,19 @@
         coaching: '상담 코칭 AI입니다. 거절 처리부터 니즈 환기까지, 실전 상담 화법을 실시간으로 제안합니다.',
         'insurance-calc': '보험금 산출 AI입니다. 진단명·입원일수·사고경위로 예상 수령액과 청구 전략을 도출합니다.',
         'complete-sales': '완전판매 AI입니다. FSS 출신 조사관의 시선으로 민원을 사전 차단합니다.',
-        healthcheck: '건강검진 분석 AI입니다. 검진 결과지를 분석해 질병 리스크와 권장 담보를 시각화합니다.'
+        healthcheck: '건강검진 분석 AI입니다. + 버튼으로 검진 결과지 PDF를 올려주시면 검사 수치와 질병 리스크를 즉시 분석해 드립니다.'
       };
 
-      // PDF 업로드 활성 시스템 (Phase 2A는 coverage만, Phase 2B/2C에서 healthcheck/insurance-calc 추가 예정)
-      var PDF_ENABLED_SYSTEMS = ['coverage'];
+      // PDF 업로드 활성 시스템
+      //   Phase 2A (v=20260516b): coverage
+      //   Phase 3-B-1 (v=20260516g): + healthcheck (건강검진 결과지 PDF)
+      var PDF_ENABLED_SYSTEMS = ['coverage', 'healthcheck'];
+
+      // 시스템별 PDF 업로드 컨텍스트 (api/chat.js에 전달 → 프롬프트 분기)
+      var PDF_SYSTEM_CONTEXTS = {
+        coverage: { contextKey: 'coverage-pdf', title: '보험 증권', tooltip: 'PDF 업로드 → 보장분석' },
+        healthcheck: { contextKey: 'healthcheck-pdf', title: '건강검진 결과지', tooltip: 'PDF 업로드 → 건강검진 분석' }
+      };
 
       // ── Phase 1 헬퍼 함수 ──
       function _solClearChat() {
@@ -9457,11 +9465,12 @@
         if (enabled) {
           btn.classList.remove('disabled');
           btn.disabled = false;
-          btn.setAttribute('title', 'PDF 업로드 → 보장분석');
+          var ctx = PDF_SYSTEM_CONTEXTS[sysKey];
+          btn.setAttribute('title', ctx ? ctx.tooltip : 'PDF 업로드');
         } else {
           btn.classList.add('disabled');
           btn.disabled = true;
-          btn.setAttribute('title', 'PDF 업로드는 보장분석 시스템에서만 지원됩니다');
+          btn.setAttribute('title', 'PDF 업로드는 보장분석 또는 건강검진 시스템에서만 지원됩니다');
         }
       }
 
@@ -9599,31 +9608,35 @@
           var base64 = await _solPdfBlobToBase64(file);
           _solPdfShowProgress(30, 'AI 분석 중...');
 
-          // 5) API 호출
-          var data = await _solPdfCallAnalyze(base64, file.name);
+          // 5) API 호출 (activeSystem에 따라 보장분석/건강검진 분기)
+          var sysKey = (typeof activeSystem !== 'undefined') ? activeSystem : 'coverage';
+          var data = await _solPdfCallAnalyze(base64, file.name, sysKey);
 
           // 6) 진행률 마무리
           clearInterval(progressInterval);
           _solPdfShowProgress(100, '완료');
           setTimeout(_solPdfHideProgress, 600);
 
-          // 7) 결과 렌더
+          // 7) 결과 렌더 (시스템별 다른 카드 구조)
           _solPdfRenderChatResult(data, file.name);
           _solPdfInjectReportPanel();
-          _solPdfRenderReport(data);
+          _solPdfRenderReport(data, sysKey);
         } catch (err) {
           clearInterval(progressInterval);
           _solPdfHandleError(err);
         }
       }
 
-      async function _solPdfCallAnalyze(base64, filename) {
+      async function _solPdfCallAnalyze(base64, filename, sysKey) {
+        sysKey = sysKey || 'coverage';
+        var ctxInfo = PDF_SYSTEM_CONTEXTS[sysKey] || PDF_SYSTEM_CONTEXTS.coverage;
+        var msg = sysKey === 'healthcheck' ? '건강검진 분석' : '보장분석';
         var resp = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: '보장분석',
-            context: 'coverage-pdf',
+            message: msg,
+            context: ctxInfo.contextKey,
             pdf: {
               mime_type: 'application/pdf',
               data: base64,
@@ -9680,11 +9693,19 @@
         msgsEl.parentElement.insertBefore(report, msgsEl);
       }
 
-      function _solPdfRenderReport(data) {
+      function _solPdfRenderReport(data, sysKey) {
         // 옵션 Y: 좌측 채팅 영역 inline 분석 결과 패널
+        sysKey = sysKey || 'coverage';
         var report = document.getElementById('sol-pdf-report-inline');
         if (!report) return;
         report.style.display = 'flex';
+
+        // 건강검진 분기 (Phase 3-B-1, v=20260516g)
+        if (sysKey === 'healthcheck') {
+          _solPdfRenderReportHealthcheck(data);
+          return;
+        }
+        // 이하 보장분석 (기존)
 
         var summary = (data && data.summary) || {};
         var categories = (data && data.categories) || [];
@@ -9809,6 +9830,139 @@
               }, 200);
             }
             // contact 오버레이가 모달형이면 별도 트리거 (예: hash 변경)
+            try { window.location.hash = '#contact'; } catch (e) {}
+          });
+        }
+      }
+
+      // ── Phase 3-B-1: 건강검진 분석 결과 렌더 (v=20260516g) ──
+      function _solPdfRenderReportHealthcheck(data) {
+        var report = document.getElementById('sol-pdf-report-inline');
+        if (!report) return;
+        var summary = (data && data.summary) || {};
+        var vitals = (data && data.vitals) || [];
+        var risks = (data && data.risks) || [];
+        var recommended = (data && data.recommendedCoverages) || [];
+
+        var html = '';
+        // 약식 데모 배지
+        html += '<div class="sol-pdf-demo-badge">💡 <strong>약식 데모 결과</strong> — 본 시스템은 검진 항목별 정밀 매칭, 14 카테고리 권장 담보, 의사 상담 권고 자동 생성까지 모두 분석합니다</div>';
+
+        // 건강 점수 카드
+        html += '<div class="sol-pdf-summary-card">';
+        html += '  <div class="sol-pdf-section-title">건강 종합 점수</div>';
+        html += '  <div class="sol-pdf-score">' + (summary.overallScore != null ? summary.overallScore : '-') + '<span style="font-size:14px;color:rgba(255,255,255,0.4);font-weight:500;"> / 100</span></div>';
+        html += '  <div class="sol-pdf-meta">' + _solEscHtml(summary.scoreLabel || '') + '</div>';
+        if (summary.totalVitals != null) {
+          html += '  <div class="sol-pdf-meta" style="margin-top:8px;">검사 항목 <strong style="color:#fff;">' + summary.totalVitals + '개</strong> · 이상 수치 <strong style="color:#f43f5e;">' + (summary.abnormalVitals || 0) + '개</strong></div>';
+        }
+        html += '</div>';
+
+        // 검사 수치 8개 (2 컬럼 그리드)
+        if (vitals.length) {
+          html += '<div>';
+          html += '  <div class="sol-pdf-section-title">검사 수치</div>';
+          html += '  <div class="sol-pdf-categories-grid">';
+          vitals.slice(0, 12).forEach(function (v) {
+            var status = v.status || '정상';
+            var color = status === '정상' ? '✅' : (status === '주의' ? '⚠️' : (status === '경계' ? '⚠️' : '❌'));
+            html += '    <div class="sol-pdf-category-row">';
+            html += '      <span>' + color + '</span>';
+            html += '      <span class="name">' + _solEscHtml(v.name || '-') + '</span>';
+            html += '      <span class="pct">' + _solEscHtml(String(v.value != null ? v.value : '-')) + (v.unit ? ' ' + _solEscHtml(v.unit) : '') + '</span>';
+            html += '    </div>';
+          });
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        // 질병 리스크 3~5개
+        if (risks.length) {
+          html += '<div>';
+          html += '  <div class="sol-pdf-section-title">⚠️ 주요 질병 리스크</div>';
+          html += '  <div class="sol-pdf-top3-grid">';
+          risks.slice(0, 3).forEach(function (r) {
+            var levelColor = r.level === '높음' ? '#f43f5e' : (r.level === '중간' ? '#fbbf24' : '#06b6d4');
+            html += '    <div class="sol-pdf-top3-item">';
+            html += '      <div><span class="sol-pdf-top3-rank" style="background:' + levelColor + ';">' + _solEscHtml(r.level || '-') + '</span><span class="sol-pdf-top3-name">' + _solEscHtml(r.name || '-') + '</span></div>';
+            if (r.reason) {
+              html += '      <div class="sol-pdf-top3-reason">' + _solEscHtml(r.reason) + '</div>';
+            }
+            html += '    </div>';
+          });
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        // 권장 담보 3개
+        if (recommended.length) {
+          html += '<div>';
+          html += '  <div class="sol-pdf-section-title">🎯 검진 결과 기반 권장 담보</div>';
+          html += '  <div class="sol-pdf-top3-grid">';
+          recommended.slice(0, 3).forEach(function (g, i) {
+            html += '    <div class="sol-pdf-top3-item">';
+            html += '      <div><span class="sol-pdf-top3-rank">' + (i + 1) + '</span><span class="sol-pdf-top3-name">' + _solEscHtml(g.name || '-') + '</span></div>';
+            if (g.amount != null) {
+              html += '      <div class="sol-pdf-top3-amount">권장 <strong style="color:#06b6d4;">' + _solFmtNum(g.amount) + '만</strong></div>';
+            }
+            if (g.reason) {
+              html += '      <div class="sol-pdf-top3-reason">' + _solEscHtml(g.reason) + '</div>';
+            }
+            html += '    </div>';
+          });
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        // 잠금 5개 (건강검진 특화)
+        html += '<div>';
+        html += '  <div class="sol-pdf-section-title">🔒 풀 분석에서 추가로 보이는 것</div>';
+        html += '  <div class="sol-pdf-locked-grid">';
+        var lockedItems = [
+          { icon: '🩺', title: '검진 항목별 정밀 매칭', desc: '40개+ 표준 검사 항목 자동 매칭 + 정상범위 비교' },
+          { icon: '📊', title: '14 카테고리 권장 담보', desc: '암/뇌/심장/사망/수술/실비/치료/치매 등 풀 카테고리 매핑' },
+          { icon: '👨‍⚕️', title: '의사 상담 권고 자동 생성', desc: '이상 수치별 추가 검사 / 전문의 진료 / 생활 습관 가이드' },
+          { icon: '🏆', title: '최적의 보험사 상품 추천', desc: '건강 상태에 맞는 보장기간/보장범위/보험료 경쟁력 비교 후 상위 1~10위' },
+          { icon: '🧠', title: 'AI 종합 건강 의견', desc: 'A4 한 장 분량 자동 생성 — 위험 신호 / 예방 가이드 / 향후 검진 권고' }
+        ];
+        lockedItems.forEach(function (it) {
+          html += '    <div class="sol-pdf-locked-item">';
+          html += '      <div class="sol-pdf-locked-icon">' + it.icon + '</div>';
+          html += '      <div class="sol-pdf-locked-text">';
+          html += '        <div class="sol-pdf-locked-title">' + _solEscHtml(it.title) + '</div>';
+          html += '        <div class="sol-pdf-locked-desc">' + _solEscHtml(it.desc) + '</div>';
+          html += '      </div>';
+          html += '      <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>';
+          html += '    </div>';
+        });
+        html += '  </div>';
+        html += '</div>';
+
+        // CTA (보장분석과 같은 카드, 카피 동일 유지)
+        html += '<div class="sol-pdf-cta-card">';
+        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.</div>';
+        html += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
+        html += '  <button class="sol-pdf-cta-btn" id="sol-pdf-cta-btn">입사 상담 신청하기 →</button>';
+        html += '</div>';
+
+        report.innerHTML = html;
+
+        // CTA 핸들러 (보장분석과 동일)
+        var ctaBtn = document.getElementById('sol-pdf-cta-btn');
+        if (ctaBtn) {
+          ctaBtn.addEventListener('click', function () {
+            var pro = document.getElementById('prosolution-overlay');
+            if (pro) {
+              pro.classList.remove('ceo-overlay--active');
+              pro.setAttribute('aria-hidden', 'true');
+            }
+            document.body.style.overflow = '';
+            var contactEl = document.getElementById('contact');
+            if (contactEl) {
+              setTimeout(function () {
+                window.scrollTo({ top: contactEl.offsetTop - 80, behavior: 'smooth' });
+              }, 200);
+            }
             try { window.location.hash = '#contact'; } catch (e) {}
           });
         }
