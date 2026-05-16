@@ -10012,7 +10012,12 @@
       function doSend() {
         var text = chatInput.value.trim();
         if (!text) return;
-        appendMessage('user', text);
+        // Phase 3-B-3 v=20260518d — 코칭 모드는 사용자 메시지도 타이핑 효과
+        if (activeSystem === 'coaching' && typeof _solCoachAppendUserBubble === 'function') {
+          _solCoachAppendUserBubble(text);
+        } else {
+          appendMessage('user', text);
+        }
         chatInput.value = '';
         var typingId = 'typing-' + Date.now();
         appendTyping(typingId);
@@ -12473,11 +12478,10 @@
         });
       }
 
-      // 코칭 응답 — AI 응답 메시지를 풍부 렌더로 표시
+      // 코칭 응답 — AI 응답 타이핑 효과 후 마크다운 lite 풀 렌더 (v=20260518d)
       function _solCoachAppendResponseBubble(reply) {
         var msgs = document.getElementById('sol-chat-messages');
         if (!msgs) return;
-        var html = _solCoachRenderRich(reply);
         var div = document.createElement('div');
         div.className = 'flex gap-3';
         div.innerHTML = ''
@@ -12487,10 +12491,62 @@
           + '    <span class="text-[13px] font-medium text-white">PRO AI · 수석 전략 코치</span>'
           + '    <span class="text-[10px] text-zinc-500">방금</span>'
           + '  </div>'
-          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;">' + html + '</div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
           + '</div>';
         msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, reply, msgs, 10); // 10ms/char — 응답 빠른 타이핑
+      }
+
+      // 코칭 사용자 메시지 — 평문 타이핑 효과
+      function _solCoachAppendUserBubble(text) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3 justify-end';
+        div.innerHTML = ''
+          + '<div class="max-w-[80%]">'
+          + '  <div class="flex items-baseline gap-2 mb-1 justify-end">'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '    <span class="text-[13px] font-medium text-white">나</span>'
+          + '  </div>'
+          + '  <div class="bg-blue-700/20 border border-blue-600/20 rounded-2xl rounded-tr-sm px-4 py-2.5">'
+          + '    <p class="text-[13px] text-blue-100 sol-coach-user-text" style="white-space:pre-wrap;"></p>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 text-zinc-300 text-xs font-bold">나</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-user-text');
+        msgs.scrollTop = msgs.scrollHeight;
+        // 사용자 메시지는 평문 (마크다운/대괄호 색상 X), 8ms/char 빠른 속도
+        _solCoachTypewriterPlain(pEl, text, msgs, 8);
+      }
+
+      // 평문 타이핑 (사용자 메시지용 — 완료 후 변환 없이 그대로)
+      function _solCoachTypewriterPlain(pEl, text, msgs, speed) {
+        speed = speed || 12;
+        if (_solTypingInterval) { try { clearInterval(_solTypingInterval); } catch (e) {} _solTypingInterval = null; }
+        var safe = String(text || '');
+        pEl.innerHTML = '<span class="sol-typing-cursor">▍</span>';
+        var i = 0;
+        _solTypingInterval = setInterval(function () {
+          if (i >= safe.length) {
+            clearInterval(_solTypingInterval);
+            _solTypingInterval = null;
+            pEl.textContent = safe;
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            return;
+          }
+          var typed = safe.slice(0, i + 1);
+          pEl.textContent = typed;
+          var cursor = document.createElement('span');
+          cursor.className = 'sol-typing-cursor';
+          cursor.textContent = '▍';
+          pEl.appendChild(cursor);
+          i++;
+          if (msgs) msgs.scrollTop = msgs.scrollHeight;
+        }, speed);
       }
 
       // ─── 패널 + 모달 렌더 ───
