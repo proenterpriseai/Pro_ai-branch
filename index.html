@@ -2130,6 +2130,39 @@
       }
     }
 
+    /* 코칭 응답 마크다운 lite — 표 + [대괄호] (Phase 3-B-3 v=20260518b) */
+    .sol-coach-rich {
+      letter-spacing: -0.01em;
+    }
+    .sol-coach-md-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 11.5px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sol-coach-md-table thead th {
+      background: #27398c;
+      color: #fff;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: left;
+      letter-spacing: -0.01em;
+    }
+    .sol-coach-md-table tbody td {
+      padding: 7px 10px;
+      border-top: 1px solid rgba(99, 102, 241, 0.15);
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.5;
+      vertical-align: top;
+    }
+    .sol-coach-md-table tbody tr:first-child td {
+      border-top: none;
+    }
+
     /* ═══════════════════════════════════════════════
        모바일 반응형 최적화 (PC 레이아웃 영향 없음)
        ═══════════════════════════════════════════════ */
@@ -9994,6 +10027,11 @@
         .then(function(data) {
           removeTyping(typingId);
           var reply = data.reply || '응답을 생성할 수 없습니다.';
+          // Phase 3-B-3 v=20260518b — 코칭 모드는 마크다운 lite 풍부 렌더
+          if (activeSystem === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') {
+            _solCoachAppendResponseBubble(reply);
+            return;
+          }
           // v=20260516f — Flag=true 옵트인 시 타이핑 효과 (영상 시연 임팩트)
           if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
             _solTypewriterAppend(reply);
@@ -10005,6 +10043,10 @@
           removeTyping(typingId);
           // API 실패 시 로컬 fallback
           var reply = getAIResponse(text);
+          if (activeSystem === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') {
+            _solCoachAppendResponseBubble(reply);
+            return;
+          }
           if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
             _solTypewriterAppend(reply);
           } else {
@@ -12318,28 +12360,27 @@
         });
       }
 
-      // Phase 3-B-3 (v=20260518a) — 운영 Gems Fast-Start 풍부 인사말 (chat 메시지로 직접 inject)
+      // Phase 3-B-3 (v=20260518b) — 운영 Gems Fast-Start 인사말 (운영 출력 100% 일치)
       function _solCoachAppendIntroBubble() {
         var msgs = document.getElementById('sol-chat-messages');
         if (!msgs) return;
-        var c = function (txt) { return '<span style="color:#67e8f9;font-weight:700;">[' + txt + ']</span>'; };
-        var head = function (txt) { return '<span style="color:#67e8f9;font-weight:700;">' + txt + '</span>'; };
-        var ex = function (txt) { return '<span style="color:#86efac;">' + txt + '</span>'; };
         var rich = ''
-          + '반갑습니다. 저는 인카금융서비스 프로사업단총괄의 ' + c('2.0 시스템 수석 전략 코치') + '입니다.\n\n'
-          + '본 시스템은 프로사업단총괄의 상담 환경을 ' + c('상향 표준 모델') + '로 혁신하기 위해 설계되었습니다.\n\n'
-          + '<strong style="color:#fff;">저를 이렇게 활용해 보세요</strong>\n'
-          + head('유형 A.') + ' [금융·투자 상품 & 경제·금융 환경 모드]\n'
-          + head('유형 B.') + ' [상담 전략 & 거절 처리 화법 모드]\n'
-          + head('유형 C.') + ' [(신인) 세일즈 프로세스 & 교육·학습 모드]\n\n'
-          + head('Level 1.') + ' [신인] · 입사 후 2년 이내 — 비유 중심 화법\n'
-          + head('Level 2.') + ' [성장] · 2 ~ 10년 — 심리 편향 + 반박 논리\n'
-          + head('Level 3.') + ' [전문가] · 10년 이상 — 전문 데이터 + 세무·법률\n\n'
-          + '<strong style="color:#fff;">예시 입력</strong>\n'
-          + '· ' + ex('a.1 메리츠화재의 알파플러스보험이 궁금해') + '\n'
-          + '· ' + ex('b.2 "비싸요"라고 거절한 고객 어떻게 대응할까') + '\n'
-          + '· ' + ex('c.3 DB 영업 시 첫 콜 스크립트 보여줘') + '\n\n'
-          + '원하시는 ' + c('유형 + 레벨 + 질문') + '을 함께 입력해 주세요.';
+          + '반갑습니다! 저는 인카금융서비스 프로사업단총괄의 [2.0 시스템 수석 전략 코치]입니다.\n\n'
+          + '본 시스템은 프로사업단총괄의 상담 환경을 [상향 표준 모델]로 혁신하기 위해 설계되었습니다.\n\n'
+          + '[저를 이렇게 활용해 보세요:]\n\n'
+          + '[전 금융권 상품 분석]: 다양한 금융 상품 분석과 국내외 금융, 경제 환경을 [천재적 통찰]로 해부해 드립니다.\n\n'
+          + '[상담 전략 및 거절 처리]: 고객의 [심리 편향]을 깨뜨리는 송곳 질문과 화법을 제시합니다.\n\n'
+          + '[세일즈 프로세스 교육]: 신입 팀장님도 즉시 복제 가능한 [7단계 표준 모델]을 가이드합니다.\n\n'
+          + '원하시는 [유형]과 [숙련도]를 선택해 주세요. (예: A-1, B-3)\n\n'
+          + '[유형 선택]\n'
+          + '유형 A. [금융·투자 상품 & 경제·금융 환경 모드]\n'
+          + '유형 B. [상담 전략 & 거절 처리 화법 모드]\n'
+          + '유형 C. [세일즈 프로세스 & 교육·학습 모드]\n\n'
+          + '[숙련도 선택]\n'
+          + 'Level 1: [신인] (입사 후 2년 이내)\n'
+          + 'Level 2: [성장] (최소 2년 ~ 10년 이내)\n'
+          + 'Level 3: [전문가] (최소 10년 이상)\n\n'
+          + '어떤 분야의 전략을 가장 먼저 수립해 볼까요? 원하시는 조합을 말씀해 주시면 바로 분석을 시작하겠습니다.';
         var div = document.createElement('div');
         div.className = 'flex gap-3';
         div.innerHTML = ''
@@ -12349,7 +12390,73 @@
           + '    <span class="text-[13px] font-medium text-white">PRO AI · 수석 전략 코치</span>'
           + '    <span class="text-[10px] text-zinc-500">방금</span>'
           + '  </div>'
-          + '  <div class="text-[13px] text-zinc-300 leading-relaxed" style="white-space:pre-wrap;">' + rich + '</div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;">' + _solCoachRenderRich(rich) + '</div>'
+          + '</div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      // 코칭 메시지 — 마크다운 lite 렌더링 (표 + [대괄호] 색 + 단락)
+      function _solCoachRenderRich(text) {
+        // HTML escape 먼저 (& < >만 — \n은 보존)
+        var esc = String(text || '').replace(/[&<>]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c];
+        });
+        var lines = esc.split('\n');
+        var out = [];
+        var i = 0;
+        while (i < lines.length) {
+          var line = lines[i];
+          // 마크다운 표 감지: | col | col | + 다음 줄 |---|---|
+          if (/^\|.+\|\s*$/.test(line) && i + 1 < lines.length && /^\|[\s\-:|]+\|\s*$/.test(lines[i + 1])) {
+            var headers = line.split('|').slice(1, -1).map(function (s) { return s.trim(); });
+            i += 2;
+            var rows = [];
+            while (i < lines.length && /^\|.+\|\s*$/.test(lines[i])) {
+              var cells = lines[i].split('|').slice(1, -1).map(function (s) { return s.trim(); });
+              rows.push(cells);
+              i++;
+            }
+            var t = '<table class="sol-coach-md-table"><thead><tr>';
+            headers.forEach(function (h) { t += '<th>' + _solCoachBrackets(h) + '</th>'; });
+            t += '</tr></thead><tbody>';
+            rows.forEach(function (r) {
+              t += '<tr>';
+              r.forEach(function (c) { t += '<td>' + _solCoachBrackets(c) + '</td>'; });
+              t += '</tr>';
+            });
+            t += '</tbody></table>';
+            out.push(t);
+            continue;
+          }
+          out.push(_solCoachBrackets(line));
+          i++;
+        }
+        return out.join('\n');
+      }
+
+      // [대괄호] → 청록 강조
+      function _solCoachBrackets(text) {
+        return text.replace(/\[([^\[\]]+)\]/g, function (m, inner) {
+          return '<span style="color:#67e8f9;font-weight:700;">[' + inner + ']</span>';
+        });
+      }
+
+      // 코칭 응답 — AI 응답 메시지를 풍부 렌더로 표시
+      function _solCoachAppendResponseBubble(reply) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var html = _solCoachRenderRich(reply);
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 수석 전략 코치</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;">' + html + '</div>'
           + '</div>';
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
