@@ -2656,6 +2656,118 @@
       .sol-dbs-sim-body { grid-template-columns: 1fr; }
     }
 
+    /* Team Manager Active 모드 — Peek-and-Tease 카드 (v=20260518k) */
+    .sol-dbs-team-tease {
+      position: relative;
+      margin-top: 12px;
+      padding: 0;
+      background: linear-gradient(135deg, rgba(30,58,138,0.55) 0%, rgba(15,23,42,0.85) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 14px;
+      overflow: hidden;
+      min-height: 280px;
+    }
+    .sol-dbs-team-preview {
+      filter: blur(2.5px);
+      opacity: 0.6;
+      pointer-events: none;
+      user-select: none;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sol-dbs-team-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.88) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+      padding: 24px 20px;
+      z-index: 2;
+    }
+    .sol-dbs-team-lock-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, #06b6d4 0%, #1e3a8a 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 8px 24px -4px rgba(6, 182, 212, 0.6);
+      margin-bottom: 4px;
+    }
+    .sol-dbs-team-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .sol-dbs-team-subtitle {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      max-width: 520px;
+      letter-spacing: -0.01em;
+    }
+    .sol-dbs-team-cta {
+      margin-top: 4px;
+      padding: 9px 18px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 999px;
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      backdrop-filter: blur(4px);
+    }
+    /* 미니어처 컴포넌트 (blur용 가짜 화면) */
+    .sol-dbs-team-mini-overview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .sol-dbs-team-mini-metric {
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .sol-dbs-team-mini-metric .lbl {
+      font-size: 10px; color: rgba(255, 255, 255, 0.6);
+    }
+    .sol-dbs-team-mini-metric .val {
+      font-size: 20px; font-weight: 900; color: #fff; margin-top: 4px;
+    }
+    .sol-dbs-team-mini-chart {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      align-items: end;
+      height: 70px;
+      padding: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 8px;
+    }
+    .sol-dbs-team-mini-bar {
+      background: linear-gradient(180deg, #06b6d4 0%, #1e3a8a 100%);
+      border-radius: 3px;
+      width: 100%;
+    }
+    .sol-dbs-team-mini-leader {
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
     /* 코칭 응답 마크다운 lite — 표 + [대괄호] (Phase 3-B-3 v=20260518b) */
     .sol-coach-rich {
       letter-spacing: -0.01em;
@@ -13564,11 +13676,11 @@
         h += '  <div class="sol-pdf-section-title">🔒 풀 시스템에서 추가로 보이는 것</div>';
         h += '  <div class="sol-pdf-locked-grid">';
         var locks = [
-          { icon: '📊', title: '팀/조직 통합 분석',     desc: '팀원별 리더보드 + 본부/지점 통합 KPI + 전환율 비교' },
           { icon: '📥', title: 'Excel 일괄 업로드',     desc: '엑셀 한 번에 팀 전체 데이터 입력 + 백업 + 복원' },
           { icon: '💾', title: '월 마감 자동 누적',     desc: '이번 달 마감 시 현재 실적이 전월로 자동 이관 + 6개월 추이 차트' },
           { icon: '📝', title: '고객 메모장',           desc: 'DB별 상담 메모 + 후속 일정 + 자동 알림' },
-          { icon: '📤', title: '리포트 출력 + Excel',   desc: '대시보드 전체를 PDF/엑셀로 한 번에 추출 — 회의 자료 즉시 사용' }
+          { icon: '📤', title: '리포트 출력 + Excel',   desc: '대시보드 전체를 PDF/엑셀로 한 번에 추출 — 회의 자료 즉시 사용' },
+          { icon: '🛡️', title: '데이터 무결성 + 권한',   desc: '팀원 권한 분리 + 변경 이력 + 감사 로그 (Audit Trail)' }
         ];
         locks.forEach(function (l) {
           h += '    <div class="sol-pdf-locked-item">';
@@ -13580,6 +13692,33 @@
           h += '      <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>';
           h += '    </div>';
         });
+        h += '  </div>';
+        // Team Manager Active 모드 — Peek-and-Tease (v=20260518k)
+        h += '  <div class="sol-dbs-team-tease" style="margin-top:12px;">';
+        // 미니어처 배경 (blur)
+        h += '    <div class="sol-dbs-team-preview">';
+        h += '      <div class="sol-dbs-team-mini-overview">';
+        h += '        <div class="sol-dbs-team-mini-metric"><div class="lbl">팀 전체 목표 달성률</div><div class="val">60%</div></div>';
+        h += '        <div class="sol-dbs-team-mini-metric"><div class="lbl">팀 통합 실적</div><div class="val">9건</div></div>';
+        h += '        <div class="sol-dbs-team-mini-metric"><div class="lbl">총 합산 보험료</div><div class="val">1.5M</div></div>';
+        h += '      </div>';
+        h += '      <div class="sol-dbs-team-mini-chart">';
+        h += '        <div class="sol-dbs-team-mini-bar" style="height:90%;"></div>';
+        h += '        <div class="sol-dbs-team-mini-bar" style="height:78%;"></div>';
+        h += '        <div class="sol-dbs-team-mini-bar" style="height:68%;"></div>';
+        h += '        <div class="sol-dbs-team-mini-bar" style="height:55%;"></div>';
+        h += '        <div class="sol-dbs-team-mini-bar" style="height:45%;"></div>';
+        h += '      </div>';
+        h += '      <div class="sol-dbs-team-mini-leader"><span>🥇 최재형</span><span>9건 · 60% · 1,500,000원</span></div>';
+        h += '      <div class="sol-dbs-team-mini-leader"><span>전화상담 85% · 1차 88% · 2차 73% · 계약 82%</span><span>전 구간 최적화</span></div>';
+        h += '    </div>';
+        // 오버레이 + 잠금 메시지
+        h += '    <div class="sol-dbs-team-overlay">';
+        h += '      <div class="sol-dbs-team-lock-icon">🔒</div>';
+        h += '      <div class="sol-dbs-team-title">Team Manager Active 모드</div>';
+        h += '      <div class="sol-dbs-team-subtitle">' + _solCoachBrackets('본부/지점 단위 [조직 통합 KPI] · [팀원별 리더보드] · [조직 전환 추이 5단계 차트] · [우수/관리 필요 팀원 자동 분류] · [팀 전체 AI 진단]') + '</div>';
+        h += '      <div class="sol-dbs-team-cta">매니저/관리자 권한 입사 시 즉시 열림 →</div>';
+        h += '    </div>';
         h += '  </div>';
         h += '</div>';
         // CTA
