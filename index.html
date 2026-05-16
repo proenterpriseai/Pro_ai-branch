@@ -12360,7 +12360,8 @@
         });
       }
 
-      // Phase 3-B-3 (v=20260518b) — 운영 Gems Fast-Start 인사말 (운영 출력 100% 일치)
+      // Phase 3-B-3 (v=20260518c) — 운영 Gems Fast-Start 인사말 + 타이핑 효과
+      //   타이핑 중에는 [대괄호] 평문으로 점진 표시, 완료 시 청록 색 + 마크다운 표 자동 변환
       function _solCoachAppendIntroBubble() {
         var msgs = document.getElementById('sol-chat-messages');
         if (!msgs) return;
@@ -12390,10 +12391,40 @@
           + '    <span class="text-[13px] font-medium text-white">PRO AI · 수석 전략 코치</span>'
           + '    <span class="text-[10px] text-zinc-500">방금</span>'
           + '  </div>'
-          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;">' + _solCoachRenderRich(rich) + '</div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
           + '</div>';
         msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, rich, msgs);
+      }
+
+      // 코칭 전용 타이핑 효과 — 평문 단계적 표시 → 완료 시 마크다운 lite 풀 렌더
+      function _solCoachTypewriter(pEl, text, msgs, speed) {
+        speed = speed || 14; // 빠른 속도 (텍스트 길어서)
+        if (_solTypingInterval) { try { clearInterval(_solTypingInterval); } catch (e) {} _solTypingInterval = null; }
+        var safe = String(text || '');
+        // 커서 표시
+        pEl.innerHTML = '<span class="sol-typing-cursor">▍</span>';
+        var i = 0;
+        _solTypingInterval = setInterval(function () {
+          if (i >= safe.length) {
+            clearInterval(_solTypingInterval);
+            _solTypingInterval = null;
+            // 완료 시 풀 렌더 (대괄호 청록 + 마크다운 표 등)
+            pEl.innerHTML = _solCoachRenderRich(safe);
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            return;
+          }
+          var typed = safe.slice(0, i + 1);
+          pEl.textContent = typed;
+          var cursor = document.createElement('span');
+          cursor.className = 'sol-typing-cursor';
+          cursor.textContent = '▍';
+          pEl.appendChild(cursor);
+          i++;
+          if (msgs) msgs.scrollTop = msgs.scrollHeight;
+        }, speed);
       }
 
       // 코칭 메시지 — 마크다운 lite 렌더링 (표 + [대괄호] 색 + 단락)
