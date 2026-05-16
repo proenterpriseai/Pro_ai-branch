@@ -1373,6 +1373,7 @@
       text-align: center;
       letter-spacing: -0.01em;
       font-size: 11px;
+      white-space: nowrap;
     }
     .sol-pdf-hc-table tbody td {
       padding: 9px 8px;
@@ -1385,10 +1386,8 @@
     .sol-pdf-hc-table tbody td.name {
       font-weight: 600;
       color: #fff;
-      text-align: left;
     }
     .sol-pdf-hc-table tbody td.opinion {
-      text-align: left;
       color: rgba(255, 255, 255, 0.75);
     }
 
@@ -10067,11 +10066,11 @@
           html += '  <div class="sol-pdf-hc-table-wrap">';
           html += '  <table class="sol-pdf-hc-table">';
           html += '    <thead><tr>';
-          html += '      <th style="text-align:left;padding-left:12px;">검사 항목</th>';
+          html += '      <th>검사 항목</th>';
           html += '      <th>결과값</th>';
           html += '      <th>판정</th>';
           html += '      <th>정상 범위</th>';
-          html += '      <th style="text-align:left;">리스크 요약</th>';
+          html += '      <th>리스크 요약</th>';
           html += '    </tr></thead><tbody>';
           vitals.slice(0, 10).forEach(function (v) {
             var status = v.status || '정상';
@@ -10081,7 +10080,7 @@
                      : 'ok';
             var valStr = (v.value != null ? v.value : '-') + (v.unit ? ' ' + v.unit : '');
             html += '    <tr>';
-            html += '      <td class="name" style="padding-left:12px;">' + _solEscHtml(v.name || '-') + '</td>';
+            html += '      <td class="name">' + _solEscHtml(v.name || '-') + '</td>';
             html += '      <td>' + _solEscHtml(String(valStr)) + '</td>';
             html += '      <td><span class="sol-pdf-hc-status-badge ' + sCls + '">' + _solEscHtml(status) + '</span></td>';
             html += '      <td>' + _solEscHtml(v.normalRange || '-') + '</td>';
@@ -10100,10 +10099,10 @@
           html += '  <div class="sol-pdf-hc-table-wrap">';
           html += '  <table class="sol-pdf-hc-table">';
           html += '    <thead><tr>';
-          html += '      <th style="text-align:left;padding-left:12px;">예상 발병 질환</th>';
+          html += '      <th>예상 발병 질환</th>';
           html += '      <th>주요 원인 지표</th>';
           html += '      <th>평균 치료비 (예상)</th>';
-          html += '      <th style="text-align:left;">보장 분석 의견</th>';
+          html += '      <th>보장 분석 의견</th>';
           html += '    </tr></thead><tbody>';
           risks.slice(0, 5).forEach(function (r) {
             var costCell = (r.avgTreatmentCost != null)
@@ -10113,7 +10112,7 @@
             var opinion = r.coverageOpinion || r.reason || '-';
             var cause = r.causeIndicator || '-';
             html += '    <tr>';
-            html += '      <td class="name" style="padding-left:12px;">' + _solEscHtml(r.name || '-') + '</td>';
+            html += '      <td class="name">' + _solEscHtml(r.name || '-') + '</td>';
             html += '      <td>' + _solEscHtml(cause) + '</td>';
             html += '      <td class="sol-pdf-hc-cost">' + _solEscHtml(costCell) + '</td>';
             html += '      <td class="opinion">' + _solEscHtml(opinion) + '</td>';
