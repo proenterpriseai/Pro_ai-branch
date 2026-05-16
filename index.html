@@ -8874,27 +8874,40 @@
       }
 
       // ── 우측 시스템 목록 클릭 → 좌측 채팅 컨텍스트 전환 ──
+      // v=20260516a (Phase 0 bug fix) — 카드 클릭이 작동하지 않던 버그 3건 수정:
+      //  (1) systemItems selector `#solutions .lg\\:col-span-4 .space-y-1\.5 > div`
+      //      → `#prosolution-overlay .lg\\:col-span-4 .space-y-2 > div`
+      //      이유: 카드는 #solutions가 아닌 #prosolution-overlay 안에 있고, 컨테이너는 .space-y-2
+      //  (2) 카드 이름 selector `.text-zinc-300` → `.text-white.font-medium`
+      //      이유: 실제 카드 내 시스템명 span 클래스가 `text-white font-medium`
+      //  (3) systemNameMap에 실제 DOM 카드 이름 7종 정확 매핑 (이전엔 'AI' 접미사 빠진 4개가 매칭 실패 → 'all' fallback)
+      //  (4) chatHeader selector도 #prosolution-overlay 안의 span으로 교정
+      //  (5) 채팅 헤더에 이미 'AI' 접미사 있는 경우 중복 추가 회피 (/AI$/.test)
       var systemNameMap = {
-        '보장분석 시스템': 'coverage', 'DB 영업관리': 'dbsales', '통합금융계산기': 'calculator',
-        '상담 코칭': 'coaching', '보험금 산출': 'insurance-calc', '건강검진 분석': 'healthcheck',
-        '완전판매': 'complete-sales', '메인 대시보드': 'dashboard'
+        '보장분석 시스템': 'coverage',
+        'DB 영업관리': 'dbsales',
+        '통합금융계산기': 'calculator',
+        '상담 코칭 AI': 'coaching',
+        '보험금 산출 AI': 'insurance-calc',
+        '완전판매 AI': 'complete-sales',
+        '건강검진 분석 AI': 'healthcheck'
       };
-      var chatHeader = document.querySelector('#solutions .lg\\:col-span-8 .text-white.font-medium');
-      var systemItems = document.querySelectorAll('#solutions .lg\\:col-span-4 .space-y-1\\.5 > div');
+      var chatHeader = document.querySelector('#prosolution-overlay .lg\\:col-span-8 span.text-white.text-sm.font-semibold');
+      var systemItems = document.querySelectorAll('#prosolution-overlay .lg\\:col-span-4 .space-y-2 > div');
       systemItems.forEach(function (item) {
         item.classList.add('sol-system-item');
         item.addEventListener('click', function () {
           // 활성 표시
           systemItems.forEach(function (si) { si.classList.remove('active'); });
           item.classList.add('active');
-          // 시스템 이름 추출
-          var nameEl = item.querySelector('.text-zinc-300');
+          // 시스템 이름 추출 (카드 내 첫 번째 흰색 굵은 글자 = 시스템 이름)
+          var nameEl = item.querySelector('.text-white.font-medium');
           if (!nameEl) return;
           var name = nameEl.textContent.trim();
           var sysKey = systemNameMap[name] || 'all';
           activeSystem = sysKey;
-          // 채팅 헤더 업데이트
-          if (chatHeader) chatHeader.textContent = name + ' AI';
+          // 채팅 헤더 업데이트 (이미 'AI' 접미사 포함이면 중복 회피)
+          if (chatHeader) chatHeader.textContent = /AI$/.test(name) ? name : name + ' AI';
           // 자동 인사 메시지
           var greeting = systemResponses[sysKey] ? systemResponses[sysKey][0] : '무엇이든 물어보세요!';
           appendMessage('ai', '[' + name + '] ' + greeting);
