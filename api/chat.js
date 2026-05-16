@@ -140,7 +140,7 @@ export default async function handler(req, res) {
   try {
     // 모드 분기: PDF 있으면 보장분석 모드, 없으면 기존 텍스트 채팅 모드
     const isPdfMode = !!pdfPart;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const parts = isPdfMode
       ? [{ text: pdfAnalysisPrompt }, pdfPart, { text: '\n\n사용자 요청: ' + message }]
       : [{ text: systemPrompt + '\n\n사용자 질문: ' + message }];
