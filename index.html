@@ -9595,6 +9595,12 @@
 
       // ── 물리 키보드 → 화면 키보드 하이라이트 + textarea 입력 연동 ──
       document.addEventListener('keydown', function (e) {
+        // 다른 input/textarea/select에 포커스 있으면 focus steal 금지
+        //   (Phase 3-B-2 v=20260517d) 계산기 모달 input 등에서 키보드 입력 보호
+        var ae = document.activeElement;
+        if (ae && ae !== chatInput && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'SELECT' || ae.isContentEditable)) {
+          return;
+        }
         var solSection = document.getElementById('solutions');
         if (!solSection) return;
         var rect = solSection.getBoundingClientRect();
