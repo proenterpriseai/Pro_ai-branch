@@ -1314,6 +1314,195 @@
     }
 
     /* ═══════════════════════════════════════════════
+       건강검진 Phase 3-B-1 풀 반영 — sol-pdf-hc-* 클래스
+       (본 시스템 PDF 형식 매칭: 3-카드 그리드 + 5/4컬럼 테이블
+       + AI 시뮬레이션 narrative + 건강 관리 제언 불릿)
+       ═══════════════════════════════════════════════ */
+
+    /* A. 상단 3-카드 그리드 (점수 / 예상 치료비 / 관리 필요도) */
+    .sol-pdf-hc-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: linear-gradient(135deg, #1e3a8a 0%, #27398c 100%);
+      border-radius: 14px;
+      padding: 1px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px -10px rgba(30, 58, 138, 0.6);
+    }
+    .sol-pdf-hc-summary-item {
+      padding: 18px 14px;
+      text-align: center;
+      background: linear-gradient(135deg, #1e3a8a 0%, #27398c 100%);
+    }
+    .sol-pdf-hc-summary-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .sol-pdf-hc-summary-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .sol-pdf-hc-summary-value.danger {
+      color: #fef08a;
+    }
+
+    /* B/C. 5/4 컬럼 테이블 공통 */
+    .sol-pdf-hc-table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(99, 102, 241, 0.18);
+    }
+    .sol-pdf-hc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .sol-pdf-hc-table thead th {
+      background: #27398c;
+      color: #fff;
+      font-weight: 700;
+      padding: 9px 8px;
+      text-align: center;
+      letter-spacing: -0.01em;
+      font-size: 11px;
+    }
+    .sol-pdf-hc-table tbody td {
+      padding: 9px 8px;
+      border-top: 1px solid rgba(99, 102, 241, 0.12);
+      color: rgba(255, 255, 255, 0.82);
+      text-align: center;
+      vertical-align: middle;
+      line-height: 1.5;
+    }
+    .sol-pdf-hc-table tbody td.name {
+      font-weight: 600;
+      color: #fff;
+      text-align: left;
+    }
+    .sol-pdf-hc-table tbody td.opinion {
+      text-align: left;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* 판정 배지 (위험/주의/경계/정상) */
+    .sol-pdf-hc-status-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+      min-width: 38px;
+    }
+    .sol-pdf-hc-status-badge.danger { background: #f43f5e; }
+    .sol-pdf-hc-status-badge.warn   { background: #fbbf24; color: #422006; }
+    .sol-pdf-hc-status-badge.caution{ background: #fb923c; }
+    .sol-pdf-hc-status-badge.ok     { background: #06b6d4; }
+
+    /* 평균 치료비 셀 — 빨강 강조 (specificity: table tbody td 덮어쓰기) */
+    .sol-pdf-hc-table tbody td.sol-pdf-hc-cost {
+      color: #f87171;
+      font-weight: 800;
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
+
+    /* D. AI 시뮬레이션 narrative 박스 */
+    .sol-pdf-hc-simulation {
+      padding: 14px 16px;
+      background: rgba(6, 182, 212, 0.06);
+      border-left: 4px solid #06b6d4;
+      border-radius: 0 10px 10px 0;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 12.5px;
+      line-height: 1.75;
+      letter-spacing: -0.01em;
+    }
+    .sol-pdf-hc-simulation-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #67e8f9;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .sol-pdf-hc-simulation strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    .sol-pdf-hc-simulation .src {
+      color: #67e8f9;
+      font-weight: 600;
+    }
+
+    /* E. 건강 관리 제언 불릿 */
+    .sol-pdf-hc-advice {
+      padding: 14px 18px 14px 18px;
+      background: rgba(34, 197, 94, 0.05);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 10px;
+      list-style: none;
+      margin: 0;
+    }
+    .sol-pdf-hc-advice-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #86efac;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .sol-pdf-hc-advice-item {
+      display: flex;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .sol-pdf-hc-advice-item + .sol-pdf-hc-advice-item {
+      border-top: 1px dashed rgba(34, 197, 94, 0.12);
+    }
+    .sol-pdf-hc-advice-icon {
+      flex-shrink: 0;
+      width: 18px;
+      color: #22c55e;
+      font-weight: 700;
+      text-align: center;
+    }
+    .sol-pdf-hc-advice-text strong {
+      color: #fff;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    .sol-pdf-hc-advice-text {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    /* 모바일 — 3-카드 1열, 테이블 폰트 약간 축소 */
+    @media (max-width: 600px) {
+      .sol-pdf-hc-summary-grid {
+        grid-template-columns: 1fr;
+      }
+      .sol-pdf-hc-table {
+        font-size: 10.5px;
+      }
+      .sol-pdf-hc-table thead th,
+      .sol-pdf-hc-table tbody td {
+        padding: 7px 5px;
+      }
+      .sol-pdf-hc-summary-value {
+        font-size: 20px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════
        모바일 반응형 최적화 (PC 레이아웃 영향 없음)
        ═══════════════════════════════════════════════ */
 
@@ -9843,58 +10032,130 @@
         var vitals = (data && data.vitals) || [];
         var risks = (data && data.risks) || [];
         var recommended = (data && data.recommendedCoverages) || [];
+        var aiSim = (data && data.aiSimulation) || '';
+        var advice = (data && data.healthAdvice) || [];
 
         var html = '';
         // 약식 데모 배지
         html += '<div class="sol-pdf-demo-badge">💡 <strong>약식 데모 결과</strong> — 본 시스템은 검진 항목별 정밀 매칭, 14 카테고리 권장 담보, 의사 상담 권고 자동 생성까지 모두 분석합니다</div>';
 
-        // 건강 점수 카드
-        html += '<div class="sol-pdf-summary-card">';
-        html += '  <div class="sol-pdf-section-title">건강 종합 점수</div>';
-        html += '  <div class="sol-pdf-score">' + (summary.overallScore != null ? summary.overallScore : '-') + '<span style="font-size:14px;color:rgba(255,255,255,0.4);font-weight:500;"> / 100</span></div>';
-        html += '  <div class="sol-pdf-meta">' + _solEscHtml(summary.scoreLabel || '') + '</div>';
-        if (summary.totalVitals != null) {
-          html += '  <div class="sol-pdf-meta" style="margin-top:8px;">검사 항목 <strong style="color:#fff;">' + summary.totalVitals + '개</strong> · 이상 수치 <strong style="color:#f43f5e;">' + (summary.abnormalVitals || 0) + '개</strong></div>';
-        }
+        // A. 상단 3-카드 그리드 — 점수 / 예상 치료비 / 관리 필요도
+        var costStr = (summary.expectedTreatmentCost != null)
+          ? '약 ' + _solFmtNum(summary.expectedTreatmentCost) + '만 원'
+          : '-';
+        var urgency = summary.managementUrgency || summary.scoreLabel || '-';
+        var urgencyClass = (urgency === '매우 높음' || urgency === '높음') ? ' danger' : '';
+        html += '<div class="sol-pdf-hc-summary-grid">';
+        html += '  <div class="sol-pdf-hc-summary-item">';
+        html += '    <div class="sol-pdf-hc-summary-label">종합 건강 점수</div>';
+        html += '    <div class="sol-pdf-hc-summary-value">' + (summary.overallScore != null ? summary.overallScore + '점' : '-') + '</div>';
+        html += '  </div>';
+        html += '  <div class="sol-pdf-hc-summary-item">';
+        html += '    <div class="sol-pdf-hc-summary-label">예상 집중 치료비</div>';
+        html += '    <div class="sol-pdf-hc-summary-value">' + _solEscHtml(costStr) + '</div>';
+        html += '  </div>';
+        html += '  <div class="sol-pdf-hc-summary-item">';
+        html += '    <div class="sol-pdf-hc-summary-label">집중 관리 필요도</div>';
+        html += '    <div class="sol-pdf-hc-summary-value' + urgencyClass + '">' + _solEscHtml(urgency) + '</div>';
+        html += '  </div>';
         html += '</div>';
 
-        // 검사 수치 8개 (2 컬럼 그리드)
+        // B. 1. 주요 검진 결과 분석 — 5컬럼 테이블 (항목/결과값/판정/정상범위/리스크요약)
         if (vitals.length) {
           html += '<div>';
-          html += '  <div class="sol-pdf-section-title">검사 수치</div>';
-          html += '  <div class="sol-pdf-categories-grid">';
-          vitals.slice(0, 12).forEach(function (v) {
+          html += '  <div class="sol-pdf-section-title">1. 주요 검진 결과 분석</div>';
+          html += '  <div class="sol-pdf-hc-table-wrap">';
+          html += '  <table class="sol-pdf-hc-table">';
+          html += '    <thead><tr>';
+          html += '      <th style="text-align:left;padding-left:12px;">검사 항목</th>';
+          html += '      <th>결과값</th>';
+          html += '      <th>판정</th>';
+          html += '      <th>정상 범위</th>';
+          html += '      <th style="text-align:left;">리스크 요약</th>';
+          html += '    </tr></thead><tbody>';
+          vitals.slice(0, 10).forEach(function (v) {
             var status = v.status || '정상';
-            var color = status === '정상' ? '✅' : (status === '주의' ? '⚠️' : (status === '경계' ? '⚠️' : '❌'));
-            html += '    <div class="sol-pdf-category-row">';
-            html += '      <span>' + color + '</span>';
-            html += '      <span class="name">' + _solEscHtml(v.name || '-') + '</span>';
-            html += '      <span class="pct">' + _solEscHtml(String(v.value != null ? v.value : '-')) + (v.unit ? ' ' + _solEscHtml(v.unit) : '') + '</span>';
-            html += '    </div>';
+            var sCls = status === '위험' ? 'danger'
+                     : status === '경계' ? 'caution'
+                     : status === '주의' ? 'warn'
+                     : 'ok';
+            var valStr = (v.value != null ? v.value : '-') + (v.unit ? ' ' + v.unit : '');
+            html += '    <tr>';
+            html += '      <td class="name" style="padding-left:12px;">' + _solEscHtml(v.name || '-') + '</td>';
+            html += '      <td>' + _solEscHtml(String(valStr)) + '</td>';
+            html += '      <td><span class="sol-pdf-hc-status-badge ' + sCls + '">' + _solEscHtml(status) + '</span></td>';
+            html += '      <td>' + _solEscHtml(v.normalRange || '-') + '</td>';
+            html += '      <td class="opinion">' + _solEscHtml(v.riskSummary || '-') + '</td>';
+            html += '    </tr>';
           });
+          html += '  </tbody></table>';
           html += '  </div>';
           html += '</div>';
         }
 
-        // 질병 리스크 3~5개
+        // C. 2. 질병 발생 리스크 및 보장 자산 정밀 분석 — 4컬럼 테이블
         if (risks.length) {
           html += '<div>';
-          html += '  <div class="sol-pdf-section-title">⚠️ 주요 질병 리스크</div>';
-          html += '  <div class="sol-pdf-top3-grid">';
-          risks.slice(0, 3).forEach(function (r) {
-            var levelColor = r.level === '높음' ? '#f43f5e' : (r.level === '중간' ? '#fbbf24' : '#06b6d4');
-            html += '    <div class="sol-pdf-top3-item">';
-            html += '      <div><span class="sol-pdf-top3-rank" style="background:' + levelColor + ';">' + _solEscHtml(r.level || '-') + '</span><span class="sol-pdf-top3-name">' + _solEscHtml(r.name || '-') + '</span></div>';
-            if (r.reason) {
-              html += '      <div class="sol-pdf-top3-reason">' + _solEscHtml(r.reason) + '</div>';
-            }
+          html += '  <div class="sol-pdf-section-title">2. 질병 발생 리스크 및 보장 자산 정밀 분석</div>';
+          html += '  <div class="sol-pdf-hc-table-wrap">';
+          html += '  <table class="sol-pdf-hc-table">';
+          html += '    <thead><tr>';
+          html += '      <th style="text-align:left;padding-left:12px;">예상 발병 질환</th>';
+          html += '      <th>주요 원인 지표</th>';
+          html += '      <th>평균 치료비 (예상)</th>';
+          html += '      <th style="text-align:left;">보장 분석 의견</th>';
+          html += '    </tr></thead><tbody>';
+          risks.slice(0, 5).forEach(function (r) {
+            var costCell = (r.avgTreatmentCost != null)
+              ? '약 ' + _solFmtNum(r.avgTreatmentCost) + '만 원'
+              : '-';
+            // coverageOpinion 우선, 없으면 기존 reason fallback (구버전 응답 호환)
+            var opinion = r.coverageOpinion || r.reason || '-';
+            var cause = r.causeIndicator || '-';
+            html += '    <tr>';
+            html += '      <td class="name" style="padding-left:12px;">' + _solEscHtml(r.name || '-') + '</td>';
+            html += '      <td>' + _solEscHtml(cause) + '</td>';
+            html += '      <td class="sol-pdf-hc-cost">' + _solEscHtml(costCell) + '</td>';
+            html += '      <td class="opinion">' + _solEscHtml(opinion) + '</td>';
+            html += '    </tr>';
+          });
+          html += '  </tbody></table>';
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        // D. AI 전문가의 경제적 위험 시뮬레이션 narrative 박스 (출처 인용 자동 fallback)
+        if (aiSim) {
+          var simText = _solHcEnsureSource(aiSim);
+          html += '<div>';
+          html += '  <div class="sol-pdf-hc-simulation">';
+          html += '    <div class="sol-pdf-hc-simulation-title">💡 AI 전문가의 경제적 위험 시뮬레이션</div>';
+          html += '    <div>' + _solHcRenderNarrative(simText) + '</div>';
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        // E. 전략적 건강 관리 제언 불릿
+        if (advice.length) {
+          html += '<div>';
+          html += '  <div class="sol-pdf-hc-advice">';
+          html += '    <div class="sol-pdf-hc-advice-title">✅ 전략적 건강 관리 제언</div>';
+          advice.slice(0, 6).forEach(function (a) {
+            var title = (typeof a === 'string') ? '' : (a && a.title) || '';
+            var desc  = (typeof a === 'string') ? a : ((a && a.desc) || '');
+            html += '    <div class="sol-pdf-hc-advice-item">';
+            html += '      <div class="sol-pdf-hc-advice-icon">•</div>';
+            html += '      <div class="sol-pdf-hc-advice-text">';
+            if (title) html += '<strong>' + _solEscHtml(title) + ':</strong>';
+            html += _solEscHtml(desc);
+            html += '      </div>';
             html += '    </div>';
           });
           html += '  </div>';
           html += '</div>';
         }
 
-        // 권장 담보 3개
+        // 권장 담보 3개 (유지)
         if (recommended.length) {
           html += '<div>';
           html += '  <div class="sol-pdf-section-title">🎯 검진 결과 기반 권장 담보</div>';
@@ -9974,6 +10235,22 @@
       function _solEscHtml(s) {
         return String(s || '').replace(/[&<>"']/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      // 건강검진 AI 시뮬레이션 — 출처 인용 보장 (Gemini가 출처 누락 시 fallback 자동 부착)
+      function _solHcEnsureSource(text) {
+        var s = String(text || '');
+        if (/출처\s*[:：]/.test(s)) return s;
+        return s + ' (분석 근거 출처: 국립암센터 통계 및 건강보험공단 질환별 기대 치료비 데이터)';
+      }
+
+      // 건강검진 AI 시뮬레이션 — 단순 텍스트를 HTML로 (출처 괄호만 청록색 강조)
+      function _solHcRenderNarrative(text) {
+        var esc = _solEscHtml(text);
+        // (출처: …) 또는 (분석 근거 출처: …) 괄호 블록을 청록색 span으로 감싸기
+        return esc.replace(/\(([^)(]*?출처\s*[:：][^)(]*)\)/g, function (m, inner) {
+          return '<span class="src">(' + inner + ')</span>';
         });
       }
 

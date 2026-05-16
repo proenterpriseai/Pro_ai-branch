@@ -94,7 +94,13 @@ export default async function handler(req, res) {
 
 컨텍스트: ${context || '보장분석 시스템'}`;
 
-  // 건강검진 분석 프롬프트 (v=20260516g — Phase 3-B-1)
+  // 건강검진 분석 프롬프트 (v=20260517a — Phase 3-B-1 풀 반영)
+  //   본 시스템 PDF(건강검진 보장 분석 리포트) 5건 매칭:
+  //     A. summary.expectedTreatmentCost + managementUrgency
+  //     B. vitals[].normalRange + riskSummary
+  //     C. risks[].causeIndicator + avgTreatmentCost + coverageOpinion
+  //     D. aiSimulation (출처 인용 필수)
+  //     E. healthAdvice (4~5개 불릿)
   const healthcheckPrompt = `당신은 30년 경력의 건강검진 분석 전문가입니다.
 첨부된 PDF는 고객의 건강검진 결과지입니다.
 
@@ -102,40 +108,63 @@ export default async function handler(req, res) {
 
 {
   "summary": {
-    "overallScore": 0~100,             // 종합 건강 점수 (대략적)
+    "overallScore": 0~100,                          // 종합 건강 점수
     "scoreLabel": "양호" | "주의" | "위험",
-    "totalVitals": 정수,                // 추출한 검사 항목 수
-    "abnormalVitals": 정수              // 이상 수치(주의/경계/위험) 항목 수
+    "totalVitals": 정수,                            // 추출한 검사 항목 수
+    "abnormalVitals": 정수,                         // 이상 수치(주의/경계/위험) 항목 수
+    "expectedTreatmentCost": 정수,                  // 예상 집중 치료비 (만원 단위, 예: 4500)
+    "managementUrgency": "매우 높음" | "높음" | "보통" | "낮음"  // 집중 관리 필요도
   },
   "vitals": [
-    { "name": "수축기 혈압", "value": 130, "unit": "mmHg", "status": "정상" | "주의" | "경계" | "위험" },
-    { "name": "이완기 혈압", "value": 85, "unit": "mmHg", "status": "..." },
-    { "name": "공복 혈당", "value": 95, "unit": "mg/dL", "status": "..." },
-    { "name": "총 콜레스테롤", "value": 240, "unit": "mg/dL", "status": "..." },
-    { "name": "LDL 콜레스테롤", ... },
-    { "name": "HDL 콜레스테롤", ... },
-    { "name": "중성지방", ... },
-    { "name": "간 수치 ALT", ... },
-    { "name": "간 수치 AST", ... },
-    { "name": "BMI", ... }
-  ],  // 8~12개 핵심 검사 항목 (PDF에 있는 만큼)
+    {
+      "name": "당화혈색소(HbA1c)",
+      "value": 7.1,
+      "unit": "%",
+      "status": "정상" | "주의" | "경계" | "위험",
+      "normalRange": "4.0~6.0%",                    // 정상 범위 (단위 포함 문자열)
+      "riskSummary": "당뇨병 확진 수준, 즉각 치료 필요"  // 40자 이내 한 줄
+    }
+  ],  // 6~10개 (PDF에 있는 핵심 항목)
   "risks": [
-    { "name": "심혈관 질환", "level": "낮음" | "중간" | "높음", "reason": "한 줄 사유 (40자 이내)" },
-    { "name": "당뇨병", "level": "...", "reason": "..." },
-    { "name": "간 질환", "level": "...", "reason": "..." }
-  ],  // 3~5개 (PDF 결과에서 의미 있는 것만)
+    {
+      "name": "당뇨 및 만성 합병증",
+      "level": "낮음" | "중간" | "높음",
+      "causeIndicator": "당화혈색소 7.1%, 요당 3+",  // 주요 원인 지표 (해당 vital 값 인용)
+      "avgTreatmentCost": 3000,                     // 평균 치료비 (만원 단위)
+      "coverageOpinion": "장기적 인슐린/약물 치료 및 합병증(신부전, 혈관질환) 대비 필요"  // 보장 분석 의견
+    }
+  ],  // 2~4개 (검진 결과에서 의미 있는 것만)
   "recommendedCoverages": [
     { "name": "뇌혈관 진단비", "amount": 3000, "reason": "고혈압 경계, 50대 권장" },
     { "name": "심장 질환 진단비", "amount": 2000, "reason": "..." },
     { "name": "성인병 보장 강화", "amount": 1500, "reason": "..." }
-  ],  // 3개 고정 — 검진 결과에 기반한 보험 담보 추천 (만원 단위)
+  ],  // 3개 — 검진 이상 항목에 직접 연결되는 보장 (만원 단위)
+  "aiSimulation": "현재 고객님은 당화혈색소 수치가 7.1%로 ... 매우 불안정합니다. (출처: 대한당뇨병학회) 당뇨는 평생 관리가 필요하며 ...",  // 3~5문장 narrative, 출처 1회 이상 인용 필수
+  "healthAdvice": [
+    { "title": "내과 정밀 진단", "desc": "당화혈색소 재검사 + 전문의 상담을 통한 약물 치료 시작 권고" },
+    { "title": "근력 강화 운동", "desc": "체지방률 높고 근육량 표준 이하 — 근육량 증가는 혈당 조절에 직접 도움" }
+  ],  // 4~5개 — 검사 이상 수치별 1:1 매핑 (혈당↑→내과, 비타민D↓→영양, 등)
   "chatSummary": "한 두 문장 요약 (건강 상태 + 권장 조치)"
 }
 
 분석 원칙:
 - PDF에서 추출 가능한 검사 항목 모두 표시 (없으면 vitals 배열 짧게)
-- 정상범위: 혈압 <130/85, 공복혈당 <100, 총 콜레스테롤 <200, LDL <130, HDL >40, 중성지방 <150, 간수치(ALT/AST) <40, BMI 18.5~25
-- 경계: 정상범위 약간 초과, 위험: 명확히 초과
+- 정상범위 가이드(없는 항목 fallback): 혈압 <130/85 mmHg, 공복혈당 70~110 mg/dL, 당화혈색소 4.0~6.0%,
+  총 콜레스테롤 <200 mg/dL, LDL <130, HDL >40, 중성지방 <150, ALT/AST <40 U/L, BMI 18.5~25,
+  TSH 0.270~4.200 µIU/mL, 비타민 D 30~100 ng/mL, 체지방률 18~28% (남) 또는 22~32% (여)
+- status 판정: 위험(명확히 초과/심각), 경계(정상 약간 초과), 주의(경계 직전 또는 단순 이상), 정상
+
+- expectedTreatmentCost는 risks[].avgTreatmentCost 합계의 1.2~1.5배 (합병증·재발 예비 포함)
+- managementUrgency 판정 룰:
+    위험 ≥2건 → "매우 높음" / 위험 1건 또는 주의 ≥3건 → "높음" / 주의 1~2건 → "보통" / 전부 정상 → "낮음"
+
+- aiSimulation 작성 시 다음 출처 중 하나 이상 반드시 인용 (괄호 표기):
+    대한당뇨병학회 / 국립암센터 / 대한심장학회 / 대한갑상선학회 / 대한골대사학회 /
+    건강보험공단 / 대한고혈압학회 / 대한간학회
+- aiSimulation은 가장 위험도 높은 risk 1~2건에 집중하여 "현재 상태 → 합병증 시 가계 영향 → 보장 점검 권고" 흐름
+
+- healthAdvice 4~5개는 검사 이상 수치 ↔ 권고 매핑이 명확해야 함 (예: 혈당↑ → 내과 정밀 진단,
+  비타민D↓ → 영양 요법 / 일광욕, 체지방률↑ → 근력 운동, 대장 내시경 소견 있음 → 추적 관찰)
 - recommendedCoverages는 검진 결과 이상 항목에 직접 연결되는 보장만 (예: 콜레스테롤 높음 → 심혈관 진단비)
 - 50~60대 고객 가정`;
 
