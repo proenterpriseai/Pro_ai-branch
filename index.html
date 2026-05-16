@@ -2421,6 +2421,36 @@
     .sol-dbs-eff-badge.high { background: rgba(52,211,153,0.18); color: #34d399; }
     .sol-dbs-eff-badge.work { background: rgba(251,191,36,0.18); color: #fbbf24; }
 
+    /* 유형별 투자비용 표 (v=20260518m) */
+    .sol-dbs-eff-table {
+      background: rgba(15,23,42,0.4);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sol-dbs-eff-row-h, .sol-dbs-eff-row-d {
+      display: grid;
+      grid-template-columns: 1.4fr 0.7fr 1fr 1.2fr;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+    }
+    .sol-dbs-eff-row-h {
+      background: rgba(99,102,241,0.15);
+      color: rgba(255,255,255,0.85);
+      font-weight: 700;
+    }
+    .sol-dbs-eff-row-d {
+      color: rgba(255,255,255,0.75);
+      border-top: 1px solid rgba(99,102,241,0.12);
+    }
+    .sol-dbs-eff-row-d > div:not(:first-child) {
+      text-align: right;
+    }
+    .sol-dbs-eff-row-h > div:not(:first-child) {
+      text-align: right;
+    }
+
     /* 4단계 도달률 + 전환율 카드 */
     .sol-dbs-reach-row {
       display: grid;
@@ -13608,10 +13638,11 @@
       //   구간전환율 + 파이프라인 잔여가치 + AI 코칭 + Strategic Simulator)
       // ═══════════════════════════════════════════════════════════════════
 
-      // v=20260518l — 초기값 모두 0 (사용자가 본인 데이터 직접 입력)
+      // v=20260518m — DB 유형별 단가 추가 (ROI 계산용)
       var DBSALES_STATE = {
         monthlyGoal: 0,
         db: { coverage: 0, finance: 0, intro: 0, existing: 0, open: 0 },
+        dbPrice: { coverage: 0, finance: 0, intro: 0, existing: 0, open: 0 }, // 원 단위
         stages: { ta: 0, first: 0, second: 0, deal: 0 },
         premium: { target: 0, actual: 0 },
         simulatorIncome: 5000000 // 시뮬레이터 슬라이더 기본값만 유지
@@ -13666,6 +13697,14 @@
         h += '  <div class="sol-dbs-input-grid">';
         h += _solDbsField('목표 보험료', 'premium.target', s.premium.target);
         h += _solDbsField('실적 보험료', 'premium.actual', s.premium.actual);
+        h += '  </div>';
+        h += '  <div class="sol-dbs-section-h" style="margin-top:10px;">DB 유형별 단가 (원) — ROI 계산용</div>';
+        h += '  <div class="sol-dbs-input-grid" style="grid-template-columns:repeat(3,1fr);">';
+        h += _solDbsField('보장DB 단가',  'dbPrice.coverage', s.dbPrice.coverage);
+        h += _solDbsField('재무DB 단가',  'dbPrice.finance',  s.dbPrice.finance);
+        h += _solDbsField('지인·소개 단가','dbPrice.intro',   s.dbPrice.intro);
+        h += _solDbsField('기고객 단가',  'dbPrice.existing', s.dbPrice.existing);
+        h += _solDbsField('개척 단가',    'dbPrice.open',     s.dbPrice.open);
         h += '  </div>';
         h += '</div>';
 
@@ -13840,6 +13879,19 @@
         var dbWorkType = (s.db.coverage|0) + (s.db.finance|0) + (s.db.open|0);
         var highPct = _solDbsPct(dbHighEff, dbTotal);
         var workPct = _solDbsPct(dbWorkType, dbTotal);
+        // ROI 계산 (v=20260518m) — DB 유형별 단가 × 수량 합산 vs 실적 보험료
+        var invest = {
+          coverage: (s.db.coverage|0) * (s.dbPrice.coverage|0),
+          finance:  (s.db.finance|0)  * (s.dbPrice.finance|0),
+          intro:    (s.db.intro|0)    * (s.dbPrice.intro|0),
+          existing: (s.db.existing|0) * (s.dbPrice.existing|0),
+          open:     (s.db.open|0)     * (s.dbPrice.open|0)
+        };
+        var totalInvest = invest.coverage + invest.finance + invest.intro + invest.existing + invest.open;
+        var roiVal = null; // null = 미설정 (단가 0 또는 미입력)
+        if (totalInvest > 0) {
+          roiVal = ((s.premium.actual - totalInvest) / totalInvest) * 100;
+        }
         // 시뮬레이터
         var totalNeed = avgPrem > 0 ? Math.ceil(s.simulatorIncome / avgPrem) : 0;
         var addNeed = Math.max(totalNeed - d, 0);
@@ -13853,6 +13905,7 @@
           reach: reach, conv: conv, bottleneck: bottleneck,
           pipe: pipe, avgPrem: avgPrem,
           dbHighEff: dbHighEff, dbWorkType: dbWorkType, highPct: highPct, workPct: workPct,
+          invest: invest, totalInvest: totalInvest, roi: roiVal,
           sim: { totalNeed: totalNeed, addNeed: addNeed, addTa: addTa, boost: boost }
         };
       }
@@ -13882,7 +13935,18 @@
         h += _solDbsMetricCard('보험료 달성률', r.premPct.toFixed(0), '실적 ' + _solDbsKrw(s.premium.actual) + ' / 목표 ' + _solDbsKrw(s.premium.target));
         h += _solDbsMetricCard('계약 달성률', r.dealPct.toFixed(0), s.stages.deal + '건 / ' + s.monthlyGoal + '건');
         h += _solDbsMetricCard('종합 전환율', r.totalConv.toFixed(0), 'DB ' + r.dbTotal + '건 → 계약 ' + s.stages.deal + '건');
-        h += _solDbsMetricCard('ROI (투자 수익률)', '-', 'DB 단가 미설정', true);
+        if (r.roi !== null && isFinite(r.roi)) {
+          var roiStr = (r.roi >= 0 ? '+' : '') + r.roi.toFixed(0);
+          var roiSign = r.roi >= 0 ? '#34d399' : '#f87171';
+          h += '<div class="sol-dbs-metric-card">';
+          h += '  <div class="sol-dbs-metric-label">ROI (투자 수익률)</div>';
+          h += '  <div class="sol-dbs-metric-value" style="color:' + roiSign + ';">' + roiStr + '<span class="pct">%</span></div>';
+          h += '  <div class="sol-dbs-metric-bar"><div class="sol-dbs-metric-bar-fill" style="width:' + Math.min(Math.max(r.roi, 0), 100) + '%;"></div></div>';
+          h += '  <div class="sol-dbs-metric-foot">투자 ' + _solDbsKrw(r.totalInvest) + '원 → 실적 ' + _solDbsKrw(s.premium.actual) + '원</div>';
+          h += '</div>';
+        } else {
+          h += _solDbsMetricCard('ROI (투자 수익률)', '-', 'DB 단가 미설정', true);
+        }
         h += '</div>';
 
         // 활동 흐름
@@ -13948,6 +14012,37 @@
         h += '        <div class="sol-dbs-ai-diag" style="margin-top:8px;padding:10px 12px;font-size:11px;border-left-color:#a78bfa;">';
         h += '          <strong style="color:#c4b5fd;">🤖 AI 추천</strong>  ' + _solEscHtml(_solDbsEffRec(r)) + '';
         h += '        </div>';
+        h += '      </div>';
+        h += '    </div>';
+        h += '  </div>';
+        // 유형별 투자비용 표 (v=20260518m — DB 단가 입력 시 자동 표시)
+        h += '  <div style="margin-top:12px;">';
+        h += '    <div style="font-size:11.5px;font-weight:800;color:#fff;margin-bottom:8px;">📊 유형별 투자비용</div>';
+        h += '    <div class="sol-dbs-eff-table">';
+        h += '      <div class="sol-dbs-eff-row-h"><div>DB 유형</div><div>수량</div><div>단가</div><div>투자비용</div></div>';
+        var typeMap = [
+          { key: 'coverage', label: '● 보장DB',   color: '#3b82f6' },
+          { key: 'finance',  label: '● 재무DB',   color: '#a78bfa' },
+          { key: 'intro',    label: '● 지인/소개', color: '#10b981' },
+          { key: 'existing', label: '● 기고객',   color: '#fbbf24' },
+          { key: 'open',     label: '● 개척',     color: '#f87171' }
+        ];
+        typeMap.forEach(function(t) {
+          var qty = s.db[t.key] | 0;
+          var price = s.dbPrice[t.key] | 0;
+          var inv = qty * price;
+          h += '      <div class="sol-dbs-eff-row-d">';
+          h += '        <div style="color:' + t.color + ';font-weight:700;">' + t.label + '</div>';
+          h += '        <div>' + qty + '</div>';
+          h += '        <div>' + (price > 0 ? _solDbsKrw(price) + '원' : '-') + '</div>';
+          h += '        <div style="color:' + (inv > 0 ? '#fff' : 'rgba(255,255,255,0.4)') + ';font-weight:' + (inv > 0 ? '700' : '400') + ';">' + (inv > 0 ? _solDbsKrw(inv) + '원' : '-') + '</div>';
+          h += '      </div>';
+        });
+        h += '      <div class="sol-dbs-eff-row-d" style="border-top:1px solid rgba(99,102,241,0.3);font-weight:800;">';
+        h += '        <div style="color:#fff;">합계</div>';
+        h += '        <div style="color:#fff;">' + r.dbTotal + '</div>';
+        h += '        <div>-</div>';
+        h += '        <div style="color:' + (r.totalInvest > 0 ? '#67e8f9' : 'rgba(255,255,255,0.4)') + ';">' + (r.totalInvest > 0 ? _solDbsKrw(r.totalInvest) + '원' : '-') + '</div>';
         h += '      </div>';
         h += '    </div>';
         h += '  </div>';
