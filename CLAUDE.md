@@ -161,7 +161,64 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
   2. 2차: 바탕화면(`DESKTOP/<path>`) — 관리자/db영업전문과과정/법인/ 등
   3. 3차: SPA fallback (`index.html`)
 
-## 📋 Pending Feature (설계 완료, 미구현 — 2026-05-15 설계 마감)
+## ✅ Implemented (2026-05-18 — 7대 AI 시스템 풀 데모 완료, Vercel 배포 완료)
+
+### Phase 3-B-1 ~ 3-B-6 + 후속 통일 작업 — 16 commit 누적 (2026-05-17 ~ 2026-05-18)
+
+| Phase | Commit | 내용 | Version |
+|-------|--------|------|---------|
+| 3-B-1 | bf648fc | 건강검진 풀 반영 (5건: 3카드 + 5컬럼 표 + 4컬럼 표 + AI 시뮬 + 제언) | v=20260517a |
+| 3-B-1 fix | a099612 | 건강검진 테이블 헤더 nowrap + center | v=20260517 |
+| 3-B-2 | 365a85e → f93b250 | 통합금융계산기 9 → 11 메인 + 5 서브 (운영 매칭) | v=20260517b/c |
+| 3-B-2 fix | 7909971 | 계산기 모달 키보드 입력 차단 해결 | v=20260517d |
+| 3-B-3 | 4cfccee → f0dcbba → cf344f1 | 상담 코칭 GA 2.0 표준 (유형 A/B/C × Level 1/2/3) | v=20260517e ~ 20260518b |
+| 3-B-3 fix | 77ddedb / aafccbf | 코칭 인사말 + 사용자 + AI 양방향 타이핑 효과 | v=20260518c/d |
+| 3-B-4 | 6f9a1b5 | 보험금 산출 AI (다중 PDF 업로드 + 마크다운 리포트) | v=20260518e |
+| 3-B-5 | b646f3c | 완전판매 AI (FSS 조사관 + 4 뱃지 자동 색상 + A/B 모드) | v=20260518f |
+| 후속 fix | 6fe7d53 | 챗봇 잠금+CTA 누락 보강 + maxOutputTokens 8192 격상 + 프롬프트 완전 출력 강제 | v=20260518g |
+| 3-B-6 | 0190f7e | DB영업관리 AI 대시보드 (개인 모드 풀, 10 섹션 + AI Simulator) | v=20260518h |
+| 통일 fix | 00bb040 | 챗봇 3개 잠금+CTA 노출 타이밍 변경 (AI 응답 완료 후로) | v=20260518i |
+| 통일 fix | 79711a6 | 통합금융계산기 잠금+CTA 메인 → 계산 결과 모달 안으로 이동 | v=20260518j |
+
+### 7대 시스템 잠금+CTA 노출 시점 통일 완료
+
+| 시스템 | 노출 시점 | 형식 |
+|---|---|---|
+| 건강검진 | PDF 분석 결과 안 (기준) | 패널 inline |
+| 보장분석 | PDF 분석 결과 안 | 패널 inline |
+| 통합금융계산기 | **모듈 계산 결과 모달 안** | 결과 카드 직후 |
+| DB영업관리 | 실시간 대시보드 안 | 패널 inline |
+| 상담 코칭 | AI 응답 완료 후 | 채팅 메시지 |
+| 보험금 산출 | AI 응답 완료 후 | 채팅 메시지 |
+| 완전판매 | AI 응답 완료 후 | 채팅 메시지 |
+
+### Gemini API 설정 (3개 시스템 챗봇)
+- 모델: `gemini-3.1-pro-preview`
+- `maxOutputTokens`: **8192** (코칭/보험금산출/완전판매 모두)
+- `temperature`: 0.3~0.5 (시스템별 차등)
+- 프롬프트: "응답을 절대 중간에 자르지 말 것" + 분량 가이드 명시
+- thinkingConfig: `{ thinkingBudget: -1 }` (dynamic)
+
+### 옵트인 검증
+```js
+sessionStorage._flag_sol_pdf='true'; location.reload();
+```
+
+### Vercel 환경변수
+- `GEMINI_API_KEY`: 본 시스템(보장분석) 동일 키 — Tier 1 결제 활성
+
+## 📋 Pending Feature (Team Mode)
+
+### Phase 3-B-6 Team Manager Active 모드 — 별도 진행
+- 팀원 프로필 선택 + Excel 일괄 업로드 + 백업/복원
+- Team Overview: 팀 전체 목표 달성률 / 통합 실적 / 총 합산 보험료
+- 팀 실적 리더보드
+- 조직 통합 영업 효율 (4단계 평균 전환율)
+- 조직 통합 전환 추이 (5단계 막대 차트)
+- 팀원별 종합 현황표 + 우수/관리 필요 팀원 분류
+- 팀 전체 AI 진단
+
+## 📋 (Legacy) Pending Feature — 이전 설계 (2026-05-15)
 
 ### Prosolution PDF 업로드 → 보장분석 데모 (영상 더빙용 핵심)
 - **목적**: ai-branch 랜딩 prosolution-overlay 안에서 사용자가 본인 PDF 직접 업로드 → Gemini가 즉시 분석 → 채팅 요약 + 우측 리포트 카드. 영상 더빙 시 "데모가 아닌 실제 동작" 시연 가능.
@@ -185,6 +242,48 @@ js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 - Scene 9(PROSOLUTION OVERLAY) 대본은 위 PDF 업로드 기능 구현 후 보강 (Q25.5/Q26 수정/Q26.5 신규 큐 — plan 파일 참조)
 
 ## Version
+
+- **v=20260518j** (최신) — 7대 시스템 잠금+CTA 노출 시점 완전 통일
+  - 챗봇 3개 (코칭/보험금산출/완전판매): AI 응답 완료 후 자동 노출 (`_solCoachTypewriter onComplete` 콜백)
+  - 통합금융계산기: 메인 모듈 grid에서 제거 → 모듈 계산 결과 모달 안으로 이동
+  - 7대 모두 "사용자 분석/요청 완료 후 결과와 함께 노출" 일관
+- **v=20260518h** — Phase 3-B-6 DB영업관리 AI 대시보드 (개인 모드 풀 구현)
+  - 입력 폼 + 종합 점수 (D~A+) + 4 메트릭 + 활동 흐름 + DB 효율 도넛 + 도달률/전환율 + 파이프라인 잔여 가치 + AI 코칭 + AI Strategic Simulator
+  - 운영 시스템 (PRO AI 영업관리) 100% 매칭 — 기본값 51.0점 D 등급, 3.3배 보스트 일치
+- **v=20260518g** — 챗봇 잠금+CTA 누락 보강 + 응답 분량 격상
+  - SOL_CHAT_LOCKED 3 시스템별 잠금 5종 데이터 + `_solChatAppendLockedCta(sysKey)` 공용 함수
+  - `maxOutputTokens` 4096 → 8192 (모든 챗봇 + 보험금 산출 PDF 모드)
+  - 프롬프트에 "응답 절대 중간 자르지 말 것" + 분량 상향 명시
+- **v=20260518f** — Phase 3-B-5 완전판매 AI (FSS 조사관 + 4 뱃지 + A/B 모드)
+  - `completeSalesPrompt` 신규 (+85줄) — FSS 페르소나 + A/B 자동 감지 + 뱃지 강제
+  - `_solCoachBrackets` 뱃지 색상 차등화 (✅⚖️ 녹색 / 🔍 노랑 / ⚠️ 빨강 / 기본 청록)
+  - A 모드: 조사관 사전 점검 보고서 9 섹션 (0~8 + 4단계 해피콜 + 5단계 반복 루프)
+  - B 모드: 반박 답변서 전략 7 섹션
+- **v=20260518e** — Phase 3-B-4 보험금 산출 AI (다중 PDF + 마크다운 리포트)
+  - `insuranceCalcPrompt` 신규 — 마크다운 산출 리포트 구조 명시
+  - 다중 PDF 지원: `req.body.pdfs` 배열 (최대 5개) — `pdfParts` 통합 전달
+  - `PDF_ENABLED_SYSTEMS += 'insurance-calc'` + `multi: true` 옵션
+  - 리포트: 📋헤더 / 🚨서류 보완 / 💰최대 수령액 / 1️⃣산출표 (5컬럼 마크다운 표) / 2️⃣전략 / 💡포인트
+- **v=20260518d** — 코칭 양방향 타이핑 (사용자 메시지 + AI 응답 양쪽)
+  - `_solCoachAppendUserBubble` (8ms/char 평문 타이핑)
+  - `_solCoachAppendResponseBubble` (10ms/char + 완료 시 마크다운 lite 변환)
+- **v=20260518c** — 코칭 인사말 타이핑 효과 적용 (14ms/char)
+- **v=20260518b** — Phase 3-B-3 코칭 운영 출력 100% 매칭 + 마크다운 표 렌더
+  - `coachingPrompt` 15단계 풀 엔진 (유형 A) + Bias Breaker (B) + 7단계 + QC (C)
+  - 마크다운 lite 렌더링: 표준 markdown table → HTML table, [대괄호] 청록 강조
+- **v=20260518a** — Phase 3-B-3 상담 코칭 챗봇 모드 전환 (카드 grid 폐기)
+  - 카드 grid → 채팅 인사말 + 사용자 입력 + AI 응답 흐름으로 전환
+  - `selectedTextPrompt` 분기: 'coaching' → coachingPrompt
+- **v=20260517e** — Phase 3-B-3 상담 코칭 (8 시나리오 + 3 화법, 카드 grid 방식 - 후속 폐기)
+- **v=20260517d** — 계산기 모달 input 키보드 입력 차단 해결 (focus steal 방지)
+- **v=20260517c** — Phase 3-B-2 통합금융계산기 운영 시스템 매칭 (11 메인 + 5 서브 = 16 계산기)
+- **v=20260517b** — Phase 3-B-2 통합금융계산기 9 모듈 인터랙티브 (초기 버전)
+- **v=20260517a** — Phase 3-B-1 건강검진 풀 반영 (본 시스템 PDF 5건 매칭)
+  - A. expectedTreatmentCost + managementUrgency (상단 3-카드)
+  - B. vitals[].normalRange + riskSummary (5컬럼 테이블)
+  - C. risks[].causeIndicator + avgTreatmentCost + coverageOpinion (4컬럼 테이블)
+  - D. aiSimulation (출처 인용 자동 fallback)
+  - E. healthAdvice 4~5 불릿
 - **v=20260504a/b** — 인재 양성 오버레이(`#talent-overlay`) 5단계 로드맵 동적 시퀀스 + spotlight 무한 순환, 조직문화 섹션 4카드 자동 순환 캐러셀(`culture-carousel-*`) 신규, 카드 크기 확대(360→560px) + 텍스트 강화, "종합 금융전문가" 그라데이션 + 띄어쓰기 통일, PARIS 카드 `object-position:center top` 위쪽 정렬
   - **5단계 로드맵 시퀀스**: `playRoadmapSequence()` — talent-open 시 `is-playing` + dots stagger(300+i*450ms), 라인 fill 0→80%(2.4s)
   - **5단계 spotlight loop**: `startRoadmapSpotLoop()` / `stopRoadmapSpotLoop()` — 1.2s 간격 1→2→3→4→5→1 순환, `closeAllOverlays()`에서 leak 정리
