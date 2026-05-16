@@ -10979,17 +10979,15 @@
         var greeting = SYSTEM_GREETINGS[sysKey] || SYSTEM_GREETINGS['all'];
         // Phase 3-B-3 (v=20260518a) — 상담 코칭은 챗봇 모드 (운영 Gems Fast-Start)
         if (sysKey === 'coaching') {
+          // Phase 3-B-3 (v=20260518a) — 인사말만 표시, 잠금+CTA는 AI 응답 완료 후 노출
           _solCoachAppendIntroBubble();
-          _solChatAppendLockedCta('coaching');
         } else if (sysKey === 'insurance-calc') {
-          // Phase 3-B-4 (v=20260518e) — 보험금 산출 챗봇 모드 (다중 PDF + 진단 질문)
+          // Phase 3-B-4 (v=20260518e) — 다중 PDF + 진단 질문, 잠금+CTA는 응답 완료 후
           _solInsCalcReset();
           _solInsCalcAppendIntroBubble();
-          _solChatAppendLockedCta('insurance-calc');
         } else if (sysKey === 'complete-sales') {
-          // Phase 3-B-5 (v=20260518f) — 완전판매 챗봇 모드 (FSS 조사관 + A/B 모드)
+          // Phase 3-B-5 (v=20260518f) — FSS 조사관 + A/B 모드, 잠금+CTA는 응답 완료 후
           _solComplAppendIntroBubble();
-          _solChatAppendLockedCta('complete-sales');
         } else {
           _solAppendGreeting(greeting);
         }
@@ -13088,8 +13086,8 @@
         _solCoachTypewriter(pEl, rich, msgs);
       }
 
-      // 코칭 전용 타이핑 효과 — 평문 단계적 표시 → 완료 시 마크다운 lite 풀 렌더
-      function _solCoachTypewriter(pEl, text, msgs, speed) {
+      // 코칭 전용 타이핑 효과 — 평문 단계적 표시 → 완료 시 마크다운 lite 풀 렌더 (+ onComplete 콜백)
+      function _solCoachTypewriter(pEl, text, msgs, speed, onComplete) {
         speed = speed || 14; // 빠른 속도 (텍스트 길어서)
         if (_solTypingInterval) { try { clearInterval(_solTypingInterval); } catch (e) {} _solTypingInterval = null; }
         var safe = String(text || '');
@@ -13103,6 +13101,9 @@
             // 완료 시 풀 렌더 (대괄호 청록 + 마크다운 표 등)
             pEl.innerHTML = _solCoachRenderRich(safe);
             if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            if (typeof onComplete === 'function') {
+              try { onComplete(); } catch (e) {}
+            }
             return;
           }
           var typed = safe.slice(0, i + 1);
@@ -13170,7 +13171,7 @@
         });
       }
 
-      // 코칭 응답 — AI 응답 타이핑 효과 후 마크다운 lite 풀 렌더 (v=20260518d)
+      // 코칭 응답 — AI 응답 타이핑 효과 후 마크다운 lite 풀 렌더 + 잠금+CTA (v=20260518i)
       function _solCoachAppendResponseBubble(reply) {
         var msgs = document.getElementById('sol-chat-messages');
         if (!msgs) return;
@@ -13188,7 +13189,10 @@
         msgs.appendChild(div);
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
-        _solCoachTypewriter(pEl, reply, msgs, 10); // 10ms/char — 응답 빠른 타이핑
+        _solCoachTypewriter(pEl, reply, msgs, 10, function () {
+          // 타이핑 완료 후 잠금+CTA 자동 노출
+          _solChatAppendLockedCta('coaching');
+        });
       }
 
       // 코칭 사용자 메시지 — 평문 타이핑 효과
@@ -13378,7 +13382,7 @@
         _solCoachTypewriterPlain(pEl, text, msgs, 8);
       }
 
-      // 보험금 산출 AI 응답 — 마크다운 lite 타이핑 (코칭과 동일)
+      // 보험금 산출 AI 응답 — 마크다운 lite 타이핑 (코칭과 동일 + 잠금+CTA)
       function _solInsCalcAppendResponseBubble(reply) {
         var msgs = document.getElementById('sol-chat-messages');
         if (!msgs) return;
@@ -13396,7 +13400,9 @@
         msgs.appendChild(div);
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
-        _solCoachTypewriter(pEl, reply, msgs, 10);
+        _solCoachTypewriter(pEl, reply, msgs, 10, function () {
+          _solChatAppendLockedCta('insurance-calc');
+        });
       }
 
       // ═══════════════════════════════════════════════════════════════════
@@ -13479,7 +13485,9 @@
         msgs.appendChild(div);
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
-        _solCoachTypewriter(pEl, reply, msgs, 10);
+        _solCoachTypewriter(pEl, reply, msgs, 10, function () {
+          _solChatAppendLockedCta('complete-sales');
+        });
       }
 
       // ═══════════════════════════════════════════════════════════════════
