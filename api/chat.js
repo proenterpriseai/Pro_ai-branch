@@ -174,8 +174,10 @@ export default async function handler(req, res) {
 - 수치는 실시간 시장 기준 추정. 불확실하면 "현재 공시 기준" 표현
 - 감성·작위적 수식어 배제 (예: "꿈을 향해" 같은 표현 금지)
 - 페르소나 ([수석 전략 코치]) 절대 깨지 말 것
-- 응답 분량: 유형 A는 2,000~3,500자 (15단계 전수), 유형 B/C는 800~1,500자
-- 마크다운 표는 반드시 표준 markdown table 문법 사용 (| ... | ... |\n|---|---|...)`;
+- 응답 분량: 유형 A는 2,500~4,500자 (15단계 전수 + 표 2개), 유형 B/C는 1,200~2,000자
+- 마크다운 표는 반드시 표준 markdown table 문법 사용 (| ... | ... |\n|---|---|...)
+- **응답을 절대 중간에 자르지 말 것**. 모든 섹션을 끝까지 출력. 유형 A는 [1.시장지위]부터 [15.다음 단계 메뉴]까지, 유형 B는 [심리편향]부터 [송곳 질문]까지, 유형 C는 [핵심정의]부터 [QC]까지 전수 완결
+- 마지막은 반드시 [상담 코치와 다음 단계로 나아가기] 메뉴(연장/전환/맞춤/초기화)로 끝맺을 것`;
 
   // 완전판매 AI (Phase 3-B-5, v=20260518f) — FSS 출신 전문 조사관
   const completeSalesPrompt = `당신은 프로사업단 구성원의 권익을 수호하고 보험 민원 분쟁의 논리적 방어 체계를 구축하는 [FSS(금융감독원) 출신 전문 조사관]입니다.
@@ -272,7 +274,10 @@ export default async function handler(req, res) {
 - 마크다운 표는 표준 markdown table (| col | + |---|)
 - 출처 언급 금지 (PDF·파일·교재·교안·"~에 따르면" 등 표현 금지)
 - 페르소나 ([FSS 출신 전문 조사관]) 절대 깨지 말 것
-- 응답 분량: 3,000~5,000자 (사전 점검 보고서 풀 출력)`;
+- 응답 분량: 3,500~6,000자 (사전 점검 보고서 풀 출력)
+- **응답을 절대 중간에 자르지 말 것**. 유형 A는 [0~8 섹션 + 4단계 해피콜 + 5단계 반복 루프]까지 전수 출력, 유형 B는 [7 섹션]까지 전수 출력
+- 모든 주장 끝에 [✅법적근거] / [⚖️판례해석] / [🔍AI추론] / [⚠️확인불가] 중 1개 후행 (누락 금지)
+- 마지막 한 줄 안내 ("종료 / 새로운 상품 / 번호 입력") 필수`;
 
   const systemPrompt = `당신은 Pro Enterprise AI의 보험 전문 AI 어시스턴트입니다.
 당신의 역할:
@@ -401,7 +406,9 @@ export default async function handler(req, res) {
 - 첨부 PDF에 정보 부족 시 [서류 보완 필요]에 명시.
 - 금액은 ₩ 단위 정수 (천 단위 콤마). 모르는 경우 "약 ₩ 금액" 또는 "병원비 영수증 확인 후 산정".
 - 마지막에 [다음 단계] 한 줄 안내 (예: "조직검사지 추가 첨부 또는 영수증 입력 시 정확한 산출 가능").
-- 응답 분량: 1,500~3,000자.`;
+- 응답 분량: 2,000~4,000자.
+- **응답을 절대 중간에 자르지 말 것**. 모든 섹션 [📋 헤더 → 🚨 서류 보완 → 💰 최대 예상 → 1️⃣ 산출표 → 2️⃣ 전략 가이드 → 💡 포인트 → 다음 단계] 전수 완결
+- 산출표는 반드시 markdown table 5컬럼 (구분/담보명/상태/예상 지급액/산출 근거)`;
 
   const pdfAnalysisPrompt = `당신은 30년 경력의 보험 보장분석 전문가입니다.
 첨부된 PDF는 고객의 보험 가입 내역(신정원 통합 PDF 또는 가입제안서)입니다.
@@ -488,7 +495,7 @@ export default async function handler(req, res) {
       ? (isMarkdownPdfMode
         ? {
             temperature: 0.3,
-            maxOutputTokens: 4096,
+            maxOutputTokens: 8192,
             topP: 0.9,
             thinkingConfig: { thinkingBudget: -1 }
           }
@@ -501,7 +508,7 @@ export default async function handler(req, res) {
           })
       : {
           temperature: (context === 'coaching' || context === 'complete-sales') ? 0.5 : 0.7, // 코칭·완전판매 일관성 우선
-          maxOutputTokens: (context === 'coaching' || context === 'complete-sales') ? 4096 : 1024,
+          maxOutputTokens: (context === 'coaching' || context === 'complete-sales') ? 8192 : 1024,
           topP: 0.9,
           thinkingConfig: { thinkingBudget: -1 }
         };

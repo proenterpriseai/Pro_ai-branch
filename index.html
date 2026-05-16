@@ -10454,13 +10454,16 @@
         // Phase 3-B-3 (v=20260518a) — 상담 코칭은 챗봇 모드 (운영 Gems Fast-Start)
         if (sysKey === 'coaching') {
           _solCoachAppendIntroBubble();
+          _solChatAppendLockedCta('coaching');
         } else if (sysKey === 'insurance-calc') {
           // Phase 3-B-4 (v=20260518e) — 보험금 산출 챗봇 모드 (다중 PDF + 진단 질문)
           _solInsCalcReset();
           _solInsCalcAppendIntroBubble();
+          _solChatAppendLockedCta('insurance-calc');
         } else if (sysKey === 'complete-sales') {
           // Phase 3-B-5 (v=20260518f) — 완전판매 챗봇 모드 (FSS 조사관 + A/B 모드)
           _solComplAppendIntroBubble();
+          _solChatAppendLockedCta('complete-sales');
         } else {
           _solAppendGreeting(greeting);
         }
@@ -12422,6 +12425,98 @@
         return esc.replace(/\[([^\[\]]+)\]/g, function (m, inner) {
           return '<span style="color:#67e8f9;font-weight:700;">[' + inner + ']</span>';
         });
+      }
+
+      // ─── Phase 3-B-3/4/5 — 챗봇 시스템 공용 잠금 5종 + CTA (v=20260518g) ───
+      var SOL_CHAT_LOCKED = {
+        coaching: {
+          headline: '인카금융서비스 프로사업단총괄에서 일하면<br>매일 50건 이상의 상담을 [AI 코칭]으로 해결할 수 있습니다.',
+          items: [
+            { icon: '🎤', title: '음성 분석 코칭',      desc: '실제 상담 녹음 → 톤·속도·키워드 + 개선 포인트 즉시 진단' },
+            { icon: '🤖', title: '무한 시나리오 생성',   desc: '고객 발화 입력 → [Bias Breaker 5단계] 맞춤 화법 실시간 출력' },
+            { icon: '📈', title: '15단계 풀 엔진',       desc: '유형 A 상품 분석 — 시장지위부터 인터랙티브 단계까지 [15단계 전수]' },
+            { icon: '📚', title: 'FSS 검수 + QC',        desc: '금융감독원 출신 조사관 사전 검수 + 단계별 [품질 검수 체크리스트]' },
+            { icon: '📊', title: '내 화법 실력 트래킹',   desc: '월별 성과 + 약점 영역 + [상향 표준 모델] 자동 비교 게이미피케이션' }
+          ]
+        },
+        'insurance-calc': {
+          headline: '인카금융서비스 프로사업단총괄에서 일하면<br>매월 수백 건의 [정밀 청구]를 즉시 처리할 수 있습니다.',
+          items: [
+            { icon: '📑', title: '50종 표준 담보 정밀 매칭', desc: '진단·수술 코드 → 약관 자동 매핑 + 가입 담보 교차 분석' },
+            { icon: '🔍', title: '약관 OCR 자동 추출',       desc: '스캔본·이미지 약관도 자동 인식 + 핵심 조항 즉시 발췌' },
+            { icon: '📝', title: '청구 서류 자동 생성',      desc: 'FSS 표준 양식 + 보험사별 양식 자동 작성 + 첨부 가이드' },
+            { icon: '⚖️', title: '분쟁 시 반박 답변서',      desc: '보험사 거절 시 분쟁조정 사례 인용 + 반박 논리 자동 생성' },
+            { icon: '📊', title: '청구 결과 트래킹',          desc: '청구 → 지급까지 단계별 추적 + 평균 지급률 누적 통계' }
+          ]
+        },
+        'complete-sales': {
+          headline: '인카금융서비스 프로사업단총괄에서 일하면<br>[FSS 출신 조사관]의 사전 점검을 매 상품마다 받을 수 있습니다.',
+          items: [
+            { icon: '⚖️', title: '분조위 결정문 600+ 매칭',   desc: '실제 금감원 분쟁조정위원회 결정문 풀 매칭 + 인용 자동 생성' },
+            { icon: '📲', title: '카톡/녹취 자동 가이드',      desc: '상담 중 실시간 [필수 캡처 포인트] 알림 + 녹취 문구 자동 제안' },
+            { icon: '📋', title: '민원 발생 시 답변서 초안',   desc: '민원 접수 → 5분 안에 [FSS 양식 반박 답변서] 자동 작성' },
+            { icon: '🚨', title: '팀장 알림 + 단톡방 카드',    desc: '리스크 상품 판매 시 자동 팀장 알림 + 단톡방 교육 카드 발송' },
+            { icon: '📊', title: '월별 민원 리스크 트래킹',    desc: '본부·지점 단위 민원 발생률 + 리스크 상품 랭킹 실시간 모니터링' }
+          ]
+        }
+      };
+
+      function _solChatAppendLockedCta(sysKey) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var data = SOL_CHAT_LOCKED[sysKey];
+        if (!data) return;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'flex gap-3';
+        var html = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">🔒</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-2">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 풀 시스템 안내</span>'
+          + '  </div>'
+          + '  <div style="display:flex;flex-direction:column;gap:14px;">'
+          + '    <div>'
+          + '      <div class="sol-pdf-section-title" style="margin-bottom:8px;">🔒 풀 시스템에서 추가로 보이는 것</div>'
+          + '      <div class="sol-pdf-locked-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+        data.items.forEach(function(it, idx) {
+          var fullRow = (idx === 4) ? 'grid-column: 1 / -1;' : '';
+          html += '        <div class="sol-pdf-locked-item" style="' + fullRow + '">'
+                + '          <div class="sol-pdf-locked-icon">' + it.icon + '</div>'
+                + '          <div class="sol-pdf-locked-text">'
+                + '            <div class="sol-pdf-locked-title">' + _solEscHtml(it.title) + '</div>'
+                + '            <div class="sol-pdf-locked-desc">' + _solCoachBrackets(_solEscHtml(it.desc)) + '</div>'
+                + '          </div>'
+                + '          <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>'
+                + '        </div>';
+        });
+        html += '      </div>'
+              + '    </div>'
+              + '    <div class="sol-pdf-cta-card">'
+              + '      <div class="sol-pdf-cta-headline">' + data.headline + '</div>'
+              + '      <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>'
+              + '      <button class="sol-pdf-cta-btn" data-chat-cta>입사 상담 신청하기 →</button>'
+              + '    </div>'
+              + '  </div>'
+              + '</div>';
+        wrapper.innerHTML = html;
+        msgs.appendChild(wrapper);
+        msgs.scrollTop = msgs.scrollHeight;
+        // CTA 클릭 → 프로사업단 오버레이 닫고 #contact 스크롤
+        var ctaBtn = wrapper.querySelector('[data-chat-cta]');
+        if (ctaBtn) {
+          ctaBtn.addEventListener('click', function () {
+            var pro = document.getElementById('prosolution-overlay');
+            if (pro) { pro.classList.remove('ceo-overlay--active'); pro.setAttribute('aria-hidden', 'true'); }
+            document.body.style.overflow = '';
+            var contactEl = document.getElementById('contact');
+            if (contactEl) {
+              setTimeout(function () {
+                window.scrollTo({ top: contactEl.offsetTop - 80, behavior: 'smooth' });
+              }, 200);
+            }
+            try { window.location.hash = '#contact'; } catch (e) {}
+          });
+        }
       }
 
       // Phase 3-B-3 (v=20260518c) — 운영 Gems Fast-Start 인사말 + 타이핑 효과
