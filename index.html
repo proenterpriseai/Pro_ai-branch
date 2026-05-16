@@ -13608,12 +13608,13 @@
       //   구간전환율 + 파이프라인 잔여가치 + AI 코칭 + Strategic Simulator)
       // ═══════════════════════════════════════════════════════════════════
 
+      // v=20260518l — 초기값 모두 0 (사용자가 본인 데이터 직접 입력)
       var DBSALES_STATE = {
-        monthlyGoal: 20,
-        db: { coverage: 20, finance: 0, intro: 0, existing: 0, open: 0 },
-        stages: { ta: 17, first: 13, second: 11, deal: 9 },
-        premium: { target: 2500000, actual: 1500000 },
-        simulatorIncome: 5000000
+        monthlyGoal: 0,
+        db: { coverage: 0, finance: 0, intro: 0, existing: 0, open: 0 },
+        stages: { ta: 0, first: 0, second: 0, deal: 0 },
+        premium: { target: 0, actual: 0 },
+        simulatorIncome: 5000000 // 시뮬레이터 슬라이더 기본값만 유지
       };
 
       function _solDbsInjectPanel() {
@@ -13824,14 +13825,16 @@
         ];
         convArr.sort(function (a, b) { return a.v - b.v; });
         var bottleneck = convArr[0].k;
-        // 파이프라인 잔여 가치
+        // 파이프라인 잔여 가치 (v=20260518l — ta=0 시 NaN 방지)
         var avgPrem = d > 0 ? s.premium.actual / d : 0;
         var pipe = {
-          taDone: Math.max(ta - f, 0) * avgPrem * (dbTotal > 0 ? (d / ta) : 0),
+          taDone: Math.max(ta - f, 0) * avgPrem * (ta > 0 ? (d / ta) : 0),
           firstDone: Math.max(f - sec, 0) * avgPrem * (f > 0 ? (d / f) : 0),
           secondDone: Math.max(sec - d, 0) * avgPrem * (sec > 0 ? (d / sec) : 0)
         };
         pipe.total = pipe.taDone + pipe.firstDone + pipe.secondDone;
+        // 모든 값 isFinite 보정 (NaN/Infinity → 0)
+        ['taDone','firstDone','secondDone','total'].forEach(function(k){ if (!isFinite(pipe[k])) pipe[k] = 0; });
         // DB 효율 (고효율 vs 노력형)
         var dbHighEff = (s.db.intro|0) + (s.db.existing|0);
         var dbWorkType = (s.db.coverage|0) + (s.db.finance|0) + (s.db.open|0);
