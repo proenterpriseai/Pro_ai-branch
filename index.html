@@ -10137,7 +10137,7 @@
         coverage: '보장분석에 대해 물어보거나, + 버튼으로 PDF 올려보세요',
         dbsales: 'DB 관리/전환율에 대해 물어보세요',
         calculator: '금융 계산 도구에 대해 물어보세요',
-        coaching: '상담 화법/시나리오에 대해 물어보세요',
+        coaching: '예: a.1 메리츠화재의 알파플러스보험이 궁금해',
         'insurance-calc': '보험금 산출/청구 전략에 대해 물어보세요',
         'complete-sales': '완전판매/민원 방어에 대해 물어보세요',
         healthcheck: '건강검진에 대해 물어보거나, + 버튼으로 검진 결과지 PDF 올려보세요'
@@ -10352,17 +10352,18 @@
       function _solResetForSystem(sysKey, sysName) {
         _solClearChat();
         var greeting = SYSTEM_GREETINGS[sysKey] || SYSTEM_GREETINGS['all'];
-        _solAppendGreeting(greeting);
+        // Phase 3-B-3 (v=20260518a) — 상담 코칭은 챗봇 모드 (운영 Gems Fast-Start 풍부 인사말)
+        if (sysKey === 'coaching') {
+          _solCoachAppendIntroBubble();
+        } else {
+          _solAppendGreeting(greeting);
+        }
         _solRenderQuickButtonsForSystem(sysKey);
         _solUpdatePlaceholder(sysKey);
         _solUpdatePlusButton(sysKey);
         // Phase 3-B-2 (v=20260517b) — 통합금융계산기 즉시 모듈 grid 인입
         if (sysKey === 'calculator') {
           _solCalcInjectPanel(greeting);
-        }
-        // Phase 3-B-3 (v=20260517e) — 상담 코칭 8 시나리오 grid 인입
-        if (sysKey === 'coaching') {
-          _solCoachInjectPanel(greeting);
         }
       }
 
@@ -12315,6 +12316,43 @@
         return esc.replace(/\[([^\[\]]+)\]/g, function (m, inner) {
           return '<span style="color:#67e8f9;font-weight:700;">[' + inner + ']</span>';
         });
+      }
+
+      // Phase 3-B-3 (v=20260518a) — 운영 Gems Fast-Start 풍부 인사말 (chat 메시지로 직접 inject)
+      function _solCoachAppendIntroBubble() {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var c = function (txt) { return '<span style="color:#67e8f9;font-weight:700;">[' + txt + ']</span>'; };
+        var head = function (txt) { return '<span style="color:#67e8f9;font-weight:700;">' + txt + '</span>'; };
+        var ex = function (txt) { return '<span style="color:#86efac;">' + txt + '</span>'; };
+        var rich = ''
+          + '반갑습니다. 저는 인카금융서비스 프로사업단총괄의 ' + c('2.0 시스템 수석 전략 코치') + '입니다.\n\n'
+          + '본 시스템은 프로사업단총괄의 상담 환경을 ' + c('상향 표준 모델') + '로 혁신하기 위해 설계되었습니다.\n\n'
+          + '<strong style="color:#fff;">저를 이렇게 활용해 보세요</strong>\n'
+          + head('유형 A.') + ' [금융·투자 상품 & 경제·금융 환경 모드]\n'
+          + head('유형 B.') + ' [상담 전략 & 거절 처리 화법 모드]\n'
+          + head('유형 C.') + ' [(신인) 세일즈 프로세스 & 교육·학습 모드]\n\n'
+          + head('Level 1.') + ' [신인] · 입사 후 2년 이내 — 비유 중심 화법\n'
+          + head('Level 2.') + ' [성장] · 2 ~ 10년 — 심리 편향 + 반박 논리\n'
+          + head('Level 3.') + ' [전문가] · 10년 이상 — 전문 데이터 + 세무·법률\n\n'
+          + '<strong style="color:#fff;">예시 입력</strong>\n'
+          + '· ' + ex('a.1 메리츠화재의 알파플러스보험이 궁금해') + '\n'
+          + '· ' + ex('b.2 "비싸요"라고 거절한 고객 어떻게 대응할까') + '\n'
+          + '· ' + ex('c.3 DB 영업 시 첫 콜 스크립트 보여줘') + '\n\n'
+          + '원하시는 ' + c('유형 + 레벨 + 질문') + '을 함께 입력해 주세요.';
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 수석 전략 코치</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed" style="white-space:pre-wrap;">' + rich + '</div>'
+          + '</div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
       }
 
       // ─── 패널 + 모달 렌더 ───
