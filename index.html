@@ -10018,6 +10018,8 @@
           _solCoachAppendUserBubble(text);
         } else if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendUserBubble === 'function') {
           _solInsCalcAppendUserBubble(text);
+        } else if (activeSystem === 'complete-sales' && typeof _solComplAppendUserBubble === 'function') {
+          _solComplAppendUserBubble(text);
         } else {
           appendMessage('user', text);
         }
@@ -10056,6 +10058,10 @@
             _solInsCalcAppendResponseBubble(reply);
             return;
           }
+          if (activeSystem === 'complete-sales' && typeof _solComplAppendResponseBubble === 'function') {
+            _solComplAppendResponseBubble(reply);
+            return;
+          }
           if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
             _solTypewriterAppend(reply);
           } else {
@@ -10071,6 +10077,10 @@
           }
           if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendResponseBubble === 'function') {
             _solInsCalcAppendResponseBubble(reply);
+            return;
+          }
+          if (activeSystem === 'complete-sales' && typeof _solComplAppendResponseBubble === 'function') {
+            _solComplAppendResponseBubble(reply);
             return;
           }
           if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
@@ -10207,7 +10217,7 @@
         calculator: '금융 계산 도구에 대해 물어보세요',
         coaching: '예: a.1 메리츠화재의 알파플러스보험이 궁금해',
         'insurance-calc': '예: 대장용종 제거술 보험금 산출 (+ 버튼으로 보험내역·약관 PDF 첨부)',
-        'complete-sales': '완전판매/민원 방어에 대해 물어보세요',
+        'complete-sales': '예: A 메트라이프 백만종달러종신보험 (A 사전 점검 / B 민원 대응)',
         healthcheck: '건강검진에 대해 물어보거나, + 버튼으로 검진 결과지 PDF 올려보세요'
       };
 
@@ -10448,6 +10458,9 @@
           // Phase 3-B-4 (v=20260518e) — 보험금 산출 챗봇 모드 (다중 PDF + 진단 질문)
           _solInsCalcReset();
           _solInsCalcAppendIntroBubble();
+        } else if (sysKey === 'complete-sales') {
+          // Phase 3-B-5 (v=20260518f) — 완전판매 챗봇 모드 (FSS 조사관 + A/B 모드)
+          _solComplAppendIntroBubble();
         } else {
           _solAppendGreeting(greeting);
         }
@@ -12517,10 +12530,18 @@
         return out.join('\n');
       }
 
-      // [대괄호] → 청록 강조
+      // [대괄호] → 색상 강조 (v=20260518f — 뱃지 색상 차등화)
+      //   ✅법적근거 / ⚖️판례해석 → 녹색 (사실 존)
+      //   🔍AI추론 → 노랑 (추론 주의)
+      //   ⚠️확인불가 → 빨강 (참고용)
+      //   기타 → 청록 (기본 강조)
       function _solCoachBrackets(text) {
         return text.replace(/\[([^\[\]]+)\]/g, function (m, inner) {
-          return '<span style="color:#67e8f9;font-weight:700;">[' + inner + ']</span>';
+          var color = '#67e8f9'; // default cyan
+          if (/^✅/.test(inner) || /^⚖️/.test(inner)) color = '#86efac'; // green - fact zone
+          else if (/^🔍/.test(inner)) color = '#fbbf24';                 // yellow - inference
+          else if (/^⚠️/.test(inner)) color = '#f87171';                 // red - caution
+          return '<span style="color:' + color + ';font-weight:700;">[' + inner + ']</span>';
         });
       }
 
@@ -12743,6 +12764,89 @@
           + '<div style="flex:1;min-width:0;">'
           + '  <div class="flex items-baseline gap-2 mb-1">'
           + '    <span class="text-[13px] font-medium text-white">PRO AI · 보험금 산출</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+          + '</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, reply, msgs, 10);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // Phase 3-B-5 — 완전판매 AI (v=20260518f)
+      //   FSS 출신 조사관 페르소나 + 뱃지 4종 + A/B 모드
+      // ═══════════════════════════════════════════════════════════════════
+
+      function _solComplAppendIntroBubble() {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var rich = ''
+          + '안녕하십니까. 프로사업단 구성원의 권익을 수호하고 보험 민원 분쟁의 논리적 방어 체계를 구축하는 [FSS(금융감독원) 출신 전문 조사관]입니다.\n\n'
+          + '[근거 신뢰도 뱃지 시스템]\n\n'
+          + '| 뱃지 | 의미 | 비고 |\n'
+          + '|---|---|---|\n'
+          + '| [✅법적근거] | 법 조항이나 약관에 명시된 확실한 근거 | 사실 존(Zone) |\n'
+          + '| [⚖️판례해석] | 실제 판례 및 금감원 분쟁조정 결과 기반 | 사실 존(Zone) |\n'
+          + '| [🔍AI추론] | 법리에 바탕을 둔 AI의 논리적 해석 | 추론 주의 |\n'
+          + '| [⚠️확인불가] | 근거 확인이 어려운 실무적 주의 사항 | 참고용 |\n\n'
+          + '분석을 시작하기 위해 현재 상황에 맞는 [모드]를 선택해 주십시오.\n\n'
+          + '[A. 완전판매 사전 모드]: 상품별 민원 리스크 선제적 분석 및 [필승 화법] 구축\n'
+          + '[B. 실제 민원 발생 시 대응 모드]: 접수된 민원 정밀 해부 및 [반박 답변서] 전략 수립\n\n'
+          + '[예시 입력]\n'
+          + '· A 메트라이프 백만종달러종신보험 (사전 점검 보고서 출력)\n'
+          + '· B "환차익으로 돈 번다고 들었는데 손실이다" — 고객 민원 (반박 답변서 전략 수립)\n\n'
+          + '시뮬레이션을 시작하시려면 [유형(A 또는 B) + 상품명/민원 내용]을 입력해 주십시오.';
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · FSS 출신 조사관</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+          + '</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, rich, msgs, 14);
+      }
+
+      function _solComplAppendUserBubble(text) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3 justify-end';
+        div.innerHTML = ''
+          + '<div class="max-w-[80%]">'
+          + '  <div class="flex items-baseline gap-2 mb-1 justify-end">'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '    <span class="text-[13px] font-medium text-white">나</span>'
+          + '  </div>'
+          + '  <div class="bg-blue-700/20 border border-blue-600/20 rounded-2xl rounded-tr-sm px-4 py-2.5">'
+          + '    <p class="text-[13px] text-blue-100 sol-coach-user-text" style="white-space:pre-wrap;"></p>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 text-zinc-300 text-xs font-bold">나</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-user-text');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriterPlain(pEl, text, msgs, 8);
+      }
+
+      function _solComplAppendResponseBubble(reply) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · FSS 출신 조사관</span>'
           + '    <span class="text-[10px] text-zinc-500">방금</span>'
           + '  </div>'
           + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
