@@ -61,7 +61,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY not configured' });
 
-  const { message, context, pdf } = req.body || {};
+  const { message, context, pdf, pdfs } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
   if (typeof message !== 'string' || message.length > 2000) {
     return res.status(400).json({ error: 'message must be a string under 2000 chars' });
@@ -70,19 +70,29 @@ export default async function handler(req, res) {
   // v=20260516 — PDF 모드 추가 (Phase 2A 보장분석 데모)
   //   기존 텍스트 채팅은 그대로, pdf 필드 옵셔널.
   //   MIME 화이트리스트(application/pdf만) + 크기 제한(base64 ≤ 7M chars ≈ 원본 5MB)
-  let pdfPart = null;
+  // v=20260518e — 다중 PDF 지원 (Phase 3-B-4 보험금 산출 — 보험내역 + 약관)
+  let pdfParts = [];
+  const validatePdf = (p) => {
+    if (!p || typeof p !== 'object') return null;
+    if (p.mime_type !== 'application/pdf') return { err: 'mime_type must be "application/pdf"' };
+    if (typeof p.data !== 'string' || !p.data.length) return { err: 'data must be a non-empty base64 string' };
+    if (p.data.length > 7_000_000) return { err: 'PDF too large (max ~5MB)' };
+    return { part: { inline_data: { mime_type: p.mime_type, data: p.data } } };
+  };
   if (pdf) {
-    if (!pdf.mime_type || pdf.mime_type !== 'application/pdf') {
-      return res.status(400).json({ error: 'pdf.mime_type must be "application/pdf"' });
-    }
-    if (typeof pdf.data !== 'string' || !pdf.data.length) {
-      return res.status(400).json({ error: 'pdf.data must be a non-empty base64 string' });
-    }
-    if (pdf.data.length > 7_000_000) {
-      return res.status(413).json({ error: 'PDF too large (max ~5MB)' });
-    }
-    pdfPart = { inline_data: { mime_type: pdf.mime_type, data: pdf.data } };
+    const v = validatePdf(pdf);
+    if (v && v.err) return res.status(400).json({ error: 'pdf.' + v.err });
+    if (v && v.part) pdfParts.push(v.part);
   }
+  if (Array.isArray(pdfs)) {
+    if (pdfs.length > 5) return res.status(413).json({ error: 'pdfs: max 5 files' });
+    for (let i = 0; i < pdfs.length; i++) {
+      const v = validatePdf(pdfs[i]);
+      if (v && v.err) return res.status(400).json({ error: 'pdfs[' + i + '].' + v.err });
+      if (v && v.part) pdfParts.push(v.part);
+    }
+  }
+  const pdfPart = pdfParts.length ? pdfParts[0] : null; // 후방호환 (단일 PDF 시)
 
   // 상담 코칭 (Phase 3-B-3, v=20260518b) — GA 2.0 표준 시스템 수석 전략 코치
   const coachingPrompt = `당신은 인카금융서비스 프로사업단총괄의 [GA 2.0 표준 시스템 수석 전략 코치]입니다.
@@ -251,6 +261,51 @@ export default async function handler(req, res) {
 - recommendedCoverages는 검진 결과 이상 항목에 직접 연결되는 보장만 (예: 콜레스테롤 높음 → 심혈관 진단비)
 - 50~60대 고객 가정`;
 
+  // 보험금 산출 (Phase 3-B-4, v=20260518e) — 첨부된 보험 내역 PDF + 약관 PDF 기반 지급 가능 담보 분석
+  const insuranceCalcPrompt = `당신은 30년 경력의 보험금 산출 전문가입니다.
+첨부된 PDF는 (1) 고객의 가입 보험 내역, (2) 해당 보험사 약관입니다. 사용자가 입력한 진단명/수술명/증상을 기준으로 [가입한 담보 중에서만] 지급 가능한 보험금을 분석합니다.
+
+반드시 마크다운 텍스트 형식으로 응답하세요 (JSON 금지). 다음 구조를 따르세요:
+
+📋 [전략적 보험금 산출 리포트]
+수신: 고객 귀하 | 분석일: YYYY년 MM월 DD일
+
+🚨 [서류 보완 필요]
+* [진료비 계산서(영수증) 및 세부내역서]: 실제 지출한 병원비 확인 필수
+* [조직검사결과지]: 양성/제자리암/유사암 여부 판정용
+* [수술확인서]: 수술명 + 질병코드 명시 서류
+
+💰 [최대 예상 수령액]
+₩ 금액 + α
+실제 지급액 변동 가능성 설명 (실손 자기부담금 등)
+
+1️⃣ [상세 지급 산출표]
+| 구분 | 담보명 | 상태 | 예상 지급액 | 산출 근거 |
+|---|---|---|---|---|
+| 실손 | 질병 실손의료비 | [✅지급] | ₩ 실비-자기부담금 | 입원/통원 여부에 따라 본인부담금 차감 |
+| 수술 | 질병 1~5종 수술비 | [✅지급] | ₩ 500,000 | 대장용종 제거술은 2종 수술 해당 |
+| 수술 | 질병 수술비 (일반) | [🚨미가입] | ₩ 0 | 보장분석 결과 미가입 확인 |
+| 진단 | 유사암 진단비 | [⚠️검토] | ₩ 2,000,000 | 조직검사가 제자리암(D01)인 경우 지급 |
+
+2️⃣ [전문가 전략 가이드]
+[대응 논리 및 청구 전략]
+* [핵심 타격 포인트]: 가입한 담보 중 핵심 지급 가능 영역 (구체 약관 근거 + 정액/실손 구조)
+* [코드 발굴]: 질병코드별 추가 청구 가능성 (예: D01 제자리암, D12 양성종양 차이) — 조직검사지 재확인 권고
+
+💡 [놓치지 말아야 할 포인트]
+📍 [당일 수술 보장]: 6시간 이상 체류 시 통원/입원 한도 차이 — 입원 한도 적용 받는 조건
+📍 [연간 1회 제한]: 일부 진단비는 연 1회 한정 — 가입 담보별 확인
+
+[규칙]
+- 강조는 [대괄호]만 사용. 별표(**) 절대 금지.
+- 산출표는 반드시 위 5컬럼 markdown table (구분/담보명/상태/예상 지급액/산출 근거).
+- 상태 표기: [✅지급] / [🚨미가입] / [⚠️검토] — 다른 표기 금지.
+- 가입한 담보가 없으면 [🚨미가입]으로 명시. 추측으로 가입한 척하지 말 것.
+- 첨부 PDF에 정보 부족 시 [서류 보완 필요]에 명시.
+- 금액은 ₩ 단위 정수 (천 단위 콤마). 모르는 경우 "약 ₩ 금액" 또는 "병원비 영수증 확인 후 산정".
+- 마지막에 [다음 단계] 한 줄 안내 (예: "조직검사지 추가 첨부 또는 영수증 입력 시 정확한 산출 가능").
+- 응답 분량: 1,500~3,000자.`;
+
   const pdfAnalysisPrompt = `당신은 30년 경력의 보험 보장분석 전문가입니다.
 첨부된 PDF는 고객의 보험 가입 내역(신정원 통합 PDF 또는 가입제안서)입니다.
 
@@ -313,25 +368,37 @@ export default async function handler(req, res) {
     //   preview 모델은 안정 모델 대비 변경 가능성 있으나 SOTA reasoning 가치가 큼.
     const MODEL = 'gemini-3.1-pro-preview';
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
-    // PDF 모드 — context별 프롬프트 분기 (Phase 3-B-1)
-    //   'healthcheck-pdf' → 건강검진 프롬프트
-    //   기타 (기본 'coverage-pdf') → 보장분석 프롬프트
-    const selectedPdfPrompt = (context === 'healthcheck-pdf') ? healthcheckPrompt : pdfAnalysisPrompt;
+    // PDF 모드 — context별 프롬프트 분기
+    //   'healthcheck-pdf' → 건강검진 프롬프트 (JSON)
+    //   'insurance-calc-pdf' → 보험금 산출 프롬프트 (마크다운, Phase 3-B-4)
+    //   기타 (기본 'coverage-pdf') → 보장분석 프롬프트 (JSON)
+    const selectedPdfPrompt = (context === 'healthcheck-pdf') ? healthcheckPrompt
+                            : (context === 'insurance-calc-pdf') ? insuranceCalcPrompt
+                            : pdfAnalysisPrompt;
+    // 보험금 산출은 마크다운 응답 (JSON 강제 X)
+    const isMarkdownPdfMode = (context === 'insurance-calc-pdf');
     // 텍스트 모드 — context별 프롬프트 분기 (Phase 3-B-3)
     //   'coaching' → GA 2.0 표준 시스템 수석 전략 코치
     //   기타 → 일반 systemPrompt
     const selectedTextPrompt = (context === 'coaching') ? coachingPrompt : systemPrompt;
     const parts = isPdfMode
-      ? [{ text: selectedPdfPrompt }, pdfPart, { text: '\n\n사용자 요청: ' + message }]
+      ? [{ text: selectedPdfPrompt }, ...pdfParts, { text: '\n\n사용자 요청: ' + message }]
       : [{ text: selectedTextPrompt + '\n\n사용자 입력: ' + message }];
     const generationConfig = isPdfMode
-      ? {
-          temperature: 0.2,
-          maxOutputTokens: 8192, // Pro + JSON 응답 + thinking 토큰 여유 (2.5 Flash 대비 증가)
-          topP: 0.9,
-          responseMimeType: 'application/json',
-          thinkingConfig: { thinkingBudget: -1 } // dynamic — Pro 호환 필수
-        }
+      ? (isMarkdownPdfMode
+        ? {
+            temperature: 0.3,
+            maxOutputTokens: 4096,
+            topP: 0.9,
+            thinkingConfig: { thinkingBudget: -1 }
+          }
+        : {
+            temperature: 0.2,
+            maxOutputTokens: 8192,
+            topP: 0.9,
+            responseMimeType: 'application/json',
+            thinkingConfig: { thinkingBudget: -1 }
+          })
       : {
           temperature: (context === 'coaching') ? 0.5 : 0.7, // 코칭은 일관성 우선
           maxOutputTokens: (context === 'coaching') ? 2048 : 1024,

@@ -10012,32 +10012,50 @@
       function doSend() {
         var text = chatInput.value.trim();
         if (!text) return;
-        // Phase 3-B-3 v=20260518d — 코칭 모드는 사용자 메시지도 타이핑 효과
+        // Phase 3-B-3 v=20260518d — 코칭 모드 사용자 메시지 타이핑
+        // Phase 3-B-4 v=20260518e — 보험금 산출 모드 동일
         if (activeSystem === 'coaching' && typeof _solCoachAppendUserBubble === 'function') {
           _solCoachAppendUserBubble(text);
+        } else if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendUserBubble === 'function') {
+          _solInsCalcAppendUserBubble(text);
         } else {
           appendMessage('user', text);
         }
         chatInput.value = '';
         var typingId = 'typing-' + Date.now();
         appendTyping(typingId);
-        // Gemini API 호출
-        var ctx = activeSystem !== 'all' ? activeSystem : '보험 전문 AI 어시스턴트';
+
+        // Phase 3-B-4 — 보험금 산출은 누적된 PDF + 질문 동시 전송
+        var requestBody = { message: text, context: activeSystem !== 'all' ? activeSystem : '보험 전문 AI 어시스턴트' };
+        if (activeSystem === 'insurance-calc') {
+          if (!_solInsCalcPdfs || _solInsCalcPdfs.length < 1) {
+            removeTyping(typingId);
+            _solInsCalcAppendSystemMsg('⚠️ 먼저 [+] 버튼으로 [보험 내역 PDF]와 [약관 PDF]를 첨부해 주세요.');
+            return;
+          }
+          requestBody.context = 'insurance-calc-pdf';
+          requestBody.pdfs = _solInsCalcPdfs.map(function(p) {
+            return { mime_type: 'application/pdf', data: p.base64 };
+          });
+        }
+
         fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, context: ctx })
+          body: JSON.stringify(requestBody)
         })
         .then(function(r) { return r.json(); })
         .then(function(data) {
           removeTyping(typingId);
           var reply = data.reply || '응답을 생성할 수 없습니다.';
-          // Phase 3-B-3 v=20260518b — 코칭 모드는 마크다운 lite 풍부 렌더
           if (activeSystem === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') {
             _solCoachAppendResponseBubble(reply);
             return;
           }
-          // v=20260516f — Flag=true 옵트인 시 타이핑 효과 (영상 시연 임팩트)
+          if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendResponseBubble === 'function') {
+            _solInsCalcAppendResponseBubble(reply);
+            return;
+          }
           if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
             _solTypewriterAppend(reply);
           } else {
@@ -10046,10 +10064,13 @@
         })
         .catch(function() {
           removeTyping(typingId);
-          // API 실패 시 로컬 fallback
           var reply = getAIResponse(text);
           if (activeSystem === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') {
             _solCoachAppendResponseBubble(reply);
+            return;
+          }
+          if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendResponseBubble === 'function') {
+            _solInsCalcAppendResponseBubble(reply);
             return;
           }
           if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
@@ -10185,7 +10206,7 @@
         dbsales: 'DB 관리/전환율에 대해 물어보세요',
         calculator: '금융 계산 도구에 대해 물어보세요',
         coaching: '예: a.1 메리츠화재의 알파플러스보험이 궁금해',
-        'insurance-calc': '보험금 산출/청구 전략에 대해 물어보세요',
+        'insurance-calc': '예: 대장용종 제거술 보험금 산출 (+ 버튼으로 보험내역·약관 PDF 첨부)',
         'complete-sales': '완전판매/민원 방어에 대해 물어보세요',
         healthcheck: '건강검진에 대해 물어보거나, + 버튼으로 검진 결과지 PDF 올려보세요'
       };
@@ -10204,13 +10225,17 @@
       // PDF 업로드 활성 시스템
       //   Phase 2A (v=20260516b): coverage
       //   Phase 3-B-1 (v=20260516g): + healthcheck (건강검진 결과지 PDF)
-      var PDF_ENABLED_SYSTEMS = ['coverage', 'healthcheck'];
+      //   Phase 3-B-4 (v=20260518e): + insurance-calc (보험 내역 + 약관, 다중 PDF)
+      var PDF_ENABLED_SYSTEMS = ['coverage', 'healthcheck', 'insurance-calc'];
 
       // 시스템별 PDF 업로드 컨텍스트 (api/chat.js에 전달 → 프롬프트 분기)
       var PDF_SYSTEM_CONTEXTS = {
         coverage: { contextKey: 'coverage-pdf', title: '보험 증권', tooltip: 'PDF 업로드 → 보장분석' },
-        healthcheck: { contextKey: 'healthcheck-pdf', title: '건강검진 결과지', tooltip: 'PDF 업로드 → 건강검진 분석' }
+        healthcheck: { contextKey: 'healthcheck-pdf', title: '건강검진 결과지', tooltip: 'PDF 업로드 → 건강검진 분석' },
+        'insurance-calc': { contextKey: 'insurance-calc-pdf', title: '보험내역 + 약관', tooltip: '보험내역·약관 PDF 업로드 → 진단/수술 입력 시 보험금 산출', multi: true }
       };
+      // 보험금 산출 — 누적된 PDF (다중 업로드 모드)
+      var _solInsCalcPdfs = []; // [{filename, base64}]
 
       // ── Phase 1 헬퍼 함수 ──
       function _solClearChat() {
@@ -10340,7 +10365,14 @@
         } else {
           btn.classList.add('disabled');
           btn.disabled = true;
-          btn.setAttribute('title', 'PDF 업로드는 보장분석 또는 건강검진 시스템에서만 지원됩니다');
+          btn.setAttribute('title', 'PDF 업로드는 보장분석/건강검진/보험금 산출 시스템에서만 지원됩니다');
+        }
+        // 다중 PDF 시스템 (보험금 산출)이면 input multiple 속성 활성화
+        var fi = document.getElementById('sol-pdf-file-input');
+        if (fi) {
+          var ctxInfo = PDF_SYSTEM_CONTEXTS[sysKey];
+          if (ctxInfo && ctxInfo.multi) fi.setAttribute('multiple', '');
+          else fi.removeAttribute('multiple');
         }
       }
 
@@ -10367,7 +10399,7 @@
           if (fi) fi.click();
         });
 
-        // file input hidden inject (body 직속)
+        // file input hidden inject (body 직속) — v=20260518e: 다중 PDF 지원
         if (!document.getElementById('sol-pdf-file-input')) {
           var fi = document.createElement('input');
           fi.type = 'file';
@@ -10377,11 +10409,21 @@
           document.body.appendChild(fi);
           fi.addEventListener('change', function () {
             if (!this.files || !this.files.length) return;
-            var f = this.files[0];
-            if (typeof _solPdfHandleFile === 'function') _solPdfHandleFile(f);
-            this.value = ''; // reset (같은 파일 재선택 가능하게)
+            // 보험금 산출 모드는 다중 PDF 누적 (분석은 사용자 질문 입력 시 트리거)
+            if (typeof activeSystem !== 'undefined' && activeSystem === 'insurance-calc') {
+              for (var i = 0; i < this.files.length; i++) {
+                if (typeof _solInsCalcAddFile === 'function') _solInsCalcAddFile(this.files[i]);
+              }
+            } else {
+              // 보장분석/건강검진: 단일 파일 즉시 분석
+              var f = this.files[0];
+              if (typeof _solPdfHandleFile === 'function') _solPdfHandleFile(f);
+            }
+            this.value = ''; // reset
           });
         }
+        // 보험금 산출 시스템 진입 시 파일 input의 multiple 속성 토글
+        // (이미 init된 경우에도 _solUpdatePlusButton 호출 시 토글되도록 함수 정의)
 
         // 진행률 바 inject (입력 영역 위)
         if (!document.getElementById('sol-pdf-progress')) {
@@ -10399,9 +10441,13 @@
       function _solResetForSystem(sysKey, sysName) {
         _solClearChat();
         var greeting = SYSTEM_GREETINGS[sysKey] || SYSTEM_GREETINGS['all'];
-        // Phase 3-B-3 (v=20260518a) — 상담 코칭은 챗봇 모드 (운영 Gems Fast-Start 풍부 인사말)
+        // Phase 3-B-3 (v=20260518a) — 상담 코칭은 챗봇 모드 (운영 Gems Fast-Start)
         if (sysKey === 'coaching') {
           _solCoachAppendIntroBubble();
+        } else if (sysKey === 'insurance-calc') {
+          // Phase 3-B-4 (v=20260518e) — 보험금 산출 챗봇 모드 (다중 PDF + 진단 질문)
+          _solInsCalcReset();
+          _solInsCalcAppendIntroBubble();
         } else {
           _solAppendGreeting(greeting);
         }
@@ -12547,6 +12593,164 @@
           i++;
           if (msgs) msgs.scrollTop = msgs.scrollHeight;
         }, speed);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // Phase 3-B-4 — 보험금 산출 AI (v=20260518e)
+      //   다중 PDF (보험내역 + 약관) + 진단/수술 질문 → 마크다운 산출 리포트
+      // ═══════════════════════════════════════════════════════════════════
+
+      function _solInsCalcReset() {
+        _solInsCalcPdfs = [];
+      }
+
+      // PDF 파일을 base64로 누적 저장 + 첨부 칩 메시지 표시
+      async function _solInsCalcAddFile(file) {
+        if (!file) return;
+        var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
+        if (!isPdf) {
+          _solInsCalcAppendSystemMsg('⚠️ PDF 파일만 지원합니다 (.pdf 확장자)');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name);
+          return;
+        }
+        if (_solInsCalcPdfs.length >= 5) {
+          _solInsCalcAppendSystemMsg('⚠️ 최대 5개 PDF까지만 첨부 가능합니다');
+          return;
+        }
+        try {
+          var base64 = await _solPdfBlobToBase64(file);
+          _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
+          _solInsCalcAppendChip(file.name, _solInsCalcPdfs.length);
+        } catch (e) {
+          _solInsCalcAppendSystemMsg('⚠️ 파일 읽기 실패: ' + file.name);
+        }
+      }
+
+      function _solInsCalcAppendChip(filename, count) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3 justify-end';
+        div.innerHTML = ''
+          + '<div class="max-w-[80%]">'
+          + '  <div class="flex items-baseline gap-2 mb-1 justify-end">'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '    <span class="text-[13px] font-medium text-white">나</span>'
+          + '  </div>'
+          + '  <div class="bg-blue-700/20 border border-blue-600/20 rounded-2xl rounded-tr-sm px-4 py-2.5">'
+          + '    <p class="text-[12.5px] text-blue-100">📎 ' + _solEscHtml(filename) + ' <span style="opacity:0.6;">(' + count + '개 첨부)</span></p>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 text-zinc-300 text-xs font-bold">📎</div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+        // 첫 PDF 첨부 시 안내 AI 메시지
+        if (count === 1) {
+          _solInsCalcAppendSystemMsg('첫 PDF 첨부됨. [보험 내역 PDF + 약관 PDF] 모두 첨부 후 진단/수술명을 입력해 주세요. (예: "대장용종 제거술 보험금 산출")');
+        }
+      }
+
+      function _solInsCalcAppendSystemMsg(msg) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 보험금 산출</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <p class="text-[13px] text-zinc-300 leading-relaxed">' + _solCoachBrackets(_solEscHtml(msg)) + '</p>'
+          + '</div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function _solInsCalcAppendIntroBubble() {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var rich = ''
+          + '반갑습니다. 저는 인카금융서비스 프로사업단총괄의 [전략적 보험금 산출 AI]입니다.\n\n'
+          + '본 시스템은 고객님의 [가입 담보] 안에서 [지급 가능한 보험금]을 정밀하게 산출하는 [상향 표준 모델]로 설계되었습니다.\n\n'
+          + '[저를 이렇게 활용해 보세요:]\n\n'
+          + '[1단계 — PDF 첨부]: 우측 하단 [+] 버튼으로 [보험 내역 PDF]와 [해당 약관 PDF]를 첨부해 주세요.\n'
+          + '[2단계 — 진단·수술 입력]: 청구하려는 [진단명]·[수술명]·[증상]을 채팅에 입력해 주세요.\n'
+          + '[3단계 — 산출 리포트]: 가입한 담보 안에서 지급 가능한 [실손/수술/진단/입원] 등 모든 항목을 [✅지급/🚨미가입/⚠️검토] 상태로 출력합니다.\n\n'
+          + '[예시 입력]\n'
+          + '· 대장용종 제거술을 했는데, 첨부한 자료에서 가입한 담보들에 한해서 지급 가능한 담보들을 알려줘\n'
+          + '· 갑상선암 1cm 진단 — 지급 가능한 모든 담보 산출\n'
+          + '· 교통사고 입원 12일, 수술 1회 — 보험금 청구 전략\n\n'
+          + '[리포트 구성]\n'
+          + '🚨 [서류 보완 필요] — 청구에 추가로 필요한 서류\n'
+          + '💰 [최대 예상 수령액] — 가입 담보 기준 산출\n'
+          + '1️⃣ [상세 지급 산출표] — 구분/담보명/상태/예상지급액/근거\n'
+          + '2️⃣ [전문가 전략 가이드] — 대응 논리 + 코드 발굴\n'
+          + '💡 [놓치지 말아야 할 포인트] — 당일 수술·연간 제한 등 hidden insights\n\n'
+          + '먼저 [+] 버튼으로 PDF를 첨부해 주세요.';
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 보험금 산출</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+          + '</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, rich, msgs, 14);
+      }
+
+      // 보험금 산출 사용자 메시지 — 코칭과 동일 패턴 (평문 타이핑)
+      function _solInsCalcAppendUserBubble(text) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3 justify-end';
+        div.innerHTML = ''
+          + '<div class="max-w-[80%]">'
+          + '  <div class="flex items-baseline gap-2 mb-1 justify-end">'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '    <span class="text-[13px] font-medium text-white">나</span>'
+          + '  </div>'
+          + '  <div class="bg-blue-700/20 border border-blue-600/20 rounded-2xl rounded-tr-sm px-4 py-2.5">'
+          + '    <p class="text-[13px] text-blue-100 sol-coach-user-text" style="white-space:pre-wrap;"></p>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 text-zinc-300 text-xs font-bold">나</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-user-text');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriterPlain(pEl, text, msgs, 8);
+      }
+
+      // 보험금 산출 AI 응답 — 마크다운 lite 타이핑 (코칭과 동일)
+      function _solInsCalcAppendResponseBubble(reply) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 보험금 산출</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+          + '</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, reply, msgs, 10);
       }
 
       // ─── 패널 + 모달 렌더 ───
