@@ -9549,9 +9549,18 @@
       }
 
       function _solPdfInjectReportPanel() {
-        if (document.getElementById('sol-pdf-report')) return; // 이미 inject됨
-        // 우측 패널 (시스템 현황 카드 그리드) 부모 찾기
+        // 우측 패널 height 480px → 분석 모드에서 800px로 일시 확장
+        //   (내부 #sol-pdf-report의 overflow-y:auto + sticky 백 버튼 정상 작동 보장)
+        //   사용자가 패널 안 스크롤로 약식 데모 + 잠금 5개 + CTA 모두 볼 수 있게 충분한 공간
         var rightCol = document.querySelector('#prosolution-overlay .lg\\:col-span-4');
+        if (rightCol) {
+          // 원래 height(480px) 백업 후 800px로 변경 — backBtn 클릭 시 복원
+          if (!rightCol.dataset.solOriginalHeight) {
+            rightCol.dataset.solOriginalHeight = rightCol.style.height || '';
+          }
+          rightCol.style.height = '800px';
+        }
+        if (document.getElementById('sol-pdf-report')) return; // 이미 inject됨
         if (!rightCol) return;
         var listArea = rightCol.querySelector('.flex-1.overflow-y-auto.p-4.space-y-2');
         if (!listArea) return;
@@ -9685,6 +9694,11 @@
             if (laRestore) laRestore.style.display = '';
             // 우측 패널 맨 위로 스크롤 (다음 카드 선택 편하게)
             if (laRestore) laRestore.scrollTop = 0;
+            // 우측 패널 height 원래(480px)로 복원
+            var rc = document.querySelector('#prosolution-overlay .lg\\:col-span-4');
+            if (rc && rc.dataset.solOriginalHeight !== undefined) {
+              rc.style.height = rc.dataset.solOriginalHeight || '480px';
+            }
           });
         }
 
