@@ -140,11 +140,14 @@ export default async function handler(req, res) {
   try {
     // 모드 분기: PDF 있으면 보장분석 모드, 없으면 기존 텍스트 채팅 모드
     const isPdfMode = !!pdfPart;
-    // v=20260516c — gemini-2.5-pro로 격상 (사용자 명시 요청).
-    //   Pro는 thinkingBudget을 0으로 설정 시 HTTP 400 "Budget 0 is invalid"
-    //   에러가 발생하므로 dynamic(-1) 또는 양수 설정 필수.
-    //   PDF 모드는 더 긴 추론(분석)이 필요하므로 thinkingBudget을 충분히 부여.
-    const MODEL = 'gemini-2.5-pro';
+    // v=20260516d — gemini-3.1-pro-preview로 재격상 (2026-02-13 출시 SOTA reasoning 모델).
+    //   사용자가 처음 요청한 "gemini-3.0-pro" 의도와 일치하는 최신 Pro.
+    //   "Our latest SOTA reasoning model with unprecedented depth and nuance,
+    //    and powerful multimodal understanding and coding capabilities" (Google AI Studio)
+    //   가격: ≤200K tokens — Input $2 / Output $12, >200K — Input $4 / Output $18
+    //   Pro 계열 thinking 패턴 유지 (thinkingBudget=-1 dynamic).
+    //   preview 모델은 안정 모델 대비 변경 가능성 있으나 SOTA reasoning 가치가 큼.
+    const MODEL = 'gemini-3.1-pro-preview';
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
     const parts = isPdfMode
       ? [{ text: pdfAnalysisPrompt }, pdfPart, { text: '\n\n사용자 요청: ' + message }]
