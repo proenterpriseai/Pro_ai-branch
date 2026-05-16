@@ -1502,6 +1502,283 @@
     }
 
     /* ═══════════════════════════════════════════════
+       통합금융계산기 Phase 3-B-2 — sol-calc-* 클래스
+       (9개 모듈 카드 grid + 모달 오버레이 + 입력 폼 + 결과 카드)
+       ═══════════════════════════════════════════════ */
+
+    /* 안내 라벨 + 그리드 */
+    .sol-calc-intro {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .sol-calc-intro-sub {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 10px;
+    }
+    .sol-calc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .sol-calc-card {
+      background: linear-gradient(135deg, rgba(30,58,138,0.4) 0%, rgba(39,57,140,0.25) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 12px;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .sol-calc-card:hover {
+      background: linear-gradient(135deg, rgba(6,182,212,0.18) 0%, rgba(30,58,138,0.4) 100%);
+      border-color: rgba(6, 182, 212, 0.55);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -8px rgba(6, 182, 212, 0.35);
+    }
+    .sol-calc-card-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+    .sol-calc-card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .sol-calc-card-desc {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    /* 모달 — 오버레이 + 패널 */
+    .sol-calc-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      padding: 20px;
+      animation: solCalcFadeIn 0.18s ease-out;
+    }
+    .sol-calc-modal.active {
+      display: flex;
+    }
+    @keyframes solCalcFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .sol-calc-modal-panel {
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 60px -12px rgba(6, 182, 212, 0.45);
+      animation: solCalcSlideUp 0.22s ease-out;
+    }
+    @keyframes solCalcSlideUp {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .sol-calc-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+      background: linear-gradient(135deg, #1e3a8a 0%, #27398c 100%);
+      border-radius: 16px 16px 0 0;
+    }
+    .sol-calc-modal-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .sol-calc-modal-title-icon {
+      font-size: 22px;
+    }
+    .sol-calc-modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .sol-calc-modal-close:hover {
+      background: rgba(244, 63, 94, 0.25);
+      color: #fda4af;
+    }
+    .sol-calc-modal-body {
+      padding: 18px 20px 20px;
+    }
+
+    /* 입력 폼 */
+    .sol-calc-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sol-calc-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .sol-calc-field-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: -0.01em;
+    }
+    .sol-calc-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .sol-calc-input {
+      width: 100%;
+      padding: 10px 50px 10px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .sol-calc-input:focus {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    }
+    .sol-calc-input-unit {
+      position: absolute;
+      right: 12px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      pointer-events: none;
+    }
+    .sol-calc-select {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+    .sol-calc-submit {
+      margin-top: 6px;
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #06b6d4 0%, #1e3a8a 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 14px -4px rgba(6, 182, 212, 0.45);
+    }
+    .sol-calc-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px -4px rgba(6, 182, 212, 0.6);
+    }
+
+    /* 결과 카드 */
+    .sol-calc-result {
+      margin-top: 14px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(6,182,212,0.12) 0%, rgba(30,58,138,0.18) 100%);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: 12px;
+      animation: solCalcSlideUp 0.25s ease-out;
+    }
+    .sol-calc-result-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .sol-calc-result-big {
+      font-size: 26px;
+      font-weight: 900;
+      color: #67e8f9;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    .sol-calc-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 12px;
+      border-top: 1px dashed rgba(99, 102, 241, 0.18);
+    }
+    .sol-calc-result-row:first-of-type {
+      border-top: none;
+    }
+    .sol-calc-result-row .lbl {
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+    .sol-calc-result-row .val {
+      color: #fff;
+      font-weight: 700;
+    }
+    .sol-calc-result-note {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(99, 102, 241, 0.15);
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    /* 모바일 — 3컬럼 → 2컬럼 (한 줄에 3개 너무 좁음) */
+    @media (max-width: 600px) {
+      .sol-calc-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sol-calc-result-big {
+        font-size: 22px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════
        모바일 반응형 최적화 (PC 레이아웃 영향 없음)
        ═══════════════════════════════════════════════ */
 
@@ -9721,6 +9998,10 @@
         _solRenderQuickButtonsForSystem(sysKey);
         _solUpdatePlaceholder(sysKey);
         _solUpdatePlusButton(sysKey);
+        // Phase 3-B-2 (v=20260517b) — 통합금융계산기 즉시 모듈 grid 인입
+        if (sysKey === 'calculator') {
+          _solCalcInjectPanel(greeting);
+        }
       }
 
       // ── Phase 2A: PDF 업로드 → Gemini 분석 → 채팅 요약 + 우측 리포트 ──
@@ -10251,6 +10532,495 @@
         return esc.replace(/\(([^)(]*?출처\s*[:：][^)(]*)\)/g, function (m, inner) {
           return '<span class="src">(' + inner + ')</span>';
         });
+      }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // Phase 3-B-2 — 통합금융계산기 (v=20260517b)
+      //   9개 모듈 카드 grid + 모달 오버레이 + 입력 폼 + 결과 카드
+      //   Flag _isProsolutionPdfOn() 게이트, sysKey === 'calculator' 진입
+      // ═══════════════════════════════════════════════════════════════════
+
+      var CALC_MODULES = [
+        {
+          key: 'savings', icon: '💰', title: '예적금', desc: '월 납입 + 이율 → 만기금',
+          fields: [
+            { key: 'monthly', label: '월 납입액', unit: '만원', val: 50 },
+            { key: 'months',  label: '가입 기간', unit: '개월', val: 36, integer: true },
+            { key: 'rate',    label: '연 이율',  unit: '%',   val: 3.5, step: 0.1 }
+          ]
+        },
+        {
+          key: 'loan', icon: '🏦', title: '대출', desc: '원금 + 이율 → 월 상환액',
+          fields: [
+            { key: 'principal', label: '대출 원금', unit: '만원', val: 10000 },
+            { key: 'months',    label: '상환 기간', unit: '개월', val: 60, integer: true },
+            { key: 'rate',      label: '연 이율',  unit: '%',   val: 4.5, step: 0.1 }
+          ]
+        },
+        {
+          key: 'retire', icon: '🌅', title: '은퇴 자산', desc: '현재 자산 + 월 적립 → FV',
+          fields: [
+            { key: 'current', label: '현재 자산',  unit: '만원', val: 5000 },
+            { key: 'monthly', label: '월 적립액',  unit: '만원', val: 100 },
+            { key: 'years',   label: '운용 기간',  unit: '년',   val: 20, integer: true },
+            { key: 'rate',    label: '연 수익률',  unit: '%',   val: 5.0, step: 0.1 }
+          ]
+        },
+        {
+          key: 'realestate', icon: '🏠', title: '부동산 양도세', desc: '양도 + 보유 → 세금',
+          fields: [
+            { key: 'sell',  label: '양도 가액',  unit: '만원', val: 80000 },
+            { key: 'buy',   label: '취득 가액',  unit: '만원', val: 50000 },
+            { key: 'years', label: '보유 기간',  unit: '년',   val: 5, integer: true }
+          ]
+        },
+        {
+          key: 'inherit', icon: '👨‍👩‍👧', title: '상속·증여세', desc: '금액 + 관계 → 누진 세금',
+          fields: [
+            { key: 'amount',   label: '증여(상속) 금액', unit: '만원', val: 30000 },
+            { key: 'relation', label: '관계', select: [
+              { v: 'direct',  t: '직계존비속 (공제 5,000만 원)' },
+              { v: 'spouse',  t: '배우자 (공제 6억 원)' },
+              { v: 'other',   t: '기타 (공제 1,000만 원)' }
+            ], val: 'direct' }
+          ]
+        },
+        {
+          key: 'goal', icon: '🎯', title: '목적 자금', desc: '목표 + 기간 → 월 적립',
+          fields: [
+            { key: 'target', label: '목표 금액',  unit: '만원', val: 100000 },
+            { key: 'years',  label: '기간',       unit: '년',   val: 10, integer: true },
+            { key: 'rate',   label: '연 수익률',  unit: '%',   val: 4.0, step: 0.1 }
+          ]
+        },
+        {
+          key: 'dollar', icon: '💵', title: '달러 환산', desc: '환율 -15% / 현재 / +15% 비교',
+          fields: [
+            { key: 'krw',  label: '원화 금액',  unit: '만원', val: 1000 },
+            { key: 'rate', label: '현재 환율',  unit: '원/$', val: 1380 }
+          ]
+        },
+        {
+          key: 'lease', icon: '🔑', title: '전·월세 부담', desc: '보증금+월세 → 총 비용',
+          fields: [
+            { key: 'deposit', label: '보증금',    unit: '만원',  val: 10000 },
+            { key: 'monthly', label: '월세',      unit: '만원',  val: 80 },
+            { key: 'mgmt',    label: '관리비(월)', unit: '만원',  val: 15 },
+            { key: 'months',  label: '거주 기간', unit: '개월',  val: 24, integer: true }
+          ]
+        },
+        {
+          key: 'income', icon: '📊', title: '종합소득세', desc: '연 소득 → 누진 세금',
+          fields: [
+            { key: 'income',    label: '연 소득',      unit: '만원', val: 8000 },
+            { key: 'deduction', label: '공제 합계',    unit: '만원', val: 1500 }
+          ]
+        }
+      ];
+
+      function _solCalcFmt(n) {
+        try { return Number(Math.round(n)).toLocaleString('ko-KR'); } catch (e) { return String(n); }
+      }
+      function _solCalcNum(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+      function _solCalcInt(v) { var n = parseInt(v, 10); return isFinite(n) && n > 0 ? n : 0; }
+
+      // ─── 9 모듈 계산 함수 ───
+      function _solCalcCompute(key, inp) {
+        if (key === 'savings') {
+          var m = _solCalcNum(inp.monthly), n = _solCalcInt(inp.months), r = _solCalcNum(inp.rate) / 100;
+          var principal = m * n;
+          var interest = m * (n * (n + 1) / 2) * (r / 12);
+          var tax = interest * 0.154;
+          var net = interest - tax;
+          return {
+            bigLabel: '만기 수령액 (세후)', big: principal + net, unit: '만원',
+            rows: [
+              { lbl: '원금 합계', val: _solCalcFmt(principal) + ' 만원' },
+              { lbl: '세전 이자', val: _solCalcFmt(interest) + ' 만원' },
+              { lbl: '이자 소득세 (15.4%)', val: '-' + _solCalcFmt(tax) + ' 만원' }
+            ],
+            note: '※ 단리 적금 계산. 세전 이자에 이자 소득세 15.4% 적용'
+          };
+        }
+        if (key === 'loan') {
+          var P = _solCalcNum(inp.principal), N = _solCalcInt(inp.months), R = _solCalcNum(inp.rate) / 100 / 12;
+          var pmt = R === 0 ? P / N : P * (R * Math.pow(1+R, N)) / (Math.pow(1+R, N) - 1);
+          var total = pmt * N;
+          return {
+            bigLabel: '월 상환액', big: pmt, unit: '만원',
+            rows: [
+              { lbl: '대출 원금', val: _solCalcFmt(P) + ' 만원' },
+              { lbl: '총 상환액', val: _solCalcFmt(total) + ' 만원' },
+              { lbl: '총 이자',   val: _solCalcFmt(total - P) + ' 만원' },
+              { lbl: '상환 기간', val: N + ' 개월' }
+            ],
+            note: '※ 원리금 균등상환 방식 (PMT = P × r(1+r)ⁿ / ((1+r)ⁿ-1))'
+          };
+        }
+        if (key === 'retire') {
+          var PV = _solCalcNum(inp.current), PMT = _solCalcNum(inp.monthly),
+              Y = _solCalcInt(inp.years), rate = _solCalcNum(inp.rate) / 100;
+          var nn = Y * 12, rr = rate / 12;
+          var fvPV = PV * Math.pow(1 + rr, nn);
+          var fvAn = rr === 0 ? PMT * nn : PMT * ((Math.pow(1 + rr, nn) - 1) / rr);
+          var FV = fvPV + fvAn;
+          return {
+            bigLabel: Y + '년 후 은퇴 자산', big: FV, unit: '만원',
+            rows: [
+              { lbl: '현재 자산', val: _solCalcFmt(PV) + ' 만원' },
+              { lbl: '월 적립 누계', val: _solCalcFmt(PMT * nn) + ' 만원' },
+              { lbl: '운용 수익', val: _solCalcFmt(FV - PV - PMT * nn) + ' 만원' }
+            ],
+            note: '※ FV = PV(1+r)ⁿ + PMT × ((1+r)ⁿ-1)/r, 월 복리 가정'
+          };
+        }
+        if (key === 'realestate') {
+          var s = _solCalcNum(inp.sell), b = _solCalcNum(inp.buy), yy = _solCalcInt(inp.years);
+          var gain = s - b;
+          if (gain <= 0) {
+            return {
+              bigLabel: '양도세', big: 0, unit: '만원',
+              rows: [
+                { lbl: '양도 차익', val: _solCalcFmt(gain) + ' 만원' },
+                { lbl: '안내', val: '손실 또는 동가 거래' }
+              ],
+              note: '※ 양도차익 0 이하 — 양도세 없음 (손실금은 다른 양도소득과 통산 가능)'
+            };
+          }
+          var sr;
+          if (yy < 1) sr = 0.5;
+          else if (yy < 2) sr = 0.4;
+          else if (gain <= 1400) sr = 0.06;
+          else if (gain <= 5000) sr = 0.15;
+          else if (gain <= 8800) sr = 0.24;
+          else if (gain <= 15000) sr = 0.35;
+          else if (gain <= 30000) sr = 0.38;
+          else if (gain <= 50000) sr = 0.40;
+          else if (gain <= 100000) sr = 0.42;
+          else sr = 0.45;
+          var stax = gain * sr;
+          var ltax = stax * 0.1;
+          return {
+            bigLabel: '양도세 (지방세 포함)', big: stax + ltax, unit: '만원',
+            rows: [
+              { lbl: '양도 차익', val: _solCalcFmt(gain) + ' 만원' },
+              { lbl: '적용 세율', val: (sr * 100).toFixed(0) + '%' + (yy < 2 ? ' (단기 보유)' : '') },
+              { lbl: '양도소득세', val: _solCalcFmt(stax) + ' 만원' },
+              { lbl: '지방소득세 (10%)', val: _solCalcFmt(ltax) + ' 만원' }
+            ],
+            note: '※ 단순 누진 적용. 장기보유특별공제·1세대1주택 비과세·기본공제 250만 등 미반영'
+          };
+        }
+        if (key === 'inherit') {
+          var amt = _solCalcNum(inp.amount);
+          var rel = inp.relation || 'direct';
+          var ded = rel === 'spouse' ? 60000 : (rel === 'direct' ? 5000 : 1000);
+          var tx = Math.max(amt - ded, 0);
+          var itax;
+          if (tx <= 0) itax = 0;
+          else if (tx <= 10000) itax = tx * 0.1;
+          else if (tx <= 50000) itax = 1000 + (tx - 10000) * 0.2;
+          else if (tx <= 100000) itax = 9000 + (tx - 50000) * 0.3;
+          else if (tx <= 300000) itax = 24000 + (tx - 100000) * 0.4;
+          else itax = 104000 + (tx - 300000) * 0.5;
+          return {
+            bigLabel: '증여·상속 산출 세액', big: itax, unit: '만원',
+            rows: [
+              { lbl: '증여(상속) 금액', val: _solCalcFmt(amt) + ' 만원' },
+              { lbl: '관계 공제', val: '-' + _solCalcFmt(ded) + ' 만원' },
+              { lbl: '과세 표준', val: _solCalcFmt(tx) + ' 만원' }
+            ],
+            note: '※ 누진세율 10/20/30/40/50% 5단계. 신고세액공제(3%) 등 별도 적용 가능'
+          };
+        }
+        if (key === 'goal') {
+          var T = _solCalcNum(inp.target), Yg = _solCalcInt(inp.years), rg = _solCalcNum(inp.rate) / 100;
+          var ng = Yg * 12, rgm = rg / 12;
+          var monthlyNeed = rgm === 0 ? T / ng : T * rgm / (Math.pow(1 + rgm, ng) - 1);
+          return {
+            bigLabel: '월 필요 적립액', big: monthlyNeed, unit: '만원',
+            rows: [
+              { lbl: '목표 금액', val: _solCalcFmt(T) + ' 만원' },
+              { lbl: '기간', val: Yg + ' 년 (' + ng + ' 개월)' },
+              { lbl: '연 수익률', val: (rg * 100).toFixed(1) + '%' },
+              { lbl: '총 적립 원금', val: _solCalcFmt(monthlyNeed * ng) + ' 만원' }
+            ],
+            note: '※ 월 복리 가정. PMT = FV × r / ((1+r)ⁿ-1)'
+          };
+        }
+        if (key === 'dollar') {
+          var krwMan = _solCalcNum(inp.krw); // 만원
+          var er = _solCalcNum(inp.rate) || 1380;
+          var krw = krwMan * 10000;
+          var usdNow = krw / er;
+          var usdDown = krw / (er * 0.85);
+          var usdUp = krw / (er * 1.15);
+          return {
+            bigLabel: '현재 환율 환전 (USD)', bigStr: '$' + _solCalcFmt(usdNow), unit: 'USD',
+            rows: [
+              { lbl: '원화 (입력)', val: _solCalcFmt(krwMan) + ' 만원 (₩' + _solCalcFmt(krw) + ')' },
+              { lbl: '환율 -15% (₩' + (er * 0.85).toFixed(0) + ')', val: '$' + _solCalcFmt(usdDown) },
+              { lbl: '환율 현재 (₩' + er.toFixed(0) + ')', val: '$' + _solCalcFmt(usdNow) },
+              { lbl: '환율 +15% (₩' + (er * 1.15).toFixed(0) + ')', val: '$' + _solCalcFmt(usdUp) }
+            ],
+            note: '※ 3개 환율 시나리오 비교 — 향후 변동성 시뮬레이션 (가격 효과 ±15%)'
+          };
+        }
+        if (key === 'lease') {
+          var dep = _solCalcNum(inp.deposit), mn = _solCalcNum(inp.monthly),
+              mg = _solCalcNum(inp.mgmt), mnt = _solCalcInt(inp.months);
+          var opp = dep * 0.03 * (mnt / 12);
+          var rentTotal = (mn + mg) * mnt;
+          return {
+            bigLabel: mnt + '개월 총 부담', big: rentTotal + opp, unit: '만원',
+            rows: [
+              { lbl: '월세+관리비 합계', val: _solCalcFmt(rentTotal) + ' 만원' },
+              { lbl: '보증금 기회비용 (연 3%)', val: _solCalcFmt(opp) + ' 만원' },
+              { lbl: '보증금 (회수 가능)', val: _solCalcFmt(dep) + ' 만원' }
+            ],
+            note: '※ 보증금은 계약 만료 시 회수. 기회비용은 보증금이 연 3% 수익을 낼 수 있다고 가정'
+          };
+        }
+        if (key === 'income') {
+          var inc = _solCalcNum(inp.income), de = _solCalcNum(inp.deduction);
+          var tt = Math.max(inc - de, 0);
+          var itx;
+          if (tt <= 1400) itx = tt * 0.06;
+          else if (tt <= 5000) itx = tt * 0.15 - 126;
+          else if (tt <= 8800) itx = tt * 0.24 - 576;
+          else if (tt <= 15000) itx = tt * 0.35 - 1544;
+          else if (tt <= 30000) itx = tt * 0.38 - 1994;
+          else if (tt <= 50000) itx = tt * 0.40 - 2594;
+          else if (tt <= 100000) itx = tt * 0.42 - 3594;
+          else itx = tt * 0.45 - 6594;
+          if (itx < 0) itx = 0;
+          var ltax2 = itx * 0.1;
+          return {
+            bigLabel: '연 소득세 (지방세 포함)', big: itx + ltax2, unit: '만원',
+            rows: [
+              { lbl: '연 소득', val: _solCalcFmt(inc) + ' 만원' },
+              { lbl: '공제 합계', val: '-' + _solCalcFmt(de) + ' 만원' },
+              { lbl: '과세 표준', val: _solCalcFmt(tt) + ' 만원' },
+              { lbl: '소득세', val: _solCalcFmt(itx) + ' 만원' },
+              { lbl: '지방소득세 (10%)', val: _solCalcFmt(ltax2) + ' 만원' }
+            ],
+            note: '※ 2024+ 누진세율 8단계 (6/15/24/35/38/40/42/45%). 근로소득공제·인적공제 등 미반영'
+          };
+        }
+        return { bigLabel: '결과', big: 0, unit: '', rows: [], note: '' };
+      }
+
+      // ─── 패널 + 모달 렌더 ───
+      function _solCalcInjectPanel(greeting) {
+        // 진행 중인 타이핑 중단 (msgsEl 곧 hidden 됨)
+        if (_solTypingInterval) {
+          try { clearInterval(_solTypingInterval); } catch (e) {}
+          _solTypingInterval = null;
+        }
+        var msgsEl = document.getElementById('sol-chat-messages');
+        if (!msgsEl) return;
+        msgsEl.style.display = 'none';
+        var report = document.getElementById('sol-pdf-report-inline');
+        if (!report) {
+          report = document.createElement('section');
+          report.id = 'sol-pdf-report-inline';
+          msgsEl.parentElement.insertBefore(report, msgsEl);
+        }
+        report.style.display = 'flex';
+        report.innerHTML = _solCalcBuildPanelHtml(greeting);
+        _solCalcBindPanelEvents(report);
+      }
+
+      function _solCalcBuildPanelHtml(greeting) {
+        var html = '';
+        // 데모 배지
+        html += '<div class="sol-pdf-demo-badge">💡 <strong>약식 데모</strong> — 본 시스템은 9개 모듈에 더해 시나리오 비교, 보고서 출력, 고객 저장까지 지원합니다</div>';
+        // 인사말 (greeting 정적 표시 — 타이핑 효과는 calc 모드에서 생략)
+        if (greeting) {
+          html += '<div style="padding:14px 16px;background:rgba(6,182,212,0.08);border-left:4px solid #06b6d4;border-radius:0 10px 10px 0;color:rgba(255,255,255,0.85);font-size:13px;line-height:1.65;letter-spacing:-0.01em;">' + _solEscHtml(greeting) + '</div>';
+        }
+        // 안내
+        html += '<div>';
+        html += '  <div class="sol-calc-intro">계산 유형을 선택하세요</div>';
+        html += '  <div class="sol-calc-intro-sub">9개 금융 모듈 — 카드를 클릭하면 입력 폼이 열립니다</div>';
+        // 9 카드 grid
+        html += '  <div class="sol-calc-grid">';
+        CALC_MODULES.forEach(function (m) {
+          html += '    <div class="sol-calc-card" data-calc-key="' + _solEscHtml(m.key) + '">';
+          html += '      <div class="sol-calc-card-icon">' + m.icon + '</div>';
+          html += '      <div class="sol-calc-card-title">' + _solEscHtml(m.title) + '</div>';
+          html += '      <div class="sol-calc-card-desc">' + _solEscHtml(m.desc) + '</div>';
+          html += '    </div>';
+        });
+        html += '  </div>';
+        html += '</div>';
+        // 잠금 teaser (캘큘레이터 풀 기능)
+        html += '<div>';
+        html += '  <div class="sol-pdf-section-title">🔒 풀 시스템에서 추가로 보이는 것</div>';
+        html += '  <div class="sol-pdf-locked-grid">';
+        var locks = [
+          { icon: '📈', title: '시나리오 비교',   desc: '동일 모듈을 3개 시나리오(보수/기본/공격)로 동시 시뮬레이션' },
+          { icon: '📄', title: '보고서 출력',     desc: 'A4 1장 컨설팅 보고서 자동 생성 — 고객 제공용 PDF' },
+          { icon: '💾', title: '고객 저장',       desc: '계산 결과를 고객 카드에 자동 저장 + 후속 상담 시 재조회' },
+          { icon: '🧠', title: 'AI 통합 컨설팅',  desc: '9개 모듈을 한 번에 분석 — 자산 흐름·세금·은퇴 종합 시나리오' },
+          { icon: '🏆', title: '맞춤 보험 매칭',   desc: '계산 결과에 맞는 보험·금융 상품 자동 매칭 (700명 사용 노하우 반영)' }
+        ];
+        locks.forEach(function (l) {
+          html += '    <div class="sol-pdf-locked-item">';
+          html += '      <div class="sol-pdf-locked-icon">' + l.icon + '</div>';
+          html += '      <div class="sol-pdf-locked-text">';
+          html += '        <div class="sol-pdf-locked-title">' + _solEscHtml(l.title) + '</div>';
+          html += '        <div class="sol-pdf-locked-desc">' + _solEscHtml(l.desc) + '</div>';
+          html += '      </div>';
+          html += '      <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>';
+          html += '    </div>';
+        });
+        html += '  </div>';
+        html += '</div>';
+        // CTA
+        html += '<div class="sol-pdf-cta-card">';
+        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 수백 건의 시뮬레이션을 즉시 처리할 수 있습니다.</div>';
+        html += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
+        html += '  <button class="sol-pdf-cta-btn" id="sol-calc-cta-btn">입사 상담 신청하기 →</button>';
+        html += '</div>';
+        return html;
+      }
+
+      function _solCalcBindPanelEvents(report) {
+        // 카드 클릭 → 모달
+        report.querySelectorAll('.sol-calc-card').forEach(function (card) {
+          card.addEventListener('click', function () {
+            var key = card.getAttribute('data-calc-key');
+            _solCalcOpenModal(key);
+          });
+        });
+        // CTA — 보장분석 동일 동작 (prosolution 닫고 #contact)
+        var cta = document.getElementById('sol-calc-cta-btn');
+        if (cta) {
+          cta.addEventListener('click', function () {
+            var pro = document.getElementById('prosolution-overlay');
+            if (pro) {
+              pro.classList.remove('ceo-overlay--active');
+              pro.setAttribute('aria-hidden', 'true');
+            }
+            document.body.style.overflow = '';
+            var contactEl = document.getElementById('contact');
+            if (contactEl) {
+              setTimeout(function () {
+                window.scrollTo({ top: contactEl.offsetTop - 80, behavior: 'smooth' });
+              }, 200);
+            }
+            try { window.location.hash = '#contact'; } catch (e) {}
+          });
+        }
+      }
+
+      // ─── 모달 ───
+      function _solCalcEnsureModal() {
+        var modal = document.getElementById('sol-calc-modal');
+        if (modal) return modal;
+        modal = document.createElement('div');
+        modal.id = 'sol-calc-modal';
+        modal.className = 'sol-calc-modal';
+        modal.innerHTML = ''
+          + '<div class="sol-calc-modal-panel">'
+          + '  <div class="sol-calc-modal-header">'
+          + '    <div class="sol-calc-modal-title">'
+          + '      <span class="sol-calc-modal-title-icon" id="sol-calc-modal-icon"></span>'
+          + '      <span id="sol-calc-modal-name"></span>'
+          + '    </div>'
+          + '    <button type="button" class="sol-calc-modal-close" id="sol-calc-modal-close" aria-label="닫기">×</button>'
+          + '  </div>'
+          + '  <div class="sol-calc-modal-body" id="sol-calc-modal-body"></div>'
+          + '</div>';
+        document.body.appendChild(modal);
+        // 배경 클릭 + × 닫기 + ESC 닫기
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) _solCalcCloseModal();
+        });
+        modal.querySelector('#sol-calc-modal-close').addEventListener('click', _solCalcCloseModal);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && modal.classList.contains('active')) _solCalcCloseModal();
+        });
+        return modal;
+      }
+
+      function _solCalcOpenModal(key) {
+        var mod = CALC_MODULES.filter(function (x) { return x.key === key; })[0];
+        if (!mod) return;
+        var modal = _solCalcEnsureModal();
+        modal.querySelector('#sol-calc-modal-icon').textContent = mod.icon;
+        modal.querySelector('#sol-calc-modal-name').textContent = mod.title;
+        modal.querySelector('#sol-calc-modal-body').innerHTML = _solCalcBuildFormHtml(mod);
+        _solCalcBindFormEvents(mod, modal);
+        modal.classList.add('active');
+      }
+
+      function _solCalcCloseModal() {
+        var modal = document.getElementById('sol-calc-modal');
+        if (modal) modal.classList.remove('active');
+      }
+
+      function _solCalcBuildFormHtml(mod) {
+        var h = '';
+        h += '<form class="sol-calc-form" id="sol-calc-form" onsubmit="return false;">';
+        mod.fields.forEach(function (f) {
+          h += '  <div class="sol-calc-field">';
+          h += '    <label class="sol-calc-field-label">' + _solEscHtml(f.label) + '</label>';
+          if (f.select) {
+            h += '    <select class="sol-calc-select" data-calc-field="' + _solEscHtml(f.key) + '">';
+            f.select.forEach(function (opt) {
+              var sel = (opt.v === f.val) ? ' selected' : '';
+              h += '      <option value="' + _solEscHtml(opt.v) + '"' + sel + '>' + _solEscHtml(opt.t) + '</option>';
+            });
+            h += '    </select>';
+          } else {
+            var step = f.integer ? '1' : (f.step != null ? String(f.step) : 'any');
+            h += '    <div class="sol-calc-input-wrap">';
+            h += '      <input type="number" class="sol-calc-input" data-calc-field="' + _solEscHtml(f.key) + '" value="' + _solEscHtml(String(f.val)) + '" step="' + step + '" inputmode="decimal" />';
+            if (f.unit) h += '      <span class="sol-calc-input-unit">' + _solEscHtml(f.unit) + '</span>';
+            h += '    </div>';
+          }
+          h += '  </div>';
+        });
+        h += '  <button type="submit" class="sol-calc-submit" id="sol-calc-submit">계산하기 →</button>';
+        h += '</form>';
+        h += '<div id="sol-calc-result-slot"></div>';
+        return h;
+      }
+
+      function _solCalcBindFormEvents(mod, modal) {
+        var form = modal.querySelector('#sol-calc-form');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var inp = {};
+          form.querySelectorAll('[data-calc-field]').forEach(function (el) {
+            inp[el.getAttribute('data-calc-field')] = el.value;
+          });
+          var result = _solCalcCompute(mod.key, inp);
+          var slot = modal.querySelector('#sol-calc-result-slot');
+          slot.innerHTML = _solCalcBuildResultHtml(result);
+        });
+      }
+
+      function _solCalcBuildResultHtml(r) {
+        var h = '';
+        h += '<div class="sol-calc-result">';
+        h += '  <div class="sol-calc-result-label">' + _solEscHtml(r.bigLabel || '결과') + '</div>';
+        var bigStr = r.bigStr ? r.bigStr : (_solCalcFmt(r.big) + (r.unit ? ' ' + _solEscHtml(r.unit) : ''));
+        h += '  <div class="sol-calc-result-big">' + bigStr + '</div>';
+        (r.rows || []).forEach(function (row) {
+          h += '  <div class="sol-calc-result-row">';
+          h += '    <span class="lbl">' + _solEscHtml(row.lbl) + '</span>';
+          h += '    <span class="val">' + _solEscHtml(String(row.val)) + '</span>';
+          h += '  </div>';
+        });
+        if (r.note) {
+          h += '  <div class="sol-calc-result-note">' + _solEscHtml(r.note) + '</div>';
+        }
+        h += '</div>';
+        return h;
       }
 
       // ─────────────────────────────────────────────────────────────────────
