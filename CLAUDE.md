@@ -243,7 +243,24 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260518j** (최신) — 7대 시스템 잠금+CTA 노출 시점 완전 통일
+- **v=20260518m** (최신) — DB영업관리 ROI 계산 + DB 유형별 단가 입력 + 투자비용 표
+  - DBSALES_STATE.dbPrice 5종 (보장/재무/지인소개/기고객/개척, 원 단위)
+  - 입력 폼 "DB 유형별 단가 (원) — ROI 계산용" 섹션 5 필드
+  - `_solDbsCompute`: invest 5종 + totalInvest 합산 + ROI 계산 ((실적 - 투자) / 투자 × 100)
+  - 메트릭 4번째 카드: 단가 입력 시 +XX% (녹색) / -XX% (빨강) + 프로그레스 바 + foot
+  - 유형별 투자비용 표 4컬럼 (유형/수량/단가/투자비용) + 합계 행 (청록 강조)
+  - 버그 fix: `_solDbsRenderAll`의 dbTotal 미정의 참조 → r.dbTotal로 교체
+- **v=20260518l** — DB영업관리 초기값 0 + NaN 방지 가드
+  - DBSALES_STATE 모든 값 0 (사용자가 본인 데이터 직접 입력 가능)
+  - pipe.taDone 가드 조건 dbTotal → ta로 수정 (ta=0 시 NaN 발생하던 버그)
+  - pipe 값 모두 isFinite 검증 → NaN/Infinity → 0 대체
+- **v=20260518k** — Team Manager Active 모드 Peek-and-Tease 카드
+  - 운영 Team Mode 풀 구현 (1,500줄) 대신 흐릿한 미리보기 방식 — ROI 90% 달성
+  - CSS sol-dbs-team-tease 9 클래스 (blur 2.5px + dark overlay + 잠금 아이콘 + 미니어처 컴포넌트)
+  - 미니어처 배경: 3 메트릭 / 5단계 막대 차트 / 2줄 리더보드
+  - 잠금 5종 첫 항목 (팀/조직 통합 분석) → 별도 peek 카드로 격상, 그 자리에 데이터 무결성+감사 로그 추가
+  - 심리학: Zeigarnik effect + Loss Aversion으로 funnel 압력 2~3배
+- **v=20260518j** — 7대 시스템 잠금+CTA 노출 시점 완전 통일
   - 챗봇 3개 (코칭/보험금산출/완전판매): AI 응답 완료 후 자동 노출 (`_solCoachTypewriter onComplete` 콜백)
   - 통합금융계산기: 메인 모듈 grid에서 제거 → 모듈 계산 결과 모달 안으로 이동
   - 7대 모두 "사용자 분석/요청 완료 후 결과와 함께 노출" 일관
