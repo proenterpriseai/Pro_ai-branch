@@ -2130,6 +2130,532 @@
       }
     }
 
+    /* ═══════════════════════════════════════════════
+       DB영업관리 AI Phase 3-B-6 — sol-dbs-* 클래스 (v=20260518h)
+       입력 폼 + 종합 점수 + 메트릭 + 활동흐름 + DB효율 + 도달률 + 파이프라인 + Simulator
+       ═══════════════════════════════════════════════ */
+
+    /* 입력 폼 */
+    .sol-dbs-input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .sol-dbs-input-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sol-dbs-input-label {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 600;
+    }
+    .sol-dbs-input-num {
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      outline: none;
+      text-align: right;
+    }
+    .sol-dbs-input-num:focus {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    }
+    .sol-dbs-input-num.sum-readonly {
+      background: rgba(99, 102, 241, 0.18);
+      color: #c7d2fe;
+      cursor: not-allowed;
+    }
+    .sol-dbs-section-h {
+      font-size: 12px;
+      font-weight: 800;
+      color: #67e8f9;
+      margin: 4px 0 6px;
+      letter-spacing: -0.01em;
+    }
+
+    /* 종합 점수 — 큰 등급 원 */
+    .sol-dbs-score-wrap {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(244,63,94,0.10) 0%, rgba(15,23,42,0.5) 100%);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      border-radius: 14px;
+    }
+    .sol-dbs-score-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 8px 28px -6px currentColor;
+    }
+    .sol-dbs-score-meta {
+      flex: 1;
+    }
+    .sol-dbs-score-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .sol-dbs-score-total {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+    }
+    .sol-dbs-score-formula {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .sol-dbs-score-formula span.k { color: #67e8f9; font-weight: 700; margin-left: 6px; }
+
+    /* 4 메트릭 카드 */
+    .sol-dbs-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .sol-dbs-metric-card {
+      padding: 14px 14px;
+      background: linear-gradient(135deg, rgba(30,58,138,0.35) 0%, rgba(15,23,42,0.55) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.22);
+      border-radius: 12px;
+    }
+    .sol-dbs-metric-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .sol-dbs-metric-value {
+      font-size: 24px;
+      font-weight: 900;
+      color: #a78bfa;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .sol-dbs-metric-value .pct { font-size: 14px; color: rgba(167,139,250,0.8); margin-left: 2px; }
+    .sol-dbs-metric-bar {
+      height: 4px;
+      background: rgba(99, 102, 241, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .sol-dbs-metric-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #06b6d4 0%, #a78bfa 100%);
+      transition: width 0.4s ease;
+    }
+    .sol-dbs-metric-foot {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* 활동 흐름 (5 노드 가로) */
+    .sol-dbs-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr;
+      gap: 6px;
+      align-items: center;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(99, 102, 241, 0.22);
+      border-radius: 12px;
+    }
+    .sol-dbs-flow-node {
+      text-align: center;
+    }
+    .sol-dbs-flow-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 4px;
+    }
+    .sol-dbs-flow-value {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+    }
+    .sol-dbs-flow-value.v-db   { color: #38bdf8; }
+    .sol-dbs-flow-value.v-ta   { color: #a78bfa; }
+    .sol-dbs-flow-value.v-1st  { color: #34d399; }
+    .sol-dbs-flow-value.v-2nd  { color: #fbbf24; }
+    .sol-dbs-flow-value.v-deal { color: #f87171; }
+    .sol-dbs-flow-arrow {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 18px;
+    }
+    .sol-dbs-flow-conv {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(99, 102, 241, 0.2);
+      font-size: 10.5px;
+      text-align: center;
+    }
+    .sol-dbs-flow-conv-item {
+      padding: 3px 6px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .sol-dbs-flow-conv-item.c-ta { background: rgba(56,189,248,0.18); color: #38bdf8; }
+    .sol-dbs-flow-conv-item.c-1st { background: rgba(167,139,250,0.18); color: #a78bfa; }
+    .sol-dbs-flow-conv-item.c-2nd { background: rgba(52,211,153,0.18); color: #34d399; }
+    .sol-dbs-flow-conv-item.c-deal { background: rgba(251,191,36,0.18); color: #fbbf24; }
+
+    /* 목표 잔여 */
+    .sol-dbs-remain-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 14px;
+      background: rgba(15,23,42,0.45);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 12px;
+    }
+    .sol-dbs-remain-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sol-dbs-remain-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+    }
+    .sol-dbs-remain-head .lbl { color: rgba(255,255,255,0.7); font-weight: 600; }
+    .sol-dbs-remain-head .val { color: #fff; font-weight: 800; letter-spacing: -0.01em; }
+    .sol-dbs-remain-head .val .remain { color: #f87171; font-weight: 700; margin-left: 6px; }
+    .sol-dbs-remain-bar {
+      height: 6px;
+      background: rgba(99,102,241,0.18);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .sol-dbs-remain-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #06b6d4 0%, #1e3a8a 100%);
+    }
+
+    /* AI 진단 박스 */
+    .sol-dbs-ai-diag {
+      padding: 12px 14px;
+      background: rgba(167,139,250,0.08);
+      border-left: 4px solid #a78bfa;
+      border-radius: 0 10px 10px 0;
+      color: rgba(255,255,255,0.85);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    /* DB 유형별 효율 — 도넛 + 분석 */
+    .sol-dbs-eff-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .sol-dbs-donut {
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 160px;
+      margin: 0 auto;
+      border-radius: 50%;
+      position: relative;
+      background: conic-gradient(#475569 0 100%);
+    }
+    .sol-dbs-donut::after {
+      content: '';
+      position: absolute;
+      inset: 22%;
+      background: #0f172a;
+      border-radius: 50%;
+    }
+    .sol-dbs-donut-legend {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      font-size: 10.5px;
+    }
+    .sol-dbs-donut-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.7);
+    }
+    .sol-dbs-donut-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    .sol-dbs-eff-badge-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .sol-dbs-eff-badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .sol-dbs-eff-badge.high { background: rgba(52,211,153,0.18); color: #34d399; }
+    .sol-dbs-eff-badge.work { background: rgba(251,191,36,0.18); color: #fbbf24; }
+
+    /* 4단계 도달률 + 전환율 카드 */
+    .sol-dbs-reach-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .sol-dbs-reach-card {
+      padding: 10px 12px;
+      background: rgba(15,23,42,0.4);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .sol-dbs-reach-card.bottleneck {
+      border-color: rgba(244,63,94,0.5);
+      background: rgba(244,63,94,0.06);
+    }
+    .sol-dbs-reach-card-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sol-dbs-reach-icon {
+      width: 26px;
+      height: 26px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .sol-dbs-reach-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .sol-dbs-reach-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+    }
+    .sol-dbs-reach-value {
+      font-size: 18px;
+      font-weight: 900;
+      color: #38bdf8;
+      letter-spacing: -0.01em;
+    }
+    .sol-dbs-reach-value.purple { color: #a78bfa; }
+    .sol-dbs-bottleneck-pill {
+      display: inline-block;
+      padding: 2px 7px;
+      background: #f43f5e;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 9.5px;
+      font-weight: 800;
+      margin-left: 6px;
+    }
+
+    /* 파이프라인 잔여 가치 */
+    .sol-dbs-pipe-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .sol-dbs-pipe-card {
+      padding: 12px;
+      background: rgba(15,23,42,0.5);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 10px;
+    }
+    .sol-dbs-pipe-head {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .sol-dbs-pipe-icon {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      background: rgba(99,102,241,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .sol-dbs-pipe-title { font-size: 11px; font-weight: 800; color: #fff; }
+    .sol-dbs-pipe-desc { font-size: 10px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
+    .sol-dbs-pipe-val { font-size: 15px; font-weight: 900; }
+    .sol-dbs-pipe-val.c-ta   { color: #38bdf8; }
+    .sol-dbs-pipe-val.c-1st  { color: #a78bfa; }
+    .sol-dbs-pipe-val.c-2nd  { color: #34d399; }
+
+    /* AI 코칭 인사이트 */
+    .sol-dbs-coach-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .sol-dbs-coach-card {
+      padding: 14px 16px;
+      background: rgba(15,23,42,0.5);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 12px;
+    }
+    .sol-dbs-coach-head {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .sol-dbs-coach-title { font-size: 12px; font-weight: 800; color: #fff; }
+    .sol-dbs-coach-sub { font-size: 10.5px; color: rgba(255,255,255,0.55); }
+    .sol-dbs-coach-list { display: flex; flex-direction: column; gap: 8px; }
+    .sol-dbs-coach-item {
+      display: flex; gap: 8px;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.55;
+    }
+    .sol-dbs-coach-item-icon { color: #67e8f9; flex-shrink: 0; font-weight: 800; }
+
+    /* Strategic Simulator */
+    .sol-dbs-sim {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(30,58,138,0.25) 100%);
+      border: 1px solid rgba(167,139,250,0.35);
+      border-radius: 14px;
+    }
+    .sol-dbs-sim-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .sol-dbs-sim-title { font-size: 14px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
+    .sol-dbs-sim-sub { font-size: 11px; color: rgba(255,255,255,0.65); }
+    .sol-dbs-sim-active {
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #67e8f9;
+    }
+    .sol-dbs-sim-body {
+      display: grid;
+      grid-template-columns: 1fr 130px;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .sol-dbs-sim-slider-block {
+      background: rgba(15,23,42,0.5);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .sol-dbs-sim-slider-head {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11.5px;
+      margin-bottom: 8px;
+    }
+    .sol-dbs-sim-slider-head .lbl { color: rgba(255,255,255,0.65); }
+    .sol-dbs-sim-slider-head .val { color: #a78bfa; font-weight: 800; }
+    .sol-dbs-sim-slider {
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(99,102,241,0.2);
+      appearance: none; -webkit-appearance: none;
+      outline: none;
+    }
+    .sol-dbs-sim-slider::-webkit-slider-thumb {
+      appearance: none; -webkit-appearance: none;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #a78bfa;
+      box-shadow: 0 0 0 4px rgba(167,139,250,0.2);
+      cursor: pointer;
+    }
+    .sol-dbs-sim-slider::-moz-range-thumb {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #a78bfa;
+      border: none;
+      box-shadow: 0 0 0 4px rgba(167,139,250,0.2);
+      cursor: pointer;
+    }
+    .sol-dbs-sim-action {
+      background: rgba(15,23,42,0.5);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .sol-dbs-sim-action-title {
+      font-size: 11px; font-weight: 800; color: #67e8f9;
+      margin-bottom: 8px;
+    }
+    .sol-dbs-sim-action-row {
+      display: flex; justify-content: space-between;
+      padding: 4px 0;
+      font-size: 11.5px;
+      border-top: 1px dashed rgba(99,102,241,0.15);
+    }
+    .sol-dbs-sim-action-row:first-of-type { border-top: none; }
+    .sol-dbs-sim-action-row .lbl { color: rgba(255,255,255,0.7); }
+    .sol-dbs-sim-action-row .val { color: #fff; font-weight: 800; }
+    .sol-dbs-sim-boost {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      gap: 6px;
+    }
+    .sol-dbs-sim-boost-label { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .sol-dbs-sim-boost-circle {
+      width: 88px; height: 88px;
+      border: 2px solid #a78bfa;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(167,139,250,0.1);
+      font-size: 22px; font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .sol-dbs-sim-boost-note {
+      font-size: 10px; color: rgba(255,255,255,0.65);
+      line-height: 1.5;
+      max-width: 130px;
+    }
+
+    @media (max-width: 700px) {
+      .sol-dbs-input-grid, .sol-dbs-metrics, .sol-dbs-eff-row, .sol-dbs-reach-row,
+      .sol-dbs-pipe-row, .sol-dbs-coach-row { grid-template-columns: 1fr; }
+      .sol-dbs-flow { grid-template-columns: 1fr; gap: 4px; }
+      .sol-dbs-flow-arrow { display: none; }
+      .sol-dbs-sim-body { grid-template-columns: 1fr; }
+    }
+
     /* 코칭 응답 마크다운 lite — 표 + [대괄호] (Phase 3-B-3 v=20260518b) */
     .sol-coach-rich {
       letter-spacing: -0.01em;
@@ -10213,7 +10739,7 @@
       var SYSTEM_PLACEHOLDERS = {
         all: 'AI에게 질문해 보세요... (입력 후 Enter)',
         coverage: '보장분석에 대해 물어보거나, + 버튼으로 PDF 올려보세요',
-        dbsales: 'DB 관리/전환율에 대해 물어보세요',
+        dbsales: '좌측 입력 폼에서 데이터 변경 시 실시간 분석',
         calculator: '금융 계산 도구에 대해 물어보세요',
         coaching: '예: a.1 메리츠화재의 알파플러스보험이 궁금해',
         'insurance-calc': '예: 대장용종 제거술 보험금 산출 (+ 버튼으로 보험내역·약관 PDF 첨부)',
@@ -10473,6 +10999,10 @@
         // Phase 3-B-2 (v=20260517b) — 통합금융계산기 즉시 모듈 grid 인입
         if (sysKey === 'calculator') {
           _solCalcInjectPanel(greeting);
+        }
+        // Phase 3-B-6 (v=20260518h) — DB영업관리 대시보드 인입
+        if (sysKey === 'dbsales') {
+          _solDbsInjectPanel();
         }
       }
 
@@ -12950,6 +13480,540 @@
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
         _solCoachTypewriter(pEl, reply, msgs, 10);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // Phase 3-B-6 — DB영업관리 AI (v=20260518h)
+      //   대시보드형 (입력 폼 + 종합점수 + 메트릭 + 활동흐름 + DB효율 + 도달률 +
+      //   구간전환율 + 파이프라인 잔여가치 + AI 코칭 + Strategic Simulator)
+      // ═══════════════════════════════════════════════════════════════════
+
+      var DBSALES_STATE = {
+        monthlyGoal: 20,
+        db: { coverage: 20, finance: 0, intro: 0, existing: 0, open: 0 },
+        stages: { ta: 17, first: 13, second: 11, deal: 9 },
+        premium: { target: 2500000, actual: 1500000 },
+        simulatorIncome: 5000000
+      };
+
+      function _solDbsInjectPanel() {
+        if (_solTypingInterval) { try { clearInterval(_solTypingInterval); } catch (e) {} _solTypingInterval = null; }
+        var msgsEl = document.getElementById('sol-chat-messages');
+        if (!msgsEl) return;
+        msgsEl.style.display = 'none';
+        var report = document.getElementById('sol-pdf-report-inline');
+        if (!report) {
+          report = document.createElement('section');
+          report.id = 'sol-pdf-report-inline';
+          msgsEl.parentElement.insertBefore(report, msgsEl);
+        }
+        report.style.display = 'flex';
+        report.innerHTML = _solDbsBuildPanelHtml();
+        _solDbsBindEvents(report);
+        _solDbsRenderAll(report);
+      }
+
+      function _solDbsBuildPanelHtml() {
+        var s = DBSALES_STATE;
+        var h = '';
+        // 데모 배지
+        h += '<div class="sol-pdf-demo-badge">💡 <strong>약식 데모</strong> — 본 시스템은 팀/조직 통합 분석, Excel 일괄 업로드, 자동 마감 누적, AI 시뮬레이션까지 지원합니다</div>';
+
+        // 입력 폼
+        h += '<div>';
+        h += '  <div class="sol-dbs-section-h">📥 데이터 입력 (실시간 분석)</div>';
+        h += '  <div class="sol-dbs-input-grid" style="margin-bottom:10px;">';
+        h += _solDbsField('매월 계약 목표', 'monthlyGoal', s.monthlyGoal);
+        h += '  </div>';
+        h += '  <div class="sol-dbs-section-h">DB 유형별 현황</div>';
+        h += '  <div class="sol-dbs-input-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:10px;">';
+        h += _solDbsField('보장 DB', 'db.coverage', s.db.coverage);
+        h += _solDbsField('재무 DB', 'db.finance', s.db.finance);
+        h += _solDbsField('지인/소개', 'db.intro', s.db.intro);
+        h += _solDbsField('기고객', 'db.existing', s.db.existing);
+        h += _solDbsField('개척', 'db.open', s.db.open);
+        h += _solDbsField('합계', '_dbSum', _solDbsSumDb(), true);
+        h += '  </div>';
+        h += '  <div class="sol-dbs-section-h">단계별 진행 현황</div>';
+        h += '  <div class="sol-dbs-input-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:10px;">';
+        h += _solDbsField('TA', 'stages.ta', s.stages.ta);
+        h += _solDbsField('1차', 'stages.first', s.stages.first);
+        h += _solDbsField('2차', 'stages.second', s.stages.second);
+        h += _solDbsField('계약', 'stages.deal', s.stages.deal);
+        h += '  </div>';
+        h += '  <div class="sol-dbs-section-h">보험료 (원)</div>';
+        h += '  <div class="sol-dbs-input-grid">';
+        h += _solDbsField('목표 보험료', 'premium.target', s.premium.target);
+        h += _solDbsField('실적 보험료', 'premium.actual', s.premium.actual);
+        h += '  </div>';
+        h += '</div>';
+
+        // 결과 컨테이너 (동적 갱신)
+        h += '<div id="sol-dbs-results" style="display:flex;flex-direction:column;gap:14px;"></div>';
+
+        // 잠금 + CTA (대시보드 모드 — 채팅 잠금과 별개)
+        h += '<div>';
+        h += '  <div class="sol-pdf-section-title">🔒 풀 시스템에서 추가로 보이는 것</div>';
+        h += '  <div class="sol-pdf-locked-grid">';
+        var locks = [
+          { icon: '📊', title: '팀/조직 통합 분석',     desc: '팀원별 리더보드 + 본부/지점 통합 KPI + 전환율 비교' },
+          { icon: '📥', title: 'Excel 일괄 업로드',     desc: '엑셀 한 번에 팀 전체 데이터 입력 + 백업 + 복원' },
+          { icon: '💾', title: '월 마감 자동 누적',     desc: '이번 달 마감 시 현재 실적이 전월로 자동 이관 + 6개월 추이 차트' },
+          { icon: '📝', title: '고객 메모장',           desc: 'DB별 상담 메모 + 후속 일정 + 자동 알림' },
+          { icon: '📤', title: '리포트 출력 + Excel',   desc: '대시보드 전체를 PDF/엑셀로 한 번에 추출 — 회의 자료 즉시 사용' }
+        ];
+        locks.forEach(function (l) {
+          h += '    <div class="sol-pdf-locked-item">';
+          h += '      <div class="sol-pdf-locked-icon">' + l.icon + '</div>';
+          h += '      <div class="sol-pdf-locked-text">';
+          h += '        <div class="sol-pdf-locked-title">' + _solEscHtml(l.title) + '</div>';
+          h += '        <div class="sol-pdf-locked-desc">' + _solEscHtml(l.desc) + '</div>';
+          h += '      </div>';
+          h += '      <div class="sol-pdf-locked-badge">🔒 입사 시 열림</div>';
+          h += '    </div>';
+        });
+        h += '  </div>';
+        h += '</div>';
+        // CTA
+        h += '<div class="sol-pdf-cta-card">';
+        h += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>[700명의 영업 데이터]를 매일 실시간 분석할 수 있습니다.</div>';
+        h += '  <div class="sol-pdf-cta-sub">팀/조직 단위 KPI 통합 분석 + AI 시뮬레이션 — 입사 첫날부터 즉시 사용 가능</div>';
+        h += '  <button class="sol-pdf-cta-btn" id="sol-dbs-cta-btn">입사 상담 신청하기 →</button>';
+        h += '</div>';
+        return h;
+      }
+
+      function _solDbsField(label, key, val, readonly) {
+        var cls = readonly ? ' sum-readonly' : '';
+        var attrs = readonly ? ' readonly' : '';
+        return '<div class="sol-dbs-input-field">'
+             + '  <label class="sol-dbs-input-label">' + _solEscHtml(label) + '</label>'
+             + '  <input type="number" class="sol-dbs-input-num' + cls + '" data-dbs-key="' + _solEscHtml(key) + '" value="' + val + '"' + attrs + ' />'
+             + '</div>';
+      }
+
+      function _solDbsSumDb() {
+        var d = DBSALES_STATE.db;
+        return (d.coverage|0) + (d.finance|0) + (d.intro|0) + (d.existing|0) + (d.open|0);
+      }
+      function _solDbsNum(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+      function _solDbsInt(v) { var n = parseInt(v, 10); return isFinite(n) && n >= 0 ? n : 0; }
+      function _solDbsPct(num, den) { return den > 0 ? (num / den * 100) : 0; }
+      function _solDbsKrw(n) { try { return Number(Math.round(n)).toLocaleString('ko-KR'); } catch (e) { return String(n); } }
+
+      function _solDbsBindEvents(report) {
+        report.querySelectorAll('input[data-dbs-key]').forEach(function (input) {
+          if (input.readOnly) return;
+          input.addEventListener('input', function () {
+            var key = input.getAttribute('data-dbs-key');
+            var v = _solDbsInt(input.value);
+            // dot path 처리
+            var parts = key.split('.');
+            if (parts.length === 1) {
+              if (key === 'monthlyGoal') DBSALES_STATE.monthlyGoal = v;
+              else DBSALES_STATE[key] = v;
+            } else {
+              DBSALES_STATE[parts[0]][parts[1]] = v;
+            }
+            // 합계 input 갱신
+            var sumInput = report.querySelector('[data-dbs-key="_dbSum"]');
+            if (sumInput) sumInput.value = _solDbsSumDb();
+            _solDbsRenderAll(report);
+          });
+        });
+        var cta = report.querySelector('#sol-dbs-cta-btn');
+        if (cta) {
+          cta.addEventListener('click', function () {
+            var pro = document.getElementById('prosolution-overlay');
+            if (pro) { pro.classList.remove('ceo-overlay--active'); pro.setAttribute('aria-hidden', 'true'); }
+            document.body.style.overflow = '';
+            var contactEl = document.getElementById('contact');
+            if (contactEl) {
+              setTimeout(function () { window.scrollTo({ top: contactEl.offsetTop - 80, behavior: 'smooth' }); }, 200);
+            }
+            try { window.location.hash = '#contact'; } catch (e) {}
+          });
+        }
+      }
+
+      function _solDbsCompute() {
+        var s = DBSALES_STATE;
+        var dbTotal = _solDbsSumDb();
+        var ta = s.stages.ta, f = s.stages.first, sec = s.stages.second, d = s.stages.deal;
+        // 메트릭
+        var premPct = _solDbsPct(s.premium.actual, s.premium.target);
+        var dealPct = _solDbsPct(d, s.monthlyGoal);
+        var totalConv = _solDbsPct(d, dbTotal);
+        // 종합 점수 = 보험료×40 + 계약×40 + DB전환×20
+        var score = Math.round((premPct * 0.4) + (dealPct * 0.4) + (totalConv * 0.2) * 10) / 10;
+        score = Math.round((premPct * 0.4 + dealPct * 0.4 + totalConv * 0.2) * 10) / 10;
+        var grade, gradeLabel, gradeColor;
+        if (score >= 90) { grade = 'A+'; gradeLabel = '탁월'; gradeColor = '#06b6d4'; }
+        else if (score >= 80) { grade = 'A';  gradeLabel = '우수'; gradeColor = '#34d399'; }
+        else if (score >= 70) { grade = 'B';  gradeLabel = '양호'; gradeColor = '#fbbf24'; }
+        else if (score >= 60) { grade = 'C';  gradeLabel = '보통'; gradeColor = '#fb923c'; }
+        else if (score >= 50) { grade = 'D';  gradeLabel = '개선 필요'; gradeColor = '#f43f5e'; }
+        else                  { grade = 'F';  gradeLabel = '위급';     gradeColor = '#e11d48'; }
+        // 전체 도달률
+        var reach = {
+          ta: _solDbsPct(ta, dbTotal),
+          first: _solDbsPct(f, dbTotal),
+          second: _solDbsPct(sec, dbTotal),
+          deal: _solDbsPct(d, dbTotal)
+        };
+        // 구간별 전환율
+        var conv = {
+          dbToTa: _solDbsPct(ta, dbTotal),
+          taToFirst: _solDbsPct(f, ta),
+          firstToSecond: _solDbsPct(sec, f),
+          secondToDeal: _solDbsPct(d, sec)
+        };
+        // 병목 (가장 낮은 단계)
+        var convArr = [
+          { k: 'dbToTa', label: '접근 효율성', v: conv.dbToTa },
+          { k: 'taToFirst', label: '상담 전환율', v: conv.taToFirst },
+          { k: 'firstToSecond', label: '제안 성사율', v: conv.firstToSecond },
+          { k: 'secondToDeal', label: '계약 성사율', v: conv.secondToDeal }
+        ];
+        convArr.sort(function (a, b) { return a.v - b.v; });
+        var bottleneck = convArr[0].k;
+        // 파이프라인 잔여 가치
+        var avgPrem = d > 0 ? s.premium.actual / d : 0;
+        var pipe = {
+          taDone: Math.max(ta - f, 0) * avgPrem * (dbTotal > 0 ? (d / ta) : 0),
+          firstDone: Math.max(f - sec, 0) * avgPrem * (f > 0 ? (d / f) : 0),
+          secondDone: Math.max(sec - d, 0) * avgPrem * (sec > 0 ? (d / sec) : 0)
+        };
+        pipe.total = pipe.taDone + pipe.firstDone + pipe.secondDone;
+        // DB 효율 (고효율 vs 노력형)
+        var dbHighEff = (s.db.intro|0) + (s.db.existing|0);
+        var dbWorkType = (s.db.coverage|0) + (s.db.finance|0) + (s.db.open|0);
+        var highPct = _solDbsPct(dbHighEff, dbTotal);
+        var workPct = _solDbsPct(dbWorkType, dbTotal);
+        // 시뮬레이터
+        var totalNeed = avgPrem > 0 ? Math.ceil(s.simulatorIncome / avgPrem) : 0;
+        var addNeed = Math.max(totalNeed - d, 0);
+        var dealOfTa = ta > 0 ? d / ta : 0;
+        var addTa = dealOfTa > 0 ? Math.ceil(addNeed / dealOfTa) : 0;
+        var boost = d > 0 ? (totalNeed / d) : 0;
+        return {
+          dbTotal: dbTotal,
+          premPct: premPct, dealPct: dealPct, totalConv: totalConv,
+          score: score, grade: grade, gradeLabel: gradeLabel, gradeColor: gradeColor,
+          reach: reach, conv: conv, bottleneck: bottleneck,
+          pipe: pipe, avgPrem: avgPrem,
+          dbHighEff: dbHighEff, dbWorkType: dbWorkType, highPct: highPct, workPct: workPct,
+          sim: { totalNeed: totalNeed, addNeed: addNeed, addTa: addTa, boost: boost }
+        };
+      }
+
+      function _solDbsRenderAll(report) {
+        var slot = report.querySelector('#sol-dbs-results');
+        if (!slot) return;
+        var r = _solDbsCompute();
+        var s = DBSALES_STATE;
+        var h = '';
+
+        // 종합 점수
+        h += '<div class="sol-dbs-score-wrap">';
+        h += '  <div class="sol-dbs-score-circle" style="background:' + r.gradeColor + ';color:#fff;">' + r.grade + '</div>';
+        h += '  <div class="sol-dbs-score-meta">';
+        h += '    <div class="sol-dbs-score-label" style="color:' + r.gradeColor + ';">' + _solEscHtml(r.gradeLabel) + '</div>';
+        h += '    <div class="sol-dbs-score-total">종합 점수: <strong style="color:#fff;">' + r.score.toFixed(1) + '점</strong></div>';
+        h += '    <div class="sol-dbs-score-formula">';
+        h += '      <div>산출 기준: 보험료 달성률 <span class="k">' + r.premPct.toFixed(0) + '%</span> × 40%</div>';
+        h += '      <div>계약 달성률 <span class="k">' + r.dealPct.toFixed(0) + '%</span> × 40% · DB 전환율 <span class="k">' + r.totalConv.toFixed(0) + '%</span> × 20%</div>';
+        h += '    </div>';
+        h += '  </div>';
+        h += '</div>';
+
+        // 4 메트릭 카드
+        h += '<div class="sol-dbs-metrics">';
+        h += _solDbsMetricCard('보험료 달성률', r.premPct.toFixed(0), '실적 ' + _solDbsKrw(s.premium.actual) + ' / 목표 ' + _solDbsKrw(s.premium.target));
+        h += _solDbsMetricCard('계약 달성률', r.dealPct.toFixed(0), s.stages.deal + '건 / ' + s.monthlyGoal + '건');
+        h += _solDbsMetricCard('종합 전환율', r.totalConv.toFixed(0), 'DB ' + r.dbTotal + '건 → 계약 ' + s.stages.deal + '건');
+        h += _solDbsMetricCard('ROI (투자 수익률)', '-', 'DB 단가 미설정', true);
+        h += '</div>';
+
+        // 활동 흐름
+        h += '<div>';
+        h += '  <div class="sol-dbs-section-h">📊 활동 흐름 & 목표 달성 현황</div>';
+        h += '  <div class="sol-dbs-flow">';
+        h += '    <div class="sol-dbs-flow-node"><div class="sol-dbs-flow-label">DB</div><div class="sol-dbs-flow-value v-db">' + r.dbTotal + '</div></div>';
+        h += '    <div class="sol-dbs-flow-arrow">›</div>';
+        h += '    <div class="sol-dbs-flow-node"><div class="sol-dbs-flow-label">TA</div><div class="sol-dbs-flow-value v-ta">' + s.stages.ta + '</div></div>';
+        h += '    <div class="sol-dbs-flow-arrow">›</div>';
+        h += '    <div class="sol-dbs-flow-node"><div class="sol-dbs-flow-label">1차</div><div class="sol-dbs-flow-value v-1st">' + s.stages.first + '</div></div>';
+        h += '    <div class="sol-dbs-flow-arrow">›</div>';
+        h += '    <div class="sol-dbs-flow-node"><div class="sol-dbs-flow-label">2차</div><div class="sol-dbs-flow-value v-2nd">' + s.stages.second + '</div></div>';
+        h += '    <div class="sol-dbs-flow-arrow">›</div>';
+        h += '    <div class="sol-dbs-flow-node"><div class="sol-dbs-flow-label">계약</div><div class="sol-dbs-flow-value v-deal">' + s.stages.deal + '</div></div>';
+        h += '    <div class="sol-dbs-flow-conv">';
+        h += '      <div class="sol-dbs-flow-conv-item c-ta">TA ' + r.conv.dbToTa.toFixed(0) + '%</div>';
+        h += '      <div class="sol-dbs-flow-conv-item c-1st">1차 ' + r.conv.taToFirst.toFixed(0) + '%</div>';
+        h += '      <div class="sol-dbs-flow-conv-item c-2nd">2차 ' + r.conv.firstToSecond.toFixed(0) + '%</div>';
+        h += '      <div class="sol-dbs-flow-conv-item c-deal">계약 ' + r.conv.secondToDeal.toFixed(0) + '%</div>';
+        h += '    </div>';
+        h += '  </div>';
+        h += '</div>';
+
+        // 목표 잔여
+        h += '<div class="sol-dbs-remain-grid">';
+        h += '  <div class="sol-dbs-remain-row">';
+        h += '    <div class="sol-dbs-remain-head"><span class="lbl">계약 목표</span><span class="val">' + s.stages.deal + '건 / ' + s.monthlyGoal + '건<span class="remain">(잔여 ' + Math.max(s.monthlyGoal - s.stages.deal, 0) + '건)</span></span></div>';
+        h += '    <div class="sol-dbs-remain-bar"><div class="sol-dbs-remain-fill" style="width:' + Math.min(r.dealPct, 100) + '%;"></div></div>';
+        h += '  </div>';
+        h += '  <div class="sol-dbs-remain-row">';
+        h += '    <div class="sol-dbs-remain-head"><span class="lbl">보험료 목표</span><span class="val">' + _solDbsKrw(s.premium.actual) + '원 / ' + _solDbsKrw(s.premium.target) + '원<span class="remain">(잔여 ' + _solDbsKrw(Math.max(s.premium.target - s.premium.actual, 0)) + '원)</span></span></div>';
+        h += '    <div class="sol-dbs-remain-bar"><div class="sol-dbs-remain-fill" style="width:' + Math.min(r.premPct, 100) + '%;"></div></div>';
+        h += '  </div>';
+        h += '</div>';
+
+        // AI 진단 한 줄
+        var diag = _solDbsAiDiag(r);
+        h += '<div class="sol-dbs-ai-diag"><strong style="color:#c4b5fd;">🩺 AI 진단</strong>  ' + _solEscHtml(diag) + '</div>';
+
+        // DB 효율 분석 (도넛 + 분석)
+        h += '<div>';
+        h += '  <div class="sol-dbs-section-h">💼 DB 유형별 효율 분석</div>';
+        h += '  <div class="sol-dbs-eff-row">';
+        h += '    <div>';
+        h += '      <div class="sol-dbs-donut" style="' + _solDbsDonutBg() + '"></div>';
+        h += '      <div class="sol-dbs-donut-legend">';
+        h += '        <div class="sol-dbs-donut-legend-item"><span class="sol-dbs-donut-dot" style="background:#3b82f6;"></span>보장DB ' + s.db.coverage + '</div>';
+        h += '        <div class="sol-dbs-donut-legend-item"><span class="sol-dbs-donut-dot" style="background:#a78bfa;"></span>재무DB ' + s.db.finance + '</div>';
+        h += '        <div class="sol-dbs-donut-legend-item"><span class="sol-dbs-donut-dot" style="background:#10b981;"></span>지인/소개 ' + s.db.intro + '</div>';
+        h += '        <div class="sol-dbs-donut-legend-item"><span class="sol-dbs-donut-dot" style="background:#fbbf24;"></span>기고객 ' + s.db.existing + '</div>';
+        h += '        <div class="sol-dbs-donut-legend-item"><span class="sol-dbs-donut-dot" style="background:#f87171;"></span>개척 ' + s.db.open + '</div>';
+        h += '      </div>';
+        h += '    </div>';
+        h += '    <div>';
+        h += '      <div class="sol-dbs-eff-badge-row">';
+        h += '        <div class="sol-dbs-eff-badge high">↗ 고효율 ' + r.highPct.toFixed(0) + '%</div>';
+        h += '        <div class="sol-dbs-eff-badge work">🔧 노력형 ' + r.workPct.toFixed(0) + '%</div>';
+        h += '      </div>';
+        h += '      <div style="font-size:11.5px;color:rgba(255,255,255,0.75);line-height:1.6;">';
+        h += '        <div><strong style="color:#34d399;">고효율</strong> = 지인/소개 + 기고객 (관계 기반, 전환율 높음)</div>';
+        h += '        <div><strong style="color:#fbbf24;">노력형</strong> = 보장 + 재무 + 개척 (신규 접촉, 활동량 필요)</div>';
+        h += '        <div class="sol-dbs-ai-diag" style="margin-top:8px;padding:10px 12px;font-size:11px;border-left-color:#a78bfa;">';
+        h += '          <strong style="color:#c4b5fd;">🤖 AI 추천</strong>  ' + _solEscHtml(_solDbsEffRec(r)) + '';
+        h += '        </div>';
+        h += '      </div>';
+        h += '    </div>';
+        h += '  </div>';
+        h += '</div>';
+
+        // 전체 도달률 + 구간 전환율
+        h += '<div>';
+        h += '  <div class="sol-dbs-section-h">🎯 전환 단계 분석</div>';
+        h += '  <div class="sol-dbs-reach-row">';
+        // 전체 DB 도달률
+        h += '    <div>';
+        h += '      <div style="font-size:11.5px;font-weight:800;color:#fff;text-align:center;margin-bottom:4px;">전체 DB 도달률</div>';
+        h += '      <div style="font-size:10px;color:rgba(255,255,255,0.55);text-align:center;margin-bottom:10px;">DB 대비 각 단계까지 도달한 비율</div>';
+        h += _solDbsReachCard('📞', 'TA 도달', 'DB → TA', r.reach.ta, '#38bdf8');
+        h += _solDbsReachCard('📋', '1차 상담 도달', 'DB → 1차', r.reach.first, '#38bdf8');
+        h += _solDbsReachCard('📝', '2차 상담 도달', 'DB → 2차', r.reach.second, '#38bdf8');
+        h += _solDbsReachCard('💎', '계약 체결 도달', 'DB → 계약', r.reach.deal, '#38bdf8');
+        h += '    </div>';
+        // 구간별 전환 성공률
+        h += '    <div>';
+        h += '      <div style="font-size:11.5px;font-weight:800;color:#fff;text-align:center;margin-bottom:4px;"><span style="color:#a78bfa;">●</span> 구간별 전환 성공률</div>';
+        h += '      <div style="font-size:10px;color:rgba(255,255,255,0.55);text-align:center;margin-bottom:10px;">직전 단계에서 다음 단계로 넘어간 비율</div>';
+        h += _solDbsConvCard('🎯', '접근 효율성', 'DB → TA', r.conv.dbToTa, '#a78bfa', r.bottleneck === 'dbToTa');
+        h += _solDbsConvCard('💬', '상담 전환율', 'TA → 1차', r.conv.taToFirst, '#a78bfa', r.bottleneck === 'taToFirst');
+        h += _solDbsConvCard('🎁', '제안 성사율', '1차 → 2차', r.conv.firstToSecond, '#a78bfa', r.bottleneck === 'firstToSecond');
+        h += _solDbsConvCard('🏆', '계약 성사율', '2차 → 계약', r.conv.secondToDeal, '#a78bfa', r.bottleneck === 'secondToDeal');
+        h += '    </div>';
+        h += '  </div>';
+        h += '</div>';
+
+        // 파이프라인 잔여 가치
+        h += '<div>';
+        h += '  <div class="sol-dbs-section-h" style="display:flex;justify-content:space-between;align-items:center;">';
+        h += '    <span>💎 파이프라인 잔여 가치</span>';
+        h += '    <span style="background:rgba(167,139,250,0.18);color:#c4b5fd;padding:3px 10px;border-radius:999px;font-size:10.5px;font-weight:700;">총 예상: ' + _solDbsKrw(r.pipe.total) + '원</span>';
+        h += '  </div>';
+        h += '  <div class="sol-dbs-pipe-row">';
+        h += _solDbsPipeCard('📞', 'TA 완료', '1차 상담 전환 대기', Math.max(s.stages.ta - s.stages.first, 0), r.pipe.taDone, 'c-ta');
+        h += _solDbsPipeCard('📋', '1차 완료', '2차 상담 전환 대기', Math.max(s.stages.first - s.stages.second, 0), r.pipe.firstDone, 'c-1st');
+        h += _solDbsPipeCard('📝', '2차 완료', '계약 체결 대기',     Math.max(s.stages.second - s.stages.deal, 0), r.pipe.secondDone, 'c-2nd');
+        h += '  </div>';
+        h += '</div>';
+
+        // AI 코칭 인사이트 + 개선 액션
+        h += '<div>';
+        h += '  <div class="sol-dbs-section-h">🧠 AI 코칭 & 개선 액션</div>';
+        h += '  <div class="sol-dbs-coach-row">';
+        h += '    <div class="sol-dbs-coach-card">';
+        h += '      <div class="sol-dbs-coach-head"><div>✅</div><div><div class="sol-dbs-coach-title">AI 코칭 인사이트</div><div class="sol-dbs-coach-sub">' + (r.score >= 70 ? '최적 상태' : (r.score >= 50 ? '안정 단계' : '집중 개선 필요')) + '</div></div></div>';
+        h += '      <div class="sol-dbs-coach-list">';
+        _solDbsCoachInsights(r, s).forEach(function (txt) {
+          h += '        <div class="sol-dbs-coach-item"><span class="sol-dbs-coach-item-icon">▸</span><span>' + _solCoachBrackets(_solEscHtml(txt)) + '</span></div>';
+        });
+        h += '      </div>';
+        h += '    </div>';
+        h += '    <div class="sol-dbs-coach-card">';
+        h += '      <div class="sol-dbs-coach-head"><div>📋</div><div><div class="sol-dbs-coach-title">개선 액션 아이템</div><div class="sol-dbs-coach-sub">병목: ' + _solDbsBottleneckLabel(r.bottleneck) + '</div></div></div>';
+        h += '      <div class="sol-dbs-coach-list">';
+        _solDbsCoachActions(r, s).forEach(function (txt) {
+          h += '        <div class="sol-dbs-coach-item"><span class="sol-dbs-coach-item-icon" style="color:#34d399;">✓</span><span>' + _solCoachBrackets(_solEscHtml(txt)) + '</span></div>';
+        });
+        h += '      </div>';
+        h += '    </div>';
+        h += '  </div>';
+        h += '</div>';
+
+        // AI Strategic Simulator
+        h += '<div class="sol-dbs-sim">';
+        h += '  <div class="sol-dbs-sim-head">';
+        h += '    <div><div class="sol-dbs-sim-title">🚀 AI STRATEGIC SIMULATOR</div><div class="sol-dbs-sim-sub">목표 소득 달성을 위한 활동 시뮬레이션 (시나리오 역계산)</div></div>';
+        h += '    <div class="sol-dbs-sim-active">⚙️ AI Engine Active</div>';
+        h += '  </div>';
+        h += '  <div class="sol-dbs-sim-body">';
+        h += '    <div>';
+        h += '      <div class="sol-dbs-sim-slider-block">';
+        h += '        <div class="sol-dbs-sim-slider-head"><span class="lbl">목표 소득 시뮬레이션</span><span class="val">' + _solDbsKrw(s.simulatorIncome) + '원</span></div>';
+        h += '        <input type="range" class="sol-dbs-sim-slider" id="sol-dbs-sim-slider" min="1000000" max="20000000" step="100000" value="' + s.simulatorIncome + '" />';
+        h += '      </div>';
+        h += '      <div class="sol-dbs-sim-action">';
+        h += '        <div class="sol-dbs-sim-action-title">📋 실행 방안 (ACTION ITEMS)</div>';
+        h += '        <div class="sol-dbs-sim-action-row"><span class="lbl">목표 위한 총 필요 계약</span><span class="val">' + r.sim.totalNeed + '건</span></div>';
+        h += '        <div class="sol-dbs-sim-action-row"><span class="lbl">목표 달성 위한 "추가" 필요 계약</span><span class="val">' + r.sim.addNeed + '건</span></div>';
+        h += '        <div class="sol-dbs-sim-action-row"><span class="lbl">추가 계약 위한 예상 TA</span><span class="val">+' + r.sim.addTa + '회</span></div>';
+        h += '        <div class="sol-dbs-sim-action-row"><span class="lbl">건당 평균 보험료</span><span class="val">' + _solDbsKrw(r.avgPrem) + '원</span></div>';
+        h += '      </div>';
+        h += '    </div>';
+        h += '    <div class="sol-dbs-sim-boost">';
+        h += '      <div class="sol-dbs-sim-boost-label">필요 활동 보스트</div>';
+        h += '      <div class="sol-dbs-sim-boost-circle">' + r.sim.boost.toFixed(1) + '배</div>';
+        h += '      <div class="sol-dbs-sim-boost-note">' + (r.sim.boost > 2 ? '단순 활동량만으로는 힘든 목표 — DB 품질 + 클로징 전환율 동시 개선 필요' : '현 활동 패턴 유지 시 달성 가능 범위') + '</div>';
+        h += '    </div>';
+        h += '  </div>';
+        h += '</div>';
+
+        slot.innerHTML = h;
+        // 시뮬레이터 슬라이더 이벤트
+        var slider = report.querySelector('#sol-dbs-sim-slider');
+        if (slider) {
+          slider.addEventListener('input', function () {
+            DBSALES_STATE.simulatorIncome = parseInt(slider.value, 10) || 0;
+            _solDbsRenderAll(report);
+          });
+        }
+      }
+
+      function _solDbsMetricCard(label, value, foot, isMuted) {
+        var color = isMuted ? '#94a3b8' : '#a78bfa';
+        var pct = parseInt(value, 10);
+        var barW = isNaN(pct) ? 0 : Math.min(pct, 100);
+        return '<div class="sol-dbs-metric-card">'
+             + '  <div class="sol-dbs-metric-label">' + _solEscHtml(label) + '</div>'
+             + '  <div class="sol-dbs-metric-value" style="color:' + color + ';">' + _solEscHtml(value) + (isMuted ? '' : '<span class="pct">%</span>') + '</div>'
+             + (isMuted ? '' : '<div class="sol-dbs-metric-bar"><div class="sol-dbs-metric-bar-fill" style="width:' + barW + '%;"></div></div>')
+             + '  <div class="sol-dbs-metric-foot">' + _solEscHtml(foot) + '</div>'
+             + '</div>';
+      }
+
+      function _solDbsReachCard(icon, title, sub, pct, color) {
+        return '<div class="sol-dbs-reach-card">'
+             + '  <div class="sol-dbs-reach-card-left"><div class="sol-dbs-reach-icon">' + icon + '</div><div><div class="sol-dbs-reach-title">' + _solEscHtml(title) + '</div><div class="sol-dbs-reach-sub">' + _solEscHtml(sub) + '</div></div></div>'
+             + '  <div class="sol-dbs-reach-value" style="color:' + color + ';">' + pct.toFixed(0) + ' <span style="font-size:11px;color:rgba(255,255,255,0.5);">%</span></div>'
+             + '</div>';
+      }
+
+      function _solDbsConvCard(icon, title, sub, pct, color, isBottleneck) {
+        return '<div class="sol-dbs-reach-card' + (isBottleneck ? ' bottleneck' : '') + '">'
+             + '  <div class="sol-dbs-reach-card-left"><div class="sol-dbs-reach-icon">' + icon + '</div><div><div class="sol-dbs-reach-title">' + _solEscHtml(title) + (isBottleneck ? '<span class="sol-dbs-bottleneck-pill">병목</span>' : '') + '</div><div class="sol-dbs-reach-sub">' + _solEscHtml(sub) + '</div></div></div>'
+             + '  <div class="sol-dbs-reach-value purple">' + pct.toFixed(0) + ' <span style="font-size:11px;color:rgba(255,255,255,0.5);">%</span></div>'
+             + '</div>';
+      }
+
+      function _solDbsPipeCard(icon, title, sub, count, value, cls) {
+        return '<div class="sol-dbs-pipe-card">'
+             + '  <div class="sol-dbs-pipe-head"><div class="sol-dbs-pipe-icon">' + icon + '</div><div><div class="sol-dbs-pipe-title">' + _solEscHtml(title) + '</div></div></div>'
+             + '  <div class="sol-dbs-pipe-desc">' + _solEscHtml(sub) + ' | 잔여 ' + count + '건</div>'
+             + '  <div class="sol-dbs-pipe-val ' + cls + '">' + _solDbsKrw(value) + '원</div>'
+             + '</div>';
+      }
+
+      function _solDbsDonutBg() {
+        var s = DBSALES_STATE.db;
+        var total = _solDbsSumDb();
+        if (total === 0) return 'background: conic-gradient(#475569 0 100%);';
+        var p1 = (s.coverage / total) * 360;
+        var p2 = p1 + (s.finance / total) * 360;
+        var p3 = p2 + (s.intro / total) * 360;
+        var p4 = p3 + (s.existing / total) * 360;
+        var p5 = p4 + (s.open / total) * 360;
+        return 'background: conic-gradient('
+             + '#3b82f6 0 ' + p1 + 'deg, '
+             + '#a78bfa ' + p1 + 'deg ' + p2 + 'deg, '
+             + '#10b981 ' + p2 + 'deg ' + p3 + 'deg, '
+             + '#fbbf24 ' + p3 + 'deg ' + p4 + 'deg, '
+             + '#f87171 ' + p4 + 'deg ' + p5 + 'deg);';
+      }
+
+      function _solDbsBottleneckLabel(b) {
+        return b === 'dbToTa' ? 'DB → TA (접근 효율성)'
+             : b === 'taToFirst' ? 'TA → 1차 (상담 전환율)'
+             : b === 'firstToSecond' ? '1차 → 2차 (제안 성사율)'
+             : b === 'secondToDeal' ? '2차 → 계약 (계약 성사율)' : '전 구간 최적화';
+      }
+
+      function _solDbsAiDiag(r) {
+        if (r.score >= 80) return '모든 단계 전환율 우수 — 현재 영업 방식을 유지하세요';
+        if (r.score >= 60) return '안정 단계 — 병목 구간 (' + _solDbsBottleneckLabel(r.bottleneck) + ') 집중 개선 시 등급 상향 가능';
+        if (r.score >= 50) return '개선 필요 — 보험료 달성률과 계약 달성률 양쪽 모두 점검 필요';
+        return '위급 — 활동량과 전환율 둘 다 부족. DB 품질 + 클로징 능력 동시 개선 필수';
+      }
+
+      function _solDbsEffRec(r) {
+        if (r.highPct >= 50) return '[고효율 DB 비중]이 양호합니다. 관계 기반 영업으로 [전환율 우위]를 유지하세요.';
+        if (r.workPct >= 70) return '[노력형 DB 비중]이 높습니다. [기고객 재접촉] 및 [소개 확보]에 집중하면 [전환율]이 향상됩니다.';
+        return '[균형 분포] — 노력형 활동량과 고효율 관계 영업을 병행하여 안정 성장을 유지하세요.';
+      }
+
+      function _solDbsCoachInsights(r, s) {
+        var arr = [];
+        if (s.db.coverage >= s.db.intro + s.db.existing) {
+          arr.push('[보장 DB] 비중이 높습니다. 초기 거절이 많을 수 있으므로, 전화상담 시 [아이스브레이킹]을 잘 준비하여 첫 대화 성공률을 높이는 것이 핵심입니다.');
+        }
+        if (r.score >= 70) {
+          arr.push('전화상담부터 계약까지 모든 단계의 전환율이 우수합니다. [현재 영업 방식]을 유지하세요.');
+        } else {
+          arr.push('가장 낮은 전환율은 ' + _solDbsBottleneckLabel(r.bottleneck) + ' 구간입니다. 해당 단계의 [화법·자료·고객 자격] 점검이 시급합니다.');
+        }
+        if (r.totalConv < 30 && r.dbTotal > 0) {
+          arr.push('[DB→계약 종합 전환율]이 30% 미만 — DB 품질 개선이 필요합니다. [기고객·소개] 비중을 늘리세요.');
+        }
+        return arr.length ? arr : ['[데이터 입력]이 부족합니다. 좌측 입력 폼에 단계별 건수를 입력하면 분석이 시작됩니다.'];
+      }
+
+      function _solDbsCoachActions(r, s) {
+        var arr = [];
+        if (r.score >= 80) {
+          arr.push('현재 영업 방식을 유지하며 [상담 품질]을 지속 관리하세요.');
+          arr.push('[DB 소스 다각화] 및 신규 고객 네트워크 확대를 시도하세요.');
+          arr.push('우수 사례를 [팀원들에게 공유]하여 시너지 창출을 도모하세요.');
+        } else if (r.bottleneck === 'taToFirst') {
+          arr.push('[TA 스크립트]를 재점검하세요. 첫 3분이 결정적입니다.');
+          arr.push('[고객 자격 검증] 단계에서 비적합 DB를 거르세요. 양보다 질.');
+          arr.push('성공한 TA 패턴을 [표준 스크립트]로 문서화하여 반복 강화.');
+        } else if (r.bottleneck === 'firstToSecond') {
+          arr.push('1차 상담 후 [후속 콜 24시간 내] 진행. 시간이 지나면 관심도 급락.');
+          arr.push('[니즈 환기 자료]를 풍부히 준비하여 2차 미팅 명분 확보.');
+          arr.push('1차 종료 시 [구체적 후속 약속] (날짜·시간) 도장 받기.');
+        } else if (r.bottleneck === 'secondToDeal') {
+          arr.push('2차에서 [구체적 옵션 2종]으로 좁히기. 결정 부담 제거.');
+          arr.push('[클로징 멘트] 표준화 — 한정 조건 + 사후 케어 약속.');
+          arr.push('계약 보류 고객 [3일 내] 재컨택 — 망설임 → 결정 유도.');
+        } else {
+          arr.push('[DB 추가 확보] — TA 전 단계에서 절대 양이 부족합니다.');
+          arr.push('[지인·소개] 채널 활성화로 고효율 DB 비중 ↑');
+          arr.push('주 단위 [활동 KPI 점검]으로 양적 활동 회복.');
+        }
+        return arr;
       }
 
       // ─── 패널 + 모달 렌더 ───
