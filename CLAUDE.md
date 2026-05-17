@@ -22,8 +22,6 @@ css/style.css       — Dark theme, glass-panel, HUD footer (434 lines)
 api/chat.js         — Vercel Serverless Function: Gemini API proxy + 보안 레이어 (Origin 화이트리스트 + IP 레이트리밋 + 메시지 검증)
 assets/images/      — Logo SVG, CEO portrait
 _serve.js           — Dev server (port 3098)
-js/three-hero.js    — [ORPHANED] 미사용, 이전 Icosahedron ES Module
-js/main.js          — [ORPHANED] 미사용, 이전 loading/glitch
 ```
 
 ## 3D Digital Terrain (index.html inline, ~lines 2537-2681)
@@ -243,7 +241,16 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260518m** (최신) — DB영업관리 ROI 계산 + DB 유형별 단가 입력 + 투자비용 표
+- **v=20260519a** (최신) — Dead code cleanup (코칭 카드 grid 909줄 + ORPHANED JS 2개)
+  - Phase A (commit 78e5b42): index.html 코칭 카드 grid 909줄 삭제
+    - CSS 282줄 (`.sol-coach-{grid,card,mode-tabs,level-chip,section,customer-bubble,script-card,qc-list,...}`)
+    - JS 함수 258줄 (`_solCoach{Inject,Build,Bind,Open,Rerender,Get,Render}*`)
+    - JS 데이터 367줄 (`COACH_MODES/LEVELS/_solCoachState/COACH_A|B|C_CARDS/CONTENT`)
+  - Phase B (commit ce23345): `js/three-hero.js` + `js/main.js` 삭제 (`[ORPHANED]` 명시 파일 2개)
+  - 보존: `_solCoachAppendIntroBubble/UserBubble/ResponseBubble` + 타이핑 함수 + `_solCoachBrackets` (DB영업/완전판매 재사용)
+  - 백업 branch: `dead-code-backup-20260519`
+  - 검증: 3회 Explore agent 추적 + 29 dead 식별자 grep 0건 + 9 라이브 식별자 grep 존재 확인
+- **v=20260518m** — DB영업관리 ROI 계산 + DB 유형별 단가 입력 + 투자비용 표
   - DBSALES_STATE.dbPrice 5종 (보장/재무/지인소개/기고객/개척, 원 단위)
   - 입력 폼 "DB 유형별 단가 (원) — ROI 계산용" 섹션 5 필드
   - `_solDbsCompute`: invest 5종 + totalInvest 합산 + ROI 계산 ((실적 - 투자) / 투자 × 100)
