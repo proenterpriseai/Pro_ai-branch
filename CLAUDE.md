@@ -241,7 +241,63 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260520a** (최신) — 코칭+완전판매 데모 모드 + PDF 20MB 지원 (Gemini File API)
+- **v=20260520m** (최신, 2026-05-20 세션 종료, commit 228159f) — 보험금 산출 PDF 첨부 단계별 안내 (1→2→3 타이핑)
+  - 신규 `_solInsCalcAppendSystemMsgTyping(msg, speed)` — `_solCoachTypewriter` 재사용
+  - `_solInsCalcAppendChip` 단계별 안내: count===1 (1/2 단계 완료 + 2단계 약관 안내) / count===2 (2/2 단계 완료 + 3단계 진단명 입력 안내, 예시 3개) / count≥3 (추가 첨부)
+  - 모든 안내 메시지에 [대괄호] 청록 강조 + 14ms/char 타이핑 효과
+- **v=20260520l** (commit 7051c94) — 보험금 산출 시연 제한 안내 + 완판 B 모드 민원 공문 PDF 안내
+  - insuranceCalcPrompt에 [시연 모드 제약사항] 룰 + 응답 헤더 직후 "📌 [시연 모드 안내]" 한 줄 강제 출력
+  - 완전판매 B 모드 인사말 텍스트 2건 변경: "접수된 민원 정밀 해부" → "접수된 민원 **내용** 정밀 해부" / "환차익으로 돈 번다고..." 예시 → "민원 공문 내용 pdf 업로드" 예시
+  - ⏸️ **후속 작업 대기**: 완전판매 B 모드 실제 PDF 업로드 기능 추가 (`PDF_ENABLED_SYSTEMS`에 'complete-sales' 추가 + `_solComplAddFile` 신규 + `doSend` 분기 + `api/chat.js` context 분기)
+- **v=20260520k** (commit aeb2d11) — 보험금 산출 약관 PDF 20MB 지원 (클라이언트 PDF.js 텍스트 추출)
+  - PDF.js 3.11.174 cdnjs CDN async 로드 (4대 원칙 #3 준수)
+  - 신규 `_solPdfWaitForLib(timeoutMs)` (lazy polling) + `_solExtractPdfText(file, onProgress)` (모든 페이지 텍스트 추출)
+  - `_solInsCalcAddFile` 분기: ≤4MB base64 inline_data / >4MB ~20MB PDF.js 텍스트 추출 → text 모드 전송
+  - 이미지 기반 스캔본 감지 (텍스트 <1000자 → fallback 안내) + 텍스트 한도 80K chars (클라) / 200K chars (서버)
+  - `api/chat.js validatePdf` text 모드 추가: `[첨부 PDF — filename (클라이언트 텍스트 추출)]\n\n<text>` 래핑
+- **v=20260520j** (commit 0d1fd99) — 잘못된 매칭 입력 시 풀 시스템 안내(잠금+CTA) 자동 노출 차단
+  - 신규 `_solShouldShowLockedCta(reply)` 가드 헬퍼 — 응답 <500자 또는 재확인 시그니처("다시 입력해 주세요", "함께 표기해 주세요" 등) 포함 시 스킵
+  - 3 호출처 (coaching/insurance-calc/complete-sales) onComplete 콜백에 가드 적용
+- **v=20260520i** (commit 7d133c5) — 메인 챗봇 타이핑 효과 + 보험금 산출 잠금 7개 + 본문 정리
+  - 메인 챗봇 두번째 줄 ("시스템 현황에서 해당 AI 시스템을 클릭...") 35ms/char 타이핑 + 600ms 딜레이 + 깜빡이는 커서
+  - 보험금 산출 잠금 카드 5→7개: #1 이름 "50종 표준 담보 정밀 매칭" → "담보 정밀 매칭", 신규 #6 🎯 전문가 전략 가이드 / #7 💡 놓치지 말아야 할 포인트
+  - insuranceCalcPrompt 본문 정리: [2️⃣ 전문가 전략] + [💡 포인트] 두 섹션 본문 출력 금지, 응답 구조 5섹션으로 축소
+- **v=20260520h** (commit c445579) — 인재양성 로드맵 UX/UI QUANTCORE 디자인 이식
+  - HTML: 점·라인 → 아이콘 박스 + 흐름 글로우 라인 구조 (5개 SVG 인라인 아이콘, 교육 테마)
+  - 03 관리자 양성 .is-center (영구 cyan glow + 펄스 dot) / 05 WM 마스터 .is-final (indigo·purple glow)
+  - CSS 재작성: gradient bg + rounded-3xl + backdrop-blur + grid 패턴 배경, 흐름 글로우 cyan/indigo 2개 1.5s 시차
+  - 모바일 미디어 쿼리: 세로 스택 + 가로 라인 숨김 + 호버 효과 비활성
+  - JS 무수정 — 기존 `.is-playing` / `.is-lit` / `.is-spot` 클래스 토글 호환 유지
+- **v=20260520g** (commit 557e241) — 코칭/완판 의도 검증·재확인 룰 추가
+  - coachingPrompt: 사용자 표기 [유형 X]과 실제 [질문 내용] 불일치 감지 ("A.1 거절 처리" → "B-1로 다시 입력해 주실까요?")
+  - completeSalesPrompt: 모드 A/B와 실제 입력 불일치 감지 ("A 30대 자산가 거절처리" → 코칭 AI 영역 안내 + 재입력 유도)
+  - 사용자 입력 우선 원칙: 동일 입력 재전송 시 강제 막지 않음
+- **v=20260520f** (commit bd06013) — 메인 챗봇 인사말/버튼 정리 + 보장분석 인사말 변경
+  - 메인 챗봇 인사말 "보장분석, 금융계산, 상담 코칭 등 무엇이든..." → "시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요"
+  - 메인 챗봇 4개 빠른 버튼 삭제 (정적 + 동적 배열 SYSTEM_QUICK_QUERIES.all)
+  - 보장분석 AI 인사말 "보험 증권 PDF... 119개 항목을 즉시 분석" → "보험 내역 PDF... 즉시 분석" (3곳: 동적 L10476 + 시연 HTML L4708 + showcase L7809)
+- **v=20260520e** (commit 8accb9f) — 코칭 가상 페르소나 금지 + 완판 사례번호 정확성 + PDF 안내 plain text
+  - coachingPrompt: [가상 고객 데이터 임의 생성 절대 금지] 룰 — 사용자 미입력 보험료/보장금액/연령/소득 생성 금지
+  - completeSalesPrompt: [사례·결정문 번호 정확성 룰] — "제202X-XX호" X 자리표시자 금지, 모르면 일반화
+  - PDF 안내 메시지 raw HTML → plain text + URL 평문 (`<br>`, `<a>` 태그가 escHtml로 escape되어 raw 표시되던 버그 fix)
+- **v=20260520d** (commit 6ac4441) — "관리자 소개" 오버레이 + 네비 링크 제거 (#about 섹션은 유지, -137줄)
+  - 데스크톱 네비 + 모바일 네비 "관리자 소개" 링크 삭제
+  - `#team-overlay` 풀스크린 마크업 88줄 삭제
+  - Team Overlay Controller IIFE 47줄 삭제
+  - `#about` 일반 섹션은 유지 (사용자 명시) — 페이지 콘텐츠 무손상
+- **v=20260520c** (commit 59b144e) — 잠금 카드 5종 통합 + 코칭 10 + 완판 8 + 공통 2열 원칙
+  - SOL_CHAT_LOCKED 단일 진실원으로 통합 (coverage / healthcheck 신규 키 추가)
+  - coaching 5→10개 (사용자 결정: 음성/무한시나리오/FSS/내화법 4개 제거 + 답변 6~14 9개 신규 + 15단계 풀 엔진 유지)
+  - complete-sales 5→8개 (중복 2건 병합: 카톡·녹취+법적방어 / 팀장 알림+Action Pack)
+  - `_solChatAppendLockedCta` full-row 제거 (2열 원칙 통일)
+  - PDF 패널 두 함수가 SOL_CHAT_LOCKED.coverage/healthcheck 참조하도록 전환 (인라인 하드코딩 → 데이터 단일 진실원)
+  - coachingPrompt + completeSalesPrompt "💡 [...]는 풀 시스템에서" 안내 텍스트 제거 (잠금 카드 UI 중복 방지)
+- **v=20260520b** (commit e2b3942) — PDF Gemini File API 롤백 + "에서 일하면→에서는" 7건 + 5MB 한도 + 압축 안내
+  - v=20260520a의 Gemini File API resumable upload 클라이언트 직접 업로드가 CORS preflight 실패 (Failed to fetch)
+  - 롤백: `handleUploadInit` + `_solUploadPdfToGemini` + file_uri 분기 완전 제거 (~180줄)
+  - 5MB 한도 원복 + 5MB 초과 시 SmallPDF/ILovePDF 압축 링크 inline 안내
+  - "인카금융서비스 프로사업단총괄에서 일하면" → "에서는" 일괄 교체 (7건)
+- **v=20260520a** (commit aeefef7, **롤백됨 v=20260520b**) — 코칭+완판 데모 모드 + PDF 20MB 시도 (Gemini File API, CORS 실패로 롤백)
   - **상담코칭 답변 축소**: 유형 A 본문 1~5번 + 다음 단계 메뉴만 (기존 15단계 → 6단계). 6~14번(핵심필살/리스크/세무/벤치마크표/시너지/트렌드/상태요약/완판방어/타겟데이터) → [🔒 데모 종료 한 줄 안내] 1줄로 압축. 분량 2,500~4,500 → 1,500~2,500자.
   - **완전판매 답변 축소**: 유형 A 본문 0~4번 + 5단계 반복 루프만. 5~8번(법적방어/위험단어/화법교정표/팀장Action) + 4단계 마스터 스탠다드 → [🔒 데모 종료 한 줄 안내]. 분량 3,500~6,000 → 1,800~2,800자.
   - **공통 [표 강제 룰]**: 두 prompt 모두 — 비교 가능 항목(Worst/Best, Before/After, 옵션, 회사별, 위험/안전 표현 등)은 반드시 마크다운 표.
