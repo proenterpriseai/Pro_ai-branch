@@ -12137,6 +12137,29 @@
         }
       };
 
+      // v=20260520j — 잘못된 매칭 입력 시 풀 시스템 안내 차단 가드
+      //   사용자 피드백: "잘못된 매칭 입력으로 재확인 안내만 받았는데 풀 시스템 안내까지
+      //   같이 뜨면 의심"
+      //   정책: 응답이 (a) 너무 짧거나 (b) 재확인 패턴 포함 시 잠금 카드 노출 스킵
+      function _solShouldShowLockedCta(reply) {
+        if (!reply || typeof reply !== 'string') return false;
+        // 너무 짧은 응답 (재확인 안내·표기 누락 안내는 통상 200~400자) → 스킵
+        if (reply.length < 500) return false;
+        // 재확인 패턴 검출 — 정상 답변에는 나오지 않는 시그니처
+        var reconfirmPatterns = [
+          '다시 입력해 주세요',
+          '다시 입력해주세요',
+          '다시 입력해 주실까요',
+          '다시 입력해주실까요',
+          '함께 표기해 주세요',
+          '함께 입력해 주세요'
+        ];
+        for (var i = 0; i < reconfirmPatterns.length; i++) {
+          if (reply.indexOf(reconfirmPatterns[i]) >= 0) return false;
+        }
+        return true;
+      }
+
       function _solChatAppendLockedCta(sysKey) {
         var msgs = document.getElementById('sol-chat-messages');
         if (!msgs) return;
@@ -12338,8 +12361,8 @@
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
         _solCoachTypewriter(pEl, reply, msgs, 10, function () {
-          // 타이핑 완료 후 잠금+CTA 자동 노출
-          _solChatAppendLockedCta('coaching');
+          // 타이핑 완료 후 잠금+CTA 자동 노출 (정상 답변일 때만 — 재확인 안내 시 스킵)
+          if (_solShouldShowLockedCta(reply)) _solChatAppendLockedCta('coaching');
         });
       }
 
@@ -12549,7 +12572,8 @@
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
         _solCoachTypewriter(pEl, reply, msgs, 10, function () {
-          _solChatAppendLockedCta('insurance-calc');
+          // 정상 답변일 때만 잠금+CTA 노출 (재확인 안내 시 스킵)
+          if (_solShouldShowLockedCta(reply)) _solChatAppendLockedCta('insurance-calc');
         });
       }
 
@@ -12634,7 +12658,8 @@
         var pEl = div.querySelector('.sol-coach-rich');
         msgs.scrollTop = msgs.scrollHeight;
         _solCoachTypewriter(pEl, reply, msgs, 10, function () {
-          _solChatAppendLockedCta('complete-sales');
+          // 정상 답변일 때만 잠금+CTA 노출 (재확인 안내 시 스킵)
+          if (_solShouldShowLockedCta(reply)) _solChatAppendLockedCta('complete-sales');
         });
       }
 
