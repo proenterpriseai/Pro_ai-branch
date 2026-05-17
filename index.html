@@ -10456,8 +10456,10 @@
       // v=20260516b (Phase 1 UX 강화, FEATURE_PROSOLUTION_PDF_UPLOAD Flag 게이트):
       //  - 카드 클릭 시 채팅 리셋 + 시스템별 인사말/빠른액션/placeholder/+버튼 활성 동기화
       //  - Flag=false 기본값에서는 기존(Phase 0) 동작 그대로 — 700명 영향 0
+      // v=20260520n — Flag=true 격상: v=20260520a~m 풀 기능(챗봇 모드/잠금 카드/타이핑/PDF.js 등)이
+      //  Flag=true 분기에서만 활성. 사용자 검증 완료 후 영구 격상 (sessionStorage 옵트인 불필요).
       // ─────────────────────────────────────────────────────────────────────
-      var FEATURE_PROSOLUTION_PDF_UPLOAD = false;
+      var FEATURE_PROSOLUTION_PDF_UPLOAD = true;
       function _isProsolutionPdfOn() {
         try {
           var v = sessionStorage.getItem('_flag_sol_pdf');
