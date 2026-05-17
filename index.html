@@ -12531,9 +12531,25 @@
           + '<div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 text-zinc-300 text-xs font-bold">📎</div>';
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
-        // 첫 PDF 첨부 시 안내 AI 메시지
+        // v=20260520m — 단계별 안내 메시지 (타이핑 효과)
         if (count === 1) {
-          _solInsCalcAppendSystemMsg('첫 PDF 첨부됨. [보험 내역 PDF + 약관 PDF] 모두 첨부 후 진단/수술명을 입력해 주세요. (예: "대장용종 제거술 보험금 산출")');
+          // 1단계 완료 → 2단계 안내
+          _solInsCalcAppendSystemMsgTyping(
+            '✅ [1/2 단계 완료] — [보험 내역 PDF] 첨부됨.\n\n📑 [2단계] 이제 [+] 버튼으로 [해당 보험사 약관 PDF]를 추가 업로드해 주세요.\n\n💡 약관 PDF는 보통 용량이 큽니다 (10MB 이상). 본 시스템이 텍스트를 자동 추출해서 분석합니다.',
+            14
+          );
+        } else if (count === 2) {
+          // 2단계 완료 → 3단계 안내
+          _solInsCalcAppendSystemMsgTyping(
+            '✅ [2/2 단계 완료] — [약관 PDF] 첨부됨.\n\n📑 [3단계 — 마지막] 이제 채팅창에 [진단명·수술명·사고 경위]를 입력해 주세요.\n\n[예시 입력]\n· "대장용종 제거술을 했는데 가입한 담보들에 한해서 지급 가능한 담보들을 알려줘"\n· "갑상선암 1cm 진단 — 지급 가능한 모든 담보 산출"\n· "교통사고 입원 12일, 수술 1회 — 보험금 청구 전략"',
+            14
+          );
+        } else if (count >= 3) {
+          // 추가 PDF 첨부 (3개 이상)
+          _solInsCalcAppendSystemMsgTyping(
+            '📎 추가 PDF 첨부됨. (총 ' + count + '/5개) 입력 준비가 되셨으면 [진단명·수술명·사고 경위]를 채팅창에 입력해 주세요.',
+            14
+          );
         }
       }
 
@@ -12553,6 +12569,28 @@
           + '</div>';
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      // v=20260520m — 보험금 산출 시스템 안내 메시지 타이핑 버전
+      //   _solCoachTypewriter 재사용 — 마크다운 표·[대괄호] 강조 자동 적용
+      function _solInsCalcAppendSystemMsgTyping(msg, speed) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · 보험금 산출</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+          + '</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, msg, msgs, speed || 14);
       }
 
       function _solInsCalcAppendIntroBubble() {
