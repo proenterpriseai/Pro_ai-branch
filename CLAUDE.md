@@ -241,7 +241,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260520m** (최신, 2026-05-20 세션 종료, commit 228159f) — 보험금 산출 PDF 첨부 단계별 안내 (1→2→3 타이핑)
+- **v=20260520n** (최신, 2026-05-20 세션 종료, commit a01544f) — **FEATURE_PROSOLUTION_PDF_UPLOAD Flag=true 격상 (풀 기능 활성)**
+  - 근본 원인: v=20260520a~m의 모든 변경이 `_isProsolutionPdfOn()` Flag 분기에서만 활성. Flag 기본값 false라 사용자가 sessionStorage._flag_sol_pdf='true' 옵트인 안 하면 옛 흐름(systemResponses 메시지 누적, 인사말 없음)으로 작동.
+  - 사용자 보고 (캡처): 시스템 카드 클릭마다 [상담 코칭 AI] / [통합금융계산기] / [DB 영업관리] / [보장분석 시스템] 메시지 누적 + 타이핑 효과 안 됨 → Flag=false 분기 진입 증거
+  - 변경: `var FEATURE_PROSOLUTION_PDF_UPLOAD = false → true`
+  - 영향: 카드 클릭 시 `_solResetForSystem` + 챗봇 인사말 타이핑 + 잠금 카드 + 보험금 산출 PDF.js + 단계별 안내 + + 버튼 토글 모두 활성. Flag=false 분기 코드는 옵트아웃 경로로 보존 (sessionStorage 강제 false 가능)
+- **v=20260520m** (commit 228159f) — 보험금 산출 PDF 첨부 단계별 안내 (1→2→3 타이핑)
   - 신규 `_solInsCalcAppendSystemMsgTyping(msg, speed)` — `_solCoachTypewriter` 재사용
   - `_solInsCalcAppendChip` 단계별 안내: count===1 (1/2 단계 완료 + 2단계 약관 안내) / count===2 (2/2 단계 완료 + 3단계 진단명 입력 안내, 예시 3개) / count≥3 (추가 첨부)
   - 모든 안내 메시지에 [대괄호] 청록 강조 + 14ms/char 타이핑 효과
