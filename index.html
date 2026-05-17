@@ -10422,7 +10422,11 @@
             return;
           }
           requestBody.context = 'insurance-calc-pdf';
+          // v=20260520 — base64(작은 PDF) 또는 file_uri(큰 PDF, Gemini File API) 혼합 전송
           requestBody.pdfs = _solInsCalcPdfs.map(function(p) {
+            if (p.fileUri) {
+              return { mime_type: 'application/pdf', file_uri: p.fileUri };
+            }
             return { mime_type: 'application/pdf', data: p.base64 };
           });
         }
@@ -10905,6 +10909,57 @@
         });
       }
 
+      // v=20260520 — 4MB 초과 PDF Gemini File API 직접 업로드 (Vercel 4.5MB 페이로드 한도 우회)
+      //   1) /api/chat?action=upload-init → uploadUrl 받음 (Vercel function 페이로드 작음)
+      //   2) 클라이언트가 uploadUrl에 PDF 바이너리 직접 POST (브라우저 → Gemini Storage 직접)
+      //   3) 응답에서 file_uri 추출 → 이후 chat 호출 시 file_uri로 generateContent
+      //   onProgress(pct, label) 콜백 — 진행률 UI 갱신
+      async function _solUploadPdfToGemini(file, onProgress) {
+        // 1) Gemini upload URL 발급
+        if (onProgress) onProgress(10, '업로드 URL 발급 중...');
+        var initResp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'upload-init',
+            mime_type: 'application/pdf',
+            size: file.size,
+            display_name: file.name
+          })
+        });
+        if (!initResp.ok) {
+          var detail = '';
+          try { var ej = await initResp.json(); detail = ej.error || ej.detail || ''; } catch (e) {}
+          throw new Error('업로드 URL 발급 실패 (' + initResp.status + ') ' + detail);
+        }
+        var initData = await initResp.json();
+        var uploadUrl = initData.uploadUrl;
+        if (!uploadUrl) throw new Error('업로드 URL 응답 누락');
+
+        // 2) PDF 바이너리를 Gemini upload URL에 직접 POST (CORS 허용 가정)
+        if (onProgress) onProgress(25, 'PDF 업로드 중...');
+        var uploadResp = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: {
+            'X-Goog-Upload-Offset': '0',
+            'X-Goog-Upload-Command': 'upload, finalize',
+            'Content-Type': 'application/pdf'
+          },
+          body: file
+        });
+        if (!uploadResp.ok) {
+          var txt = '';
+          try { txt = await uploadResp.text(); } catch (e) {}
+          throw new Error('Gemini 업로드 실패 (' + uploadResp.status + ') ' + txt.slice(0, 200));
+        }
+        var uploadData = await uploadResp.json();
+        var fileUri = uploadData && uploadData.file && uploadData.file.uri;
+        if (!fileUri) throw new Error('Gemini 응답에 file URI 없음');
+
+        if (onProgress) onProgress(75, 'AI 분석 준비 중...');
+        return { fileUri: fileUri, filename: file.name };
+      }
+
       function _solPdfHandleError(err) {
         _solPdfHideProgress();
         var msg = err && err.message ? err.message : '알 수 없는 오류가 발생했습니다.';
@@ -10912,15 +10967,15 @@
       }
 
       async function _solPdfHandleFile(file) {
-        // 1) 검증
+        // 1) 검증 (v=20260520 — 20MB까지 허용, 4MB 초과는 Gemini File API 경로)
         if (!file) return;
         var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
         if (!isPdf) {
           appendMessage('ai', '⚠️ PDF 파일만 지원합니다. (.pdf 확장자)');
           return;
         }
-        if (file.size > 5 * 1024 * 1024) {
-          appendMessage('ai', '⚠️ 파일이 너무 큽니다. 5MB 이하 PDF만 지원합니다. (현재: ' + (file.size / 1024 / 1024).toFixed(1) + 'MB)');
+        if (file.size > 20 * 1024 * 1024) {
+          appendMessage('ai', '⚠️ 파일이 너무 큽니다. 20MB 이하 PDF만 지원합니다. (현재: ' + (file.size / 1024 / 1024).toFixed(1) + 'MB)');
           return;
         }
 
@@ -10932,21 +10987,27 @@
         var progressInterval = _solPdfStartFakeProgress();
 
         try {
-          // 4) base64 인코딩
-          _solPdfShowProgress(15, '파일 변환 중...');
-          var base64 = await _solPdfBlobToBase64(file);
-          _solPdfShowProgress(30, 'AI 분석 중...');
-
-          // 5) API 호출 (activeSystem에 따라 보장분석/건강검진 분기)
           var sysKey = (typeof activeSystem !== 'undefined') ? activeSystem : 'coverage';
-          var data = await _solPdfCallAnalyze(base64, file.name, sysKey);
+          var data;
+          if (file.size <= 4 * 1024 * 1024) {
+            // 작은 PDF: 기존 base64 inline_data 경로
+            _solPdfShowProgress(15, '파일 변환 중...');
+            var base64 = await _solPdfBlobToBase64(file);
+            _solPdfShowProgress(30, 'AI 분석 중...');
+            data = await _solPdfCallAnalyze({ base64: base64 }, file.name, sysKey);
+          } else {
+            // 큰 PDF: Gemini File API 직접 업로드 → file_uri
+            var uploaded = await _solUploadPdfToGemini(file, _solPdfShowProgress);
+            _solPdfShowProgress(85, 'AI 분석 중...');
+            data = await _solPdfCallAnalyze({ fileUri: uploaded.fileUri }, file.name, sysKey);
+          }
 
-          // 6) 진행률 마무리
+          // 진행률 마무리
           clearInterval(progressInterval);
           _solPdfShowProgress(100, '완료');
           setTimeout(_solPdfHideProgress, 600);
 
-          // 7) 결과 렌더 (시스템별 다른 카드 구조)
+          // 결과 렌더 (시스템별 다른 카드 구조)
           _solPdfRenderChatResult(data, file.name);
           _solPdfInjectReportPanel();
           _solPdfRenderReport(data, sysKey);
@@ -10956,21 +11017,24 @@
         }
       }
 
-      async function _solPdfCallAnalyze(base64, filename, sysKey) {
+      // v=20260520 — pdfPayload: { base64 } (작은 PDF, inline_data) 또는 { fileUri } (큰 PDF, file_data)
+      async function _solPdfCallAnalyze(pdfPayload, filename, sysKey) {
         sysKey = sysKey || 'coverage';
         var ctxInfo = PDF_SYSTEM_CONTEXTS[sysKey] || PDF_SYSTEM_CONTEXTS.coverage;
         var msg = sysKey === 'healthcheck' ? '건강검진 분석' : '보장분석';
+        var pdfBody;
+        if (pdfPayload && pdfPayload.fileUri) {
+          pdfBody = { mime_type: 'application/pdf', file_uri: pdfPayload.fileUri, filename: filename };
+        } else {
+          pdfBody = { mime_type: 'application/pdf', data: (pdfPayload && pdfPayload.base64) || '', filename: filename };
+        }
         var resp = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message: msg,
             context: ctxInfo.contextKey,
-            pdf: {
-              mime_type: 'application/pdf',
-              data: base64,
-              filename: filename
-            }
+            pdf: pdfBody
           })
         });
         if (!resp.ok) {
@@ -12487,7 +12551,8 @@
         _solInsCalcPdfs = [];
       }
 
-      // PDF 파일을 base64로 누적 저장 + 첨부 칩 메시지 표시
+      // PDF 파일을 누적 저장 + 첨부 칩 메시지 표시
+      // v=20260520 — 20MB까지 허용, 4MB 초과는 Gemini File API 경로
       async function _solInsCalcAddFile(file) {
         if (!file) return;
         var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
@@ -12495,8 +12560,8 @@
           _solInsCalcAppendSystemMsg('⚠️ PDF 파일만 지원합니다 (.pdf 확장자)');
           return;
         }
-        if (file.size > 5 * 1024 * 1024) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name);
+        if (file.size > 20 * 1024 * 1024) {
+          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (20MB 이하): ' + file.name + ' (현재: ' + (file.size/1024/1024).toFixed(1) + 'MB)');
           return;
         }
         if (_solInsCalcPdfs.length >= 5) {
@@ -12504,11 +12569,19 @@
           return;
         }
         try {
-          var base64 = await _solPdfBlobToBase64(file);
-          _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
+          if (file.size <= 4 * 1024 * 1024) {
+            // 작은 PDF: base64 inline_data
+            var base64 = await _solPdfBlobToBase64(file);
+            _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
+          } else {
+            // 큰 PDF: Gemini File API 직접 업로드 → file_uri
+            _solInsCalcAppendSystemMsg('📤 ' + file.name + ' 업로드 중... (' + (file.size/1024/1024).toFixed(1) + 'MB)');
+            var uploaded = await _solUploadPdfToGemini(file);
+            _solInsCalcPdfs.push({ filename: file.name, fileUri: uploaded.fileUri });
+          }
           _solInsCalcAppendChip(file.name, _solInsCalcPdfs.length);
         } catch (e) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일 읽기 실패: ' + file.name);
+          _solInsCalcAppendSystemMsg('⚠️ 파일 처리 실패: ' + file.name + ' — ' + (e && e.message ? e.message : ''));
         }
       }
 

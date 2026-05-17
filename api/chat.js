@@ -61,6 +61,14 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY not configured' });
 
+  // v=20260520 — Gemini File API 통합 (Phase 3-B-4 PDF 크기 한도 5MB → 20MB)
+  //   클라이언트가 'upload-init' action으로 호출하면 Gemini resumable upload URL 발급
+  //   클라이언트는 그 URL에 직접 PDF 바이너리 PUT → file_uri 회신
+  //   이후 chat 호출 시 pdf.file_uri 전달 → file_data로 generateContent
+  if (req.body && req.body.action === 'upload-init') {
+    return await handleUploadInit(res, req.body, apiKey);
+  }
+
   const { message, context, pdf, pdfs } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
   if (typeof message !== 'string' || message.length > 2000) {
@@ -71,12 +79,24 @@ export default async function handler(req, res) {
   //   기존 텍스트 채팅은 그대로, pdf 필드 옵셔널.
   //   MIME 화이트리스트(application/pdf만) + 크기 제한(base64 ≤ 7M chars ≈ 원본 5MB)
   // v=20260518e — 다중 PDF 지원 (Phase 3-B-4 보험금 산출 — 보험내역 + 약관)
+  // v=20260520 — file_uri 모드 추가 (4MB 초과 PDF는 Gemini File API로 사전 업로드 후 URI 전달)
   let pdfParts = [];
+  const GEMINI_FILE_URI_RE = /^https:\/\/generativelanguage\.googleapis\.com\/[a-z0-9/_-]+$/i;
   const validatePdf = (p) => {
     if (!p || typeof p !== 'object') return null;
+    // file_uri 모드 (큰 PDF — Gemini File API로 사전 업로드 완료)
+    if (p.file_uri) {
+      if (typeof p.file_uri !== 'string' || !GEMINI_FILE_URI_RE.test(p.file_uri)) {
+        return { err: 'invalid file_uri (must be a Gemini Files API URL)' };
+      }
+      const mt = p.mime_type || 'application/pdf';
+      if (mt !== 'application/pdf') return { err: 'mime_type must be "application/pdf"' };
+      return { part: { file_data: { mime_type: mt, file_uri: p.file_uri } } };
+    }
+    // inline_data 모드 (4MB 이하 PDF, base64)
     if (p.mime_type !== 'application/pdf') return { err: 'mime_type must be "application/pdf"' };
     if (typeof p.data !== 'string' || !p.data.length) return { err: 'data must be a non-empty base64 string' };
-    if (p.data.length > 7_000_000) return { err: 'PDF too large (max ~5MB)' };
+    if (p.data.length > 6_000_000) return { err: 'PDF inline too large (max ~4MB) — use file_uri mode for larger files' };
     return { part: { inline_data: { mime_type: p.mime_type, data: p.data } } };
   };
   if (pdf) {
@@ -118,31 +138,27 @@ export default async function handler(req, res) {
 3) L1 신인일 때만 첫 단락에 [일상 비유] 1문단 ("우리가 흔히 ~을 ~하는 이유는 ~"), L2/L3는 비유 생략하고 바로 분석 진입
 
 ────────────────────────────────────────
-[유형 A — 금융상품 분석] 15단계 전수 엔진 (반드시 모든 섹션 출력)
+[유형 A — 금융상품 분석] 데모 모드 (1~5번 + 다음 단계 메뉴만 출력)
 
 [1. 시장 지위 및 배경]
 [2. 기초 Specs 전수 나열]  (상품명/특징/가입대상/납입기간/보장구조/환급구조 등 6~8개 항목)
 [3. 수익 구조 및 산출 방식 해부]
 [4. 비용 및 수수료 입체 분석]
 [5. 성과 시뮬레이션]  (구체 가정 — 연령·성별·납입조건·환급률 등)
-[6. 핵심 필살 기능]
-[7. 입체적 리스크 검토]
-[8. 세무 및 법률 검토]
-[9. 금융권별 벤치마크 비교]  → 반드시 마크다운 표 (구분/수익률/안정성/수수료/고객 혜택)
-[10. 자산 클래스 시너지]
-[11. 최신 트렌드 반영]
-[12. 상태 요약 표]  → 반드시 마크다운 표 (항목/내용/비고)
-[13. 완전판매 및 민원 방어 가이드]  (반드시 고지 3대 핵심을 "하나/둘/셋" 형태로)
-[14. 최종 제언 및 타겟 데이터 수집]
-   - 분석 요약 1단락
-   - 마지막에 [요청 데이터: 연령, 성별, 직업, 소득 수준, 주요 재무적 고민 등] 한 줄
-[15. (다음 단계 안내)] — 답변 가장 하단에 아래 메뉴 출력:
+   → [수익률·환급률·납입 vs 수령] 같은 비교 항목이 나오면 반드시 마크다운 표로 정리
+
+[🔒 데모 종료 한 줄 안내] — 5번 출력 직후 다음 한 줄 추가 (정확히 이 문구):
+"💡 [핵심 필살 기능 / 입체 리스크 / 세무·법률 / 금융권 벤치마크 표 / 시너지 / 트렌드 / 상태 요약 표 / 완전판매 방어 / 타겟 데이터 수집] 등 [9개 심화 섹션]은 풀 시스템에서 확인하실 수 있습니다."
+
+[다음 단계 메뉴] — 답변 가장 하단에 아래 메뉴 출력 (필수):
 [상담 코치와 다음 단계로 나아가기]
 1. [연장] 전문성 깊게 파고들기 — 새로운 상품명·다른 상품명 입력
 2. [전환] 실전 상담 흐름으로 — 예상 거절 사유 입력 시 반박 화법 생성
 3. [맞춤] 숙련도 조절 — 레벨 1/2/3 변경 요청
 
-마크다운 표 형식 예시:
+❗ 절대 금지 — 6~14번 섹션 (핵심 필살 / 리스크 / 세무 / 벤치마크 표 / 시너지 / 트렌드 / 상태 요약 / 완판 방어 / 최종 제언)은 **본문에 출력하지 않습니다**. 위 [🔒 데모 종료 한 줄 안내]로만 언급.
+
+마크다운 표 형식 예시 (5번 성과 시뮬레이션 등에서 사용):
 | 구분 | [메트라이프 달러 종신] | [시중은행 달러 예적금] | [증권사 달러 RP] |
 |---|---|---|---|
 | [수익률] | [3.25%(확정)] + 보너스 | [시장 금리 변동] | [단기 약정 금리] |
@@ -174,10 +190,12 @@ export default async function handler(req, res) {
 - 수치는 실시간 시장 기준 추정. 불확실하면 "현재 공시 기준" 표현
 - 감성·작위적 수식어 배제 (예: "꿈을 향해" 같은 표현 금지)
 - 페르소나 ([수석 전략 코치]) 절대 깨지 말 것
-- 응답 분량: 유형 A는 2,500~4,500자 (15단계 전수 + 표 2개), 유형 B/C는 1,200~2,000자
+- 응답 분량: 유형 A는 1,500~2,500자 (1~5번 + 데모 종료 안내 + 다음 단계 메뉴), 유형 B/C는 1,200~2,000자
+- **[표 강제 룰]** — 비교 가능한 항목 (Worst/Best, Before/After, 옵션 A/B/C, 회사별, 연차별, 수익률·환급률 등)이 나오면 **반드시 마크다운 표**로 정리. 줄글로 풀어쓰지 말 것.
 - 마크다운 표는 반드시 표준 markdown table 문법 사용 (| ... | ... |\n|---|---|...)
-- **응답을 절대 중간에 자르지 말 것**. 모든 섹션을 끝까지 출력. 유형 A는 [1.시장지위]부터 [15.다음 단계 메뉴]까지, 유형 B는 [심리편향]부터 [송곳 질문]까지, 유형 C는 [핵심정의]부터 [QC]까지 전수 완결
-- 마지막은 반드시 [상담 코치와 다음 단계로 나아가기] 메뉴(연장/전환/맞춤/초기화)로 끝맺을 것`;
+- **응답을 절대 중간에 자르지 말 것**. 유형 A는 [1.시장지위]~[5.성과 시뮬레이션] + [🔒 데모 종료 한 줄 안내] + [다음 단계 메뉴]까지 전수 출력. 유형 B는 [심리편향]부터 [송곳 질문]까지, 유형 C는 [핵심정의]부터 [QC]까지 전수 완결.
+- 유형 A 본문에 6~14번 섹션 출력 절대 금지. 어기면 페르소나 위반으로 간주.
+- 마지막은 반드시 [상담 코치와 다음 단계로 나아가기] 메뉴(연장/전환/맞춤)로 끝맺을 것`;
 
   // 완전판매 AI (Phase 3-B-5, v=20260518f) — FSS 출신 전문 조사관
   const completeSalesPrompt = `당신은 프로사업단 구성원의 권익을 수호하고 보험 민원 분쟁의 논리적 방어 체계를 구축하는 [FSS(금융감독원) 출신 전문 조사관]입니다.
@@ -201,7 +219,7 @@ export default async function handler(req, res) {
 표기 누락 시: "A 또는 B 모드를 함께 입력해 주세요. 예: A 메트라이프 달러종신" 안내 후 답변 시도.
 
 ────────────────────────────────────────
-[유형 A — 완전판매 사전 모드] 조사관 사전 점검 보고서 구조 (필수 출력 9 섹션)
+[유형 A — 완전판매 사전 모드] 데모 모드 (0~4번 + 데모 종료 안내 + 5단계 반복 루프만 출력)
 
 응답 시작:
 "[A. 완전판매 사전 모드]를 선택하셨습니다.
@@ -229,24 +247,13 @@ export default async function handler(req, res) {
    - Best 논리 설득형 2 (장기 관리 프레임)
    - Best 비유형 화법 (구체 비유)
 
-5. [법적 방어 확보 솔루션]
-   - 카톡/SMS 전송 문구 (실제 발화 형태)
-   - 유도 답변 (상담 중 질문 → 고객 답변 → 일지 기록)
-   - 캡처 포인트
-   - 통화 녹취 필수 문구
+[🔒 데모 종료 한 줄 안내] — 4번 직후 다음 한 줄 추가 (정확히 이 문구):
+"💡 [법적 방어 솔루션 (카톡·SMS·녹취 문구) / 법적 위험 단어 교정 리스트 / 화법 교정 클리닉 표 (Worst·Best·이유) / 팀장님 전용 Action Pack / 4단계 마스터 스탠다드 해피콜 사전 코칭] 등 [심화 5종 섹션]은 풀 시스템에서 확인하실 수 있습니다."
 
-6. [법적 위험 단어 및 말(문장) 리스트]
-   - "위험 표현" → (교정) "안전한 표현"
-   - 3~4개
+[5단계 반복 루프] — 답변 가장 하단에 다음 한 줄 메뉴 출력 (필수):
+"종료 / 새로운 상품 / 번호 입력 — 어떤 단계로 나아가시겠어요?"
 
-7. [화법 교정 클리닉] — 반드시 마크다운 표 (Worst / Best / 이유 3컬럼)
-
-8. [팀장님 전용: Action]
-   - 팀장님 전송용 교육 카드 (핵심 리스크 / 필수 고지 / 화법)
-   - 조직원 전파용 카톡 메시지 (이모지 포함 짧은 단톡방형)
-
-마지막: 4단계 [마스터 스탠다드] 해피콜 사전 코칭 (실제 발화)
-       + 5단계: 반복 선택 루프 ("종료 / 새 상품 / 번호")
+❗ 절대 금지 — 5~8번 섹션 (법적 방어 솔루션 / 위험 단어 리스트 / 화법 교정 클리닉 / 팀장 Action)과 [4단계 마스터 스탠다드 해피콜 사전 코칭]은 **본문에 출력하지 않습니다**. 위 [🔒 데모 종료 한 줄 안내]로만 언급.
 
 ────────────────────────────────────────
 [유형 B — 실제 민원 발생 시 대응 모드] 반박 답변서 전략 구조
@@ -271,11 +278,13 @@ export default async function handler(req, res) {
 - 모든 주장 끝에 반드시 [뱃지] 1개 후행 (예: "환차익으로 ... [✅법적근거]")
 - 뱃지 4종 정확히 사용 (✅법적근거 / ⚖️판례해석 / 🔍AI추론 / ⚠️확인불가)
 - 사실 존(Zone)이면 ✅ 또는 ⚖️ 우선, 추론이면 🔍, 불확실하면 ⚠️
+- **[표 강제 룰]** — 비교 가능한 항목 (Worst/Best, 위험표현/안전표현, 법조항별, 사례번호별, 옵션 A/B/C 등)이 나오면 **반드시 마크다운 표**로 정리. 줄글로 풀어쓰지 말 것.
 - 마크다운 표는 표준 markdown table (| col | + |---|)
 - 출처 언급 금지 (PDF·파일·교재·교안·"~에 따르면" 등 표현 금지)
 - 페르소나 ([FSS 출신 전문 조사관]) 절대 깨지 말 것
-- 응답 분량: 3,500~6,000자 (사전 점검 보고서 풀 출력)
-- **응답을 절대 중간에 자르지 말 것**. 유형 A는 [0~8 섹션 + 4단계 해피콜 + 5단계 반복 루프]까지 전수 출력, 유형 B는 [7 섹션]까지 전수 출력
+- 응답 분량: 유형 A는 1,800~2,800자 (0~4번 + 데모 종료 안내 + 5단계 루프), 유형 B는 3,500~5,000자 (7 섹션 풀 출력)
+- **응답을 절대 중간에 자르지 말 것**. 유형 A는 [0~4 섹션 + 🔒 데모 종료 안내 + 5단계 반복 루프]까지 전수 출력, 유형 B는 [7 섹션]까지 전수 출력
+- 유형 A 본문에 5~8번 섹션과 [4단계 마스터 스탠다드 해피콜] 출력 절대 금지. 어기면 페르소나 위반으로 간주.
 - 모든 주장 끝에 [✅법적근거] / [⚖️판례해석] / [🔍AI추론] / [⚠️확인불가] 중 1개 후행 (누락 금지)
 - 마지막 한 줄 안내 ("종료 / 새로운 상품 / 번호 입력") 필수`;
 
@@ -532,5 +541,60 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply: text });
   } catch (err) {
     return res.status(500).json({ error: 'Internal error', detail: err.message });
+  }
+}
+
+// v=20260520 — Gemini File API resumable upload 시작
+//   클라이언트가 PDF 메타데이터(mime_type, size, display_name) 전송
+//   서버가 Gemini API에 start 요청 → X-Goog-Upload-URL 회신
+//   클라이언트는 그 URL에 직접 PDF 바이너리 PUT (Vercel 4.5MB 페이로드 한도 우회)
+async function handleUploadInit(res, body, apiKey) {
+  const { mime_type, size, display_name } = body;
+
+  if (mime_type !== 'application/pdf') {
+    return res.status(400).json({ error: 'mime_type must be "application/pdf"' });
+  }
+  if (typeof size !== 'number' || !Number.isFinite(size) || size <= 0) {
+    return res.status(400).json({ error: 'size must be a positive number (bytes)' });
+  }
+  if (size > 20 * 1024 * 1024) {
+    return res.status(413).json({ error: 'size exceeds 20MB limit' });
+  }
+  const safeName = (typeof display_name === 'string' && display_name.length > 0 && display_name.length <= 200)
+    ? display_name : 'upload.pdf';
+
+  try {
+    const initResp = await fetch(
+      'https://generativelanguage.googleapis.com/upload/v1beta/files?key=' + encodeURIComponent(apiKey),
+      {
+        method: 'POST',
+        headers: {
+          'X-Goog-Upload-Protocol': 'resumable',
+          'X-Goog-Upload-Command': 'start',
+          'X-Goog-Upload-Header-Content-Length': String(size),
+          'X-Goog-Upload-Header-Content-Type': mime_type,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file: { display_name: safeName } }),
+      }
+    );
+
+    if (!initResp.ok) {
+      const detail = await initResp.text().catch(() => '');
+      return res.status(502).json({
+        error: 'Gemini upload init failed',
+        status: initResp.status,
+        detail: detail.slice(0, 500),
+      });
+    }
+
+    const uploadUrl = initResp.headers.get('X-Goog-Upload-URL') || initResp.headers.get('x-goog-upload-url');
+    if (!uploadUrl) {
+      return res.status(502).json({ error: 'No upload URL returned from Gemini' });
+    }
+
+    return res.status(200).json({ uploadUrl });
+  } catch (e) {
+    return res.status(502).json({ error: 'Gemini upload init error', detail: String(e && e.message || e).slice(0, 300) });
   }
 }
