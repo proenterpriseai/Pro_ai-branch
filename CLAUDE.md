@@ -241,7 +241,18 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260519a** (최신) — Dead code cleanup (코칭 카드 grid 909줄 + ORPHANED JS 2개)
+- **v=20260520a** (최신) — 코칭+완전판매 데모 모드 + PDF 20MB 지원 (Gemini File API)
+  - **상담코칭 답변 축소**: 유형 A 본문 1~5번 + 다음 단계 메뉴만 (기존 15단계 → 6단계). 6~14번(핵심필살/리스크/세무/벤치마크표/시너지/트렌드/상태요약/완판방어/타겟데이터) → [🔒 데모 종료 한 줄 안내] 1줄로 압축. 분량 2,500~4,500 → 1,500~2,500자.
+  - **완전판매 답변 축소**: 유형 A 본문 0~4번 + 5단계 반복 루프만. 5~8번(법적방어/위험단어/화법교정표/팀장Action) + 4단계 마스터 스탠다드 → [🔒 데모 종료 한 줄 안내]. 분량 3,500~6,000 → 1,800~2,800자.
+  - **공통 [표 강제 룰]**: 두 prompt 모두 — 비교 가능 항목(Worst/Best, Before/After, 옵션, 회사별, 위험/안전 표현 등)은 반드시 마크다운 표.
+  - **PDF 20MB 지원** (Gemini File API 통합, commit aeefef7):
+    - 신규 `api/chat.js` `action='upload-init'` 라우팅 — Gemini resumable upload URL 발급
+    - 신규 `_solUploadPdfToGemini(file, onProgress)` — 클라이언트가 Gemini upload URL에 PDF 바이너리 직접 POST (Vercel 4.5MB 페이로드 한도 우회)
+    - 4MB 이하: 기존 base64 inline_data (회귀 0). 4MB 초과 ~ 20MB: Gemini File API file_uri 경로
+    - 적용처: `_solPdfHandleFile`(단일, 보장분석/건강검진) + `_solInsCalcAddFile`(다중, 보험금산출)
+    - `validatePdf`: file_uri 모드 검증 (Google API URL 화이트리스트), inline 한도 7M→6M chars
+  - **검증 대기**: Vercel 배포 + 코칭/완판/보험금 산출 챗봇 + 큰 PDF 업로드 수동 테스트
+- **v=20260519a** — Dead code cleanup (코칭 카드 grid 909줄 + ORPHANED JS 2개)
   - Phase A (commit 78e5b42): index.html 코칭 카드 grid 909줄 삭제
     - CSS 282줄 (`.sol-coach-{grid,card,mode-tabs,level-chip,section,customer-bubble,script-card,qc-list,...}`)
     - JS 함수 258줄 (`_solCoach{Inject,Build,Bind,Open,Rerender,Get,Render}*`)
