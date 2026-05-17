@@ -11102,17 +11102,11 @@
           html += '</div>';
         }
 
-        // ── [5] 🔒 풀 분석에서 추가로 보이는 것 (Reveal — 잠금 5개) ──
+        // ── [5] 🔒 풀 분석에서 추가로 보이는 것 (v=20260520c — SOL_CHAT_LOCKED.coverage 참조) ──
         html += '<div>';
         html += '  <div class="sol-pdf-section-title">🔒 풀 분석에서 추가로 보이는 것</div>';
         html += '  <div class="sol-pdf-locked-grid">';
-        var lockedItems = [
-          { icon: '🧬', title: '119개 표준 항목 매트릭스', desc: '암/뇌/심장/사망/수술/실비/치료/치매 14 카테고리 × 119 담보 정밀 매칭' },
-          { icon: '📊', title: '6개 풀 리포트 자동 생성', desc: '간편 / 기존 / 리모델링 / 종합 / 만기 / TOP10 PDF 자동 출력' },
-          { icon: '🎯', title: '부족 담보 권장금액', desc: '사망 3억 / 암 5천만 / 뇌혈관 2천만 등 정밀 기준' },
-          { icon: '🏆', title: '최적의 보험사 상품 추천', desc: '보장기간, 보장범위, 보험료 경쟁력, 보장금액, 보장횟수, 담보 경쟁력 등을 비교·분석하여 종합 점수를 매긴 후 상위 1~10위 제시' },
-          { icon: '🧠', title: 'AI 종합 분석 의견', desc: 'A4 한 장 분량 자동 생성 — 8가지 시나리오 분기 (위험 신호 / 증액 및 감액 신호 / 신규 신호 등)' }
-        ];
+        var lockedItems = (SOL_CHAT_LOCKED.coverage && SOL_CHAT_LOCKED.coverage.items) || [];
         lockedItems.forEach(function (it) {
           html += '    <div class="sol-pdf-locked-item">';
           html += '      <div class="sol-pdf-locked-icon">' + it.icon + '</div>';
@@ -11315,17 +11309,11 @@
           html += '</div>';
         }
 
-        // 잠금 5개 (건강검진 특화)
+        // 잠금 5개 (v=20260520c — SOL_CHAT_LOCKED.healthcheck 참조)
         html += '<div>';
         html += '  <div class="sol-pdf-section-title">🔒 풀 분석에서 추가로 보이는 것</div>';
         html += '  <div class="sol-pdf-locked-grid">';
-        var lockedItems = [
-          { icon: '🩺', title: '검진 항목별 정밀 매칭', desc: '40개+ 표준 검사 항목 자동 매칭 + 정상범위 비교' },
-          { icon: '📊', title: '14 카테고리 권장 담보', desc: '암/뇌/심장/사망/수술/실비/치료/치매 등 풀 카테고리 매핑' },
-          { icon: '👨‍⚕️', title: '의사 상담 권고 자동 생성', desc: '이상 수치별 추가 검사 / 전문의 진료 / 생활 습관 가이드' },
-          { icon: '🏆', title: '최적의 보험사 상품 추천', desc: '건강 상태에 맞는 보장기간/보장범위/보험료 경쟁력 비교 후 상위 1~10위' },
-          { icon: '🧠', title: 'AI 종합 건강 의견', desc: 'A4 한 장 분량 자동 생성 — 위험 신호 / 예방 가이드 / 향후 검진 권고' }
-        ];
+        var lockedItems = (SOL_CHAT_LOCKED.healthcheck && SOL_CHAT_LOCKED.healthcheck.items) || [];
         lockedItems.forEach(function (it) {
           html += '    <div class="sol-pdf-locked-item">';
           html += '      <div class="sol-pdf-locked-icon">' + it.icon + '</div>';
@@ -12189,15 +12177,26 @@
       }
 
       // ─── Phase 3-B-3/4/5 — 챗봇 시스템 공용 잠금 5종 + CTA (v=20260518g) ───
+      // v=20260520c — 잠금 카드 5종 통합 (SOL_CHAT_LOCKED 단일 진실원)
+      //   - coaching 10개 (15단계 풀 엔진 + 답변에서 빠진 6~14번 9개 섹션)
+      //   - complete-sales 8개 (5+5 중복 2건 병합)
+      //   - insurance-calc 5개 (그대로, 사용자 결정 대기 중)
+      //   - healthcheck 5개 (PDF 인라인 → SOL_CHAT_LOCKED로 이관)
+      //   - coverage 5개 (PDF 인라인 → SOL_CHAT_LOCKED로 이관)
       var SOL_CHAT_LOCKED = {
         coaching: {
           headline: '인카금융서비스 프로사업단총괄에서는<br>매일 50건 이상의 상담을 [AI 코칭]으로 해결할 수 있습니다.',
           items: [
-            { icon: '🎤', title: '음성 분석 코칭',      desc: '실제 상담 녹음 → 톤·속도·키워드 + 개선 포인트 즉시 진단' },
-            { icon: '🤖', title: '무한 시나리오 생성',   desc: '고객 발화 입력 → [Bias Breaker 5단계] 맞춤 화법 실시간 출력' },
-            { icon: '📈', title: '15단계 풀 엔진',       desc: '유형 A 상품 분석 — 시장지위부터 인터랙티브 단계까지 [15단계 전수]' },
-            { icon: '📚', title: 'FSS 검수 + QC',        desc: '금융감독원 출신 조사관 사전 검수 + 단계별 [품질 검수 체크리스트]' },
-            { icon: '📊', title: '내 화법 실력 트래킹',   desc: '월별 성과 + 약점 영역 + [상향 표준 모델] 자동 비교 게이미피케이션' }
+            { icon: '📈', title: '15단계 풀 엔진',         desc: '유형 A 상품 분석 — 시장지위부터 다음 단계 메뉴까지 [15단계 전수] 가동' },
+            { icon: '🔥', title: '핵심 필살 기능',          desc: '[6번 섹션] 상품 차별화 포인트 입체 해부 — 시장 지위·수익 구조·수수료 결합' },
+            { icon: '🛡️', title: '입체 리스크 검토',        desc: '[7번 섹션] 운용·환율·인플레·금리·세무·정책 [5축 리스크] 동시 평가' },
+            { icon: '📚', title: '세무·법률 검토',           desc: '[8번 섹션] 금소법·세법·신탁법·상속세법 조항 자동 인용 + 절세 전략' },
+            { icon: '📋', title: '금융권 벤치마크 표',       desc: '[9번 섹션] 동급 상품 3~5사 수익률·안정성·수수료·혜택 [마크다운 표] 비교' },
+            { icon: '🔗', title: '자산 클래스 시너지',       desc: '[10번 섹션] ETF·채권·예적금·연금 등과의 [포트폴리오 결합 효과] 시뮬레이션' },
+            { icon: '📡', title: '최신 트렌드 반영',         desc: '[11번 섹션] 금리 인하/인상 사이클·세제 개편·시장 변동 [실시간 시장 반영]' },
+            { icon: '📑', title: '상태 요약 표',             desc: '[12번 섹션] 항목/내용/비고 3열 마크다운 표 — [한 장 요약본] 자동 생성' },
+            { icon: '⚖️', title: '완전판매·민원 방어',       desc: '[13번 섹션] 고지 3대 핵심(하나/둘/셋) + 민원 위험 사전 차단 화법' },
+            { icon: '🎯', title: '타겟 데이터 수집',         desc: '[14번 섹션] 연령·성별·직업·소득·재무 고민 자동 요청 → [정밀 맞춤 분석] 진입' }
           ]
         },
         'insurance-calc': {
@@ -12214,10 +12213,33 @@
           headline: '인카금융서비스 프로사업단총괄에서는<br>[FSS 출신 조사관]의 사전 점검을 매 상품마다 받을 수 있습니다.',
           items: [
             { icon: '⚖️', title: '분조위 결정문 600+ 매칭',   desc: '실제 금감원 분쟁조정위원회 결정문 풀 매칭 + 인용 자동 생성' },
-            { icon: '📲', title: '카톡/녹취 자동 가이드',      desc: '상담 중 실시간 [필수 캡처 포인트] 알림 + 녹취 문구 자동 제안' },
+            { icon: '📲', title: '카톡·SMS·녹취 + 법적 방어',  desc: '상담 중 [필수 캡처 포인트] 알림 + 녹취 문구 + [법적 방어 카톡·SMS] 자동 제안' },
             { icon: '📋', title: '민원 발생 시 답변서 초안',   desc: '민원 접수 → 5분 안에 [FSS 양식 반박 답변서] 자동 작성' },
-            { icon: '🚨', title: '팀장 알림 + 단톡방 카드',    desc: '리스크 상품 판매 시 자동 팀장 알림 + 단톡방 교육 카드 발송' },
-            { icon: '📊', title: '월별 민원 리스크 트래킹',    desc: '본부·지점 단위 민원 발생률 + 리스크 상품 랭킹 실시간 모니터링' }
+            { icon: '🚨', title: '팀장 Action Pack',          desc: '리스크 상품 판매 시 [팀장 알림] + 단톡방 [교육 카드] + 조직원 전파 메시지 자동 발송' },
+            { icon: '📊', title: '월별 민원 리스크 트래킹',    desc: '본부·지점 단위 민원 발생률 + 리스크 상품 랭킹 실시간 모니터링' },
+            { icon: '⚠️', title: '법적 위험 단어 교정',        desc: '[위험 표현] → [안전 표현] 자동 교정 — 보장 100%·확정 수익 등 [금소법 위반 단어] 사전 차단' },
+            { icon: '🎯', title: '화법 교정 클리닉 표',        desc: 'Worst / Best / 이유 3컬럼 [마크다운 표] — 실제 발화 직전 [표준 안전 화법] 자동 생성' },
+            { icon: '🎤', title: '4단계 마스터 스탠다드 해피콜', desc: '[해피콜 사전 코칭] 4단계 표준 — 인사·확인·고지·종료 실제 발화 시퀀스' }
+          ]
+        },
+        coverage: {
+          headline: '인카금융서비스 프로사업단총괄에서는<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.',
+          items: [
+            { icon: '🧬', title: '119개 표준 항목 매트릭스', desc: '암/뇌/심장/사망/수술/실비/치료/치매 14 카테고리 × 119 담보 정밀 매칭' },
+            { icon: '📊', title: '6개 풀 리포트 자동 생성',  desc: '간편 / 기존 / 리모델링 / 종합 / 만기 / TOP10 PDF 자동 출력' },
+            { icon: '🎯', title: '부족 담보 권장금액',        desc: '사망 3억 / 암 5천만 / 뇌혈관 2천만 등 정밀 기준' },
+            { icon: '🏆', title: '최적의 보험사 상품 추천',   desc: '보장기간·범위·보험료 경쟁력·금액·횟수·담보 종합 점수화 → 상위 [1~10위] 제시' },
+            { icon: '🧠', title: 'AI 종합 분석 의견',         desc: 'A4 한 장 분량 자동 생성 — 위험 신호 / 증액·감액 / 신규 신호 등 [8가지 시나리오 분기]' }
+          ]
+        },
+        healthcheck: {
+          headline: '인카금융서비스 프로사업단총괄에서는<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.',
+          items: [
+            { icon: '🩺', title: '검진 항목별 정밀 매칭',     desc: '40개+ 표준 검사 항목 자동 매칭 + 정상범위 비교' },
+            { icon: '📊', title: '14 카테고리 권장 담보',     desc: '암/뇌/심장/사망/수술/실비/치료/치매 등 풀 카테고리 매핑' },
+            { icon: '👨‍⚕️', title: '의사 상담 권고 자동 생성', desc: '이상 수치별 추가 검사 / 전문의 진료 / 생활 습관 가이드' },
+            { icon: '🏆', title: '최적의 보험사 상품 추천',   desc: '건강 상태에 맞는 보장기간/범위/보험료 경쟁력 비교 후 [상위 1~10위]' },
+            { icon: '🧠', title: 'AI 종합 건강 의견',         desc: 'A4 한 장 분량 자동 생성 — 위험 신호 / 예방 가이드 / 향후 검진 권고' }
           ]
         }
       };
@@ -12239,9 +12261,9 @@
           + '    <div>'
           + '      <div class="sol-pdf-section-title" style="margin-bottom:8px;">🔒 풀 시스템에서 추가로 보이는 것</div>'
           + '      <div class="sol-pdf-locked-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-        data.items.forEach(function(it, idx) {
-          var fullRow = (idx === 4) ? 'grid-column: 1 / -1;' : '';
-          html += '        <div class="sol-pdf-locked-item" style="' + fullRow + '">'
+        // v=20260520c — 공통 2열 원칙 (full-row 제거)
+        data.items.forEach(function(it) {
+          html += '        <div class="sol-pdf-locked-item">'
                 + '          <div class="sol-pdf-locked-icon">' + it.icon + '</div>'
                 + '          <div class="sol-pdf-locked-text">'
                 + '            <div class="sol-pdf-locked-title">' + _solEscHtml(it.title) + '</div>'
