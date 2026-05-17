@@ -4705,8 +4705,7 @@
                           </div>
                           <div
                             class="bg-neutral-800/80 ring-1 ring-white/5 text-neutral-200 text-sm px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm max-w-[85%]">
-                            안녕하세요, 보장분석 AI입니다. 보험증권 <span class="text-blue-400">PDF를 업로드</span>하시면 119개 항목을 즉시 분석해 드립니다.
-                            또는 질문을 입력해 주세요.
+                            안녕하세요. 보장분석 AI입니다. 보험 내역 <span class="text-blue-400">PDF를 + 버튼으로 올려주시면</span> 즉시 분석해 드립니다.
                           </div>
                         </div>
                       </div>
@@ -7205,13 +7204,7 @@
                     <span class="text-[10px] text-zinc-500">방금</span>
                   </div>
                   <div class="rounded-2xl rounded-tl-sm p-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
-                    <p class="text-[13px] text-zinc-300 leading-relaxed">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br>보장분석, 금융계산, 상담 코칭 등 무엇이든 물어보세요.</p>
-                  </div>
-                  <div class="flex flex-wrap gap-2 mt-3 sol-quick-buttons">
-                    <button data-query="보장분석 시스템에 대해 알려줘" class="text-[11px] px-3 py-1.5 rounded-lg bg-blue-600/8 text-blue-400 ring-1 ring-blue-600/15 hover:bg-blue-600/15 hover:ring-blue-600/30 transition-all cursor-pointer">보장분석 시스템은?</button>
-                    <button data-query="통합금융계산기 기능을 설명해줘" class="text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/8 text-blue-300 ring-1 ring-blue-500/15 hover:bg-blue-500/15 hover:ring-blue-500/30 transition-all cursor-pointer">금융계산기 기능</button>
-                    <button data-query="상담 코칭 AI는 어떻게 활용하나요?" class="text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/8 text-emerald-300 ring-1 ring-emerald-500/15 hover:bg-emerald-500/15 hover:ring-emerald-500/30 transition-all cursor-pointer">상담 코칭 AI</button>
-                    <button data-query="보험금 산출 AI 기능을 알려줘" class="text-[11px] px-3 py-1.5 rounded-lg bg-purple-500/8 text-purple-300 ring-1 ring-purple-500/15 hover:bg-purple-500/15 hover:ring-purple-500/30 transition-all cursor-pointer">보험금 산출</button>
+                    <p class="text-[13px] text-zinc-300 leading-relaxed">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br>시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.</p>
                   </div>
                 </div>
               </div>
@@ -7812,7 +7805,7 @@
       // 7개 시나리오 스크립트
       var scenarios = [
         { name: '보장분석 시스템', step: 1, msgs: [
-          { role: 'ai', text: '안녕하세요, 보장분석 AI입니다. 보험증권 PDF를 업로드하시면 119개 항목을 즉시 분석해 드립니다.' },
+          { role: 'ai', text: '안녕하세요. 보장분석 AI입니다. 보험 내역 PDF를 + 버튼으로 올려주시면 즉시 분석해 드립니다.' },
           { role: 'user', text: 'KB손해보험_보험증권.pdf 업로드', isFile: true },
           { role: 'ai', text: '📊 분석 완료! 총 119개 항목 중 87개 충족, 32개 미흡.\n\n✅ 사망보장: 2억 (적정)\n⚠️ 실손의료: 4세대 전환 필요\n❌ 치매간병: 미가입 (최우선 보완)', isResult: true }
         ]},
@@ -10441,13 +10434,9 @@
       };
 
       // ── 시스템별 빠른 액션 / placeholder / 인사말 데이터 (Phase 1) ──
+      // v=20260520f — all 시스템도 빠른 액션 미표시 (사용자 요청, 모든 시스템 통일)
       var SYSTEM_QUICK_QUERIES = {
-        all: [
-          { text: '보장분석 시스템은?', query: '보장분석 시스템에 대해 알려줘' },
-          { text: '금융계산기 기능', query: '통합금융계산기 기능을 설명해줘' },
-          { text: '상담 코칭 AI', query: '상담 코칭 AI는 어떻게 활용하나요?' },
-          { text: '보험금 산출', query: '보험금 산출 AI 기능을 알려줘' }
-        ],
+        all: [],
         // 보장분석은 빠른 액션 미표시 — + 버튼으로 PDF 직접 업로드가 메인 액션 (사용자 요청 2026-05-16)
         coverage: [],
         // 7개 시스템 모두 빠른 액션 미표시 (사용자 요청 2026-05-16)
@@ -10472,8 +10461,8 @@
       };
 
       var SYSTEM_GREETINGS = {
-        all: '안녕하세요! 프로사업단총괄 AI 어시스턴트입니다. 보장분석, 금융계산, 상담 코칭 등 무엇이든 물어보세요.',
-        coverage: '안녕하세요. 보장분석 AI입니다. 보험 증권 PDF를 + 버튼으로 올려주시면 119개 항목을 즉시 분석해 드립니다.',
+        all: '안녕하세요! 프로사업단총괄 AI 어시스턴트입니다. 시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.',
+        coverage: '안녕하세요. 보장분석 AI입니다. 보험 내역 PDF를 + 버튼으로 올려주시면 즉시 분석해 드립니다.',
         dbsales: 'DB 영업관리 AI입니다. 고객 데이터베이스 관리와 전환율 분석을 도와드립니다.',
         calculator: '통합금융계산기 AI입니다. 예적금, 부동산, 상속증여 등 9개 금융 모듈을 시뮬레이션합니다.',
         coaching: '상담 코칭 AI입니다. 거절 처리부터 니즈 환기까지, 실전 상담 화법을 실시간으로 제안합니다.',
