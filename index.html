@@ -7204,7 +7204,7 @@
                     <span class="text-[10px] text-zinc-500">방금</span>
                   </div>
                   <div class="rounded-2xl rounded-tl-sm p-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
-                    <p class="text-[13px] text-zinc-300 leading-relaxed">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br>시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.</p>
+                    <p class="text-[13px] text-zinc-300 leading-relaxed">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br><span id="sol-main-greeting-typing" data-typing-text="시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요."></span></p>
                   </div>
                 </div>
               </div>
@@ -7514,6 +7514,44 @@
       if (!autoContainer) return;
       var cards = autoContainer.innerHTML;
       autoContainer.innerHTML = cards + cards; // 14장 → 28장 (원본+복제)
+    })();
+
+    // ─── 메인 챗봇 인사말 타이핑 효과 (v=20260520i) ───
+    //   #sol-main-greeting-typing 요소의 data-typing-text를 한 글자씩 표시.
+    //   첫줄("안녕하세요! ... AI 어시스턴트입니다.")은 정적, 두번째 줄만 타이핑.
+    //   페이지 로드 + 600ms 딜레이 후 시작. prefers-reduced-motion 시 즉시 표시.
+    (function () {
+      document.addEventListener('DOMContentLoaded', function () {
+        var target = document.getElementById('sol-main-greeting-typing');
+        if (!target) return;
+        var fullText = target.getAttribute('data-typing-text') || '';
+        if (!fullText) return;
+        // reduced motion: 즉시 표시
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          target.textContent = fullText;
+          return;
+        }
+        var speed = 35; // ms per char
+        var startDelay = 600;
+        setTimeout(function () {
+          var i = 0;
+          // 깜빡이는 커서 시작
+          target.innerHTML = '<span class="sol-typing-cursor">▍</span>';
+          var interval = setInterval(function () {
+            if (i >= fullText.length) {
+              clearInterval(interval);
+              target.textContent = fullText;
+              return;
+            }
+            target.textContent = fullText.slice(0, i + 1);
+            var cursor = document.createElement('span');
+            cursor.className = 'sol-typing-cursor';
+            cursor.textContent = '▍';
+            target.appendChild(cursor);
+            i++;
+          }, speed);
+        }, startDelay);
+      });
     })();
 
     // ─── 프로사업단총괄: 빛의 슬릿 애니메이션 (오버레이 내부 스크롤 기반) ───
@@ -12055,11 +12093,13 @@
         'insurance-calc': {
           headline: '인카금융서비스 프로사업단총괄에서는<br>매월 수백 건의 [정밀 청구]를 즉시 처리할 수 있습니다.',
           items: [
-            { icon: '📑', title: '50종 표준 담보 정밀 매칭', desc: '진단·수술 코드 → 약관 자동 매핑 + 가입 담보 교차 분석' },
-            { icon: '🔍', title: '약관 OCR 자동 추출',       desc: '스캔본·이미지 약관도 자동 인식 + 핵심 조항 즉시 발췌' },
-            { icon: '📝', title: '청구 서류 자동 생성',      desc: 'FSS 표준 양식 + 보험사별 양식 자동 작성 + 첨부 가이드' },
-            { icon: '⚖️', title: '분쟁 시 반박 답변서',      desc: '보험사 거절 시 분쟁조정 사례 인용 + 반박 논리 자동 생성' },
-            { icon: '📊', title: '청구 결과 트래킹',          desc: '청구 → 지급까지 단계별 추적 + 평균 지급률 누적 통계' }
+            { icon: '📑', title: '담보 정밀 매칭',            desc: '진단·수술 코드 → 약관 자동 매핑 + 가입 담보 교차 분석' },
+            { icon: '🔍', title: '약관 OCR 자동 추출',         desc: '스캔본·이미지 약관도 자동 인식 + 핵심 조항 즉시 발췌' },
+            { icon: '📝', title: '청구 서류 자동 생성',        desc: 'FSS 표준 양식 + 보험사별 양식 자동 작성 + 첨부 가이드' },
+            { icon: '⚖️', title: '분쟁 시 반박 답변서',        desc: '보험사 거절 시 분쟁조정 사례 인용 + 반박 논리 자동 생성' },
+            { icon: '📊', title: '청구 결과 트래킹',            desc: '청구 → 지급까지 단계별 추적 + 평균 지급률 누적 통계' },
+            { icon: '🎯', title: '전문가 전략 가이드',          desc: '[핵심 타격 포인트] + [코드 발굴] — 가입 담보 중 지급 가능 영역 + 질병코드별 추가 청구 가능성 자동 도출' },
+            { icon: '💡', title: '놓치지 말아야 할 포인트',     desc: '[당일 수술 보장] + [연간 1회 제한] 등 약관별 함정 조항 사전 검출 + 청구 한도 최적화 전략' }
           ]
         },
         'complete-sales': {
