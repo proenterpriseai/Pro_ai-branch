@@ -10422,11 +10422,7 @@
             return;
           }
           requestBody.context = 'insurance-calc-pdf';
-          // v=20260520 — base64(작은 PDF) 또는 file_uri(큰 PDF, Gemini File API) 혼합 전송
           requestBody.pdfs = _solInsCalcPdfs.map(function(p) {
-            if (p.fileUri) {
-              return { mime_type: 'application/pdf', file_uri: p.fileUri };
-            }
             return { mime_type: 'application/pdf', data: p.base64 };
           });
         }
@@ -10909,57 +10905,6 @@
         });
       }
 
-      // v=20260520 — 4MB 초과 PDF Gemini File API 직접 업로드 (Vercel 4.5MB 페이로드 한도 우회)
-      //   1) /api/chat?action=upload-init → uploadUrl 받음 (Vercel function 페이로드 작음)
-      //   2) 클라이언트가 uploadUrl에 PDF 바이너리 직접 POST (브라우저 → Gemini Storage 직접)
-      //   3) 응답에서 file_uri 추출 → 이후 chat 호출 시 file_uri로 generateContent
-      //   onProgress(pct, label) 콜백 — 진행률 UI 갱신
-      async function _solUploadPdfToGemini(file, onProgress) {
-        // 1) Gemini upload URL 발급
-        if (onProgress) onProgress(10, '업로드 URL 발급 중...');
-        var initResp = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'upload-init',
-            mime_type: 'application/pdf',
-            size: file.size,
-            display_name: file.name
-          })
-        });
-        if (!initResp.ok) {
-          var detail = '';
-          try { var ej = await initResp.json(); detail = ej.error || ej.detail || ''; } catch (e) {}
-          throw new Error('업로드 URL 발급 실패 (' + initResp.status + ') ' + detail);
-        }
-        var initData = await initResp.json();
-        var uploadUrl = initData.uploadUrl;
-        if (!uploadUrl) throw new Error('업로드 URL 응답 누락');
-
-        // 2) PDF 바이너리를 Gemini upload URL에 직접 POST (CORS 허용 가정)
-        if (onProgress) onProgress(25, 'PDF 업로드 중...');
-        var uploadResp = await fetch(uploadUrl, {
-          method: 'POST',
-          headers: {
-            'X-Goog-Upload-Offset': '0',
-            'X-Goog-Upload-Command': 'upload, finalize',
-            'Content-Type': 'application/pdf'
-          },
-          body: file
-        });
-        if (!uploadResp.ok) {
-          var txt = '';
-          try { txt = await uploadResp.text(); } catch (e) {}
-          throw new Error('Gemini 업로드 실패 (' + uploadResp.status + ') ' + txt.slice(0, 200));
-        }
-        var uploadData = await uploadResp.json();
-        var fileUri = uploadData && uploadData.file && uploadData.file.uri;
-        if (!fileUri) throw new Error('Gemini 응답에 file URI 없음');
-
-        if (onProgress) onProgress(75, 'AI 분석 준비 중...');
-        return { fileUri: fileUri, filename: file.name };
-      }
-
       function _solPdfHandleError(err) {
         _solPdfHideProgress();
         var msg = err && err.message ? err.message : '알 수 없는 오류가 발생했습니다.';
@@ -10967,15 +10912,15 @@
       }
 
       async function _solPdfHandleFile(file) {
-        // 1) 검증 (v=20260520 — 20MB까지 허용, 4MB 초과는 Gemini File API 경로)
+        // 1) 검증
         if (!file) return;
         var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
         if (!isPdf) {
           appendMessage('ai', '⚠️ PDF 파일만 지원합니다. (.pdf 확장자)');
           return;
         }
-        if (file.size > 20 * 1024 * 1024) {
-          appendMessage('ai', '⚠️ 파일이 너무 큽니다. 20MB 이하 PDF만 지원합니다. (현재: ' + (file.size / 1024 / 1024).toFixed(1) + 'MB)');
+        if (file.size > 5 * 1024 * 1024) {
+          appendMessage('ai', '⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB.<br>💡 PDF가 크다면 <a href="https://smallpdf.com/compress-pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">SmallPDF</a> 또는 <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">ILovePDF</a> 등에서 압축 후 다시 업로드해 주세요.');
           return;
         }
 
@@ -10987,27 +10932,21 @@
         var progressInterval = _solPdfStartFakeProgress();
 
         try {
-          var sysKey = (typeof activeSystem !== 'undefined') ? activeSystem : 'coverage';
-          var data;
-          if (file.size <= 4 * 1024 * 1024) {
-            // 작은 PDF: 기존 base64 inline_data 경로
-            _solPdfShowProgress(15, '파일 변환 중...');
-            var base64 = await _solPdfBlobToBase64(file);
-            _solPdfShowProgress(30, 'AI 분석 중...');
-            data = await _solPdfCallAnalyze({ base64: base64 }, file.name, sysKey);
-          } else {
-            // 큰 PDF: Gemini File API 직접 업로드 → file_uri
-            var uploaded = await _solUploadPdfToGemini(file, _solPdfShowProgress);
-            _solPdfShowProgress(85, 'AI 분석 중...');
-            data = await _solPdfCallAnalyze({ fileUri: uploaded.fileUri }, file.name, sysKey);
-          }
+          // 4) base64 인코딩
+          _solPdfShowProgress(15, '파일 변환 중...');
+          var base64 = await _solPdfBlobToBase64(file);
+          _solPdfShowProgress(30, 'AI 분석 중...');
 
-          // 진행률 마무리
+          // 5) API 호출 (activeSystem에 따라 보장분석/건강검진 분기)
+          var sysKey = (typeof activeSystem !== 'undefined') ? activeSystem : 'coverage';
+          var data = await _solPdfCallAnalyze(base64, file.name, sysKey);
+
+          // 6) 진행률 마무리
           clearInterval(progressInterval);
           _solPdfShowProgress(100, '완료');
           setTimeout(_solPdfHideProgress, 600);
 
-          // 결과 렌더 (시스템별 다른 카드 구조)
+          // 7) 결과 렌더 (시스템별 다른 카드 구조)
           _solPdfRenderChatResult(data, file.name);
           _solPdfInjectReportPanel();
           _solPdfRenderReport(data, sysKey);
@@ -11017,24 +10956,21 @@
         }
       }
 
-      // v=20260520 — pdfPayload: { base64 } (작은 PDF, inline_data) 또는 { fileUri } (큰 PDF, file_data)
-      async function _solPdfCallAnalyze(pdfPayload, filename, sysKey) {
+      async function _solPdfCallAnalyze(base64, filename, sysKey) {
         sysKey = sysKey || 'coverage';
         var ctxInfo = PDF_SYSTEM_CONTEXTS[sysKey] || PDF_SYSTEM_CONTEXTS.coverage;
         var msg = sysKey === 'healthcheck' ? '건강검진 분석' : '보장분석';
-        var pdfBody;
-        if (pdfPayload && pdfPayload.fileUri) {
-          pdfBody = { mime_type: 'application/pdf', file_uri: pdfPayload.fileUri, filename: filename };
-        } else {
-          pdfBody = { mime_type: 'application/pdf', data: (pdfPayload && pdfPayload.base64) || '', filename: filename };
-        }
         var resp = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message: msg,
             context: ctxInfo.contextKey,
-            pdf: pdfBody
+            pdf: {
+              mime_type: 'application/pdf',
+              data: base64,
+              filename: filename
+            }
           })
         });
         if (!resp.ok) {
@@ -11192,7 +11128,7 @@
 
         // ── [6] CTA — 입사 상담 신청 ──
         html += '<div class="sol-pdf-cta-card">';
-        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.</div>';
+        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서는<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.</div>';
         html += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
         html += '  <button class="sol-pdf-cta-btn" id="sol-pdf-cta-btn">입사 상담 신청하기 →</button>';
         html += '</div>';
@@ -11405,7 +11341,7 @@
 
         // CTA (보장분석과 같은 카드, 카피 동일 유지)
         html += '<div class="sol-pdf-cta-card">';
-        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.</div>';
+        html += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서는<br>매월 100명의 고객을 이렇게 분석할 수 있습니다.</div>';
         html += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
         html += '  <button class="sol-pdf-cta-btn" id="sol-pdf-cta-btn">입사 상담 신청하기 →</button>';
         html += '</div>';
@@ -12255,7 +12191,7 @@
       // ─── Phase 3-B-3/4/5 — 챗봇 시스템 공용 잠금 5종 + CTA (v=20260518g) ───
       var SOL_CHAT_LOCKED = {
         coaching: {
-          headline: '인카금융서비스 프로사업단총괄에서 일하면<br>매일 50건 이상의 상담을 [AI 코칭]으로 해결할 수 있습니다.',
+          headline: '인카금융서비스 프로사업단총괄에서는<br>매일 50건 이상의 상담을 [AI 코칭]으로 해결할 수 있습니다.',
           items: [
             { icon: '🎤', title: '음성 분석 코칭',      desc: '실제 상담 녹음 → 톤·속도·키워드 + 개선 포인트 즉시 진단' },
             { icon: '🤖', title: '무한 시나리오 생성',   desc: '고객 발화 입력 → [Bias Breaker 5단계] 맞춤 화법 실시간 출력' },
@@ -12265,7 +12201,7 @@
           ]
         },
         'insurance-calc': {
-          headline: '인카금융서비스 프로사업단총괄에서 일하면<br>매월 수백 건의 [정밀 청구]를 즉시 처리할 수 있습니다.',
+          headline: '인카금융서비스 프로사업단총괄에서는<br>매월 수백 건의 [정밀 청구]를 즉시 처리할 수 있습니다.',
           items: [
             { icon: '📑', title: '50종 표준 담보 정밀 매칭', desc: '진단·수술 코드 → 약관 자동 매핑 + 가입 담보 교차 분석' },
             { icon: '🔍', title: '약관 OCR 자동 추출',       desc: '스캔본·이미지 약관도 자동 인식 + 핵심 조항 즉시 발췌' },
@@ -12275,7 +12211,7 @@
           ]
         },
         'complete-sales': {
-          headline: '인카금융서비스 프로사업단총괄에서 일하면<br>[FSS 출신 조사관]의 사전 점검을 매 상품마다 받을 수 있습니다.',
+          headline: '인카금융서비스 프로사업단총괄에서는<br>[FSS 출신 조사관]의 사전 점검을 매 상품마다 받을 수 있습니다.',
           items: [
             { icon: '⚖️', title: '분조위 결정문 600+ 매칭',   desc: '실제 금감원 분쟁조정위원회 결정문 풀 매칭 + 인용 자동 생성' },
             { icon: '📲', title: '카톡/녹취 자동 가이드',      desc: '상담 중 실시간 [필수 캡처 포인트] 알림 + 녹취 문구 자동 제안' },
@@ -12551,8 +12487,7 @@
         _solInsCalcPdfs = [];
       }
 
-      // PDF 파일을 누적 저장 + 첨부 칩 메시지 표시
-      // v=20260520 — 20MB까지 허용, 4MB 초과는 Gemini File API 경로
+      // PDF 파일을 base64로 누적 저장 + 첨부 칩 메시지 표시
       async function _solInsCalcAddFile(file) {
         if (!file) return;
         var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
@@ -12560,8 +12495,8 @@
           _solInsCalcAppendSystemMsg('⚠️ PDF 파일만 지원합니다 (.pdf 확장자)');
           return;
         }
-        if (file.size > 20 * 1024 * 1024) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (20MB 이하): ' + file.name + ' (현재: ' + (file.size/1024/1024).toFixed(1) + 'MB)');
+        if (file.size > 5 * 1024 * 1024) {
+          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB.<br>💡 PDF가 크다면 <a href="https://smallpdf.com/compress-pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">SmallPDF</a> 또는 <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">ILovePDF</a> 등에서 압축 후 다시 업로드해 주세요.');
           return;
         }
         if (_solInsCalcPdfs.length >= 5) {
@@ -12569,19 +12504,11 @@
           return;
         }
         try {
-          if (file.size <= 4 * 1024 * 1024) {
-            // 작은 PDF: base64 inline_data
-            var base64 = await _solPdfBlobToBase64(file);
-            _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
-          } else {
-            // 큰 PDF: Gemini File API 직접 업로드 → file_uri
-            _solInsCalcAppendSystemMsg('📤 ' + file.name + ' 업로드 중... (' + (file.size/1024/1024).toFixed(1) + 'MB)');
-            var uploaded = await _solUploadPdfToGemini(file);
-            _solInsCalcPdfs.push({ filename: file.name, fileUri: uploaded.fileUri });
-          }
+          var base64 = await _solPdfBlobToBase64(file);
+          _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
           _solInsCalcAppendChip(file.name, _solInsCalcPdfs.length);
         } catch (e) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일 처리 실패: ' + file.name + ' — ' + (e && e.message ? e.message : ''));
+          _solInsCalcAppendSystemMsg('⚠️ 파일 읽기 실패: ' + file.name);
         }
       }
 
@@ -12927,7 +12854,7 @@
         h += '</div>';
         // CTA
         h += '<div class="sol-pdf-cta-card">';
-        h += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>[700명의 영업 데이터]를 매일 실시간 분석할 수 있습니다.</div>';
+        h += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서는<br>[700명의 영업 데이터]를 매일 실시간 분석할 수 있습니다.</div>';
         h += '  <div class="sol-pdf-cta-sub">팀/조직 단위 KPI 통합 분석 + AI 시뮬레이션 — 입사 첫날부터 즉시 사용 가능</div>';
         h += '  <button class="sol-pdf-cta-btn" id="sol-dbs-cta-btn">입사 상담 신청하기 →</button>';
         h += '</div>';
@@ -13500,7 +13427,7 @@
         h += '  </div>';
         h += '</div>';
         h += '<div class="sol-pdf-cta-card" style="margin-top:12px;">';
-        h += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서 일하면<br>매월 수백 건의 시뮬레이션을 즉시 처리할 수 있습니다.</div>';
+        h += '  <div class="sol-pdf-cta-headline">인카금융서비스 프로사업단총괄에서는<br>매월 수백 건의 시뮬레이션을 즉시 처리할 수 있습니다.</div>';
         h += '  <div class="sol-pdf-cta-sub">700명의 전문가가 매일 사용하는 AI 시스템 — 입사 첫날부터 즉시 사용 가능</div>';
         h += '  <button class="sol-pdf-cta-btn" data-chat-cta>입사 상담 신청하기 →</button>';
         h += '</div>';

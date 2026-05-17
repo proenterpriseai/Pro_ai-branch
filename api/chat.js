@@ -61,14 +61,6 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY not configured' });
 
-  // v=20260520 — Gemini File API 통합 (Phase 3-B-4 PDF 크기 한도 5MB → 20MB)
-  //   클라이언트가 'upload-init' action으로 호출하면 Gemini resumable upload URL 발급
-  //   클라이언트는 그 URL에 직접 PDF 바이너리 PUT → file_uri 회신
-  //   이후 chat 호출 시 pdf.file_uri 전달 → file_data로 generateContent
-  if (req.body && req.body.action === 'upload-init') {
-    return await handleUploadInit(res, req.body, apiKey);
-  }
-
   const { message, context, pdf, pdfs } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
   if (typeof message !== 'string' || message.length > 2000) {
@@ -79,24 +71,12 @@ export default async function handler(req, res) {
   //   기존 텍스트 채팅은 그대로, pdf 필드 옵셔널.
   //   MIME 화이트리스트(application/pdf만) + 크기 제한(base64 ≤ 7M chars ≈ 원본 5MB)
   // v=20260518e — 다중 PDF 지원 (Phase 3-B-4 보험금 산출 — 보험내역 + 약관)
-  // v=20260520 — file_uri 모드 추가 (4MB 초과 PDF는 Gemini File API로 사전 업로드 후 URI 전달)
   let pdfParts = [];
-  const GEMINI_FILE_URI_RE = /^https:\/\/generativelanguage\.googleapis\.com\/[a-z0-9/_-]+$/i;
   const validatePdf = (p) => {
     if (!p || typeof p !== 'object') return null;
-    // file_uri 모드 (큰 PDF — Gemini File API로 사전 업로드 완료)
-    if (p.file_uri) {
-      if (typeof p.file_uri !== 'string' || !GEMINI_FILE_URI_RE.test(p.file_uri)) {
-        return { err: 'invalid file_uri (must be a Gemini Files API URL)' };
-      }
-      const mt = p.mime_type || 'application/pdf';
-      if (mt !== 'application/pdf') return { err: 'mime_type must be "application/pdf"' };
-      return { part: { file_data: { mime_type: mt, file_uri: p.file_uri } } };
-    }
-    // inline_data 모드 (4MB 이하 PDF, base64)
     if (p.mime_type !== 'application/pdf') return { err: 'mime_type must be "application/pdf"' };
     if (typeof p.data !== 'string' || !p.data.length) return { err: 'data must be a non-empty base64 string' };
-    if (p.data.length > 6_000_000) return { err: 'PDF inline too large (max ~4MB) — use file_uri mode for larger files' };
+    if (p.data.length > 7_000_000) return { err: 'PDF too large (max ~5MB)' };
     return { part: { inline_data: { mime_type: p.mime_type, data: p.data } } };
   };
   if (pdf) {
@@ -541,60 +521,5 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply: text });
   } catch (err) {
     return res.status(500).json({ error: 'Internal error', detail: err.message });
-  }
-}
-
-// v=20260520 — Gemini File API resumable upload 시작
-//   클라이언트가 PDF 메타데이터(mime_type, size, display_name) 전송
-//   서버가 Gemini API에 start 요청 → X-Goog-Upload-URL 회신
-//   클라이언트는 그 URL에 직접 PDF 바이너리 PUT (Vercel 4.5MB 페이로드 한도 우회)
-async function handleUploadInit(res, body, apiKey) {
-  const { mime_type, size, display_name } = body;
-
-  if (mime_type !== 'application/pdf') {
-    return res.status(400).json({ error: 'mime_type must be "application/pdf"' });
-  }
-  if (typeof size !== 'number' || !Number.isFinite(size) || size <= 0) {
-    return res.status(400).json({ error: 'size must be a positive number (bytes)' });
-  }
-  if (size > 20 * 1024 * 1024) {
-    return res.status(413).json({ error: 'size exceeds 20MB limit' });
-  }
-  const safeName = (typeof display_name === 'string' && display_name.length > 0 && display_name.length <= 200)
-    ? display_name : 'upload.pdf';
-
-  try {
-    const initResp = await fetch(
-      'https://generativelanguage.googleapis.com/upload/v1beta/files?key=' + encodeURIComponent(apiKey),
-      {
-        method: 'POST',
-        headers: {
-          'X-Goog-Upload-Protocol': 'resumable',
-          'X-Goog-Upload-Command': 'start',
-          'X-Goog-Upload-Header-Content-Length': String(size),
-          'X-Goog-Upload-Header-Content-Type': mime_type,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ file: { display_name: safeName } }),
-      }
-    );
-
-    if (!initResp.ok) {
-      const detail = await initResp.text().catch(() => '');
-      return res.status(502).json({
-        error: 'Gemini upload init failed',
-        status: initResp.status,
-        detail: detail.slice(0, 500),
-      });
-    }
-
-    const uploadUrl = initResp.headers.get('X-Goog-Upload-URL') || initResp.headers.get('x-goog-upload-url');
-    if (!uploadUrl) {
-      return res.status(502).json({ error: 'No upload URL returned from Gemini' });
-    }
-
-    return res.status(200).json({ uploadUrl });
-  } catch (e) {
-    return res.status(502).json({ error: 'Gemini upload init error', detail: String(e && e.message || e).slice(0, 300) });
   }
 }
