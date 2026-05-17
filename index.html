@@ -18,6 +18,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- v=20260520k — PDF.js for client-side 약관 텍스트 추출 (Vercel 4.5MB 페이로드 한도 우회) -->
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
     * {
       font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
@@ -10317,8 +10319,12 @@
             return;
           }
           requestBody.context = 'insurance-calc-pdf';
+          // v=20260520k — base64 inline_data 또는 text(클라이언트 PDF.js 추출) 혼합 전송
           requestBody.pdfs = _solInsCalcPdfs.map(function(p) {
-            return { mime_type: 'application/pdf', data: p.base64 };
+            if (p.text) {
+              return { mime_type: 'application/pdf', text: p.text, filename: p.filename };
+            }
+            return { mime_type: 'application/pdf', data: p.base64, filename: p.filename };
           });
         }
 
@@ -10794,6 +10800,42 @@
           reader.onerror = function () { reject(new Error('파일 읽기 실패')); };
           reader.readAsDataURL(file);
         });
+      }
+
+      // v=20260520k — 약관 PDF 텍스트 추출 (Vercel 4.5MB 페이로드 한도 우회)
+      //   클라이언트 PDF.js로 텍스트 추출 → 텍스트만 서버 전송 (수십 KB)
+      //   이미지 기반 스캔 약관은 텍스트 추출 안 됨 → 호출처에서 길이 검증 후 fallback
+      //   onProgress(current, total) 콜백 — 진행률 UI 갱신용
+      function _solPdfWaitForLib(timeoutMs) {
+        return new Promise(function (resolve, reject) {
+          var start = Date.now();
+          (function tick() {
+            if (window.pdfjsLib) return resolve(window.pdfjsLib);
+            if (Date.now() - start > timeoutMs) return reject(new Error('PDF.js 라이브러리 로드 실패'));
+            setTimeout(tick, 100);
+          })();
+        });
+      }
+      async function _solExtractPdfText(file, onProgress) {
+        // Lazy: PDF.js 로드 대기 (최대 8초)
+        var pdfjsLib = await _solPdfWaitForLib(8000);
+        // Worker 한 번만 설정 (모듈 레벨 즉시 초기화 금지 — Lazy Init 원칙)
+        if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+        var arrayBuffer = await file.arrayBuffer();
+        var loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        var pdf = await loadingTask.promise;
+        var total = pdf.numPages;
+        var allText = '';
+        for (var i = 1; i <= total; i++) {
+          var page = await pdf.getPage(i);
+          var content = await page.getTextContent();
+          var pageText = content.items.map(function (item) { return item.str; }).join(' ');
+          allText += pageText + '\n\n';
+          if (typeof onProgress === 'function') onProgress(i, total);
+        }
+        return allText.trim();
       }
 
       function _solPdfHandleError(err) {
@@ -12425,7 +12467,9 @@
         _solInsCalcPdfs = [];
       }
 
-      // PDF 파일을 base64로 누적 저장 + 첨부 칩 메시지 표시
+      // PDF 파일을 누적 저장 + 첨부 칩 메시지 표시
+      // v=20260520k — 4MB 이하는 base64 inline_data, 4MB~20MB는 PDF.js 클라이언트 텍스트 추출
+      //   약관 PDF(통상 15MB+)도 텍스트만 서버 전송하여 Vercel 4.5MB 페이로드 한도 우회
       async function _solInsCalcAddFile(file) {
         if (!file) return;
         var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
@@ -12433,8 +12477,8 @@
           _solInsCalcAppendSystemMsg('⚠️ PDF 파일만 지원합니다 (.pdf 확장자)');
           return;
         }
-        if (file.size > 5 * 1024 * 1024) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB. 💡 [SmallPDF] (smallpdf.com/compress-pdf) 또는 [ILovePDF] (ilovepdf.com/compress_pdf) 등 무료 PDF 압축 서비스로 5MB 이하로 줄인 후 다시 업로드해 주세요.');
+        if (file.size > 20 * 1024 * 1024) {
+          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (20MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB. 💡 [SmallPDF] (smallpdf.com/compress-pdf) 또는 [ILovePDF] (ilovepdf.com/compress_pdf) 등 무료 PDF 압축 서비스로 20MB 이하로 줄인 후 다시 업로드해 주세요.');
           return;
         }
         if (_solInsCalcPdfs.length >= 5) {
@@ -12442,11 +12486,30 @@
           return;
         }
         try {
-          var base64 = await _solPdfBlobToBase64(file);
-          _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
+          if (file.size <= 4 * 1024 * 1024) {
+            // 작은 PDF (보험 내역 등): base64 inline_data — Gemini가 시각 분석 가능
+            var base64 = await _solPdfBlobToBase64(file);
+            _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
+          } else {
+            // 큰 PDF (약관 등 15MB+): PDF.js로 텍스트 추출 → 텍스트만 서버 전송
+            _solInsCalcAppendSystemMsg('📄 ' + file.name + ' 텍스트 추출 중... (' + (file.size/1024/1024).toFixed(1) + 'MB, 잠시만 기다려 주세요)');
+            var extractedText = await _solExtractPdfText(file, function (cur, total) {
+              // 진행률 로깅만 (UI 갱신은 채팅 메시지로 안 함 — 노이즈 방지)
+              if (cur === total && window.console) console.log('[약관 텍스트 추출] ' + cur + '/' + total + ' 페이지 완료');
+            });
+            // 이미지 기반 스캔본 약관은 텍스트가 거의 안 나옴 — 임계값 1,000자 미만이면 fallback
+            if (!extractedText || extractedText.length < 1000) {
+              _solInsCalcAppendSystemMsg('⚠️ ' + file.name + ' — 텍스트 추출이 거의 안 됐습니다 (이미지 기반 스캔 약관일 수 있음). 텍스트 기반 PDF 또는 5MB 이하로 압축 후 다시 업로드해 주세요.');
+              return;
+            }
+            // 약관 텍스트가 너무 길면 앞 80,000자만 사용 (Gemini context 보호)
+            var maxChars = 80000;
+            if (extractedText.length > maxChars) extractedText = extractedText.slice(0, maxChars) + '\n\n[…약관 후반부 생략, 전체 ' + extractedText.length + '자 중 ' + maxChars + '자만 전송…]';
+            _solInsCalcPdfs.push({ filename: file.name, text: extractedText });
+          }
           _solInsCalcAppendChip(file.name, _solInsCalcPdfs.length);
         } catch (e) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일 읽기 실패: ' + file.name);
+          _solInsCalcAppendSystemMsg('⚠️ 파일 처리 실패: ' + file.name + ' — ' + (e && e.message ? e.message : ''));
         }
       }
 

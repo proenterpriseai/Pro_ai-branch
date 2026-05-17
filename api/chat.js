@@ -71,12 +71,21 @@ export default async function handler(req, res) {
   //   기존 텍스트 채팅은 그대로, pdf 필드 옵셔널.
   //   MIME 화이트리스트(application/pdf만) + 크기 제한(base64 ≤ 7M chars ≈ 원본 5MB)
   // v=20260518e — 다중 PDF 지원 (Phase 3-B-4 보험금 산출 — 보험내역 + 약관)
+  // v=20260520k — 클라이언트 PDF.js 추출 텍스트 모드 추가 (큰 약관 PDF용, Vercel 4.5MB 한도 우회)
   let pdfParts = [];
   const validatePdf = (p) => {
     if (!p || typeof p !== 'object') return null;
     if (p.mime_type !== 'application/pdf') return { err: 'mime_type must be "application/pdf"' };
-    if (typeof p.data !== 'string' || !p.data.length) return { err: 'data must be a non-empty base64 string' };
-    if (p.data.length > 7_000_000) return { err: 'PDF too large (max ~5MB)' };
+    // 텍스트 모드 (클라이언트 PDF.js 추출 — 약관 PDF 등 큰 파일용)
+    if (typeof p.text === 'string' && p.text.length > 0) {
+      if (p.text.length > 200_000) return { err: 'PDF text too large (max 200K chars)' };
+      const filename = typeof p.filename === 'string' ? p.filename.slice(0, 200) : 'document.pdf';
+      const wrappedText = '[첨부 PDF — ' + filename + ' (클라이언트 텍스트 추출)]\n\n' + p.text;
+      return { part: { text: wrappedText } };
+    }
+    // 기존 base64 inline_data 모드 (5MB 이하)
+    if (typeof p.data !== 'string' || !p.data.length) return { err: 'data or text required' };
+    if (p.data.length > 7_000_000) return { err: 'PDF too large (max ~5MB) — use client text extraction for larger files' };
     return { part: { inline_data: { mime_type: p.mime_type, data: p.data } } };
   };
   if (pdf) {
