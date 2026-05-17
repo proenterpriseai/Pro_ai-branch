@@ -10784,7 +10784,7 @@
           return;
         }
         if (file.size > 5 * 1024 * 1024) {
-          appendMessage('ai', '⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB.<br>💡 PDF가 크다면 <a href="https://smallpdf.com/compress-pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">SmallPDF</a> 또는 <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">ILovePDF</a> 등에서 압축 후 다시 업로드해 주세요.');
+          appendMessage('ai', '⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB. 💡 [SmallPDF] (smallpdf.com/compress-pdf) 또는 [ILovePDF] (ilovepdf.com/compress_pdf) 등 무료 PDF 압축 서비스로 5MB 이하로 줄인 후 다시 업로드해 주세요.');
           return;
         }
 
@@ -12382,7 +12382,7 @@
           return;
         }
         if (file.size > 5 * 1024 * 1024) {
-          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB.<br>💡 PDF가 크다면 <a href="https://smallpdf.com/compress-pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">SmallPDF</a> 또는 <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline;">ILovePDF</a> 등에서 압축 후 다시 업로드해 주세요.');
+          _solInsCalcAppendSystemMsg('⚠️ 파일이 너무 큽니다 (5MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB. 💡 [SmallPDF] (smallpdf.com/compress-pdf) 또는 [ILovePDF] (ilovepdf.com/compress_pdf) 등 무료 PDF 압축 서비스로 5MB 이하로 줄인 후 다시 업로드해 주세요.');
           return;
         }
         if (_solInsCalcPdfs.length >= 5) {
