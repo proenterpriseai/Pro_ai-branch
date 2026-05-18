@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/신입/:path*", "destination": "/AI 홈페이지/신입/:path*" },
+    { "source": "/관리자/:path*", "destination": "/AI 홈페이지/관리자/:path*" },
+    { "source": "/법인/:path*", "destination": "/AI 홈페이지/법인/:path*" },
+    { "source": "/재무설계/:path*", "destination": "/AI 홈페이지/재무설계/:path*" },
+    { "source": "/db영업전문과과정/:path*", "destination": "/AI 홈페이지/db영업전문과과정/:path*" },
+    { "source": "/사람/:path*", "destination": "/AI 홈페이지/사람/:path*" }
+  ]
+}
