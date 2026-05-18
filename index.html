@@ -10327,6 +10327,15 @@
             return { mime_type: 'application/pdf', data: p.base64, filename: p.filename };
           });
         }
+        // v=20260521a — 완전판매 B 모드 민원 공문 PDF 첨부 시 컨텍스트 전환
+        else if (activeSystem === 'complete-sales' && _solComplPdf) {
+          requestBody.context = 'complete-sales-pdf';
+          if (_solComplPdf.text) {
+            requestBody.pdf = { mime_type: 'application/pdf', text: _solComplPdf.text, filename: _solComplPdf.filename };
+          } else {
+            requestBody.pdf = { mime_type: 'application/pdf', data: _solComplPdf.base64, filename: _solComplPdf.filename };
+          }
+        }
 
         fetch('/api/chat', {
           method: 'POST',
@@ -10521,16 +10530,20 @@
       //   Phase 2A (v=20260516b): coverage
       //   Phase 3-B-1 (v=20260516g): + healthcheck (건강검진 결과지 PDF)
       //   Phase 3-B-4 (v=20260518e): + insurance-calc (보험 내역 + 약관, 다중 PDF)
-      var PDF_ENABLED_SYSTEMS = ['coverage', 'healthcheck', 'insurance-calc'];
+      //   v=20260521a: + complete-sales (B 모드 민원 공문 PDF, 단일)
+      var PDF_ENABLED_SYSTEMS = ['coverage', 'healthcheck', 'insurance-calc', 'complete-sales'];
 
       // 시스템별 PDF 업로드 컨텍스트 (api/chat.js에 전달 → 프롬프트 분기)
       var PDF_SYSTEM_CONTEXTS = {
         coverage: { contextKey: 'coverage-pdf', title: '보험 증권', tooltip: 'PDF 업로드 → 보장분석' },
         healthcheck: { contextKey: 'healthcheck-pdf', title: '건강검진 결과지', tooltip: 'PDF 업로드 → 건강검진 분석' },
-        'insurance-calc': { contextKey: 'insurance-calc-pdf', title: '보험내역 + 약관', tooltip: '보험내역·약관 PDF 업로드 → 진단/수술 입력 시 보험금 산출', multi: true }
+        'insurance-calc': { contextKey: 'insurance-calc-pdf', title: '보험내역 + 약관', tooltip: '보험내역·약관 PDF 업로드 → 진단/수술 입력 시 보험금 산출', multi: true },
+        'complete-sales': { contextKey: 'complete-sales-pdf', title: '민원 공문', tooltip: '민원 공문 PDF 업로드 → B 모드 (반박 답변서 전략 수립)', multi: false }
       };
       // 보험금 산출 — 누적된 PDF (다중 업로드 모드)
       var _solInsCalcPdfs = []; // [{filename, base64}]
+      // 완전판매 — 단일 PDF (B 모드 민원 공문, v=20260521a)
+      var _solComplPdf = null; // { filename, base64 } 또는 { filename, text }
 
       // ── Phase 1 헬퍼 함수 ──
       function _solClearChat() {
@@ -10709,6 +10722,9 @@
               for (var i = 0; i < this.files.length; i++) {
                 if (typeof _solInsCalcAddFile === 'function') _solInsCalcAddFile(this.files[i]);
               }
+            } else if (typeof activeSystem !== 'undefined' && activeSystem === 'complete-sales') {
+              // v=20260521a — 완전판매 B 모드 단일 PDF 누적 (질문은 채팅 입력 시 트리거)
+              if (typeof _solComplAddFile === 'function') _solComplAddFile(this.files[0]);
             } else {
               // 보장분석/건강검진: 단일 파일 즉시 분석
               var f = this.files[0];
@@ -10746,6 +10762,8 @@
           _solInsCalcAppendIntroBubble();
         } else if (sysKey === 'complete-sales') {
           // Phase 3-B-5 (v=20260518f) — FSS 조사관 + A/B 모드, 잠금+CTA는 응답 완료 후
+          // v=20260521a — B 모드 민원 공문 PDF 누적 초기화
+          _solComplReset();
           _solComplAppendIntroBubble();
         } else {
           _solAppendGreeting(greeting);
@@ -12764,6 +12782,110 @@
           // 정상 답변일 때만 잠금+CTA 노출 (재확인 안내 시 스킵)
           if (_solShouldShowLockedCta(reply)) _solChatAppendLockedCta('complete-sales');
         });
+      }
+
+      // ─── v=20260521a — 완전판매 B 모드 민원 공문 PDF 업로드 ───
+      //   _solInsCalcAddFile 패턴 복제 (단일 PDF, 4MB 임계 + PDF.js 텍스트 추출)
+      //   B 모드 (민원 발생 시 대응)에서 민원 공문 PDF 첨부 필수
+      function _solComplReset() {
+        _solComplPdf = null;
+      }
+
+      async function _solComplAddFile(file) {
+        if (!file) return;
+        var isPdf = (file.type === 'application/pdf') || /\.pdf$/i.test(file.name);
+        if (!isPdf) {
+          _solComplAppendSystemMsg('⚠️ PDF 파일만 지원합니다 (.pdf 확장자)');
+          return;
+        }
+        if (file.size > 20 * 1024 * 1024) {
+          _solComplAppendSystemMsg('⚠️ 파일이 너무 큽니다 (20MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB. 💡 [SmallPDF] (smallpdf.com/compress-pdf) 또는 [ILovePDF] (ilovepdf.com/compress_pdf) 등 무료 PDF 압축 서비스로 20MB 이하로 줄인 후 다시 업로드해 주세요.');
+          return;
+        }
+        try {
+          if (file.size <= 4 * 1024 * 1024) {
+            // 작은 PDF: base64 inline_data
+            var base64 = await _solPdfBlobToBase64(file);
+            _solComplPdf = { filename: file.name, base64: base64 };
+          } else {
+            // 큰 PDF: PDF.js 텍스트 추출
+            _solComplAppendSystemMsg('📄 ' + file.name + ' 텍스트 추출 중... (' + (file.size/1024/1024).toFixed(1) + 'MB, 잠시만 기다려 주세요)');
+            var extractedText = await _solExtractPdfText(file);
+            if (!extractedText || extractedText.length < 1000) {
+              _solComplAppendSystemMsg('⚠️ ' + file.name + ' — 텍스트 추출이 거의 안 됐습니다 (이미지 기반 스캔본일 수 있음). 텍스트 기반 PDF 또는 5MB 이하로 압축 후 다시 업로드해 주세요.');
+              return;
+            }
+            var maxChars = 80000;
+            if (extractedText.length > maxChars) extractedText = extractedText.slice(0, maxChars) + '\n\n[…민원 공문 후반부 생략, 전체 ' + extractedText.length + '자 중 ' + maxChars + '자만 전송…]';
+            _solComplPdf = { filename: file.name, text: extractedText };
+          }
+          _solComplAppendChip(file.name);
+          // 단계별 안내 — 첨부 완료 후 다음 단계 안내 (타이핑)
+          _solComplAppendSystemMsgTyping(
+            '✅ [민원 공문 PDF 첨부 완료] — ' + file.name + '\n\n📑 [다음 단계] 채팅창에 [B + 민원 핵심 키워드]를 입력해 주세요.\n\n[예시 입력]\n· "B 환차익 미고지 분쟁 — 반박 답변서 전략"\n· "B 변액보험 손실 민원 — 반박 답변서"\n· "B 종신보험 환급률 오안내 민원"',
+            14
+          );
+        } catch (e) {
+          _solComplAppendSystemMsg('⚠️ 파일 처리 실패: ' + file.name + ' — ' + (e && e.message ? e.message : ''));
+        }
+      }
+
+      function _solComplAppendChip(filename) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3 justify-end';
+        div.innerHTML = ''
+          + '<div class="max-w-[80%]">'
+          + '  <div class="flex items-baseline gap-2 mb-1 justify-end">'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '    <span class="text-[13px] font-medium text-white">나</span>'
+          + '  </div>'
+          + '  <div class="bg-blue-700/20 border border-blue-600/20 rounded-2xl rounded-tr-sm px-4 py-2.5">'
+          + '    <p class="text-[12.5px] text-blue-100">📎 ' + _solEscHtml(filename) + ' <span style="opacity:0.6;">(민원 공문 첨부)</span></p>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center flex-shrink-0 text-zinc-300 text-xs font-bold">📎</div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function _solComplAppendSystemMsg(msg) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · FSS 출신 조사관</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <p class="text-[13px] text-zinc-300 leading-relaxed">' + _solCoachBrackets(_solEscHtml(msg)) + '</p>'
+          + '</div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function _solComplAppendSystemMsgTyping(msg, speed) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return;
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        div.innerHTML = ''
+          + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '  <div class="flex items-baseline gap-2 mb-1">'
+          + '    <span class="text-[13px] font-medium text-white">PRO AI · FSS 출신 조사관</span>'
+          + '    <span class="text-[10px] text-zinc-500">방금</span>'
+          + '  </div>'
+          + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+          + '</div>';
+        msgs.appendChild(div);
+        var pEl = div.querySelector('.sol-coach-rich');
+        msgs.scrollTop = msgs.scrollHeight;
+        _solCoachTypewriter(pEl, msg, msgs, speed || 14);
       }
 
       // ═══════════════════════════════════════════════════════════════════

@@ -265,12 +265,19 @@ export default async function handler(req, res) {
 "[B. 민원 대응 모드]를 선택하셨습니다.
 접수된 민원을 정밀 해부하여 반박 답변서 전략을 수립합니다."
 
+📌 [시연 모드 안내] 본 분석은 첨부된 민원 공문 PDF의 [텍스트 추출 부분]과 사용자 입력한 [민원 요지]에 한정된 [제한 분석] 결과입니다. 실제 분쟁조정 대응 시에는 [풀 시스템]의 분조위 결정문 600+ 매칭 + FSS 양식 자동 작성 + 법무팀 검수가 필요합니다.
+
 📋 [민원 정밀 해부 보고서] : {민원 요지}
 
-1. [민원 핵심 쟁점 분류]
+[B 모드 민원 공문 PDF 첨부 기반 분석 룰]
+- 첨부된 PDF는 (1) 금감원 분쟁조정 통보서, (2) 보험사 민원 접수 공문, (3) 고객 민원 서신 중 하나입니다.
+- PDF 텍스트에서 [민원 접수번호 / 접수일자 / 신청인 / 피신청인(보험사) / 민원 요지 / 청구 취지] 자동 추출하여 보고서 상단에 명시.
+- 추출 실패 시 [⚠️확인불가] 뱃지로 표기 + 사용자에게 직접 입력 요청.
+
+1. [민원 핵심 쟁점 분류] — PDF 본문 인용 (정확한 발췌)
 2. [법적 방어 가능성 분석] (금소법·약관 인용 + 뱃지)
 3. [유사 분쟁조정 사례 비교] (분조위 결정문 번호 + [⚖️판례해석])
-4. [반박 답변서 초안 (FSS 양식)] — 실제 답변서 형태 5~7 단락
+4. [반박 답변서 초안 (FSS 양식)] — 실제 답변서 형태 5~7 단락 (민원 공문 형식·번호 양식 일치)
 5. [추가 증거 보강 액션] — 캡처/녹취/확인서
 6. [최악 시나리오 대응 플랜] — 분쟁조정 신청 시 대응 시나리오
 7. 다음 단계 안내
@@ -488,12 +495,14 @@ export default async function handler(req, res) {
     // PDF 모드 — context별 프롬프트 분기
     //   'healthcheck-pdf' → 건강검진 프롬프트 (JSON)
     //   'insurance-calc-pdf' → 보험금 산출 프롬프트 (마크다운, Phase 3-B-4)
+    //   'complete-sales-pdf' → 완전판매 프롬프트 (마크다운, v=20260521a B 모드 민원 공문 PDF)
     //   기타 (기본 'coverage-pdf') → 보장분석 프롬프트 (JSON)
     const selectedPdfPrompt = (context === 'healthcheck-pdf') ? healthcheckPrompt
                             : (context === 'insurance-calc-pdf') ? insuranceCalcPrompt
+                            : (context === 'complete-sales-pdf') ? completeSalesPrompt
                             : pdfAnalysisPrompt;
-    // 보험금 산출은 마크다운 응답 (JSON 강제 X)
-    const isMarkdownPdfMode = (context === 'insurance-calc-pdf');
+    // 보험금 산출 + 완전판매는 마크다운 응답 (JSON 강제 X)
+    const isMarkdownPdfMode = (context === 'insurance-calc-pdf') || (context === 'complete-sales-pdf');
     // 텍스트 모드 — context별 프롬프트 분기 (Phase 3-B-3, 3-B-5)
     //   'coaching' → GA 2.0 표준 시스템 수석 전략 코치
     //   'complete-sales' → FSS 출신 전문 조사관
