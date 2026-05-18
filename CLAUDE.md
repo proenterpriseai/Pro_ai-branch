@@ -241,7 +241,19 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260520n** (최신, 2026-05-20 세션 종료, commit a01544f) — **FEATURE_PROSOLUTION_PDF_UPLOAD Flag=true 격상 (풀 기능 활성)**
+- **v=20260521c** (최신, commit c54b8d4) — 인재양성 이미지 src 절대 경로 변경
+  - 진단: vercel.json rewrites가 한글 source 패턴 매칭 못 함 (curl 200/404 직접 검증)
+  - 해결: HTML img src `src="<폴더>/..."` → `src="AI 홈페이지/<폴더>/..."` 일괄 25건 변환, vercel.json 제거
+  - _serve.js 호환: 첫 시도(ROOT + url)에서 직접 매칭 — 로컬 + Vercel 모두 OK
+- **v=20260521b** (commit a9a7d24) — 인재양성 이미지 폴더 git push (실패한 vercel.json 시도)
+  - 원인: HTML img src 상대경로지만 GitHub에 이미지 untracked → Vercel 404
+  - 시도: vercel.json rewrites — 한글 source 매칭 실패
+  - 부산물: `AI 홈페이지/신입/관리자/법인/재무설계/db영업전문과과정/사람` 35개 이미지 push
+- **v=20260521a** (commit b911d0d) — 완전판매 B 모드 민원 공문 PDF 업로드 기능 추가 (+137줄)
+  - PDF_ENABLED_SYSTEMS에 'complete-sales' 추가, PDF_SYSTEM_CONTEXTS['complete-sales'] (multi: false, title: '민원 공문')
+  - 신규 함수 4개: `_solComplReset` / `_solComplAddFile` / `_solComplAppendChip` / `_solComplAppendSystemMsg(Typing)`
+  - doSend complete-sales PDF 첨부 분기 + api/chat.js `complete-sales-pdf` 컨텍스트 + completeSalesPrompt B 모드 PDF 룰
+- **v=20260520n** (commit a01544f) — **FEATURE_PROSOLUTION_PDF_UPLOAD Flag=true 격상 (풀 기능 활성)**
   - 근본 원인: v=20260520a~m의 모든 변경이 `_isProsolutionPdfOn()` Flag 분기에서만 활성. Flag 기본값 false라 사용자가 sessionStorage._flag_sol_pdf='true' 옵트인 안 하면 옛 흐름(systemResponses 메시지 누적, 인사말 없음)으로 작동.
   - 사용자 보고 (캡처): 시스템 카드 클릭마다 [상담 코칭 AI] / [통합금융계산기] / [DB 영업관리] / [보장분석 시스템] 메시지 누적 + 타이핑 효과 안 됨 → Flag=false 분기 진입 증거
   - 변경: `var FEATURE_PROSOLUTION_PDF_UPLOAD = false → true`
