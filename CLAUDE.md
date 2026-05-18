@@ -241,7 +241,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260522a** (최신) — 프로사업단총괄 두 번째 캐러셀 한글 파일명 이미지 5종 git add (Vercel 404 fix)
+- **v=20260522b** (최신) — 오버레이 내부 흰 배경 섹션 위에서 헤더 가독성 fix (IntersectionObserver)
+  - 진단: 헤더 토글이 `window.scroll` 이벤트 + scrollY 기반 → 오버레이 열린 동안 `body{overflow:hidden}`로 메인 스크롤이 멈추면 토글 안 됨. 인재양성(`#talent-overlay` 조직문화 14630) / 프로사업단총괄(`#pro-intro-overlay` 14511) 안의 `#f5f5f7` 흰 섹션 위에서 흰 글자 헤더가 묻힘.
+  - 해결: 흰 섹션 2곳에 `data-nav-bright` 마커 + IntersectionObserver(rootMargin `-60px 0 -90% 0`)로 헤더 라인에 흰 섹션이 진입한 동안 `navScrolled()` 강제. brightCount 카운터로 다중 섹션 처리. 이탈 시 메인 scrollY 기반 동작 복원.
+  - 기존 동작 무손상: 메인 scroll handler에 `if (brightCount > 0) return` 가드만 추가. IntersectionObserver 미지원 브라우저는 기존 동작 그대로.
+  - 적용처: index.html 8899~8927 (헤더 IIFE 내부 보강) + 14511 (`data-nav-bright`) + 14630 (`data-nav-bright`)
+- **v=20260522a** (commit b69a325) — 프로사업단총괄 두 번째 캐러셀 한글 파일명 이미지 5종 git add (Vercel 404 fix)
   - 진단: `pro-carousel-auto-reverse`(index.html 14715~14731)가 참조하는 `프로 사진/광주지사.jpg` / `경북도청지사.jpg` / `총괄 성수지점.jpg` / `퍼스트지점 성수.jpg` / `로얄본부 직할.jpg` 5종이 모두 `??` untracked → Vercel 배포에 파일 없음 → blank 카드
   - 같은 폴더 SnapInsta 파일들은 git tracked → 정상 표시되어서 폴더/경로 문제 아님 확인
   - 해결: 5종 `git add` 후 commit + push. HTML 코드/경로 수정 없음 (상대경로 `프로 사진/<한글>.jpg` 그대로 작동)
