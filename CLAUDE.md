@@ -241,7 +241,11 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260521c** (최신, commit c54b8d4) — 인재양성 이미지 src 절대 경로 변경
+- **v=20260522a** (최신) — 프로사업단총괄 두 번째 캐러셀 한글 파일명 이미지 5종 git add (Vercel 404 fix)
+  - 진단: `pro-carousel-auto-reverse`(index.html 14715~14731)가 참조하는 `프로 사진/광주지사.jpg` / `경북도청지사.jpg` / `총괄 성수지점.jpg` / `퍼스트지점 성수.jpg` / `로얄본부 직할.jpg` 5종이 모두 `??` untracked → Vercel 배포에 파일 없음 → blank 카드
+  - 같은 폴더 SnapInsta 파일들은 git tracked → 정상 표시되어서 폴더/경로 문제 아님 확인
+  - 해결: 5종 `git add` 후 commit + push. HTML 코드/경로 수정 없음 (상대경로 `프로 사진/<한글>.jpg` 그대로 작동)
+- **v=20260521c** (commit c54b8d4) — 인재양성 이미지 src 절대 경로 변경
   - 진단: vercel.json rewrites가 한글 source 패턴 매칭 못 함 (curl 200/404 직접 검증)
   - 해결: HTML img src `src="<폴더>/..."` → `src="AI 홈페이지/<폴더>/..."` 일괄 25건 변환, vercel.json 제거
   - _serve.js 호환: 첫 시도(ROOT + url)에서 직접 매칭 — 로컬 + Vercel 모두 OK
