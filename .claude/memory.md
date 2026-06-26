@@ -54,18 +54,19 @@
 
 ---
 
-## 🔜 다음 세션 할 일 (전부 미구현 — 한 묶음으로 구현 후 index.html+chat.js 동시 배포)
+## 🔜 다음 세션 할 일
 
-대표님 결정: **셋 다 전부 구현**. 단 텍스트 누적으로 이번 세션 보류 → 새 대화에서 진행.
+> ✅ 2026-06-26b 에 A(스트리밍)+①(건강검진 버그)+③(진행 멘트)+6/26 UI(1~9) 전부 구현·배포 완료 (main `2c228ac`, v=20260626b LIVE). 라이브 코드 반영 확인됨(curl). 아래는 남은 일.
 
-1. **A. 스트리밍** (품질 동일·체감속도↑, 대표님 A 선택): `api/chat.js` `generateContent`→`streamGenerateContent?alt=sse` SSE 릴레이(보장분석 `api/vertex-proxy.js` 패턴 참고) + `index.html` 챗 클라가 스트림 점진 렌더. ⚠️ **server+client 동시 필요** — chat.js만 배포하면 현재 라이브 클라(JSON `{reply}` 기대)가 깨짐 → 반드시 index.html과 같이 배포.
-   - (속도 관련: thinking 끄면 품질 미세↓. 대표님은 **품질 유지** 원함 → thinking 유지 + 스트리밍으로 체감 개선 택함.)
-2. **① 건강검진 분석 AI 답변이 질문 "위"에 생성되는 버그**: index.html 건강검진 PDF 결과 렌더 함수의 **메시지 삽입 순서**(append vs prepend) 점검·수정. 다른 챗봇은 정상.
-3. **③ 생성 중 진행 멘트**: 답변 대기 중 "🔍 질문 분석 중→📊 데이터 조회→✍️ 작성 중→거의 다 됐어요" 회전 표시 후 실제 답변으로 교체. 클라(index.html).
-4. **Web3Forms 대표님 이메일로 키 교체**: web3forms.com에서 `proenterprise@incarproent.com`으로 새 access key 발급 → index.html `_submitContactForm`의 `c96794c6…` 교체.
-5. → 위 전부 + 오늘 미배포 index.html 변경(1~9)을 **한 번에 commit+push**(main) 배포. ⚠️ 챗 흐름은 **배포된 ai-branch.vercel.app에서만** 테스트(로컬 불가).
+1. 🔴 **배포본 육안 검증 (대표님/전략실장)** — `ai-branch.vercel.app` 에서 직접 확인. 로컬 `/api/*` 미실행이라 AI가 못 돌려봄. 체크:
+   - ① 아무 챗(상담코칭/완전판매 등) 입력 → **답변 토큰 단위 스트리밍** + 시작 전 회전 멘트(🔍→📊→✍️→거의) 노출?
+   - ② **건강검진** PDF 업로드 → 리포트 정상 위치 + "답변이 질문 위" 증상 없음? (특히 **보장분석 분석 → 건강검진** 순으로 이어서 = 버그 재현 조건)
+   - ③ 표/[대괄호] 색상이 스트리밍 완료 후 제대로 rich 렌더?
+   - 문제 시: `_solStreamReply`(점진 렌더) / `_solStreamChat`(SSE 파싱) / `_solPdfInjectReportPanel`(① 수정) / `appendTyping`(③) 점검.
+2. 🔴 **Web3Forms 키 교체 (대표님 승인 후)** — 현재 키 `c96794c6…`=전략실장 이메일 수신 유지 중. 승인 나면 web3forms.com에서 `proenterprise@incarproent.com`으로 새 access key 발급 → `index.html` `_submitContactForm`의 키 1줄 교체 후 배포. (Web3Forms는 수신자 인증 클릭 불필요·키 화면 즉시 표시.)
+3. (선택) 스트리밍 안정화 모니터링 — Vercel 함수 타임아웃/버퍼링 이슈 없는지. SSE 실패 시 클라가 기존 비스트리밍 경로로 폴백하게 돼 있어 UI는 안 깨짐.
 
 ---
 
 ## 다음 대화 첫 질문 (복붙용)
-"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽고, 2026-06-26 '다음 세션 할 일'의 A(스트리밍)+①(건강검진 답변 순서 버그)+③(진행 멘트) 셋 다 구현해줘. Web3Forms 키는 대표님 이메일로 교체. 다 구현하면 index.html+chat.js 한 번에 배포하는 거고, 챗 흐름은 ai-branch.vercel.app(배포본)에서만 테스트되는 거 알지?"
+"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 어제(2026-06-26b) A 스트리밍+①건강검진 버그+③진행 멘트 다 배포했는데, ai-branch.vercel.app에서 검증한 결과 [정상 / 문제: ___] 야. 그리고 Web3Forms 키 대표님 이메일(`proenterprise@incarproent.com`) 교체 [승인됨, 키=___ / 아직 보류] 상태야."
