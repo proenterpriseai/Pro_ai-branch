@@ -99,7 +99,7 @@ export default async function handler(req, res) {
   if (!projectId) return res.status(500).json({ error: 'GCP_PROJECT_ID not configured' });
   const region = process.env.VERTEX_REGION || 'asia-northeast3';
 
-  const { message, context, pdf, pdfs } = req.body || {};
+  const { message, context, pdf, pdfs, stream } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
   if (typeof message !== 'string' || message.length > 2000) {
     return res.status(400).json({ error: 'message must be a string under 2000 chars' });
@@ -567,6 +567,78 @@ export default async function handler(req, res) {
           topP: 0.9,
           thinkingConfig: { thinkingBudget: -1 }
         };
+
+    // v=20260626b — 스트리밍(SSE) 분기.
+    //   클라가 body.stream:true 를 보내면 streamGenerateContent?alt=sse 로 받아 SSE 릴레이.
+    //   응답 품질·프롬프트·generationConfig(thinking 포함) 전부 동일 — 체감 속도만 개선.
+    //   JSON 강제 PDF 모드(보장분석/건강검진)는 클라가 전체 JSON을 파싱하므로 스트리밍 제외(안전).
+    const wantStream = (stream === true) && !(isPdfMode && !isMarkdownPdfMode);
+    if (wantStream) {
+      res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, no-transform');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no'); // 프록시 버퍼링 비활성 (즉시 flush)
+      if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+      const streamUrl = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${MODEL}:streamGenerateContent?alt=sse`;
+      let upstream;
+      try {
+        const accessToken = await _getVertexAccessToken();
+        upstream = await fetch(streamUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
+          body: JSON.stringify({ contents: [{ role: 'user', parts }], generationConfig })
+        });
+      } catch (e) {
+        res.write('data: ' + JSON.stringify({ error: 'upstream fetch failed' }) + '\n\n');
+        res.write('data: [DONE]\n\n');
+        return res.end();
+      }
+      if (!upstream.ok || !upstream.body) {
+        const errText = await upstream.text().catch(() => '');
+        res.write('data: ' + JSON.stringify({ error: 'Gemini API error', detail: String(errText).slice(0, 300) }) + '\n\n');
+        res.write('data: [DONE]\n\n');
+        return res.end();
+      }
+      const reader = upstream.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let buf = '';
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split('\n');
+          buf = lines.pop(); // 마지막 미완성 라인은 보존
+          for (const raw of lines) {
+            const line = raw.trim();
+            if (!line || line.indexOf('data:') !== 0) continue;
+            const payload = line.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            let obj;
+            try { obj = JSON.parse(payload); } catch (e) { continue; }
+            const cand = obj.candidates && obj.candidates[0];
+            const partsArr = cand && cand.content && cand.content.parts;
+            if (Array.isArray(partsArr)) {
+              let delta = '';
+              for (const p of partsArr) {
+                if (p && p.thought) continue;                 // 사고(thinking) 파트는 본문 아님 → 제외
+                if (p && typeof p.text === 'string') delta += p.text;
+              }
+              if (delta) res.write('data: ' + JSON.stringify({ text: delta }) + '\n\n');
+            }
+          }
+        }
+        res.write('data: [DONE]\n\n');
+        return res.end();
+      } catch (e) {
+        try {
+          res.write('data: ' + JSON.stringify({ error: 'stream interrupted' }) + '\n\n');
+          res.write('data: [DONE]\n\n');
+        } catch (e2) {}
+        return res.end();
+      }
+    }
 
     const accessToken = await _getVertexAccessToken();
     const response = await fetch(apiUrl, {

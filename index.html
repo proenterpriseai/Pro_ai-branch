@@ -3351,18 +3351,18 @@
     .edu-hp-num { display:none; }
     .edu-hp-kicker { display:none; }
     .edu-hp-title { font-size:clamp(2rem,4vw,3.5rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.05; margin-bottom:1.5rem; }
-    .edu-hp-desc { font-size:15px; color:rgba(255,255,255,0.45); line-height:1.75; max-width:440px; margin-bottom:2rem; }
+    .edu-hp-desc { font-size:15px; color:rgba(255,255,255,0.7); line-height:1.75; max-width:440px; margin-bottom:2rem; }
     .edu-hp-courses { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
     .edu-hp-course { padding:10px 14px; border-left:2px solid rgba(255,255,255,0.08); }
-    .edu-hp-course h4 { font-size:14px; font-weight:600; color:rgba(255,255,255,0.7); margin:0 0 3px; }
-    .edu-hp-course p { font-size:12px; color:rgba(255,255,255,0.35); margin:0; line-height:1.4; }
+    .edu-hp-course h4 { font-size:14px; font-weight:600; color:rgba(255,255,255,0.8); margin:0 0 3px; }
+    .edu-hp-course p { font-size:12px; color:rgba(255,255,255,0.5); margin:0; line-height:1.4; }
     .edu-hp-tags { display:flex; gap:6px; flex-wrap:wrap; }
-    .edu-hp-tag { font-size:10px; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.45); letter-spacing:0.08em; }
-    .edu-hp-img { position:relative; overflow:hidden; margin:auto 2rem; border-radius:0; background:transparent; height:calc(100vh - 16rem); display:flex; align-items:center; justify-content:center; }
-    .edu-hp-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; transition:opacity 1.2s ease; }
+    .edu-hp-tag { font-size:10px; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.6); letter-spacing:0.08em; }
+    .edu-hp-img { position:relative; overflow:hidden; margin:auto; width:min(88%, 470px); aspect-ratio:4/5; max-height:calc(100vh - 12rem); border-radius:22px; border:1px solid rgba(255,255,255,0.10); background:radial-gradient(130% 85% at 50% 0%, rgba(59,130,246,0.10), rgba(59,130,246,0) 55%), linear-gradient(160deg, #141a28 0%, #0a0e17 62%, #070a11 100%); box-shadow:0 40px 80px -22px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; }
+    .edu-hp-img img { position:absolute; top:18px; left:18px; width:calc(100% - 36px); height:calc(100% - 36px); object-fit:contain; border-radius:12px; transition:opacity 1.2s ease; }
     .edu-hp-course.active { border-left-color:rgba(255,255,255,0.7); }
     .edu-hp-course.active h4 { color:#fff; }
-    .edu-hp-course.active p { color:rgba(255,255,255,0.6); }
+    .edu-hp-course.active p { color:rgba(255,255,255,0.7); }
     .edu-hp-dots { position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:5; }
     .edu-hp-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.2); transition:background 0.3s; cursor:pointer; }
     .edu-hp-dot.active { background:rgba(255,255,255,0.8); }
@@ -3986,7 +3986,7 @@
               style="background:linear-gradient(135deg,#152240 0%,#1e3a5f 100%); border:1px solid rgba(39,57,140,0.15);">
               <div class="flex-1 p-6 sm:p-8 flex items-center justify-between whitespace-nowrap" style="border-bottom:1px solid rgba(255,255,255,0.1);">
                 <div>
-                  <p class="text-[11px] uppercase tracking-wider" style="color:rgba(255,255,255,0.6);">2025. 12월 기준</p>
+                  <p class="text-[11px] uppercase tracking-wider" style="color:rgba(255,255,255,0.78);">2025. 12월 기준</p>
                   <p class="text-sm mt-1 font-medium" style="color:rgba(255,255,255,0.9);">영업가족 평균 급여</p>
                 </div>
                 <div class="flex items-baseline gap-1">
@@ -3997,7 +3997,7 @@
               </div>
               <div class="flex-1 p-6 sm:p-8 flex items-center justify-between whitespace-nowrap">
                 <div>
-                  <p class="text-[11px] uppercase tracking-wider" style="color:rgba(255,255,255,0.6);">2025. 12월 기준</p>
+                  <p class="text-[11px] uppercase tracking-wider" style="color:rgba(255,255,255,0.78);">2025. 12월 기준</p>
                   <p class="text-sm mt-1 font-medium" style="color:rgba(255,255,255,0.9);">18th 통산유지율</p>
                 </div>
                 <div class="flex items-baseline gap-1">
@@ -4330,10 +4330,10 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-zinc-300">DB 확보</h3>
-                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">비효율</span>
+                  <span class="text-[11px] text-red-400/60 font-semibold tracking-wider">비효율</span>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">콜드콜, 지인 영업, 직접 발굴. 시간 대비 성과가 낮고 소진이 빠릅니다.</p>
+              <p class="text-[11px] text-zinc-300 leading-relaxed">콜드콜, 지인 영업, 직접 발굴. 시간 대비 성과가 낮고 소진이 빠릅니다.</p>
             </li>
 
             <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll">
@@ -4351,10 +4351,10 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-zinc-300">보장분석</h3>
-                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">시간 낭비</span>
+                  <span class="text-[11px] text-red-400/60 font-semibold tracking-wider">시간 낭비</span>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">수기로 2~3시간 분석. 항목 누락 위험이 높고 고객 신뢰를 잃기 쉽습니다.</p>
+              <p class="text-[11px] text-zinc-300 leading-relaxed">수기로 2~3시간 분석. 항목 누락 위험이 높고 고객 신뢰를 잃기 쉽습니다.</p>
             </li>
 
             <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
@@ -4372,10 +4372,10 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-zinc-300">상담 전략</h3>
-                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">불확실</span>
+                  <span class="text-[11px] text-red-400/60 font-semibold tracking-wider">불확실</span>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">경험과 감에 의존. 거절 처리 화법이 준비되지 않으면 계약으로 이어지지 않습니다.</p>
+              <p class="text-[11px] text-zinc-300 leading-relaxed">경험과 감에 의존. 거절 처리 화법이 준비되지 않으면 계약으로 이어지지 않습니다.</p>
             </li>
 
             <li class="bg-neutral-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col relative group hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm [animation:animationIn_0.8s_ease-out_0.25s_both] animate-on-scroll">
@@ -4393,10 +4393,10 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-medium text-zinc-300">민원 대응</h3>
-                  <span class="text-[9px] text-red-400/60 font-semibold tracking-wider">리스크</span>
+                  <span class="text-[11px] text-red-400/60 font-semibold tracking-wider">리스크</span>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-500 font-light leading-relaxed">혼자 대응, 법적 근거 부족. 민원 한 건이 커리어 전체를 흔들 수 있습니다.</p>
+              <p class="text-[11px] text-zinc-300 leading-relaxed">혼자 대응, 법적 근거 부족. 민원 한 건이 커리어 전체를 흔들 수 있습니다.</p>
             </li>
           </ul>
 
@@ -4465,7 +4465,7 @@
                   </div>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">AI가 최적 DB를 추천하고, 전환율을 예측합니다. 병목 구간을 자동 분석합니다.</p>
+              <p class="text-[11px] text-zinc-200 leading-relaxed">AI가 최적 DB를 추천하고, 전환율을 예측합니다. 병목 구간을 자동 분석합니다.</p>
               <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
                 <span>전환율 예측 AI</span>
                 <span class="text-blue-400/70">ACTIVE</span>
@@ -4493,7 +4493,7 @@
                   </div>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">증권 PDF만 올리면 보장 현황을 즉시 분석하고 리모델링 우선순위까지 제안합니다.</p>
+              <p class="text-[11px] text-zinc-200 leading-relaxed">증권 PDF만 올리면 보장 현황을 즉시 분석하고 리모델링 우선순위까지 제안합니다.</p>
               <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
                 <span>즉시 분석 완료</span>
                 <span class="text-blue-400/70">SYNCED</span>
@@ -4521,7 +4521,7 @@
                   </div>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">고객 거절 유형별 맞춤 화법을 실시간 제안. 심리 분석 기반 Bias Breaker 탑재.</p>
+              <p class="text-[11px] text-zinc-200 leading-relaxed">고객 거절 유형별 맞춤 화법을 실시간 제안. 심리 분석 기반 Bias Breaker 탑재.</p>
               <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
                 <span>24시간 전담 비서</span>
                 <span class="text-emerald-400/70">LIVE</span>
@@ -4549,7 +4549,7 @@
                   </div>
                 </div>
               </div>
-              <p class="text-[11px] text-zinc-400 font-light leading-relaxed">FSS 출신 AI가 법적 근거 + 판례 기반 방어 로직을 자동 구축. 민원 리스크를 사전 차단.</p>
+              <p class="text-[11px] text-zinc-200 leading-relaxed">FSS 출신 AI가 법적 근거 + 판례 기반 방어 로직을 자동 구축. 민원 리스크를 사전 차단.</p>
               <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-zinc-500">
                 <span>완전판매 / 민원 대응</span>
                 <span class="text-blue-400/70">SYNCED</span>
@@ -6456,7 +6456,7 @@
                           <span class="text-[10px] text-neutral-400 tracking-wide uppercase font-medium">인당 연봉</span>
                         </div>
                         <div class="flex items-baseline gap-1 whitespace-nowrap">
-                          <span data-counter class="text-4xl sm:text-5xl text-white font-bold tracking-tighter">0</span>
+                          <span data-counter class="text-4xl sm:text-5xl text-white font-bold tracking-tighter tabular-nums">0</span>
                           <span class="text-sm text-white/50 font-bold">만원</span>
                         </div>
                       </div>
@@ -6469,7 +6469,7 @@
                           <span class="text-[10px] text-neutral-400 tracking-wide uppercase font-medium">조직 구성원</span>
                         </div>
                         <div class="flex items-baseline gap-1">
-                          <span data-counter-sub class="text-4xl sm:text-5xl text-white font-bold tracking-tighter">0</span>
+                          <span data-counter-sub class="text-4xl sm:text-5xl text-white font-bold tracking-tighter tabular-nums">0</span>
                           <span class="text-sm text-white/50 font-bold">명+</span>
                         </div>
                       </div>
@@ -6681,8 +6681,8 @@
     <!-- ==================== STORIES 헤더 (v=20260504a) ==================== -->
     <section id="stories-header" class="relative max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 pt-32 pb-12 sm:pt-40 sm:pb-16 animate-on-scroll">
       <div class="stories-header">
-        <span class="stories-label-pill">PEOPLE</span>
-        <h2 class="stories-headline">압도적 격차는 사람이 만듭니다.</h2>
+        <span class="stories-label-pill" style="display:none">PEOPLE</span>
+        <h2 class="stories-headline">압도적 격차는 <span class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">사람</span>이 만듭니다.</h2>
         <div class="stories-divider"></div>
         <p class="stories-sub">7대 AI 시스템과 함께 성장한 PRO 사람들의 진짜 이야기.</p>
         <p class="stories-caption">월례 시상식 · 교육 현장 · 1등 FA — 같은 출발선의 다른 결과.</p>
@@ -7014,7 +7014,7 @@
         <div class="max-w-2xl mx-auto">
           <div class="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 sm:p-10">
             <form id="contact-form" class="space-y-8"
-              onsubmit="event.preventDefault(); if(!document.getElementById('privacy-agree').checked){alert('개인정보 수집 및 이용에 동의해 주세요.');return;} alert('문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');">
+              onsubmit="return _submitContactForm(this, event);">
               <!-- 경력회사 -->
               <div>
                 <label class="block text-sm font-semibold text-zinc-200 mb-3">경력회사</label>
@@ -7404,7 +7404,7 @@
                 </div>
               </div>
             </div>
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-8 lg:mb-12 leading-[1.2]">당신을 위한 최고의<br><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-500">서포터가 되겠습니다.</span></h2>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-8 lg:mb-12 leading-[1.2]">당신을 위한 최고의<br><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-500">서포터</span>가 되겠습니다.</h2>
             <div class="space-y-6" style="border-left: 2px solid rgba(28,73,200,0.2); padding-left: 24px;">
               <p class="text-white leading-[1.8] text-[15px]">안녕하세요.<br>인카금융서비스 프로사업단 총괄 대표 임형준입니다.</p>
               <p class="text-white leading-[1.8] text-[15px]">우리는 단순히 보험을 판매하는 조직이 아니라,<br>보험 그 이상의 성장을 만드는 GA 2.0 시대를 열고자 합니다.</p>
@@ -7417,7 +7417,7 @@
             <div class="mt-12" style="padding-left: 24px;">
               <div class="flex items-end gap-6">
                 <div>
-                  <p class="text-sm text-zinc-400 tracking-wider mb-3">프로사업단총괄 대표</p>
+                  <p class="text-sm text-zinc-300 tracking-wider mb-3">프로사업단총괄 대표</p>
                   <p class="text-2xl font-bold text-white tracking-tight" style="padding-left: 2.5em;">임형준</p>
                 </div>
                 <img src="대표님 서명.png" alt="임형준 서명" class="h-16 opacity-80 mb-1" style="filter: invert(1) brightness(1.2);">
@@ -7725,7 +7725,7 @@
         const counter = document.querySelector('[data-counter]');
         const counterSub = document.querySelector('[data-counter-sub]');
         if (!counter) return;
-        const duration = 4000;
+        const duration = 2000;
         const observer = new IntersectionObserver(entries => {
           if (entries[0].isIntersecting) {
             observer.disconnect();
@@ -9038,10 +9038,9 @@
           steps.forEach(function(s, i){
             setTimeout(function(){ s.classList.add('is-lit'); }, 300 + i * 450);
           });
-          // 시퀀스 종료 후 가드 해제 + spotlight 무한 loop 시작 (1.2s 간격으로 1→2→3→4→5→1 순환)
+          // 시퀀스 종료 후 가드 해제 (spotlight loop는 빛 동기화 물결(CSS roadmap-rise)로 교체)
           setTimeout(function(){
             track.dataset.playing = '';
-            startRoadmapSpotLoop();
           }, 2600);
         }, 0);
       }
@@ -10316,6 +10315,168 @@
       // ── 현재 활성 시스템 컨텍스트 ──
       var activeSystem = 'all';
 
+      // ═══════════════════════════════════════════════════════════════════
+      // A. 스트리밍 (v=20260626b) — /api/chat SSE 릴레이를 받아 점진 렌더.
+      //   서버(api/chat.js)가 body.stream:true 일 때 streamGenerateContent?alt=sse 를
+      //   `data: {"text":"..."}` / `data: [DONE]` 형태로 보냄. 품질 동일·체감속도↑.
+      //   ⚠️ server+client 동시 배포 필수 (서버 단독 배포 시 옛 클라가 깨짐).
+      // ═══════════════════════════════════════════════════════════════════
+
+      // SSE 스트림 fetch — onDelta(전체누적, 증분), onDone(전체), onError(err) 콜백.
+      async function _solStreamChat(requestBody, handlers) {
+        handlers = handlers || {};
+        var body = {};
+        for (var k in requestBody) { if (requestBody.hasOwnProperty(k)) body[k] = requestBody[k]; }
+        body.stream = true;
+        var resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!resp.ok || !resp.body || typeof resp.body.getReader !== 'function') {
+          throw new Error('stream-unavailable-' + (resp && resp.status));
+        }
+        var reader = resp.body.getReader();
+        var decoder = new TextDecoder('utf-8');
+        var buffer = '';
+        var full = '';
+        var errMsg = null;
+        while (true) {
+          var chunk = await reader.read();
+          if (chunk.done) break;
+          buffer += decoder.decode(chunk.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop(); // 미완성 라인 보존
+          for (var li = 0; li < lines.length; li++) {
+            var line = lines[li].trim();
+            if (!line || line.indexOf('data:') !== 0) continue;
+            var payload = line.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            var obj;
+            try { obj = JSON.parse(payload); } catch (e) { continue; }
+            if (obj.error) { errMsg = obj.error; continue; }
+            if (typeof obj.text === 'string' && obj.text) {
+              full += obj.text;
+              if (handlers.onDelta) handlers.onDelta(full, obj.text);
+            }
+          }
+        }
+        if (errMsg && !full) throw new Error(errMsg);
+        if (handlers.onDone) handlers.onDone(full);
+        return full;
+      }
+
+      // 스트리밍용 AI 말풍선 생성 (rich = 코칭/보험금/완판 마크다운 스타일, plain = 기본)
+      function _solCreateStreamBubble(rich, label) {
+        var msgs = document.getElementById('sol-chat-messages');
+        if (!msgs) return { pEl: null };
+        var div = document.createElement('div');
+        div.className = 'flex gap-3';
+        if (rich) {
+          div.innerHTML = ''
+            + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+            + '<div style="flex:1;min-width:0;">'
+            + '  <div class="flex items-baseline gap-2 mb-1">'
+            + '    <span class="text-[13px] font-medium text-white">' + label + '</span>'
+            + '    <span class="text-[10px] text-zinc-500">방금</span>'
+            + '  </div>'
+            + '  <div class="text-[13px] text-zinc-300 leading-relaxed sol-coach-rich" style="white-space:pre-wrap;"></div>'
+            + '</div>';
+        } else {
+          div.innerHTML = ''
+            + '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div>'
+            + '<div><div class="flex items-baseline gap-2 mb-1"><span class="text-[13px] font-medium text-white">PRO AI</span><span class="text-[10px] text-zinc-500">방금</span></div><p class="text-[13px] text-zinc-300 leading-relaxed" style="white-space:pre-wrap;"></p></div>';
+        }
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+        return { div: div, pEl: div.querySelector(rich ? '.sol-coach-rich' : 'p') };
+      }
+
+      // 스트리밍 진행 중: 평문 + 깜빡이는 커서로 채우기
+      function _solStreamSetProgress(pEl, fullText) {
+        if (!pEl) return;
+        pEl.textContent = fullText;
+        var cursor = document.createElement('span');
+        cursor.className = 'sol-typing-cursor';
+        cursor.textContent = '▍';
+        pEl.appendChild(cursor);
+        var msgs = document.getElementById('sol-chat-messages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      // 스트리밍 실패/빈응답 시 기존(비스트리밍) 렌더 경로로 폴백
+      function _solRenderReplyFallback(sys, userText) {
+        var reply = (typeof getAIResponse === 'function') ? getAIResponse(userText) : '응답을 생성할 수 없습니다.';
+        if (sys === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') return _solCoachAppendResponseBubble(reply);
+        if (sys === 'insurance-calc' && typeof _solInsCalcAppendResponseBubble === 'function') return _solInsCalcAppendResponseBubble(reply);
+        if (sys === 'complete-sales' && typeof _solComplAppendResponseBubble === 'function') return _solComplAppendResponseBubble(reply);
+        if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') return _solTypewriterAppend(reply);
+        appendMessage('ai', reply);
+      }
+
+      // 스트리밍 응답 처리 — doSend에서 호출. typingId는 진행 멘트 인디케이터 id.
+      function _solStreamReply(requestBody, userText, typingId) {
+        var sys = activeSystem;
+        var RICH_LABELS = {
+          'coaching': 'PRO AI · 수석 전략 코치',
+          'insurance-calc': 'PRO AI · 보험금 산출',
+          'complete-sales': 'PRO AI · FSS 출신 조사관'
+        };
+        var CTA_MAP = { 'coaching': 'coaching', 'insurance-calc': 'insurance-calc', 'complete-sales': 'complete-sales' };
+        var isRich = !!RICH_LABELS[sys];
+        var bubble = null;
+        function ensureBubble() {
+          if (bubble) return bubble;
+          removeTyping(typingId); // 첫 토큰 도착 → 진행 멘트 제거
+          bubble = _solCreateStreamBubble(isRich, RICH_LABELS[sys]);
+          return bubble;
+        }
+        _solStreamChat(requestBody, {
+          onDelta: function (full) {
+            var b = ensureBubble();
+            _solStreamSetProgress(b.pEl, full);
+          },
+          onDone: function (full) {
+            removeTyping(typingId);
+            if (!full) { _solRenderReplyFallback(sys, userText); return; }
+            var b = ensureBubble();
+            if (b.pEl) {
+              if (isRich && typeof _solCoachRenderRich === 'function') b.pEl.innerHTML = _solCoachRenderRich(full);
+              else b.pEl.textContent = full;
+            }
+            var msgs = document.getElementById('sol-chat-messages');
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            // 정상 답변일 때만 잠금+CTA 노출 (재확인 안내 시 스킵)
+            if (CTA_MAP[sys] && typeof _solShouldShowLockedCta === 'function'
+                && _solShouldShowLockedCta(full) && typeof _solChatAppendLockedCta === 'function') {
+              _solChatAppendLockedCta(CTA_MAP[sys]);
+            }
+          },
+          onError: function () {
+            removeTyping(typingId);
+            if (bubble && bubble.pEl && bubble.pEl.textContent) {
+              // 중간까지 받은 부분 응답 마무리 (이중 말풍선 방지)
+              var partial = bubble.pEl.textContent;
+              if (isRich && typeof _solCoachRenderRich === 'function') bubble.pEl.innerHTML = _solCoachRenderRich(partial);
+              if (CTA_MAP[sys] && typeof _solShouldShowLockedCta === 'function'
+                  && _solShouldShowLockedCta(partial) && typeof _solChatAppendLockedCta === 'function') {
+                _solChatAppendLockedCta(CTA_MAP[sys]);
+              }
+              return;
+            }
+            _solRenderReplyFallback(sys, userText);
+          }
+        }).catch(function () {
+          removeTyping(typingId);
+          if (bubble && bubble.pEl && bubble.pEl.textContent) {
+            var partial2 = bubble.pEl.textContent;
+            if (isRich && typeof _solCoachRenderRich === 'function') bubble.pEl.innerHTML = _solCoachRenderRich(partial2);
+            return;
+          }
+          _solRenderReplyFallback(sys, userText);
+        });
+      }
+
       function doSend() {
         var text = chatInput.value.trim();
         if (!text) return;
@@ -10361,54 +10522,9 @@
           }
         }
 
-        fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          removeTyping(typingId);
-          var reply = data.reply || '응답을 생성할 수 없습니다.';
-          if (activeSystem === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') {
-            _solCoachAppendResponseBubble(reply);
-            return;
-          }
-          if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendResponseBubble === 'function') {
-            _solInsCalcAppendResponseBubble(reply);
-            return;
-          }
-          if (activeSystem === 'complete-sales' && typeof _solComplAppendResponseBubble === 'function') {
-            _solComplAppendResponseBubble(reply);
-            return;
-          }
-          if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
-            _solTypewriterAppend(reply);
-          } else {
-            appendMessage('ai', reply);
-          }
-        })
-        .catch(function() {
-          removeTyping(typingId);
-          var reply = getAIResponse(text);
-          if (activeSystem === 'coaching' && typeof _solCoachAppendResponseBubble === 'function') {
-            _solCoachAppendResponseBubble(reply);
-            return;
-          }
-          if (activeSystem === 'insurance-calc' && typeof _solInsCalcAppendResponseBubble === 'function') {
-            _solInsCalcAppendResponseBubble(reply);
-            return;
-          }
-          if (activeSystem === 'complete-sales' && typeof _solComplAppendResponseBubble === 'function') {
-            _solComplAppendResponseBubble(reply);
-            return;
-          }
-          if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn() && typeof _solTypewriterAppend === 'function') {
-            _solTypewriterAppend(reply);
-          } else {
-            appendMessage('ai', reply);
-          }
-        });
+        // A. 스트리밍 (v=20260626b) — SSE 점진 렌더. 실패 시 _solStreamReply 내부에서
+        //    기존(비스트리밍) 렌더 경로(getAIResponse / 각 시스템 응답 말풍선)로 폴백.
+        _solStreamReply(requestBody, text, typingId);
       }
 
       var systemResponses = {
@@ -10985,14 +11101,17 @@
         //   - 우측 시스템 카드 그리드는 유지 → 다른 카드 클릭만으로 즉시 다음 시스템 전환
         //   - sticky 백 버튼 불필요 (시스템 카드가 항상 옆에 있으니까)
         //   - 우측 패널 height 변경 없음 (좌측에 표시하니까 우측 그대로)
+        var msgsEl = document.getElementById('sol-chat-messages');
+        if (!msgsEl) return;
+        // 분석 모드 진입 — 채팅 메시지 영역 숨김.
+        // ⚠️ 버그 ① 수정 (v=20260626b): report가 이미 존재(이전 시스템 분석 잔재)할 때도
+        //    반드시 msgsEl을 숨겨야 함. 안 그러면 직전에 append된 [📎 질문]/[분석 시작] 메시지가
+        //    report(위) 아래에 남아 "답변이 질문 위에 생성"된 것처럼 보임 (건강검진에서 재현됨).
+        msgsEl.style.display = 'none';
         if (document.getElementById('sol-pdf-report-inline')) {
           document.getElementById('sol-pdf-report-inline').style.display = 'flex';
           return;
         }
-        var msgsEl = document.getElementById('sol-chat-messages');
-        if (!msgsEl) return;
-        // 분석 모드 진입 — 채팅 메시지 영역 숨김
-        msgsEl.style.display = 'none';
         // 분석 결과 영역 inject (같은 부모 안, msgsEl 자리에)
         var report = document.createElement('section');
         report.id = 'sol-pdf-report-inline';
@@ -13871,16 +13990,37 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
+      // ③ 생성 중 진행 멘트 회전 (v=20260626b) — 답변(첫 토큰) 도착 전까지 단계별 안내 표시.
+      //    스트리밍이라 첫 토큰이 오면 removeTyping으로 사라짐. thinking 대기 체감 완화용.
+      var SOL_PROGRESS_MENTS = [
+        '🔍 질문을 분석하고 있어요',
+        '📊 관련 데이터를 조회하고 있어요',
+        '✍️ 답변을 작성하고 있어요',
+        '거의 다 됐어요...'
+      ];
+      var _solTypingMentInterval = null;
       function appendTyping(id) {
         var div = document.createElement('div');
         div.id = id;
         div.className = 'flex gap-3';
-        div.innerHTML = '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div><div class="flex items-center gap-1 px-3 py-2"><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse"></span><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse" style="animation-delay:0.2s"></span><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse" style="animation-delay:0.4s"></span></div>';
+        div.innerHTML = '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div><div class="flex items-center gap-2 px-3 py-2"><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse"></span><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse" style="animation-delay:0.2s"></span><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse" style="animation-delay:0.4s"></span></div><span class="sol-typing-ment text-[12px] text-zinc-400"></span></div>';
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        // 진행 멘트 회전 시작
+        var mentEl = div.querySelector('.sol-typing-ment');
+        if (mentEl) {
+          var mi = 0;
+          mentEl.textContent = SOL_PROGRESS_MENTS[0];
+          if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
+          _solTypingMentInterval = setInterval(function () {
+            mi = (mi + 1) % SOL_PROGRESS_MENTS.length;
+            mentEl.textContent = SOL_PROGRESS_MENTS[mi];
+          }, 1400);
+        }
       }
 
       function removeTyping(id) {
+        if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
         var el = document.getElementById(id);
         if (el) el.remove();
       }
@@ -13989,6 +14129,58 @@
 
   </script>
 
+  <!-- 문의 폼 → Web3Forms 이메일 전송 (v=20260626) -->
+  <script>
+    window._submitContactForm = async function (form, ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      var agree = document.getElementById('privacy-agree');
+      if (!agree || !agree.checked) { alert('개인정보 수집 및 이용에 동의해 주세요.'); return false; }
+      var val = function (sel) { var el = form.querySelector(sel); return el ? (el.value || '').trim() : ''; };
+      var radio = function (nm) { var el = form.querySelector('input[name="' + nm + '"]:checked'); return el ? el.value : ''; };
+      var name = val('#join-form-name');
+      var tel = val('input[type="tel"]');
+      var msg = val('textarea');
+      var company = radio('career-company');
+      var itype = radio('inquiry-type');
+      if (!name || !tel || !company || !itype) { alert('필수 항목(경력회사·문의유형·이름·전화번호)을 모두 입력해 주세요.'); return false; }
+      var payload = {
+        access_key: 'c96794c6-fd29-4d59-80db-e0b4e6f23666',
+        subject: '[프로사업단총괄 홈페이지] 새 문의 - ' + name,
+        from_name: '프로사업단총괄 홈페이지',
+        '이름': name,
+        '전화번호': tel,
+        '경력회사': company,
+        '문의유형': itype,
+        '문의내용': msg || '(없음)'
+      };
+      var btn = form.querySelector('button[type="submit"]');
+      var label = btn ? btn.querySelector('span') : null;
+      var orig = label ? label.textContent : '';
+      if (btn) btn.disabled = true;
+      if (label) label.textContent = '전송 중...';
+      try {
+        var res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        var data = await res.json();
+        if (data && data.success) {
+          alert('문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
+          form.reset();
+        } else {
+          alert('전송에 실패했습니다. 잠시 후 다시 시도하시거나 전화(0507-1379-0640)로 문의해 주세요.');
+        }
+      } catch (e) {
+        alert('전송 중 오류가 발생했습니다. 네트워크를 확인하시거나 전화(0507-1379-0640)로 문의해 주세요.');
+      } finally {
+        if (btn) btn.disabled = false;
+        if (label) label.textContent = orig;
+      }
+      return false;
+    };
+  </script>
+
 <!-- ═══ 인재 양성 풀스크린 오버레이 (3 섹션: 로드맵 + 지원 인프라 + 자격증, v=20260504a) ═══ -->
 <style>
   #talent-overlay .talent-section { padding: 96px 24px; max-width: 1200px; margin: 0 auto; }
@@ -14093,6 +14285,22 @@
   #talent-overlay .roadmap-track.is-playing .roadmap-line-fill--alt {
     animation: roadmap-flow-h 3s ease-in-out infinite 1.5s;
   }
+  /* 빛 흐름 동기화 물결 — 빛이 각 단계를 지날 때 아이콘이 부드럽게 떴다 내려옴 (왼→오 무한 wave) */
+  @keyframes roadmap-rise {
+    0%   { transform: translateY(0); }
+    11%  { transform: translateY(-11px); }
+    26%  { transform: translateY(0); }
+    100% { transform: translateY(0); }
+  }
+  #talent-overlay .roadmap-track.is-playing .roadmap-step .roadmap-icon {
+    animation: roadmap-rise 3s ease-in-out infinite;
+  }
+  /* .roadmap-step은 track의 5~9번째 자식 (앞의 bg-grid·line·line-fill×2 = 4개 다음) → 단계별 시차로 물결 연결 */
+  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(5) .roadmap-icon { animation-delay: 0s; }
+  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(6) .roadmap-icon { animation-delay: 0.45s; }
+  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(7) .roadmap-icon { animation-delay: 0.9s; }
+  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(8) .roadmap-icon { animation-delay: 1.35s; }
+  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(9) .roadmap-icon { animation-delay: 1.8s; }
   /* 5개 노드 컨테이너 */
   #talent-overlay .roadmap-step {
     position: relative;
@@ -14254,6 +14462,7 @@
     #talent-overlay .roadmap-stepdesc { transition: none !important; }
     #talent-overlay .roadmap-line-fill,
     #talent-overlay .roadmap-icon-pulse { animation: none !important; opacity: 0; }
+    #talent-overlay .roadmap-icon { animation: none !important; }
   }
   /* 섹션 2 — 4-카드 grid */
   #talent-overlay .support-grid {
@@ -14353,8 +14562,8 @@
     <!-- 섹션 1: 단계별 성장 로드맵 -->
     <section class="talent-section">
       <header class="talent-header">
-        <span class="talent-label">ROADMAP</span>
-        <h2 class="talent-headline">단계별로, 확실하게 키웁니다</h2>
+        <span class="talent-label" style="display:none">ROADMAP</span>
+        <h2 class="talent-headline"><span class="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">단계별로</span>, 확실하게 키웁니다</h2>
         <div class="talent-divider"></div>
         <p class="talent-sub">타사가 1~2주 교육 후 현장에 투입할 때, PRO는 입사부터 WM 마스터까지 <strong>5단계로 끝까지 책임집니다.</strong></p>
       </header>
@@ -14445,8 +14654,8 @@
     <!-- 섹션 2: All-in-one 지원 인프라 -->
     <section class="talent-section">
       <header class="talent-header">
-        <span class="talent-label">SUPPORT</span>
-        <h2 class="talent-headline">상담 전, 이미 신뢰가 만들어집니다</h2>
+        <span class="talent-label" style="display:none">SUPPORT</span>
+        <h2 class="talent-headline">상담 전, 이미 <span class="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">신뢰</span>가 만들어집니다</h2>
         <div class="talent-divider"></div>
         <p class="talent-sub">설계사가 혼자 알리는 시대는 끝났습니다. <strong>회사가 4축 브랜드로 고객을 먼저 설득합니다.</strong></p>
       </header>
@@ -14489,7 +14698,7 @@
     <!-- 섹션 3: 엘리트 FA 양성 인프라 -->
     <section class="talent-section">
       <header class="talent-header">
-        <span class="talent-label">EXPERTISE</span>
+        <span class="talent-label" style="display:none">EXPERTISE</span>
         <h2 class="talent-headline">단순 보험 판매를 넘어 <span class="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">종합 금융전문가</span>로</h2>
         <div class="talent-divider"></div>
         <p class="talent-sub">보험 한 분야에 갇히지 않습니다. <strong>CFP·AFPK 자격증으로 부동산·세무·자산관리까지 가능한 컨설턴트를 키웁니다.</strong></p>
@@ -14527,14 +14736,13 @@
     <!-- Section 1: 히어로 — 4장 자동 순환 슬라이드쇼 + 텍스트 아래 분리 -->
     <div>
       <div id="pro-hero-slideshow" style="width:100%; height:100vh; overflow:hidden; position:relative;">
-        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519571830_18514520431044475_8418636295818334696_n.jpg" alt="로비" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 60%; display:block; transition:opacity 1.2s ease; opacity:1;">
-        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_518833892_18514520467044475_1176112434704197527_n.jpg" alt="INCAR 간판" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 50%; display:block; transition:opacity 1.2s ease; opacity:0;">
+        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_518833892_18514520467044475_1176112434704197527_n.jpg" alt="INCAR 간판" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 50%; display:block; transition:opacity 1.2s ease; opacity:1;">
         <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_520971332_18514520449044475_9164603155049382195_n.jpg" alt="오픈 오피스" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 55%; display:block; transition:opacity 1.2s ease; opacity:0;">
         <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519675232_18514520458044475_7410046597585279408_n.jpg" alt="식물벽 오피스" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 65%; display:block; transition:opacity 1.2s ease; opacity:0;">
       </div>
       <div data-nav-bright style="padding:9rem 3rem 8rem; text-align:center; display:flex; flex-direction:column; align-items:center; background:#f5f5f7;">
-        <h2 style="font-size:clamp(2rem,5vw,3.5rem); font-weight:700; line-height:1.15; letter-spacing:-0.04em; color:#27398c; margin:0 0 24px;">GA 2.0 시대를 여는 혁신<br>성공의 정점에 서다</h2>
-        <p style="font-size:16px; color:#666; line-height:1.8; max-width:560px; margin:0;">단순한 보험 영업을 넘어 AI와 데이터가 주도하는 지능형 비즈니스로의 전환. 프로사업단총괄이 설계사의 미래를 재정의합니다.</p>
+        <h2 style="font-size:clamp(2rem,5vw,3.5rem); font-weight:700; line-height:1.15; letter-spacing:-0.04em; color:#27398c; margin:0 0 24px; word-break:keep-all;">처음부터 정점까지<br>당신의 성장을 설계하다</h2>
+        <p style="font-size:16px; color:#666; line-height:1.8; max-width:600px; margin:0; word-break:keep-all;">PRO AI 시스템과 체계적인 교육으로<br>영업인이 끊임없이 성장하는 최적의 환경을 만듭니다.</p>
       </div>
     </div>
 
@@ -14559,8 +14767,6 @@
             </div>
             <div class="edu-hp-img" data-slideshow>
               <img src="AI 홈페이지/신입/SnapInsta.to_581774895_18537758704044475_1274972021437159003_n.jpg" alt="Growth Scheduler 교재" data-course="0" style="opacity:1;">
-              <img src="AI 홈페이지/신입/2026-04-12 13;45;33.PNG" alt="신인교육 수료 축하" data-course="0" style="opacity:0;">
-              <img src="AI 홈페이지/신입/2026-04-12 13;46;08.PNG" alt="신입교육 수료식" data-course="0" style="opacity:0;">
               <img src="AI 홈페이지/신입/SnapInsta.to_471776817_18476677261044475_2058853521939057007_n.jpg" alt="신인교육과정 수료" data-course="0" style="opacity:0;">
               <img src="AI 홈페이지/신입/SnapInsta.to_551078060_18527030641044475_7593483523123187588_n.jpg" alt="세일즈역량강화 IN BUSAN" data-course="1" style="opacity:0;">
               <img src="AI 홈페이지/신입/12차월 미만 대상 역량 강화 과정.jpg" alt="저차월 역량강화과정" data-course="2" style="opacity:0;">
@@ -14712,7 +14918,7 @@
     <div id="pro-carousel-overlay" style="background:#050505; padding-bottom:4rem;">
       <div style="padding:3rem 3rem 1.5rem;">
         <h2 class="pro-carousel-title" style="margin-top:8px; line-height:1.4;">전국으로 확장하는<br>프로사업단총괄</h2>
-        <p style="font-size:clamp(12px,1.4vw,14px); color:rgba(255,255,255,0.45); max-width:560px; line-height:1.7; margin-top:12px; letter-spacing:-0.01em;">어디서든 동일한 품질의 DB와 교육 시스템.<br>AI 도입 후 지방 거점의 평균 생산성이 40% 이상 향상되었습니다.</p>
+        <p style="font-size:clamp(12px,1.4vw,14px); color:rgba(255,255,255,0.45); max-width:560px; line-height:1.7; margin-top:12px; letter-spacing:-0.01em;">어디서든 동일한 질의 교육 시스템.<br>AI 도입 및 교육을 통해 전국 거점의 평균 생산성이 향상되었습니다.</p>
       </div>
       <div class="pro-carousel-mask" style="padding-bottom:2rem;">
       <div class="pro-carousel-auto" id="pro-carousel-auto">

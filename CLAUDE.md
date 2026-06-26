@@ -241,7 +241,17 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260522b** (최신) — 오버레이 내부 흰 배경 섹션 위에서 헤더 가독성 fix (IntersectionObserver)
+- **v=20260626b** (최신, index.html + chat.js 동시 배포) — A(스트리밍) + ①(건강검진 답변 순서 버그) + ③(진행 멘트) 셋 다 구현, 6/26 미배포 index.html 변경(1~9)도 같이 배포.
+  - **A. 스트리밍 (SSE)**: `api/chat.js` — `body.stream:true` 시 `streamGenerateContent?alt=sse`로 받아 `data:{"text":...}`/`data:[DONE]` 릴레이(thinking 파트 제외, generationConfig·프롬프트 동일=품질 불변). JSON 강제 PDF 모드(보장분석/건강검진)는 스트리밍 제외. `index.html` doSend → `_solStreamReply`/`_solStreamChat`/`_solCreateStreamBubble`로 점진 렌더(평문+커서 → 완료 시 `_solCoachRenderRich`). 실패 시 기존 비스트리밍 렌더로 폴백. **다른 챗 위젯 4개(메인데모/코칭standalone/strategy/FSS)는 비스트리밍 {reply} 유지 = 무영향.**
+  - **① 건강검진 버그**: `_solPdfInjectReportPanel`이 report 재사용(이전 시스템 잔재) 시에도 `sol-chat-messages`를 반드시 숨기도록 수정 → 직전 append된 질문/분석시작 메시지가 report 아래 남아 "답변이 질문 위"처럼 보이던 것 해소(coverage 2회차도 동시 해결).
+  - **③ 진행 멘트**: `appendTyping` 3-dot 옆에 회전 멘트(🔍분석→📊조회→✍️작성→거의 다) 1.4s 간격, 첫 토큰 도착(removeTyping) 시 사라짐. `_solTypingMentInterval` 클린업.
+  - 🔴 **Web3Forms 키 교체 보류**: 대표님 승인 후 진행(현재 키=전략실장 이메일 수신 그대로 유지). web3forms.com에서 proenterprise@incarproent.com 발급 → index.html `_submitContactForm` `c96794c6…` 교체 예정.
+  - ⚠️ **챗 흐름은 ai-branch.vercel.app(배포본)에서만 테스트** — 로컬 `_serve.js`는 `/api/*` 미실행.
+- **v=20260626** (⚠️ chat.js만 배포 / index.html 미배포) — AI 홈페이지 대규모 작업. 상세·할일·다음 첫 질문 → [.claude/memory.md](.claude/memory.md)
+  - ✅ **배포 LIVE (chat.js, commit `0b04dcb`)**: `/api/chat` 챗봇 **Gemini Developer API 키 → Vertex AI** 전환. 죽은 공유키(`...6rBg`, 6/5 도용 폐기) 대신 **서비스계정 OAuth**(Node 내장 `crypto` RS256 JWT 서명 → 토큰 교환, **외부 의존성 0·package.json 불필요**). 모델 `gemini-2.5-flash`, 리전 `asia-northeast3`, 프로젝트 `youtube-482701`(개인 결제 `0150F6`). env 3종 `VERTEX_SA_JSON`/`GCP_PROJECT_ID`/`VERTEX_REGION` ai-branch Vercel 등록 + 재배포. 옛 `GEMINI_API_KEY`·`ALLOWED_ORIGINS` 삭제(무해 — 코드에 `*.vercel.app` 하드코딩, ai-branch 도메인=`ai-branch.vercel.app`만). `vertex-proxy-sa` 새 JSON 키 발급 사용. **챗봇 부활 확인됨.** 보안레이어(Origin 화이트리스트·레이트리밋)·프롬프트·PDF 모드 그대로.
+  - 🔴 **미배포 (index.html 로컬 only, uncommitted)**: ROADMAP 뱃지 제거+빛동기화 물결(`roadmap-rise`) / PEOPLE·SUPPORT·EXPERTISE·ROADMAP 뱃지 `display:none`(위로 올림) / 부분단어 파란색(단계별로·신뢰·사람=blue-500·서포터) / why-pro 8카드 가독성(좌 zinc-300·우 zinc-200·normal, 서브 9→11px, CEO부제 zinc-300, 성과날짜 .6→.78) / edu 패널 텍스트 밝힘(desc .7·course .5/.7·h4 .8·tag .6)+가로사진 2장 삭제+4:5 액자통일(matte/border/radius/shadow/contain) / 프로사업단총괄 인트로 문구교체("처음부터 정점까지/당신의 성장을 설계하다"+"PRO AI 시스템과 체계적인 교육으로/…")+쉼표제거+word-break:keep-all / 슬라이드쇼 로비(TWOSOME)사진 제거→INCAR간판 첫장 / 숫자 카운트업 `tabular-nums`+4000→2000ms / 문의폼 → **Web3Forms** 연결(key `c96794c6…`, ⚠️**본인 이메일용** — 대표님 이메일로 키 교체 필요).
+  - 🔜 **다음(전부 미구현, 한 묶음으로 구현 후 index.html+chat.js 동시 배포)**: **A.스트리밍**(chat.js `streamGenerateContent?alt=sse` SSE 릴레이 + index.html 클라 점진 렌더 — 품질 동일·체감속도↑, ⚠️**server+client 동시 필요**, chat.js 단독 배포 시 현재 라이브 클라 깨짐) / **①건강검진 분석 AI 답변이 질문 "위"에 생성되는 버그**(클라 메시지 삽입 순서) / **③생성중 진행 멘트**("분석 중→데이터 조회→거의 다 됐어요" 회전, 클라) / **Web3Forms 대표님 이메일로 키 교체**.
+- **v=20260522b** — 오버레이 내부 흰 배경 섹션 위에서 헤더 가독성 fix (IntersectionObserver)
   - 진단: 헤더 토글이 `window.scroll` 이벤트 + scrollY 기반 → 오버레이 열린 동안 `body{overflow:hidden}`로 메인 스크롤이 멈추면 토글 안 됨. 인재양성(`#talent-overlay` 조직문화 14630) / 프로사업단총괄(`#pro-intro-overlay` 14511) 안의 `#f5f5f7` 흰 섹션 위에서 흰 글자 헤더가 묻힘.
   - 해결: 흰 섹션 2곳에 `data-nav-bright` 마커 + IntersectionObserver(rootMargin `-60px 0 -90% 0`)로 헤더 라인에 흰 섹션이 진입한 동안 `navScrolled()` 강제. brightCount 카운터로 다중 섹션 처리. 이탈 시 메인 scrollY 기반 동작 복원.
   - 기존 동작 무손상: 메인 scroll handler에 `if (brightCount > 0) return` 가드만 추가. IntersectionObserver 미지원 브라우저는 기존 동작 그대로.
