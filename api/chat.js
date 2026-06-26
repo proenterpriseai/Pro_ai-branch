@@ -1,3 +1,40 @@
+import crypto from 'crypto';
+
+// ── Vertex AI 인증 (서비스 계정 → OAuth access token) ──
+// 외부 의존성 없이 Node 내장 crypto로 RS256 JWT 서명 → Google OAuth 토큰 교환.
+// 환경변수: VERTEX_SA_JSON(서비스 계정 JSON 전체), GCP_PROJECT_ID, VERTEX_REGION(기본 asia-northeast3)
+let _vertexToken = null; // { token, exp(sec) } — 인스턴스 재활용 시 캐시
+async function _getVertexAccessToken() {
+  const now = Math.floor(Date.now() / 1000);
+  if (_vertexToken && _vertexToken.exp - 60 > now) return _vertexToken.token;
+  const saJson = process.env.VERTEX_SA_JSON;
+  if (!saJson) throw new Error('VERTEX_SA_JSON not configured');
+  const sa = JSON.parse(saJson);
+  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
+  const claim = {
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/cloud-platform',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: now,
+    exp: now + 3600,
+  };
+  const unsigned = b64({ alg: 'RS256', typ: 'JWT' }) + '.' + b64(claim);
+  const signature = crypto.createSign('RSA-SHA256').update(unsigned).sign(sa.private_key).toString('base64url');
+  const jwt = unsigned + '.' + signature;
+  const tokenResp = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'grant_type=' + encodeURIComponent('urn:ietf:params:oauth:grant-type:jwt-bearer') + '&assertion=' + encodeURIComponent(jwt),
+  });
+  if (!tokenResp.ok) {
+    const t = await tokenResp.text().catch(() => '');
+    throw new Error('Vertex OAuth token failed: ' + tokenResp.status + ' ' + t.slice(0, 200));
+  }
+  const td = await tokenResp.json();
+  _vertexToken = { token: td.access_token, exp: now + (td.expires_in || 3600) };
+  return _vertexToken.token;
+}
+
 // ── IP별 레이트 리밋 (인메모리, 분당 10회) ──
 // Vercel Serverless는 인스턴스 재활용 시에만 유지되지만, 기본 방어로 충분
 const RATE_LIMIT = { windowMs: 60 * 1000, max: 10 };
@@ -58,8 +95,9 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests. 분당 10회 제한을 초과했습니다.' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY not configured' });
+  const projectId = process.env.GCP_PROJECT_ID;
+  if (!projectId) return res.status(500).json({ error: 'GCP_PROJECT_ID not configured' });
+  const region = process.env.VERTEX_REGION || 'asia-northeast3';
 
   const { message, context, pdf, pdfs } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
@@ -483,15 +521,10 @@ export default async function handler(req, res) {
   try {
     // 모드 분기: PDF 있으면 보장분석 모드, 없으면 기존 텍스트 채팅 모드
     const isPdfMode = !!pdfPart;
-    // v=20260516d — gemini-3.1-pro-preview로 재격상 (2026-02-13 출시 SOTA reasoning 모델).
-    //   사용자가 처음 요청한 "gemini-3.0-pro" 의도와 일치하는 최신 Pro.
-    //   "Our latest SOTA reasoning model with unprecedented depth and nuance,
-    //    and powerful multimodal understanding and coding capabilities" (Google AI Studio)
-    //   가격: ≤200K tokens — Input $2 / Output $12, >200K — Input $4 / Output $18
-    //   Pro 계열 thinking 패턴 유지 (thinkingBudget=-1 dynamic).
-    //   preview 모델은 안정 모델 대비 변경 가능성 있으나 SOTA reasoning 가치가 큼.
-    const MODEL = 'gemini-3.1-pro-preview';
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+    // v=20260626 — Vertex AI로 이전 (Gemini Developer API 키 → 서비스 계정 OAuth).
+    //   보장분석과 동일한 Vertex 인프라(asia-northeast3) 재사용. Vertex 지원 모델 gemini-2.5-flash.
+    const MODEL = 'gemini-2.5-flash';
+    const apiUrl = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${MODEL}:generateContent`;
     // PDF 모드 — context별 프롬프트 분기
     //   'healthcheck-pdf' → 건강검진 프롬프트 (JSON)
     //   'insurance-calc-pdf' → 보험금 산출 프롬프트 (마크다운, Phase 3-B-4)
@@ -535,9 +568,13 @@ export default async function handler(req, res) {
           thinkingConfig: { thinkingBudget: -1 }
         };
 
+    const accessToken = await _getVertexAccessToken();
     const response = await fetch(apiUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
       body: JSON.stringify({
         contents: [{ role: 'user', parts }],
         generationConfig
