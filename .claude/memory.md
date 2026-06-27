@@ -6,7 +6,9 @@
 
 ---
 
-## 2026-06-27 세션 — 6/26b 배포 검증 + 챗 볼드 렌더 수정 배포 (v=20260627a LIVE)
+## 2026-06-27 세션 — 6/26b 검증 + 챗/UI 대폭 손질 (v=20260627a~h 전부 배포 LIVE, 최신 commit `123183c`)
+
+> 오늘 a~h 8개 버전 배포. 요약: a=챗 볼드렌더 / b=PDF 동적멘트+점애니 / c=숨은데모 멘트(무영향) / d=PDF멘트 진행률연동·루프제거 / e=WHY PRO 허브 선명화 / f=허브 왼쪽 점 제거(B-1)+카드제목변경+path태그복구 / g=STEP카드 진입통일+리스트글자 / h=챗 인디케이터 깜빡임+시간기반문구(A-1)+부드러운 타이핑(B-1). 상세는 루트 CLAUDE.md "Version" 섹션 참조. 아래는 핵심만.
 
 ### ✅ 6/26b 배포 검증 (ai-branch.vercel.app, 전략실장이 브라우저 직접)
 라이브 `v=20260626b` 확인, 신규 함수 전부 배포(`_solStreamReply`/`_solStreamChat`/`_solCreateStreamBubble`/`_solRenderReplyFallback`/`sol-typing-ment`/`_solTypingMentInterval`).
@@ -27,7 +29,27 @@
 - **v=20260627b (PDF 흐름)**: `_solPdfHandleFile` 정적 "분석 시작" 메시지 → `appendTyping('sol-pdf-typing', SOL_PDF_PROGRESS_MENTS)` 회전 버블. 진행률 라벨 끝 `...` → `.sol-pdf-dots` opacity 펄스 점(`_solPdfShowProgress`에서 분리 렌더, '완료'는 점 없음). `appendTyping(id, ments)` 선택적 멘트 인자 추가(기존 `appendTyping(typingId)` 무영향).
 - **v=20260627c (쇼케이스 데모 3개)**: 메인데모(`#typing-temp`)·코칭데모(`#coaching-typing`)·FSS데모(`#cs-typing`)는 별도 IIFE라 `appendTyping` 못 씀 → 각 typing 인디케이터에 `.pro-demo-ment` span + **self-clean 회전 interval**(typing 요소가 사라지면 스스로 clearInterval, 제거코드 다수 안 건드림=누수0) 인라인. 멘트 시스템별 맞춤. 고정높이(`h-9`/`h-10`) 제거.
 - **전수 매핑(Explore)**: 회전멘트 보유=스트리밍챗+PDF / 신규적용=데모3개 / 그 외 커서타이핑(`_solCoachTypewriter`·`_solStreamSetProgress` 등)은 이미 동적이라 대상 아님.
-- 검증: 인라인 스크립트 5개 `node --check` OK. 🔴 **배포 후 라이브 시각 검증 남음**(데모 챗=키워드 매칭 무API라 라이브 즉시 확인 가능 / PDF=업로드 필요).
+- 검증: 인라인 스크립트 5개 `node --check` OK. ⚠️ **v=c 데모 3개는 알고보니 숨겨진 레거시 대시보드(`hidden`/offsetParent=null)라 사용자 비노출** — 무해하나 무의미. 대표님 확정: **범위=prosolution 오버레이 7개 시스템만**(숨은 데모 무시).
+
+### ✅ v=20260627d — PDF 멘트 진행률 연동 + 루프 제거
+대표님: "거의 다 됐어요가 너무 일찍·자동으로 뜨고 루프라 뒤로 돌아감." → PDF는 `appendTyping(...,{noRotate:true})`로 자동회전 끄고 `_solPdfShowProgress(percent)`가 멘트를 **진행률 %에 맞춰 단조증가**(data-mi 클램프, <22📄/<45🔍/<72📊/<90✍️/≥90 거의다). 공용 `appendTyping` 회전도 **루프 제거**(마지막서 멈춤). 라이브 검증: 32%→"🔍 핵심 정보 추출"(거의다 아님) ✅ + ① 리포트 순서버그도 더미PDF 주입으로 시각 확인됨(질문 안 남음).
+
+### ✅ v=20260627e — WHY PRO 중앙 허브 선명화 (발광 유지)
+대표님: 허브 흐릿→또렷, 발광 분위기 유지. A 동심원 링 불투명도↑(white5%→12%/3%→8%, dashed20%→40%, dotted30%→45%) / B 연결곡선 stroke 0.15·0.2→0.32·0.4 + 1.5→1.75px + 점 halo↑ / C 중앙원판 `backdrop-blur-xl→sm`(헤이즈↓). **D 발광(blur-100px·blur-2xl·conic스윕·중심점)=유지.** 데스크톱 허브(`#why-pro .hidden.lg:flex`) 한정.
+
+### ✅ v=20260627f — 허브 왼쪽 점 제거(B-1)+카드제목+path태그 복구
+대표님 합의: 왼쪽=기존(과거)=정적, 오른쪽 PRO만 흐름=가독성·내러티브↑. `path-l1~l4`의 `<g>`(점+animateMotion) 4개 제거, **빨간 연결선(path)은 유지**. 우측 파란 점 유지. 카드제목 "AI DB 추천"→**"DB 영업관리 AI"**, "코칭 AI 화법"→**"상담 코칭 AI"**. 🔴**버그수정**: v=e 빨간 stroke 일괄변경 때 path 닫는 `>` 누락(`non-scaling-stroke"</path>` malformed, 브라우저 관대렌더로 표시는 됨) → `"></path>` 4개 복구.
+
+### ✅ v=20260627g — "시간은 절반으로" 3-STEP 카드
+STEP1(교육체계)만 0.3s 지연 blur 페이드로 늦게 떠 어색 → 인라인 `fadeSlideIn` 제거 = STEP2/3처럼 즉시표시(1-A). STEP2(AI 시스템 활용) 리스트 7개 이름 `12px→13px`, Running 배지 `9px→10px`.
+
+### ✅ v=20260627h — 챗 인디케이터 깜빡임(A-1) + 부드러운 타이핑(B-1)
+대표님: "클로드처럼 왼쪽 깜빡임+오른쪽 문구, 문구가 너무 빨리 자동전환 말고 진짜 작업 중 느낌." 
+- **A-1**: `appendTyping` 점3개 제거 → PRO AI 아바타 `animate-pulse` 깜빡 + **시간기반 "Ns · 상태"**(매초 경과초↑ + 임계값 `SOL_MENT_THRESH=[0,4,10,18]`s 단계전환, 빠른 자동회전 폐기). PDF는 noRotate=%구동 유지. JS로 확인: `2s·🔍 / 3s·🔍 / 4s·📊 / 5s·📊` ✅.
+- **B-1**: `_solStreamReply` 부드러운 타이핑 — SSE는 `target` 누적, 화면은 `shown`이 한 자씩 따라잡으며 노출(`revealTimer` 18ms, 멀리 뒤처지면 `ceil(remaining/18)` 빨리·가까우면 1자). 뭉텅이 청크→부드러운 타이핑. `finalize()`가 따라잡기+done 시 rich+CTA. 코칭/보험금/완판 공통. 라이브 육안: 커서▍+점진 노출 ✅. (대표님 "코칭 타이핑 안됨" 해결.)
+
+### 🔴 진행 중 논의 — 메인 히어로 "터널 인트로" (미착수)
+대표님 아이디어: 메인 히어로 "보험을 넘어 성장의 정점으로" **나오기 전에 SF 터널 영상으로 빨려들어갔다 짠 나오는** 인트로. ⚠️ **첨부 `Sci-Fi Tunnel.html`=핀터레스트 페이지 통째 저장본**(비디오 `src=blob:` 핀터레스트 전용=사용불가) + Pinterest pin(타인 콘텐츠)=**저작권 문제로 직접 사용 불가**. 논의 방향: (A)라이선스/자체제작 mp4 (B)Three.js/WebGL 터널 코드 자체구현(허브 이미 Three.js) (C)CSS/Canvas 네온링 터널(첨부 이미지=동심 네온링이라 재현 쉬움, 브랜드 블루와 일치, 저작권0). UX 주의: 매방문 인트로=거슬림→sessionStorage 1회 + skip버튼 / 모바일 성능 / 콘텐츠·SEO 지연 금지. 4대규칙(Flag·독립블록·async·lazy). **대표님 방향(A/B/C) 결정 대기.**
 
 ---
 
@@ -81,17 +103,14 @@
 
 ## 🔜 다음 세션 할 일
 
-> ✅ 2026-06-26b 에 A(스트리밍)+①(건강검진 버그)+③(진행 멘트)+6/26 UI(1~9) 전부 구현·배포 완료 (main `2c228ac`, v=20260626b LIVE). 라이브 코드 반영 확인됨(curl). 아래는 남은 일.
+> ✅ 2026-06-27 v=a~h 전부 배포 LIVE(최신 `123183c`). 챗 볼드·동적멘트·진행률연동·허브선명화·왼쪽점제거·STEP카드·인디케이터깜빡임+부드러운타이핑 다 완료·검증. 아래는 남은 일.
 
-1. 🔴 **배포본 육안 검증 (대표님/전략실장)** — `ai-branch.vercel.app` 에서 직접 확인. 로컬 `/api/*` 미실행이라 AI가 못 돌려봄. 체크:
-   - ① 아무 챗(상담코칭/완전판매 등) 입력 → **답변 토큰 단위 스트리밍** + 시작 전 회전 멘트(🔍→📊→✍️→거의) 노출?
-   - ② **건강검진** PDF 업로드 → 리포트 정상 위치 + "답변이 질문 위" 증상 없음? (특히 **보장분석 분석 → 건강검진** 순으로 이어서 = 버그 재현 조건)
-   - ③ 표/[대괄호] 색상이 스트리밍 완료 후 제대로 rich 렌더?
-   - 문제 시: `_solStreamReply`(점진 렌더) / `_solStreamChat`(SSE 파싱) / `_solPdfInjectReportPanel`(① 수정) / `appendTyping`(③) 점검.
-2. 🔴 **Web3Forms 키 교체 (대표님 승인 후)** — 현재 키 `c96794c6…`=전략실장 이메일 수신 유지 중. 승인 나면 web3forms.com에서 `proenterprise@incarproent.com`으로 새 access key 발급 → `index.html` `_submitContactForm`의 키 1줄 교체 후 배포. (Web3Forms는 수신자 인증 클릭 불필요·키 화면 즉시 표시.)
-3. (선택) 스트리밍 안정화 모니터링 — Vercel 함수 타임아웃/버퍼링 이슈 없는지. SSE 실패 시 클라가 기존 비스트리밍 경로로 폴백하게 돼 있어 UI는 안 깨짐.
+1. ✅❌ **메인 히어로 "터널 인트로" = 시도 후 전량 철회 (종결)** — v=20260627i로 빌드(Flag off)했으나 **대표님 결정: "보험을 넘어 성장의 정점으로가 처음부터 보이는 게 훨씬 낫다" → 전량 롤백**(index.html 인트로 블록 + `assets/video/intro-tunnel.mp4` 삭제). **히어로 인트로/스플래시는 재제안 금지.** (교훈: Pinterest 영상=저작권 불가, Pixabay는 상업무료 OK였음.)
+2. 🔴 **Web3Forms 키 교체 (대표님 승인 후)** — 현재 키 `c96794c6…`=전략실장 수신 유지. 승인 시 web3forms.com에서 `proenterprise@incarproent.com` 새 키 발급 → `_submitContactForm` 키 1줄 교체·배포.
+3. 🟡 **(선택) ① 건강검진 PDF 순서버그 시각 최종확인** — 코드+더미PDF로 확인됨, 실고객 PDF 보장분석→건강검진 순 업로드 1회 권장.
+4. (선택) 스트리밍 안정화 모니터링(Vercel 타임아웃/버퍼링). SSE 실패 시 클라가 비스트리밍 폴백 → UI 안 깨짐.
 
 ---
 
 ## 다음 대화 첫 질문 (복붙용)
-"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-27까지 A 스트리밍·③진행 멘트·챗 볼드 수정(v=20260627a) 다 배포·검증 완료. 남은 건 ①건강검진 리포트 순서 버그 **시각 검증**(보장분석 PDF→건강검진 PDF 순서로 업로드해서 질문이 리포트 위/아래 안 남는지) [정상 / 문제: ___] 와 Web3Forms 키 대표님 이메일 교체 [승인됨, 키=___ / 아직 보류] 상태야."
+"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-27 v=a~h 전부 배포·검증 완료. 진행 중인 논의=메인 히어로 '터널 인트로'(SF 터널 빨려들어가 짠 등장) 방향 결정 — 핀터레스트 영상은 저작권/blob이라 못 쓰고 (A)자체 mp4 (B)Three.js (C)CSS네온링 중 [___] 로 갈게. Web3Forms 키 교체는 [승인됨/보류]."
