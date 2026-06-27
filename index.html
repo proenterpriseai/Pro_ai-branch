@@ -10444,6 +10444,8 @@
       }
 
       // 스트리밍 응답 처리 — doSend에서 호출. typingId는 진행 멘트 인디케이터 id.
+      // B-1 (v=20260627h): SSE는 target에 쌓고, 화면은 shown이 한 자씩 "따라잡으며" 노출
+      //   → Gemini가 뭉텅이로 보내도 부드러운 타이핑처럼 보임 (멀리 뒤처지면 빨리 따라잡음).
       function _solStreamReply(requestBody, userText, typingId) {
         var sys = activeSystem;
         var RICH_LABELS = {
@@ -10454,54 +10456,93 @@
         var CTA_MAP = { 'coaching': 'coaching', 'insurance-calc': 'insurance-calc', 'complete-sales': 'complete-sales' };
         var isRich = !!RICH_LABELS[sys];
         var bubble = null;
+        var target = '';      // 지금까지 받은 전체 텍스트
+        var shown = 0;        // 현재 화면에 노출된 글자 수
+        var streamDone = false;
+        var finalized = false;
+        var revealTimer = null;
         function ensureBubble() {
           if (bubble) return bubble;
-          removeTyping(typingId); // 첫 토큰 도착 → 진행 멘트 제거
+          removeTyping(typingId); // 첫 토큰 도착 → 진행 멘트(경과초) 제거
           bubble = _solCreateStreamBubble(isRich, RICH_LABELS[sys]);
           return bubble;
         }
+        function stopReveal() { if (revealTimer) { clearInterval(revealTimer); revealTimer = null; } }
+        function finalize() {
+          if (finalized) return;
+          finalized = true;
+          stopReveal();
+          removeTyping(typingId);
+          if (!target) { _solRenderReplyFallback(sys, userText); return; }
+          var b = ensureBubble();
+          if (b.pEl) {
+            if (isRich && typeof _solCoachRenderRich === 'function') b.pEl.innerHTML = _solCoachRenderRich(target);
+            else b.pEl.textContent = target;
+          }
+          var msgs = document.getElementById('sol-chat-messages');
+          if (msgs) msgs.scrollTop = msgs.scrollHeight;
+          // 정상 답변일 때만 잠금+CTA 노출 (재확인 안내 시 스킵)
+          if (CTA_MAP[sys] && typeof _solShouldShowLockedCta === 'function'
+              && _solShouldShowLockedCta(target) && typeof _solChatAppendLockedCta === 'function') {
+            _solChatAppendLockedCta(CTA_MAP[sys]);
+          }
+        }
+        function startReveal() {
+          if (revealTimer || finalized) return;
+          revealTimer = setInterval(function () {
+            if (finalized) { stopReveal(); return; }
+            if (shown < target.length) {
+              var remaining = target.length - shown;
+              // 멀리 뒤처지면 빨리, 가까우면 한 자씩 (부드러운 마무리)
+              var step = remaining > 150 ? Math.ceil(remaining / 18) : (remaining > 40 ? 2 : 1);
+              shown += step; if (shown > target.length) shown = target.length;
+              var b = ensureBubble();
+              _solStreamSetProgress(b.pEl, target.slice(0, shown));
+            } else if (streamDone) {
+              finalize();
+            }
+          }, 18);
+        }
         _solStreamChat(requestBody, {
           onDelta: function (full) {
-            var b = ensureBubble();
-            _solStreamSetProgress(b.pEl, full);
+            ensureBubble();
+            target = full;
+            startReveal();
           },
           onDone: function (full) {
-            removeTyping(typingId);
-            if (!full) { _solRenderReplyFallback(sys, userText); return; }
-            var b = ensureBubble();
-            if (b.pEl) {
-              if (isRich && typeof _solCoachRenderRich === 'function') b.pEl.innerHTML = _solCoachRenderRich(full);
-              else b.pEl.textContent = full;
-            }
-            var msgs = document.getElementById('sol-chat-messages');
-            if (msgs) msgs.scrollTop = msgs.scrollHeight;
-            // 정상 답변일 때만 잠금+CTA 노출 (재확인 안내 시 스킵)
-            if (CTA_MAP[sys] && typeof _solShouldShowLockedCta === 'function'
-                && _solShouldShowLockedCta(full) && typeof _solChatAppendLockedCta === 'function') {
-              _solChatAppendLockedCta(CTA_MAP[sys]);
-            }
+            target = full || target;
+            streamDone = true;
+            if (!target) { finalize(); return; } // 빈 응답 → 폴백(finalize 내부)
+            startReveal(); // delta 없이 done 온 경우 대비
           },
           onError: function () {
-            removeTyping(typingId);
-            if (bubble && bubble.pEl && bubble.pEl.textContent) {
-              // 중간까지 받은 부분 응답 마무리 (이중 말풍선 방지)
-              var partial = bubble.pEl.textContent;
+            stopReveal();
+            if (bubble && bubble.pEl && (target || bubble.pEl.textContent)) {
+              finalized = true;
+              removeTyping(typingId);
+              var partial = target || bubble.pEl.textContent;
               if (isRich && typeof _solCoachRenderRich === 'function') bubble.pEl.innerHTML = _solCoachRenderRich(partial);
+              else bubble.pEl.textContent = partial;
               if (CTA_MAP[sys] && typeof _solShouldShowLockedCta === 'function'
                   && _solShouldShowLockedCta(partial) && typeof _solChatAppendLockedCta === 'function') {
                 _solChatAppendLockedCta(CTA_MAP[sys]);
               }
               return;
             }
+            finalized = true; removeTyping(typingId);
             _solRenderReplyFallback(sys, userText);
           }
         }).catch(function () {
-          removeTyping(typingId);
-          if (bubble && bubble.pEl && bubble.pEl.textContent) {
-            var partial2 = bubble.pEl.textContent;
+          stopReveal();
+          if (bubble && bubble.pEl && (target || bubble.pEl.textContent)) {
+            finalized = true;
+            removeTyping(typingId);
+            var partial2 = target || bubble.pEl.textContent;
             if (isRich && typeof _solCoachRenderRich === 'function') bubble.pEl.innerHTML = _solCoachRenderRich(partial2);
+            else bubble.pEl.textContent = partial2;
             return;
           }
+          finalized = true; removeTyping(typingId);
           _solRenderReplyFallback(sys, userText);
         });
       }
@@ -14070,28 +14111,37 @@
       var _solTypingMentInterval = null;
       // ments 생략 시 기본 SOL_PROGRESS_MENTS (기존 챗 스트리밍 호출 호환)
       // opts.noRotate=true → 자동 회전 안 함(외부가 진행률 등으로 멘트를 직접 구동, PDF 흐름).
+      // 기본 4문구용 시간 임계값(초) — sec가 이 값 이상이면 해당 단계로 (단조 증가, 자동 빠른회전 ❌)
+      var SOL_MENT_THRESH = [0, 4, 10, 18];
       function appendTyping(id, ments, opts) {
         opts = opts || {};
         var mentList = (ments && ments.length) ? ments : SOL_PROGRESS_MENTS;
         var div = document.createElement('div');
         div.id = id;
-        div.className = 'flex gap-3';
-        div.innerHTML = '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">AI</div><div class="flex items-center gap-2 px-3 py-2"><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse"></span><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse" style="animation-delay:0.2s"></span><span class="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-pulse" style="animation-delay:0.4s"></span></div><span class="sol-typing-ment text-[12px] text-zinc-400"></span></div>';
+        div.className = 'flex gap-3 items-center';
+        // A-1 (v=20260627h) — 점 3개 제거 → PRO AI 아바타가 깜빡(animate-pulse) + 오른쪽 문구
+        div.innerHTML = '<div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0 text-white text-xs font-bold animate-pulse">AI</div><div class="py-2"><span class="sol-typing-ment text-[12px] text-zinc-400"></span></div>';
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        // 진행 멘트 회전 시작
         var mentEl = div.querySelector('.sol-typing-ment');
         if (mentEl) {
           mentEl.textContent = mentList[0];
           mentEl.setAttribute('data-mi', '0');
-          // v=20260627d — opts.noRotate면 자동 회전 안 함(PDF는 진행률 %로 직접 구동).
+          // v=20260627d — opts.noRotate면 외부(진행률 %)가 멘트 직접 구동(PDF). 자동 진행 안 함.
           if (!opts.noRotate) {
-            var mi = 0;
+            // v=20260627h — 시간 기반: 경과 초(매초 ↑) + 임계값으로 상태 전환 ("Ns · 문구").
+            //   클로드처럼 "진짜 작업 중·시간 흐름" 체감. 첫 토큰 도착 시 removeTyping으로 사라짐.
+            var sec = 0;
+            var custom = !!(ments && ments.length);
+            function pickIdx() {
+              if (!custom) { var i = 0; for (var t = 0; t < SOL_MENT_THRESH.length; t++) { if (sec >= SOL_MENT_THRESH[t]) i = t; } return Math.min(i, mentList.length - 1); }
+              return Math.min(mentList.length - 1, Math.floor(sec / 5)); // 커스텀: 5초 간격
+            }
             if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
-            // 루프 제거: 마지막 멘트에 도달하면 멈춤(뒤로 안 돌아감).
             _solTypingMentInterval = setInterval(function () {
-              if (mi < mentList.length - 1) { mi++; mentEl.textContent = mentList[mi]; }
-            }, 1600);
+              sec++;
+              mentEl.textContent = sec + 's · ' + mentList[pickIdx()];
+            }, 1000);
           }
         }
       }
