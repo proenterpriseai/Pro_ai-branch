@@ -3647,6 +3647,61 @@
 </head>
 
 <body class="antialiased text-zinc-100 overflow-x-hidden selection:bg-blue-500/30 selection:text-blue-200" style="background:#000000;">
+
+  <!-- ═══ 인트로 터널 (v=20260627i, Flag=false 기본) — 첫 진입 시 SF 터널 3초 → 페이드아웃하며 히어로 등장 ═══
+       독립 블록(자체 CSS+JS). Flag off 또는 세션 1회 본 경우 또는 reduced-motion이면 즉시 제거(0 영향).
+       옵트인 검증: sessionStorage._flag_intro_tunnel='true'; (그리고 _intro_seen 비우고) 새로고침. -->
+  <style>
+    #intro-tunnel { position: fixed; inset: 0; z-index: 100000; background: #000; display: none; align-items: center; justify-content: center; overflow: hidden; }
+    #intro-tunnel.on { display: flex; }
+    #intro-tunnel.fade { opacity: 0; transition: opacity .6s ease; }
+    #intro-tunnel video { width: 100%; height: 100%; object-fit: cover; }
+    #intro-tunnel .intro-tint { position: absolute; inset: 0; background: #1d49c8; mix-blend-mode: color; opacity: .55; pointer-events: none; }
+    #intro-tunnel .intro-vign { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,.6) 100%); pointer-events: none; }
+    #intro-skip { position: absolute; bottom: 28px; right: 28px; z-index: 2; color: rgba(255,255,255,.7); font-size: 13px; letter-spacing: .04em; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 8px 16px; cursor: pointer; backdrop-filter: blur(8px); transition: all .2s; }
+    #intro-skip:hover { color: #fff; background: rgba(255,255,255,.16); }
+    @media (prefers-reduced-motion: reduce) { #intro-tunnel { display: none !important; } }
+  </style>
+  <div id="intro-tunnel" aria-hidden="true">
+    <video id="intro-video" muted playsinline preload="auto" src="assets/video/intro-tunnel.mp4"></video>
+    <div class="intro-tint"></div>
+    <div class="intro-vign"></div>
+    <button id="intro-skip" type="button">건너뛰기 ›</button>
+  </div>
+  <script>
+    (function () {
+      var FEATURE_INTRO_TUNNEL = false; // 검증 후 true 로 공개
+      function on() { try { return FEATURE_INTRO_TUNNEL || sessionStorage.getItem('_flag_intro_tunnel') === 'true'; } catch (e) { return FEATURE_INTRO_TUNNEL; } }
+      var el = document.getElementById('intro-tunnel');
+      if (!el) return;
+      var seen = false; try { seen = sessionStorage.getItem('_intro_seen') === '1'; } catch (e) {}
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!on() || seen || reduce) { if (el.parentNode) el.parentNode.removeChild(el); return; }
+      var vid = document.getElementById('intro-video');
+      var skip = document.getElementById('intro-skip');
+      var done = false;
+      function finish() {
+        if (done) return; done = true;
+        try { sessionStorage.setItem('_intro_seen', '1'); } catch (e) {}
+        el.classList.add('fade');
+        try { if (vid) { vid.pause(); vid.removeAttribute('src'); vid.load(); } } catch (e) {} // 13MB 끝까지 안 받게 중단
+        document.documentElement.style.overflow = ''; document.body.style.overflow = '';
+        setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 650);
+      }
+      document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden';
+      el.classList.add('on');
+      if (skip) skip.addEventListener('click', finish);
+      setTimeout(finish, 3500); // 안전장치: 영상 안 떠도 최대 3.5초 후 종료
+      if (vid) {
+        vid.addEventListener('timeupdate', function () { if (vid.currentTime >= 3) finish(); }); // 3초만 재생
+        vid.addEventListener('ended', finish);
+        vid.addEventListener('error', finish);
+        var p = vid.play && vid.play();
+        if (p && p.catch) p.catch(function () {}); // muted autoplay 막히면 3.5초 안전장치가 처리
+      }
+    })();
+  </script>
+
   <div class="scroll-progress" id="scroll-progress"></div>
 
   <!-- ==================== NAVIGATION (content-layer 바깥, 오버레이 위) ==================== -->
