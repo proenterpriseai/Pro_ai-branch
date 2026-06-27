@@ -10981,6 +10981,19 @@
             + (hasDots ? '<span class="sol-pdf-dots"><span>.</span><span>.</span><span>.</span></span>' : '')
             + ' ' + percent + '%';
         }
+        // v=20260627d — 타이핑 버블 멘트를 진행률 %에 맞춰 단조 증가로 동기화.
+        //   자동 회전(시간 기반) 대신 실제 진행에 묶음 → "거의 다"는 90%+에서만, 뒤로 안 감.
+        var mentEl = document.querySelector('#sol-pdf-typing .sol-typing-ment');
+        if (mentEl && typeof SOL_PDF_PROGRESS_MENTS !== 'undefined') {
+          var idx;
+          if (percent < 22) idx = 0;        // 📄 PDF를 읽고 있어요
+          else if (percent < 45) idx = 1;   // 🔍 핵심 정보 추출
+          else if (percent < 72) idx = 2;   // 📊 항목별 분석
+          else if (percent < 90) idx = 3;   // ✍️ 리포트 작성
+          else idx = 4;                     // 거의 다 됐어요...
+          var cur = parseInt(mentEl.getAttribute('data-mi') || '0', 10);
+          if (idx > cur) { mentEl.setAttribute('data-mi', String(idx)); mentEl.textContent = SOL_PDF_PROGRESS_MENTS[idx]; }
+        }
       }
 
       function _solPdfHideProgress() {
@@ -11069,9 +11082,9 @@
 
         // 2) 채팅에 분석 중 표시
         appendMessage('user', '📎 ' + file.name);
-        // v=20260627b — 정적 "분석 시작" 메시지 → 동적 회전 멘트(타이핑 버블)로 교체.
-        //   PRO AI 옆에 PDF 분석 단계 멘트가 1.4s 간격 회전 → 일하고 있다는 느낌.
-        appendTyping('sol-pdf-typing', SOL_PDF_PROGRESS_MENTS);
+        // v=20260627b/d — 정적 "분석 시작" 메시지 → 동적 멘트(타이핑 버블)로 교체.
+        //   noRotate: 자동 회전 대신 진행률 %에 맞춰 _solPdfShowProgress가 멘트를 단조 구동.
+        appendTyping('sol-pdf-typing', SOL_PDF_PROGRESS_MENTS, { noRotate: true });
 
         // 3) 진행률 바 시작
         var progressInterval = _solPdfStartFakeProgress();
@@ -14068,7 +14081,9 @@
       ];
       var _solTypingMentInterval = null;
       // ments 생략 시 기본 SOL_PROGRESS_MENTS (기존 챗 스트리밍 호출 호환)
-      function appendTyping(id, ments) {
+      // opts.noRotate=true → 자동 회전 안 함(외부가 진행률 등으로 멘트를 직접 구동, PDF 흐름).
+      function appendTyping(id, ments, opts) {
+        opts = opts || {};
         var mentList = (ments && ments.length) ? ments : SOL_PROGRESS_MENTS;
         var div = document.createElement('div');
         div.id = id;
@@ -14079,13 +14094,17 @@
         // 진행 멘트 회전 시작
         var mentEl = div.querySelector('.sol-typing-ment');
         if (mentEl) {
-          var mi = 0;
           mentEl.textContent = mentList[0];
-          if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
-          _solTypingMentInterval = setInterval(function () {
-            mi = (mi + 1) % mentList.length;
-            mentEl.textContent = mentList[mi];
-          }, 1400);
+          mentEl.setAttribute('data-mi', '0');
+          // v=20260627d — opts.noRotate면 자동 회전 안 함(PDF는 진행률 %로 직접 구동).
+          if (!opts.noRotate) {
+            var mi = 0;
+            if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
+            // 루프 제거: 마지막 멘트에 도달하면 멈춤(뒤로 안 돌아감).
+            _solTypingMentInterval = setInterval(function () {
+              if (mi < mentList.length - 1) { mi++; mentEl.textContent = mentList[mi]; }
+            }, 1600);
+          }
         }
       }
 
