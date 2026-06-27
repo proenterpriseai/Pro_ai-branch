@@ -3676,7 +3676,9 @@
       if (!el) return;
       var seen = false; try { seen = sessionStorage.getItem('_intro_seen') === '1'; } catch (e) {}
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!on() || seen || reduce) { if (el.parentNode) el.parentNode.removeChild(el); return; }
+      var force = false; try { force = (location.search || '').indexOf('intro=1') !== -1; } catch (e) {} // ?intro=1 = 미리보기(seen 무시)
+      if (reduce) { if (el.parentNode) el.parentNode.removeChild(el); return; }       // a11y: reduced-motion이면 항상 스킵
+      if (!force && (!on() || seen)) { if (el.parentNode) el.parentNode.removeChild(el); return; }
       var vid = document.getElementById('intro-video');
       var skip = document.getElementById('intro-skip');
       var done = false;
