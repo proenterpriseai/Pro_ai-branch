@@ -994,6 +994,13 @@
       text-align: right;
       letter-spacing: 0.02em;
     }
+    /* v=20260627b — 진행률 라벨 "..." 움직이는 점 (보편 호환: opacity 펄스) */
+    .sol-pdf-dots { display: inline-block; }
+    .sol-pdf-dots span { animation: solPdfDotBlink 1.2s infinite; }
+    .sol-pdf-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .sol-pdf-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes solPdfDotBlink { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .sol-pdf-dots span { animation: none; opacity: 0.6; } }
 
     /* 우측 PDF 리포트 패널 (Phase 2A — legacy, 옵션 Y에서는 미사용) */
     #sol-pdf-report {
@@ -9329,9 +9336,20 @@
         var div = document.createElement('div');
         div.className = 'flex items-start gap-3 relative z-10';
         div.id = 'typing-temp';
-        div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-600 shadow-lg shadow-blue-600/20 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><rect width="4" height="4" x="10" y="10" rx="1"/><path d="M22 22v-4a6 6 0 0 0-12 0v4"/></svg></div><div class="bg-neutral-800/80 ring-1 ring-white/5 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5 h-10"><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.2s"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.4s"></span></div>';
+        div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-600 shadow-lg shadow-blue-600/20 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><rect width="4" height="4" x="10" y="10" rx="1"/><path d="M22 22v-4a6 6 0 0 0-12 0v4"/></svg></div><div class="bg-neutral-800/80 ring-1 ring-white/5 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.2s"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.4s"></span><span class="pro-demo-ment text-[12px] text-neutral-400 whitespace-nowrap" style="margin-left:2px;"></span></div>';
         chatArea.appendChild(div);
         chatArea.scrollTop = chatArea.scrollHeight;
+        // v=20260627c — 회전 멘트(동적 작업 표시). typing-temp가 사라지면 self-clean.
+        (function () {
+          var _mEl = div.querySelector('.pro-demo-ment');
+          if (!_mEl) return;
+          var _ms = ['🔍 질문을 분석하고 있어요', '📊 보장 데이터를 조회하고 있어요', '✍️ 답변을 작성하고 있어요', '거의 다 됐어요...'];
+          var _mi = 0; _mEl.textContent = _ms[0];
+          var _mt = setInterval(function () {
+            if (!document.getElementById('typing-temp')) { clearInterval(_mt); return; }
+            _mi = (_mi + 1) % _ms.length; _mEl.textContent = _ms[_mi];
+          }, 1400);
+        })();
       }
       function addAIResponse(resp) {
         var typing = document.getElementById('typing-temp');
@@ -9771,12 +9789,24 @@
         } else if (role === 'typing') {
           div.className = 'flex flex-row-reverse items-start gap-3';
           div.id = 'coaching-typing';
-          div.innerHTML = '<div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0"><span class="text-[10px] text-white font-bold">AI</span></div><div class="bg-neutral-800/80 ring-1 ring-white/5 px-4 py-3 rounded-2xl rounded-tr-sm flex items-center gap-1.5 h-9"><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.2s"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.4s"></span></div>';
+          div.innerHTML = '<div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center flex-shrink-0"><span class="text-[10px] text-white font-bold">AI</span></div><div class="bg-neutral-800/80 ring-1 ring-white/5 px-4 py-3 rounded-2xl rounded-tr-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.2s"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.4s"></span><span class="pro-demo-ment text-[12px] text-neutral-400 whitespace-nowrap" style="margin-left:2px;"></span></div>';
         }
         div.style.opacity = '0'; div.style.transition = 'opacity 0.3s';
         chatArea.appendChild(div);
         requestAnimationFrame(function () { div.style.opacity = '1'; });
         chatArea.scrollTop = chatArea.scrollHeight;
+        // v=20260627c — 코칭 typing에 회전 멘트(동적 작업 표시). coaching-typing이 사라지면 self-clean.
+        if (role === 'typing') {
+          var _mEl = div.querySelector('.pro-demo-ment');
+          if (_mEl) {
+            var _ms = ['🔍 상담 상황을 분석하고 있어요', '📊 화법 전략을 조회하고 있어요', '✍️ 코칭을 작성하고 있어요', '거의 다 됐어요...'];
+            var _mi = 0; _mEl.textContent = _ms[0];
+            var _mt = setInterval(function () {
+              if (!document.getElementById('coaching-typing')) { clearInterval(_mt); return; }
+              _mi = (_mi + 1) % _ms.length; _mEl.textContent = _ms[_mi];
+            }, 1400);
+          }
+        }
         return div;
       }
 
@@ -10019,9 +10049,20 @@
         var div = document.createElement('div');
         div.className = 'flex items-start gap-3';
         div.id = 'cs-typing';
-        div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center flex-shrink-0"><span class="text-white text-xs font-bold">FSS</span></div><div class="bg-neutral-800/80 ring-1 ring-white/5 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5 h-10"><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.2s"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.4s"></span></div>';
+        div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center flex-shrink-0"><span class="text-white text-xs font-bold">FSS</span></div><div class="bg-neutral-800/80 ring-1 ring-white/5 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.2s"></span><span class="w-1.5 h-1.5 bg-neutral-400 rounded-full" style="animation:dot-bounce 1.4s infinite ease-in-out both 0.4s"></span><span class="pro-demo-ment text-[12px] text-neutral-400 whitespace-nowrap" style="margin-left:2px;"></span></div>';
         chatArea.appendChild(div);
         chatArea.scrollTop = chatArea.scrollHeight;
+        // v=20260627c — FSS typing에 회전 멘트(동적 작업 표시). cs-typing이 사라지면 self-clean.
+        (function () {
+          var _mEl = div.querySelector('.pro-demo-ment');
+          if (!_mEl) return;
+          var _ms = ['🔍 민원·상품 내용을 분석하고 있어요', '⚖️ 법적 근거·판례를 조회하고 있어요', '✍️ 답변을 작성하고 있어요', '거의 다 됐어요...'];
+          var _mi = 0; _mEl.textContent = _ms[0];
+          var _mt = setInterval(function () {
+            if (!document.getElementById('cs-typing')) { clearInterval(_mt); return; }
+            _mi = (_mi + 1) % _ms.length; _mEl.textContent = _ms[_mi];
+          }, 1400);
+        })();
       }
       function removeTyping() { var t = document.getElementById('cs-typing'); if (t) t.remove(); }
 
@@ -10930,7 +10971,16 @@
         var fill = prog.querySelector('.sol-pdf-progress-fill');
         var lbl = prog.querySelector('.sol-pdf-progress-label');
         if (fill) fill.style.width = percent + '%';
-        if (lbl) lbl.textContent = (label || 'PDF 분석 중...') + ' ' + percent + '%';
+        if (lbl) {
+          // v=20260627b — 라벨 끝의 "..."을 움직이는 점 애니메이션으로 대체 (동적 느낌).
+          //   "..."(또는 "…")로 끝나는 라벨만 점 애니메이션, '완료' 등은 그대로.
+          var base = (label || 'PDF 분석 중...');
+          var hasDots = /(\.\.\.|…)\s*$/.test(base);
+          var clean = base.replace(/(\.\.\.|…)\s*$/, '');
+          lbl.innerHTML = escHtml(clean)
+            + (hasDots ? '<span class="sol-pdf-dots"><span>.</span><span>.</span><span>.</span></span>' : '')
+            + ' ' + percent + '%';
+        }
       }
 
       function _solPdfHideProgress() {
@@ -11017,9 +11067,11 @@
           return;
         }
 
-        // 2) 채팅에 분석 중 메시지
+        // 2) 채팅에 분석 중 표시
         appendMessage('user', '📎 ' + file.name);
-        appendMessage('ai', file.name + ' 분석을 시작합니다. 잠시만 기다려 주세요...');
+        // v=20260627b — 정적 "분석 시작" 메시지 → 동적 회전 멘트(타이핑 버블)로 교체.
+        //   PRO AI 옆에 PDF 분석 단계 멘트가 1.4s 간격 회전 → 일하고 있다는 느낌.
+        appendTyping('sol-pdf-typing', SOL_PDF_PROGRESS_MENTS);
 
         // 3) 진행률 바 시작
         var progressInterval = _solPdfStartFakeProgress();
@@ -11036,6 +11088,7 @@
 
           // 6) 진행률 마무리
           clearInterval(progressInterval);
+          removeTyping('sol-pdf-typing'); // 회전 멘트 정리 (interval 클린업 포함)
           _solPdfShowProgress(100, '완료');
           setTimeout(_solPdfHideProgress, 600);
 
@@ -11045,6 +11098,7 @@
           _solPdfRenderReport(data, sysKey);
         } catch (err) {
           clearInterval(progressInterval);
+          removeTyping('sol-pdf-typing'); // 에러 시에도 회전 멘트 정리
           _solPdfHandleError(err);
         }
       }
@@ -14004,8 +14058,18 @@
         '✍️ 답변을 작성하고 있어요',
         '거의 다 됐어요...'
       ];
+      // PDF 분석 전용 진행 멘트 (v=20260627b) — 보장분석/건강검진 PDF 업로드 시 회전.
+      var SOL_PDF_PROGRESS_MENTS = [
+        '📄 PDF를 읽고 있어요',
+        '🔍 핵심 정보를 추출하고 있어요',
+        '📊 항목별로 분석하고 있어요',
+        '✍️ 리포트를 작성하고 있어요',
+        '거의 다 됐어요...'
+      ];
       var _solTypingMentInterval = null;
-      function appendTyping(id) {
+      // ments 생략 시 기본 SOL_PROGRESS_MENTS (기존 챗 스트리밍 호출 호환)
+      function appendTyping(id, ments) {
+        var mentList = (ments && ments.length) ? ments : SOL_PROGRESS_MENTS;
         var div = document.createElement('div');
         div.id = id;
         div.className = 'flex gap-3';
@@ -14016,11 +14080,11 @@
         var mentEl = div.querySelector('.sol-typing-ment');
         if (mentEl) {
           var mi = 0;
-          mentEl.textContent = SOL_PROGRESS_MENTS[0];
+          mentEl.textContent = mentList[0];
           if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
           _solTypingMentInterval = setInterval(function () {
-            mi = (mi + 1) % SOL_PROGRESS_MENTS.length;
-            mentEl.textContent = SOL_PROGRESS_MENTS[mi];
+            mi = (mi + 1) % mentList.length;
+            mentEl.textContent = mentList[mi];
           }, 1400);
         }
       }
