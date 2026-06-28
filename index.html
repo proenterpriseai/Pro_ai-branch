@@ -6576,7 +6576,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- 솔루션 요약 -->
           <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 animate-on-scroll">
-            <h3 class="text-2xl font-bold text-white mb-6">프로솔루션</h3>
+            <h3 class="text-2xl font-bold text-white mb-6">프로 솔루션</h3>
             <div class="space-y-6">
               <div class="flex gap-4">
                 <span
@@ -6612,7 +6612,30 @@
           </div>
 
           <!-- 승격 구조 -->
-          <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 animate-on-scroll">
+          <style>
+            /* 승격 구조 자동 흐름 (v=20260628b) — 두 루트 노드를 위→아래로 순차 점등하는 무한 wave.
+               비파괴(box-shadow/transform/filter만 애니 → 최종 노드 영업이사/총괄단장 그라데이션 rest 유지). */
+            @keyframes promoDot { 0%{transform:scale(1);box-shadow:0 0 0 0 rgba(96,165,250,0);} 5%{transform:scale(1.55);box-shadow:0 0 11px 3px rgba(96,165,250,.85);} 13%{transform:scale(1);box-shadow:0 0 0 0 rgba(96,165,250,0);} 100%{transform:scale(1);box-shadow:0 0 0 0 rgba(96,165,250,0);} }
+            @keyframes promoLabel { 0%{box-shadow:none;} 5%{box-shadow:inset 0 0 0 1px rgba(96,165,250,.5), 0 0 16px -2px rgba(96,165,250,.5);} 13%{box-shadow:none;} 100%{box-shadow:none;} }
+            @keyframes promoLink { 0%,100%{box-shadow:none;filter:brightness(1);} 6%{box-shadow:0 0 9px rgba(96,165,250,.75);filter:brightness(2.6);} }
+            .promo-flow .space-y-3 > .flex > span:first-child { animation: promoDot 3.2s ease-in-out infinite; }
+            .promo-flow .space-y-3 > .flex > span:last-child  { animation: promoLabel 3.2s ease-in-out infinite; }
+            .promo-flow .space-y-3 > .w-px                    { animation: promoLink 3.2s ease-in-out infinite; }
+            .promo-flow .space-y-3 > .flex:nth-child(1) > span { animation-delay: 0s; }
+            .promo-flow .space-y-3 > .flex:nth-child(3) > span { animation-delay: .38s; }
+            .promo-flow .space-y-3 > .flex:nth-child(5) > span { animation-delay: .76s; }
+            .promo-flow .space-y-3 > .flex:nth-child(7) > span { animation-delay: 1.14s; }
+            .promo-flow .space-y-3 > .flex:nth-child(9) > span { animation-delay: 1.52s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(2) { animation-delay: .19s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(4) { animation-delay: .57s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(6) { animation-delay: .95s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(8) { animation-delay: 1.33s; }
+            @media (prefers-reduced-motion: reduce) {
+              .promo-flow .space-y-3 > .flex > span,
+              .promo-flow .space-y-3 > .w-px { animation: none !important; }
+            }
+          </style>
+          <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 animate-on-scroll promo-flow">
             <h3 class="text-2xl font-bold text-white mb-6">승격 구조</h3>
             <div class="grid grid-cols-2 gap-8">
               <!-- 영업인 루트 -->
