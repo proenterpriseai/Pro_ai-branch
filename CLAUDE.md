@@ -241,6 +241,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260628m** (index.html 단일, main push + tag) — 인재양성 4축 브랜드 헤드라인 "**상담 전,** 이미 신뢰가 만들어집니다"→**"이미 신뢰가 만들어집니다"**(`.talent-headline` 14820, "상담 전, " 제거).
 - **v=20260628l** (index.html 단일, main push + tag) — 문구·레이아웃 3건. ①인재양성 헤드라인 "단계별로**,** 확실하게 키웁니다"→**"단계별로 확실하게 키웁니다"**(쉼표 제거, `.talent-headline` 14732). ②문의하기 오버레이(#contact) 상단 "● 문의하기" 뱃지 **삭제** + h2 `mt-4` 제거 → 헤더 내용 뱃지 자리만큼 **위로** 올림(7035~). ③문의하기 서브 "시간은 절반으로, 소득은 두 배로 **—**"→**"시간은 절반으로, 소득은 두 배로"**(끝 em-dash 제거, 7043). 검증 실측·콘솔0.
 - **v=20260628k** (index.html 단일, main push + tag) — 헤더 데스크톱 네비 손질(이미지2 참고). ①네비 링크 글자 `text-[15px]→text-[16px]`(5개 동일 클래스 replace_all) + 컨테이너 `gap-10→gap-12`(40→48px). ②"지원하기" 그라데이션 버튼: **`>` 셰브론 SVG 제거**(텍스트만), 글자 `13→14px`·`font-medium→semibold`·패딩 `py-1.5 px-3→py-2 px-4`. 모바일 네비(#mobile-nav-overlay)·모바일 지원하기 버튼 무영향. 검증 실측(navFont 16px·gap 48px·btn 14px·셰브론 없음)·콘솔0.
 - **v=20260628j** (index.html + `assets/images/ceo-signature.png`, main push + tag) — CEO 오버레이 임형준 **서명 이미지 라이브 복구**. 원인=`대표님 서명.png`가 **루트 PNG라 `.gitignore`의 `/*.png`·`/*.PNG`에 막혀 추적 안 됨 → GitHub 미반영 → Vercel 404**(로컬 `_serve.js`만 디스크서 서빙돼 보였던 것, "갑자기"가 아니라 라이브엔 원래 없었음). 해결=파일을 **`assets/images/ceo-signature.png`**(ASCII명, `.gitignore`의 `!/assets/`로 un-ignore됨)로 복사 + `<img>` src `대표님 서명.png`→`assets/images/ceo-signature.png`. 한글파일명+공백 Vercel 리스크도 제거. 검증=img `naturalWidth 939`·loaded. ⚠️**교훈: 루트 PNG는 gitignore됨 → 페이지에서 쓰는 이미지는 반드시 `assets/`(또는 추적되는 폴더)에 둘 것.**
