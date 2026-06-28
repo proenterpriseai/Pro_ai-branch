@@ -241,6 +241,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260628r** (index.html 단일, main push + tag) — 전문역량특화 패널 태그 `#실적극대화→#소득극대화`(`.edu-hp-tag` 14976, v=q 후속 미세수정).
 - **v=20260628q** (index.html 단일, main push + tag) — 인재양성 "전문 역량 특화 과정" 패널 태그 3건: `#데이터영업→#DB영업`, `#전환율극대화→#실적극대화`, `#심리화법→#전문가양성`(`.edu-hp-tag` 14976).
 - **v=20260628p** (index.html 단일, main push + tag) — 히어로 제목 "보험을 넘어/성장의 정점으로" **그라데이션→순백색**(대표님 요청). `bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60`(위흰→아래60% 페이드) → **`text-white`**(균일 흰색). 사이즈·트래킹·애니 유지. 검증 color rgb(255,255,255)·backgroundImage none.
 - **v=20260628o** (index.html 단일, main push + tag) — STEP1 클릭→교육 섹션 이동 시 **히어로 슬라이드쇼(사무실 사진) 플리커 제거**(대표님: 클릭 후 사무실 사진 잠깐 보였다 넘어감). 원인=v=n이 `setTimeout 450ms`로 스크롤해 그 사이 scrollTop 0(히어로) 노출. 해결=`initEduScroll`이 스크롤 리셋 안 함 + 교육섹션 세로위치는 CSS 고정이라 **init 기다릴 필요 없음** → `_go()` **동기 즉시 실행 + rAF + double-rAF**로 교체. 검증: 클릭 동기 직후 scrollTop=1402(0 안 거침)·최종 edu top 정렬·콘솔0.
