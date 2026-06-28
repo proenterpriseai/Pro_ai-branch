@@ -241,6 +241,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260628p** (index.html 단일, main push + tag) — 히어로 제목 "보험을 넘어/성장의 정점으로" **그라데이션→순백색**(대표님 요청). `bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60`(위흰→아래60% 페이드) → **`text-white`**(균일 흰색). 사이즈·트래킹·애니 유지. 검증 color rgb(255,255,255)·backgroundImage none.
 - **v=20260628o** (index.html 단일, main push + tag) — STEP1 클릭→교육 섹션 이동 시 **히어로 슬라이드쇼(사무실 사진) 플리커 제거**(대표님: 클릭 후 사무실 사진 잠깐 보였다 넘어감). 원인=v=n이 `setTimeout 450ms`로 스크롤해 그 사이 scrollTop 0(히어로) 노출. 해결=`initEduScroll`이 스크롤 리셋 안 함 + 교육섹션 세로위치는 CSS 고정이라 **init 기다릴 필요 없음** → `_go()` **동기 즉시 실행 + rAF + double-rAF**로 교체. 검증: 클릭 동기 직후 scrollTop=1402(0 안 거침)·최종 edu top 정렬·콘솔0.
 - **v=20260628n** (index.html 단일, main push + tag) — ①STEP1 "프로를 만드는 교육 체계" 카드 클릭 **이동 대상 변경**: `data-nav="talent-open"`(인재양성 오버레이) → **인라인 onclick: 프로사업단총괄 오버레이(`#pro-intro-overlay`) 열고 `#edu-horiz-scroll`(신인/저차월 교육)로 스크롤**. ⚠️핵심: 오버레이 **실제 스크롤러는 `#pro-intro-overlay` 자체**(overflowY:auto), `.ceo-overlay__content`는 overflow:visible=비스크롤 → `o.scrollTop` 사용(처음 `.ceo-overlay__content` 썼다가 스크롤 0으로 실패→수정). `ceo-overlay--active` 부착 시 MutationObserver(~15290)가 +300ms에 `initEduScroll` 자동실행 → +450ms에 edu top으로 `getBoundingClientRect` 상대계산 스크롤. 검증: 클릭→overlay active·scrollTop 1402·edu 상대top 0·콘솔0. ②why-pro "같은 시간**,**↵다른 결과"→쉼표 제거(4313). ③stories "압도적 격차는 사람이 만듭니다**.**"→마침표 제거(6719).
 - **v=20260628m** (index.html 단일, main push + tag) — 인재양성 4축 브랜드 헤드라인 "**상담 전,** 이미 신뢰가 만들어집니다"→**"이미 신뢰가 만들어집니다"**(`.talent-headline` 14820, "상담 전, " 제거).
