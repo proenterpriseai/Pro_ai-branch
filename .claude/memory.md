@@ -42,6 +42,9 @@ v=b의 글로우 wave가 대표님 의도와 달랐음 → **파란 배경 하�
 ①프로솔루션 시스템 현황 클릭 활성 글로우 `.sol-system-item.active` cyan `#06b6d4`→블루 `#3b82f6`(대표님이 "초록"으로 본 teal). ②시스템 현황 리스트 통합금융계산기→통합 금융계산기(7287, STEP2와 별개). ③STEP2·3 그래픽 배경 `bg-[#05030F]`로 STEP1과 통일(기존 neutral-900/40). 초록 status점·All Live=라이브표시라 유지. active border-left는 인라인 border가 덮어 bg+box-shadow로 표현(색만 블루).
 🔜 잔여: Web3Forms 키 교체(승인 대기)뿐.
 
+### ✅ v=20260628j — CEO 서명 이미지 라이브 복구 (배포 LIVE)
+CEO 오버레이 임형준 서명이 라이브서 깨짐(broken img). 원인=`대표님 서명.png`가 루트 PNG라 `.gitignore`(`/*.png`,`/*.PNG`)에 막혀 추적 안 됨→GitHub 미반영→Vercel 404(로컬만 디스크서 보였음). 해결=`assets/images/ceo-signature.png`(ASCII명, `!/assets/`로 추적됨)로 복사+src 교체. 검증 naturalWidth 939. ⚠️교훈: **루트 PNG=gitignore. 페이지 이미지는 `assets/`에.**
+
 ### ✅ v=20260628h — CTA 문구 + STEP2 리스트 애니 시작잔상 수정 (배포 LIVE)
 ①"AI 시스템 직접 체험하기"→"AI 시스템 체험하기". ②STEP2 리스트: 로드 시 전부 흰색→하나씩 꺼지던 잔상 수정. 원인=`active-step-anim`/`active-content-reveal` 기본(지연대기) 상태가 밝음 → `.animate-step-cycle{opacity:.4}` `.animate-content-cycle{opacity:0}` 추가로 기본=흐림. 이제 로드 시 1번만 흰색+바+배지, 흰 하이라이트가 위→아래 순차이동(stagger 21s/3s 불변). ⚠️교훈: `!important author` > CSS animation이라 base에 !important 쓰면 active가 안 밝아짐 → normal로.
 
@@ -144,14 +147,13 @@ STEP1(교육체계)만 0.3s 지연 blur 페이드로 늦게 떠 어색 → 인�
 
 ## 🔜 다음 세션 할 일
 
-> ✅ 2026-06-27 v=a~h 전부 배포 LIVE(**최신 commit `4d29b09`, git tag `v20260627h`**). 챗 볼드·동적멘트·진행률연동·허브선명화·왼쪽점제거+카드제목·STEP카드·인디케이터깜빡임+부드러운타이핑 다 완료·검증. 인트로(i)는 시도→철회=종결. 아래는 남은 일.
+> ✅ 2026-06-28: **v=20260628a~j 전부 배포 LIVE (최신 commit `<latest>`, git tag `v20260628j`)**. 오늘 한 일: 인재양성 로드맵 아이콘·글자 키움 / CEO 인사말 뱃지 삭제(위치고정 visibility:hidden) / why-pro "같은 시간 다른 결과" 블루 프레임(#solutions 동일) + 우측 카드 순서 스왑(보장분석 AI 최상단, 본문만 스왑) / "프로솔루션"→"프로 솔루션" / 승격 구조 파란 배경 단계별 순환(7s, 고정 하이라이트 제거) / **STEP1 궤도 세련화**(빛 스윕 아크+글래스 위성+중앙 PRO 문구+코어 네이비 톤다운+위성 블루 모노톤 통일) / 문구 다수("PRO AI 통합 시스템"·"프로 솔루션 · 7대 AI 시스템"·"통합 금융계산기"·"AI 시스템 체험하기"·stories 캡션 "AI 시스템 · …") / 시스템현황 클릭 글로우 cyan #06b6d4→블루 #3b82f6 / STEP2·3 그래픽 배경 #05030F 통일 / STEP2 리스트 애니 시작잔상 수정(기본 흐림) / CEO 서명 이미지 라이브 복구(assets/images/ceo-signature.png). **전부 DOM 실측 검증·콘솔0.** ⚠️ preview_eval은 백그라운드 탭(docHidden)이라 CSS 애니 frozen → screenshot 타임아웃·동적 색 샘플 dim. 검증 시 `getAnimations().currentTime` 수동주입 또는 base/규칙 직접 읽기로.
 
-1. ✅❌ **메인 히어로 "터널 인트로" = 시도 후 전량 철회 (종결)** — v=20260627i로 빌드(Flag off)했으나 **대표님 결정: "보험을 넘어 성장의 정점으로가 처음부터 보이는 게 훨씬 낫다" → 전량 롤백**(index.html 인트로 블록 + `assets/video/intro-tunnel.mp4` 삭제). **히어로 인트로/스플래시는 재제안 금지.** (교훈: Pinterest 영상=저작권 불가, Pixabay는 상업무료 OK였음.)
-2. 🔴 **Web3Forms 키 교체 (대표님 승인 후)** — 현재 키 `c96794c6…`=전략실장 수신 유지. 승인 시 web3forms.com에서 `proenterprise@incarproent.com` 새 키 발급 → `_submitContactForm` 키 1줄 교체·배포.
-3. ✅ **① 건강검진 PDF 순서버그 시각 최종확인 = 완료·종결 (2026-06-28)** — 전략실장이 ai-branch.vercel.app 배포본에서 보장분석 PDF→건강검진 PDF 순(리포트 패널 재사용 경로) 업로드, **둘 다 정상**(리포트 위/아래에 질문·"분석 시작" 메시지 잔존 0). v=20260626b `_solPdfInjectReportPanel` `msgsEl.style.display='none'` 선실행 수정 확정. 더 볼 것 없음.
-4. (선택) 스트리밍 안정화 모니터링(Vercel 타임아웃/버퍼링). SSE 실패 시 클라가 비스트리밍 폴백 → UI 안 깨짐.
+1. 🔴 **Web3Forms 키 교체 (대표님 승인 후) — 유일 미결** — 현재 키 `c96794c6…`=전략실장 수신 유지. 승인 시 web3forms.com에서 `proenterprise@incarproent.com` 새 키 발급 → `_submitContactForm` 키 1줄 교체·배포.
+2. (선택) 오늘 배포한 다수 UI 변경 라이브 육안 모니터링(ai-branch.vercel.app 강력 새로고침). 이상 시 조정.
+3. (참고·미래) `api/chat.js` 모델 `gemini-2.5-flash`는 **2026-10-16 퇴역 예정** → 그 전 교체 필요.
 
 ---
 
 ## 다음 대화 첫 질문 (복붙용)
-"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-27 작업(챗 볼드·동적멘트·진행률연동·허브선명화·왼쪽점제거+카드제목·STEP카드·인디케이터깜빡임+부드러운타이핑, v=a~h) 전부 배포 완료(tag `v20260627h`). 터널 인트로는 철회로 종결. 오늘은 [Web3Forms 키 교체(승인됨/보류) / ① 건강검진 PDF 시각 최종확인 / 새 작업: ___] 중 ___ 부터 하자."
+"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-28 작업(인재양성 로드맵 키움·CEO 뱃지 삭제·why-pro 블루프레임+카드순서·프로 솔루션·승격구조 순환·STEP1 궤도 세련화(중앙 PRO)·뱃지/문구 다수·시스템현황 글로우 블루·STEP2·3 배경통일·STEP2 리스트 애니·CEO 서명 복구, v=20260628a~j) 전부 배포·검증 완료(최신 tag `v20260628j`). 오늘은 [Web3Forms 키 교체(승인?) / 새 작업: ___] 중 ___ 부터 하자."
