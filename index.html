@@ -4303,7 +4303,8 @@
 
     <!-- ==================== WHY PRO: Before/After 허브 레이아웃 ==================== -->
     <section class="sm:px-6 lg:px-8 sm:py-16 animate-on-scroll max-w-7xl mr-auto ml-auto pt-12 pr-4 pb-12 pl-4" id="why-pro" style="scroll-margin-top:20px;">
-      <div class="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
+      <div class="border-gradient glow-target sm:pt-12 sm:pb-12 sm:pl-12 sm:pr-12 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll rounded-3xl pt-8 pr-6 pb-8 pl-6" style="background:#0a0a14;">
+        <div class="glow-border"></div>
 
         <!-- 헤더 -->
         <div class="text-center mb-12">
@@ -7388,7 +7389,7 @@
           <!-- 좌측: 인사말 -->
           <div>
             <!-- 키커 -->
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-xs text-zinc-400 mb-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-xs text-zinc-400 mb-6" style="visibility:hidden;">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>CEO 인사말
             </div>
             <!-- 모바일 전용: 키커 바로 아래에 영상 (lg에서 숨김) -->
@@ -14384,7 +14385,7 @@
   }
   /* 가로 연결 라인 (베이스) */
   #talent-overlay .roadmap-line {
-    position: absolute; top: 96px;
+    position: absolute; top: 101px;
     left: 14%; right: 14%;
     height: 1px;
     background: rgba(255,255,255,0.1);
@@ -14443,8 +14444,8 @@
     position: absolute;
     top: 0; left: 50%;
     transform: translateX(-50%);
-    width: 64px; height: 64px;
-    border-radius: 16px;
+    width: 74px; height: 74px;
+    border-radius: 18px;
     background: transparent;
     filter: blur(16px);
     z-index: 0;
@@ -14468,8 +14469,8 @@
   /* 아이콘 박스 본체 — 64x64 rounded-2xl, dark bg, 상단 그라데이션 라인 */
   #talent-overlay .roadmap-icon {
     position: relative;
-    width: 64px; height: 64px;
-    border-radius: 16px;
+    width: 74px; height: 74px;
+    border-radius: 18px;
     border: 1px solid rgba(255,255,255,0.1);
     background: #060b18;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
@@ -14480,7 +14481,7 @@
     transition: border-color 600ms ease, transform 400ms cubic-bezier(.16,1,.3,1), box-shadow 400ms ease;
   }
   #talent-overlay .roadmap-icon svg {
-    width: 24px; height: 24px;
+    width: 30px; height: 30px;
     color: rgba(148,163,184,0.85);
     transition: color 600ms ease, transform 400ms ease;
   }
@@ -14553,7 +14554,7 @@
   #talent-overlay .roadmap-dot { display: none; }
   /* 텍스트 — stepname, stepdesc */
   #talent-overlay .roadmap-stepname {
-    font-size: 14px; font-weight: 600; color: #fff;
+    font-size: 16px; font-weight: 600; color: #fff;
     margin-bottom: 6px; letter-spacing: -0.01em;
     opacity: 0.45;
     transition: opacity 600ms ease, color 600ms ease;
@@ -14562,7 +14563,7 @@
   #talent-overlay .roadmap-step.is-spot .roadmap-stepname { color: #67e8f9; }
   #talent-overlay .roadmap-step.is-final.is-spot .roadmap-stepname { color: #c4b5fd; }
   #talent-overlay .roadmap-stepdesc {
-    font-size: 11px; color: rgba(148,163,184,0.85);
+    font-size: 13px; color: rgba(148,163,184,0.85);
     line-height: 1.55;
     letter-spacing: 0.04em;
     text-transform: none;
