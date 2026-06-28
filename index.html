@@ -3715,7 +3715,7 @@
         <!-- 키커 -->
         <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 ring-1 ring-white/5 shadow-lg backdrop-blur-xl mb-8 [animation:animationIn_0.8s_ease-out_0.1s_both] cursor-default">
           <span class="w-2 h-2 rounded-full" style="background:#38bdf8; box-shadow:0 0 8px 2px rgba(56,189,248,0.8), 0 0 20px 4px rgba(56,189,248,0.4); animation: heroDotBlink 1.5s ease-in-out infinite;"></span>
-          <span class="text-xs font-medium text-white font-geist tracking-wide">PRO AI 영업 통합 시스템</span>
+          <span class="text-xs font-medium text-white font-geist tracking-wide">PRO AI 통합 시스템</span>
         </div>
 
         <!-- 메인 제목 -->
@@ -6312,6 +6312,38 @@
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Step 1: 프로를 만드는 교육 체계 (원본 복원, click → #talent-overlay) -->
+          <style>
+            /* STEP1 세련된 궤도 (v=20260628d) — 원형 궤도 유지 + 그라데이션 링·빛 스윕 아크·글래스 위성·발광 코어(중앙=PRO). 클래스 s1ob- 프리픽스로 격리. */
+            @keyframes s1obSpin { to { transform: rotate(360deg); } }
+            @keyframes s1obSpinRev { to { transform: rotate(-360deg); } }
+            @keyframes s1obPulse { 0%,100% { transform: scale(1); opacity: .92; } 50% { transform: scale(1.05); opacity: 1; } }
+            .s1ob { position: relative; width: 240px; height: 240px; }
+            .s1ob-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(120,150,220,.16); }
+            .s1ob-ring.o { inset: 14px; } .s1ob-ring.i { inset: 54px; border-color: rgba(120,150,220,.22); }
+            .s1ob-sweep { position: absolute; border-radius: 50%; pointer-events: none;
+              -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+                      mask: radial-gradient(closest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+              filter: drop-shadow(0 0 5px rgba(96,165,250,.7)); }
+            .s1ob-sweep.o { inset: 14px; background: conic-gradient(from 0deg, transparent 0 250deg, rgba(96,165,250,.05) 300deg, rgba(120,180,255,.9) 352deg, #cfe0ff 360deg); animation: s1obSpin 9s linear infinite; }
+            .s1ob-sweep.i { inset: 54px; background: conic-gradient(from 180deg, transparent 0 260deg, rgba(96,165,250,.05) 305deg, rgba(120,180,255,.85) 353deg, #cfe0ff 360deg); animation: s1obSpin 6.5s linear infinite reverse; }
+            .s1ob-coreglow { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,.45), transparent 60%); filter: blur(10px); animation: s1obPulse 3.8s ease-in-out infinite; }
+            .s1ob-core { position: relative; width: 66px; height: 66px; border-radius: 50%; z-index: 3;
+              background: radial-gradient(circle at 50% 36%, #a8c8ff, #3b82f6 55%, #1d3fa8);
+              box-shadow: 0 0 36px rgba(59,130,246,.55), inset 0 1.5px 2px rgba(255,255,255,.45), inset 0 -6px 12px rgba(13,30,80,.6);
+              display: flex; align-items: center; justify-content: center; animation: s1obPulse 3.8s ease-in-out infinite; }
+            .s1ob-core span { font-size: 17px; font-weight: 800; letter-spacing: .06em; color: #fff; text-shadow: 0 1px 2px rgba(13,30,80,.5); }
+            .s1ob-orbiters { position: absolute; inset: 0; animation: s1obSpin 26s linear infinite; }
+            .s1ob-sat { position: absolute; width: 38px; height: 38px; margin: -19px; }
+            .s1ob-sat-in { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+              background: linear-gradient(150deg, rgba(28,40,72,.72), rgba(12,18,38,.72)); border: 1px solid rgba(120,150,220,.40);
+              box-shadow: 0 6px 16px rgba(0,0,0,.5), 0 0 14px rgba(59,130,246,.22), inset 0 1px 0 rgba(255,255,255,.10);
+              animation: s1obSpinRev 26s linear infinite; }
+            .s1ob-sat-in svg { width: 18px; height: 18px; }
+            .s1ob-sat.n { top: 14px; left: 50%; } .s1ob-sat.s { bottom: 18px; left: 50%; top: auto; }
+            .s1ob-sat.e { top: 50%; right: 6px; left: auto; margin: -19px 0; transform: translateY(-50%); }
+            .s1ob-sat.w { top: 50%; left: 6px; margin: -19px 0; transform: translateY(-50%); }
+            @media (prefers-reduced-motion: reduce) { .s1ob-sweep,.s1ob-orbiters,.s1ob-sat-in,.s1ob-core,.s1ob-coreglow { animation: none !important; } }
+          </style>
           <div data-nav="talent-open"
             class="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:ring-white/20 animate-on-scroll flex flex-col bg-neutral-900/40 h-full ring-white/10 ring-1 rounded-2xl relative cursor-pointer">
             <div class="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
@@ -6321,58 +6353,20 @@
                 <div class="opacity-60 absolute inset-0"
                   style="background-image:radial-gradient(rgba(30,41,59,0.6) 1px,transparent 0);background-size:18px 18px;">
                 </div>
-                <div class="relative z-10 w-56 h-56 scale-90">
-                  <div class="absolute inset-2 rounded-full border border-slate-900/60"></div>
-                  <div
-                    class="absolute inset-2 rounded-full border-t-2 border-t-blue-500/80 border-l-0 border-r-0 border-b-0">
+                <div class="s1ob">
+                  <div class="s1ob-ring o"></div>
+                  <div class="s1ob-ring i"></div>
+                  <div class="s1ob-sweep o"></div>
+                  <div class="s1ob-sweep i"></div>
+                  <div class="s1ob-orbiters">
+                    <div class="s1ob-sat n"><div class="s1ob-sat-in"><svg viewBox="0 0 24 24" fill="none" stroke="#93b4ff" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg></div></div>
+                    <div class="s1ob-sat e"><div class="s1ob-sat-in"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg></div></div>
+                    <div class="s1ob-sat s"><div class="s1ob-sat-in"><svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg></div></div>
+                    <div class="s1ob-sat w"><div class="s1ob-sat-in"><svg viewBox="0 0 24 24" fill="none" stroke="#dbe6ff" stroke-width="2"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg></div></div>
                   </div>
-                  <div class="absolute inset-10 rounded-full border border-slate-900/60"></div>
-                  <div
-                    class="absolute inset-10 rounded-full border-t-2 border-t-blue-500/80 border-l-0 border-r-0 border-b-0">
-                  </div>
-                  <div
-                    class="absolute inset-[86px] rounded-full bg-gradient-to-b from-blue-500 via-blue-500 to-blue-600 shadow-[0_0_80px_rgba(28,73,200,0.6)] flex items-center justify-center z-20">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" class="w-6 h-6 text-white">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                  </div>
-                  <div class="absolute inset-0 z-10 pointer-events-none" style="animation: orbit 40s linear infinite;">
-                    <div
-                      class="absolute -left-1 top-16 h-9 w-9 rounded-full border border-white/20 overflow-hidden bg-[#0F172A] flex items-center justify-center shadow-lg shadow-black/50"
-                      style="animation: orbit-reverse 40s linear infinite;"><svg xmlns="http://www.w3.org/2000/svg"
-                        width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-blue-500">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                      </svg></div>
-                    <div
-                      class="absolute right-2 top-6 h-9 w-9 rounded-full border border-white/20 overflow-hidden bg-[#0F172A] flex items-center justify-center shadow-lg shadow-black/50"
-                      style="animation: orbit-reverse 40s linear infinite;"><svg xmlns="http://www.w3.org/2000/svg"
-                        width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-blue-400">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                      </svg></div>
-                    <div
-                      class="absolute -right-1 bottom-10 h-9 w-9 rounded-full border border-white/20 overflow-hidden bg-[#0F172A] flex items-center justify-center shadow-lg shadow-black/50"
-                      style="animation: orbit-reverse 40s linear infinite;"><svg xmlns="http://www.w3.org/2000/svg"
-                        width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-white">
-                        <polyline points="16 18 22 12 16 6" />
-                        <polyline points="8 6 2 12 8 18" />
-                      </svg></div>
-                    <div
-                      class="absolute left-5 bottom-3 h-9 w-9 rounded-full border border-white/20 overflow-hidden bg-[#0F172A] flex items-center justify-center shadow-lg shadow-black/50"
-                      style="animation: orbit-reverse 40s linear infinite;"><svg xmlns="http://www.w3.org/2000/svg"
-                        width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-emerald-400">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                      </svg></div>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                    <div class="s1ob-coreglow"></div>
+                    <div class="s1ob-core"><span>PRO</span></div>
                   </div>
                 </div>
               </div>
@@ -7207,7 +7201,7 @@
         <!-- 헤더 (컴팩트) -->
         <div class="text-center mb-8">
           <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-600/5 ring-1 ring-blue-600/20 text-sm text-blue-400 mb-4">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(28,73,200,0.6)]"></span>프로솔루션 · AI 인터랙티브
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(28,73,200,0.6)]"></span>프로 솔루션 · 7대 AI 시스템
           </div>
           <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-[1.6]"><em class="italic font-bold">7대 핵심 AI 시스템, <span class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">먼저 만나보세요</span></em></h2>
           <p class="text-zinc-400 text-sm sm:text-base mt-4">프로사업단총괄의 AI 시스템 체험형 시연 환경입니다.</p>
