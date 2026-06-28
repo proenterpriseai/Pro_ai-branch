@@ -241,6 +241,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260628s** (index.html 단일, main push + tag) — 히어로 제목 크기 한 단계 축소 `md:text-7xl→md:text-6xl`(72→60px, 대표님: 살짝 정제). 모바일 `text-5xl` 유지·흰색 유지.
 - **v=20260628r** (index.html 단일, main push + tag) — 전문역량특화 패널 태그 `#실적극대화→#소득극대화`(`.edu-hp-tag` 14976, v=q 후속 미세수정).
 - **v=20260628q** (index.html 단일, main push + tag) — 인재양성 "전문 역량 특화 과정" 패널 태그 3건: `#데이터영업→#DB영업`, `#전환율극대화→#실적극대화`, `#심리화법→#전문가양성`(`.edu-hp-tag` 14976).
 - **v=20260628p** (index.html 단일, main push + tag) — 히어로 제목 "보험을 넘어/성장의 정점으로" **그라데이션→순백색**(대표님 요청). `bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60`(위흰→아래60% 페이드) → **`text-white`**(균일 흰색). 사이즈·트래킹·애니 유지. 검증 color rgb(255,255,255)·backgroundImage none.
