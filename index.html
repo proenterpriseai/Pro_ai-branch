@@ -6613,23 +6613,43 @@
 
           <!-- 승격 구조 -->
           <style>
-            /* 승격 구조 자동 흐름 (v=20260628b) — 두 루트 노드를 위→아래로 순차 점등하는 무한 wave.
-               비파괴(box-shadow/transform/filter만 애니 → 최종 노드 영업이사/총괄단장 그라데이션 rest 유지). */
-            @keyframes promoDot { 0%{transform:scale(1);box-shadow:0 0 0 0 rgba(96,165,250,0);} 5%{transform:scale(1.55);box-shadow:0 0 11px 3px rgba(96,165,250,.85);} 13%{transform:scale(1);box-shadow:0 0 0 0 rgba(96,165,250,0);} 100%{transform:scale(1);box-shadow:0 0 0 0 rgba(96,165,250,0);} }
-            @keyframes promoLabel { 0%{box-shadow:none;} 5%{box-shadow:inset 0 0 0 1px rgba(96,165,250,.5), 0 0 16px -2px rgba(96,165,250,.5);} 13%{box-shadow:none;} 100%{box-shadow:none;} }
-            @keyframes promoLink { 0%,100%{box-shadow:none;filter:brightness(1);} 6%{box-shadow:0 0 9px rgba(96,165,250,.75);filter:brightness(2.6);} }
-            .promo-flow .space-y-3 > .flex > span:first-child { animation: promoDot 3.2s ease-in-out infinite; }
-            .promo-flow .space-y-3 > .flex > span:last-child  { animation: promoLabel 3.2s ease-in-out infinite; }
-            .promo-flow .space-y-3 > .w-px                    { animation: promoLink 3.2s ease-in-out infinite; }
+            /* 승격 구조 자동 순환 (v=20260628c) — 파란 배경 하이라이트가 단계들을 위→아래로
+               하나씩 점멸하며 순환(고정 하이라이트 없음, 주기 7s=느리게). 라벨 background-color+color,
+               점 scale+글로우를 staggered animation-delay로 구동. 최종 노드 그라데이션·흰글씨는 rest에서 제거해 전 단계 통일. */
+            @keyframes promoLabelCycle {
+              0%   { background-color: rgba(255,255,255,.05); color: rgb(212,212,216); box-shadow: none; }
+              4%   { background-color: rgba(37,99,235,.30);  color: #fff;             box-shadow: 0 0 22px -4px rgba(59,130,246,.55), inset 0 0 0 1px rgba(96,165,250,.45); }
+              14%  { background-color: rgba(37,99,235,.30);  color: #fff;             box-shadow: 0 0 22px -4px rgba(59,130,246,.55), inset 0 0 0 1px rgba(96,165,250,.45); }
+              18%  { background-color: rgba(255,255,255,.05); color: rgb(212,212,216); box-shadow: none; }
+              100% { background-color: rgba(255,255,255,.05); color: rgb(212,212,216); box-shadow: none; }
+            }
+            @keyframes promoDotCycle {
+              0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(96,165,250,0);   filter: brightness(1); }
+              4%   { transform: scale(1.35); box-shadow: 0 0 12px 2px rgba(96,165,250,.8); filter: brightness(1.4); }
+              14%  { transform: scale(1.35); box-shadow: 0 0 12px 2px rgba(96,165,250,.8); filter: brightness(1.4); }
+              18%  { transform: scale(1);    box-shadow: 0 0 0 0 rgba(96,165,250,0);   filter: brightness(1); }
+              100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(96,165,250,0);   filter: brightness(1); }
+            }
+            @keyframes promoLinkCycle {
+              0%,100% { box-shadow: none; filter: brightness(1); }
+              8%      { box-shadow: 0 0 9px rgba(96,165,250,.7); filter: brightness(2.6); }
+              16%     { box-shadow: none; filter: brightness(1); }
+            }
+            .promo-flow .space-y-3 > .flex > span:last-child {
+              background-image: none !important; font-weight: 500;
+              animation: promoLabelCycle 7s ease-in-out infinite;
+            }
+            .promo-flow .space-y-3 > .flex > span:first-child { animation: promoDotCycle 7s ease-in-out infinite; }
+            .promo-flow .space-y-3 > .w-px { animation: promoLinkCycle 7s ease-in-out infinite; }
             .promo-flow .space-y-3 > .flex:nth-child(1) > span { animation-delay: 0s; }
-            .promo-flow .space-y-3 > .flex:nth-child(3) > span { animation-delay: .38s; }
-            .promo-flow .space-y-3 > .flex:nth-child(5) > span { animation-delay: .76s; }
-            .promo-flow .space-y-3 > .flex:nth-child(7) > span { animation-delay: 1.14s; }
-            .promo-flow .space-y-3 > .flex:nth-child(9) > span { animation-delay: 1.52s; }
-            .promo-flow .space-y-3 > .w-px:nth-child(2) { animation-delay: .19s; }
-            .promo-flow .space-y-3 > .w-px:nth-child(4) { animation-delay: .57s; }
-            .promo-flow .space-y-3 > .w-px:nth-child(6) { animation-delay: .95s; }
-            .promo-flow .space-y-3 > .w-px:nth-child(8) { animation-delay: 1.33s; }
+            .promo-flow .space-y-3 > .flex:nth-child(3) > span { animation-delay: 1.4s; }
+            .promo-flow .space-y-3 > .flex:nth-child(5) > span { animation-delay: 2.8s; }
+            .promo-flow .space-y-3 > .flex:nth-child(7) > span { animation-delay: 4.2s; }
+            .promo-flow .space-y-3 > .flex:nth-child(9) > span { animation-delay: 5.6s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(2) { animation-delay: .7s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(4) { animation-delay: 2.1s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(6) { animation-delay: 3.5s; }
+            .promo-flow .space-y-3 > .w-px:nth-child(8) { animation-delay: 4.9s; }
             @media (prefers-reduced-motion: reduce) {
               .promo-flow .space-y-3 > .flex > span,
               .promo-flow .space-y-3 > .w-px { animation: none !important; }
