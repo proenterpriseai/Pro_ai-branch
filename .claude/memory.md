@@ -42,6 +42,9 @@ v=b의 글로우 wave가 대표님 의도와 달랐음 → **파란 배경 하�
 ①프로솔루션 시스템 현황 클릭 활성 글로우 `.sol-system-item.active` cyan `#06b6d4`→블루 `#3b82f6`(대표님이 "초록"으로 본 teal). ②시스템 현황 리스트 통합금융계산기→통합 금융계산기(7287, STEP2와 별개). ③STEP2·3 그래픽 배경 `bg-[#05030F]`로 STEP1과 통일(기존 neutral-900/40). 초록 status점·All Live=라이브표시라 유지. active border-left는 인라인 border가 덮어 bg+box-shadow로 표현(색만 블루).
 🔜 잔여: Web3Forms 키 교체(승인 대기)뿐.
 
+### ✅ v=20260628h — CTA 문구 + STEP2 리스트 애니 시작잔상 수정 (배포 LIVE)
+①"AI 시스템 직접 체험하기"→"AI 시스템 체험하기". ②STEP2 리스트: 로드 시 전부 흰색→하나씩 꺼지던 잔상 수정. 원인=`active-step-anim`/`active-content-reveal` 기본(지연대기) 상태가 밝음 → `.animate-step-cycle{opacity:.4}` `.animate-content-cycle{opacity:0}` 추가로 기본=흐림. 이제 로드 시 1번만 흰색+바+배지, 흰 하이라이트가 위→아래 순차이동(stagger 21s/3s 불변). ⚠️교훈: `!important author` > CSS animation이라 base에 !important 쓰면 active가 안 밝아짐 → normal로.
+
 ---
 
 ## 2026-06-27 세션 — 6/26b 검증 + 챗/UI 대폭 손질 (v=20260627a~h 전부 배포 LIVE, 최신 commit `123183c`)
