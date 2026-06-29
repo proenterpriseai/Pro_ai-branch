@@ -241,6 +241,16 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260629a** (main `17966f8`, tag `v20260629a`, **프로덕션 배포 LIVE 700명**) — 인재양성·프로사업단총괄 대규모 추가/재설계. `preview/wm-center` 브랜치 **12커밋 FF 머지**(프리뷰 반복 검증 후). 라이브 확인: ai-branch.vercel.app에 `#wm-center`·`#partner-network`·"PRO 네트워크" 반영(HTTP 200).
+  - ① **WM센터 섹션 신규**(`#wm-center`, 프로사업단총괄 오버레이 교육↔조직문화 사이) — "2026년 7월 출범" 배지 + "법인 고객 및 고액 자산가를 위한 WM센터" + 2트랙(법인/CEO·개인/고액자산가, **역할만·이름/번호 제외**) + 혜택 3카드(자산 맞춤 컨설팅 / WM 특화 자료·교육 / VIP 고객 관리 지원). 🔴**내부문서(수수료·출장비·센터장 번호·신청서) 전부 공개 제외**(WM 70/30·출장비 등은 내부 정산이라 영입 페이지 부적합). `#wm-center` 스코프 독립 블록.
+  - ② **교육 가로스크롤 패널 가운데 공백 축소**(`.edu-horiz-panel`) — `padding-inline:max(2rem,calc((100vw-1180px)/2))`(중앙 1180px 밴드)+`column-gap:3rem`, `.edu-hp-text` 좌패딩 `8rem→3rem 1rem`. 와이드(1680px) 가운데 공백 **~630→55px**. 모바일 1열 무영향.
+  - ③ **성과(`#stats`) 카드 ↑ 화살표** `text-blue-500→text-white`(2곳).
+  - ④ **인재양성 EXPERTISE 재설계**(`#talent-expertise`) — 추상 카드 2개 → **자격 사다리**(보험설계사→AFPK→CFP→종합자산관리·WM) + **증거**(금융 유튜브 `pro보험스쿨` / 조직 자격 `CFP 2·AFPK 5` / 사내 직강 `20명`) + 소득 한 줄. 서브 규제 안전 톤("…아우르는 종합 설계 역량")+줄바꿈. STEP/PROOF 라벨 13→18px. 제휴 그리드는 제거(아코디언으로 이동).
+  - ⑤ **제휴 네트워크 아코디언 신규**(`#partner-network`, EXPERTISE 아래) — 확장형 아코디언 **5사: 헥사곤→모기지→대진→글로비→보케어**(헥사곤 기본 열림). 이미지 **상단 가로 배너**(cover, 이미지별 `object-position`). 🔴**글로비·대진은 스크린샷 텍스트가 우측~59%에 박혀** CSS로 못 옮김→**캔버스로 좌측 18~19% 크롭+JPEG 압축**(globee 3.4MB→140KB, daejin 2MB→82KB, `.jpg`로 교체·옛 png 제거). 접힌 카드 밋밋함 개선(네이비 그라데이션+아이콘 42px 글로우+호버 떠오르기/글로우/상단 액센트). **아코디언 전환=`flex-grow` 트랜지션**(`flex` 단축 트랜지션이 헤드리스서 `0 0 0%`로 멈추는 버그 회피). 세로 라벨 `transform:rotate(180deg)` 제거(글자 뒤집힘 해소). 헤드라인 "전 분야 네트워크"→"PRO 네트워크". 5사 수익률·수수료 등 내부/규제 항목 전부 공개 제외, 보케어 무상제공만 강조.
+  - ⑥ **메인 "프로사업단총괄 현황"(`#branch-map`) 체크마크 5개** — 얇은 원형 체크 → **스캘럽 씰(check-badge) + 흰 체크**(`#2f57c4`).
+  - ⑦ `assets/images/partners/` 5종 추가(mortgage.png·hexagon.png·bocare.png + globee.jpg·daejin.jpg).
+  - ⚠️ **교훈**: 채팅 붙여넣기 이미지는 파일 저장 불가→사용자가 repo `assets/`에 직접 저장. **헤드리스 프리뷰는 flex-grow 트랜지션 동적 미갱신**(transition:none이면 정상)·**스크린샷 타임아웃**(Three.js rAF)→**DOM 실측으로 검증**. 모든 변경 DOM 실측·콘솔0. Vercel **프리뷰 배포는 SSO 보호**(302)·프로덕션은 공개.
+  - 🔴 **남은 일**: 모기지·헥사곤·보케어 PNG 압축(~6MB→수백KB) 보류 / 배너 크롭% 미세조정 여지 / Web3Forms 키 교체 여전히 보류.
 - **v=20260628t** (index.html 단일, main push + tag) — 히어로 서브타이틀(`#hero-typing`) 굵기 `font-light(300)→font-normal(400)`로 ↑ — 색은 원래 흰색이었으나 얇아서 회색처럼 보이던 것 또렷하게(대표님 요청).
 - **v=20260628s** (index.html 단일, main push + tag) — 히어로 제목 크기 한 단계 축소 `md:text-7xl→md:text-6xl`(72→60px, 대표님: 살짝 정제). 모바일 `text-5xl` 유지·흰색 유지.
 - **v=20260628r** (index.html 단일, main push + tag) — 전문역량특화 패널 태그 `#실적극대화→#소득극대화`(`.edu-hp-tag` 14976, v=q 후속 미세수정).
