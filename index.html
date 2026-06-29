@@ -14950,16 +14950,20 @@
       #partner-network .pn-head h2 .hl{background:linear-gradient(to right,#3b82f6,#60a5fa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
       #partner-network .pn-head p{font-size:clamp(14px,1.5vw,16px);color:#b8bccb;line-height:1.7;max-width:600px;margin:0 auto;}
       #partner-network .acc{display:flex;gap:12px;height:460px;}
-      #partner-network .acc-item{position:relative;flex:1 1 0%;min-width:0;background:#0a0a14;border:1px solid var(--pnhair);border-radius:18px;overflow:hidden;cursor:pointer;transition:flex-grow .55s cubic-bezier(.4,0,.2,1), border-color .3s, background .3s;}
-      #partner-network .acc-item:hover{border-color:rgba(59,130,246,0.35);}
+      #partner-network .acc-item{position:relative;flex:1 1 0%;min-width:0;background:linear-gradient(165deg,#101a30 0%,#0a0d18 60%,#080a12 100%);border:1px solid var(--pnhair);border-radius:18px;overflow:hidden;cursor:pointer;transition:flex-grow .55s cubic-bezier(.4,0,.2,1), border-color .3s, background .3s, transform .3s, box-shadow .3s;}
+      #partner-network .acc-item:not(.is-open)::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(to right,transparent,rgba(59,130,246,0.5),transparent);opacity:0;transition:opacity .3s;}
+      #partner-network .acc-item:not(.is-open):hover{transform:translateY(-5px);border-color:rgba(59,130,246,0.5);box-shadow:0 18px 36px -14px rgba(40,68,150,0.65);}
+      #partner-network .acc-item:not(.is-open):hover::after{opacity:1;}
+      #partner-network .acc-item:not(.is-open):hover .rname{color:#fff;}
+      #partner-network .acc-item:not(.is-open):hover .acc-rail .ic{background:rgba(59,130,246,0.25);border-color:rgba(59,130,246,0.5);color:#cfe0ff;transform:scale(1.1);}
       #partner-network .acc-item.is-open{flex:4.2;background:#0c1322;border-color:rgba(59,130,246,0.4);}
       #partner-network .acc-item.is-open.free{border-color:rgba(96,165,250,0.55);}
       #partner-network .acc-rail{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:22px 0;transition:opacity .3s;}
       #partner-network .acc-item.is-open .acc-rail{opacity:0;pointer-events:none;}
-      #partner-network .acc-rail .num{font-size:12px;font-weight:700;color:#5f6478;}
-      #partner-network .acc-rail .rname{writing-mode:vertical-rl;text-orientation:mixed;font-size:16px;font-weight:800;letter-spacing:0.02em;color:#cdd3e2;white-space:nowrap;}
-      #partner-network .acc-rail .ic{width:34px;height:34px;border-radius:9px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.22);display:flex;align-items:center;justify-content:center;color:#8fb0f2;}
-      #partner-network .acc-rail .ic svg{width:18px;height:18px;}
+      #partner-network .acc-rail .num{font-size:12px;font-weight:700;color:#7486ad;letter-spacing:0.08em;transition:color .3s;}
+      #partner-network .acc-rail .rname{writing-mode:vertical-rl;text-orientation:mixed;font-size:16px;font-weight:800;letter-spacing:0.02em;color:#cdd3e2;white-space:nowrap;transition:color .3s;}
+      #partner-network .acc-rail .ic{width:42px;height:42px;border-radius:12px;background:rgba(59,130,246,0.14);border:1px solid rgba(59,130,246,0.28);display:flex;align-items:center;justify-content:center;color:#8fb0f2;box-shadow:0 8px 20px -8px rgba(59,130,246,0.45), inset 0 1px 0 rgba(255,255,255,0.06);transition:all .3s;}
+      #partner-network .acc-rail .ic svg{width:21px;height:21px;}
       #partner-network .acc-body{position:absolute;inset:0;padding:30px;display:flex;flex-direction:column;opacity:0;transition:opacity .4s .15s;pointer-events:none;min-width:300px;}
       #partner-network .acc-item.is-open .acc-body{opacity:1;pointer-events:auto;}
       #partner-network .acc-photo{position:absolute;top:0;left:0;width:100%;height:190px;object-fit:cover;object-position:center 38%;opacity:0;transition:opacity .4s .2s;pointer-events:none;}
@@ -14991,18 +14995,8 @@
           <p>각 금융 분야의 전문 파트너가 동반상담으로 함께합니다.</p>
         </div>
         <div class="acc" id="pn-acc">
-          <div class="acc-item">
-            <div class="acc-rail"><span class="num">01</span><span class="rname">모기지리더스</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></span></div>
-            <div class="acc-body">
-              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></span><span class="area">부동산 · 대출</span></div>
-              <h3>모기지리더스</h3>
-              <p class="sub">신한은행 대출모집법인 제휴</p>
-              <p class="desc">고객의 아파트 매매·전세 시 은행 대출상품을 상담·중개합니다. 보험을 넘어 부동산 금융까지, 토탈 금융서비스 전문가로 함께 성장합니다.</p>
-            </div>
-            <img class="acc-photo" src="assets/images/partners/mortgage.png" alt="모기지리더스 부동산 대출" loading="lazy" style="object-position:center 32%;">
-          </div>
           <div class="acc-item is-open">
-            <div class="acc-rail"><span class="num">02</span><span class="rname">헥사곤 투자자문</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 4 7-8"/><path d="M16 4h4v4"/></svg></span></div>
+            <div class="acc-rail"><span class="num">01</span><span class="rname">헥사곤 투자자문</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 4 7-8"/><path d="M16 4h4v4"/></svg></span></div>
             <div class="acc-body">
               <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 4 7-8"/><path d="M16 4h4v4"/></svg></span><span class="area">투자 · 자산관리</span></div>
               <h3>헥사곤 투자자문</h3>
@@ -15012,17 +15006,17 @@
             <img class="acc-photo" src="assets/images/partners/hexagon.png" alt="헥사곤 투자자문" loading="lazy" style="object-position:center 36%;">
           </div>
           <div class="acc-item">
-            <div class="acc-rail"><span class="num">03</span><span class="rname">세무법인 글로비</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 12h6M9 17h3"/><rect x="5" y="3" width="14" height="18" rx="2"/></svg></span></div>
+            <div class="acc-rail"><span class="num">02</span><span class="rname">모기지리더스</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></span></div>
             <div class="acc-body">
-              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 12h6M9 17h3"/><rect x="5" y="3" width="14" height="18" rx="2"/></svg></span><span class="area">세무 · 절세</span></div>
-              <h3>세무법인 글로비</h3>
-              <p class="sub">세무법인 제휴 (GLOBEE TAX)</p>
-              <p class="desc">각종 세금 관련 질의·응답부터 법인·고소득자 동반상담까지. 고객의 절세 설계를 세무 전문가와 함께 풀어갑니다.</p>
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></span><span class="area">부동산 · 대출</span></div>
+              <h3>모기지리더스</h3>
+              <p class="sub">신한은행 대출모집법인 제휴</p>
+              <p class="desc">고객의 아파트 매매·전세 시 은행 대출상품을 상담·중개합니다. 보험을 넘어 부동산 금융까지, 토탈 금융서비스 전문가로 함께 성장합니다.</p>
             </div>
-            <img class="acc-photo" src="assets/images/partners/globee.jpg" alt="세무법인 글로비" loading="lazy" style="object-position:center 50%;">
+            <img class="acc-photo" src="assets/images/partners/mortgage.png" alt="모기지리더스 부동산 대출" loading="lazy" style="object-position:center 32%;">
           </div>
           <div class="acc-item">
-            <div class="acc-rail"><span class="num">04</span><span class="rname">법무법인 대진</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M5 11l3 7h8l3-7M5 11l3-2M19 11l-3-2M5 11h14"/></svg></span></div>
+            <div class="acc-rail"><span class="num">03</span><span class="rname">법무법인 대진</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M5 11l3 7h8l3-7M5 11l3-2M19 11l-3-2M5 11h14"/></svg></span></div>
             <div class="acc-body">
               <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M5 11l3 7h8l3-7M5 11l3-2M19 11l-3-2M5 11h14"/></svg></span><span class="area">법률 · 상속</span></div>
               <h3>법무법인 대진</h3>
@@ -15030,6 +15024,16 @@
               <p class="desc">법률 관련 질의응답과 동반상담을 지원합니다. 상속·법인 등 법률 검토가 필요한 상담에서 전문가가 함께합니다.</p>
             </div>
             <img class="acc-photo" src="assets/images/partners/daejin.jpg" alt="법무법인 대진" loading="lazy" style="object-position:center 50%;">
+          </div>
+          <div class="acc-item">
+            <div class="acc-rail"><span class="num">04</span><span class="rname">세무법인 글로비</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 12h6M9 17h3"/><rect x="5" y="3" width="14" height="18" rx="2"/></svg></span></div>
+            <div class="acc-body">
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 12h6M9 17h3"/><rect x="5" y="3" width="14" height="18" rx="2"/></svg></span><span class="area">세무 · 절세</span></div>
+              <h3>세무법인 글로비</h3>
+              <p class="sub">세무법인 제휴 (GLOBEE TAX)</p>
+              <p class="desc">각종 세금 관련 질의·응답부터 법인·고소득자 동반상담까지. 고객의 절세 설계를 세무 전문가와 함께 풀어갑니다.</p>
+            </div>
+            <img class="acc-photo" src="assets/images/partners/globee.jpg" alt="세무법인 글로비" loading="lazy" style="object-position:center 50%;">
           </div>
           <div class="acc-item free">
             <div class="acc-rail"><span class="num">05</span><span class="rname">보케어 BOCARE</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h6M7 12h4"/></svg></span></div>
