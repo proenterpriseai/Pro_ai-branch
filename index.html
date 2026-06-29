@@ -14857,33 +14857,198 @@
       </div>
     </section>
 
-    <!-- 섹션 3: 엘리트 FA 양성 인프라 -->
-    <section class="talent-section">
+    <!-- 섹션 3: 엘리트 FA 양성 인프라 (v=20260629 재설계 — 사다리+증거) -->
+    <style>
+      #talent-expertise{ --txgrad:linear-gradient(135deg,#2a46a2 0%,#1C49C8 100%); --txhair:rgba(255,255,255,0.08); }
+      #talent-expertise .tx-block{margin-top:48px;}
+      #talent-expertise .tx-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:0.06em;color:#8fb0f2;margin-bottom:20px;}
+      #talent-expertise .tx-label .n{font-size:11px;font-weight:700;color:#fff;background:var(--txgrad);border-radius:6px;padding:3px 8px;letter-spacing:0.04em;}
+      #talent-expertise .tx-ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;}
+      #talent-expertise .tx-ladder::before{content:"";position:absolute;top:38px;left:8%;right:8%;height:2px;background:linear-gradient(to right,rgba(143,176,242,0.15),rgba(59,130,246,0.65));z-index:0;}
+      #talent-expertise .lad{position:relative;z-index:1;background:#0a0a14;border:1px solid var(--txhair);border-radius:16px;padding:22px 18px;text-align:center;}
+      #talent-expertise .lad .dot{width:30px;height:30px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
+      #talent-expertise .lad.s1 .dot{background:rgba(255,255,255,0.10);color:#b8bccb;}
+      #talent-expertise .lad.s2 .dot{background:rgba(59,130,246,0.30);}
+      #talent-expertise .lad.s3 .dot{background:rgba(59,130,246,0.6);}
+      #talent-expertise .lad.s4 .dot{background:var(--txgrad);box-shadow:0 0 22px rgba(40,68,150,0.5);}
+      #talent-expertise .lad h4{font-size:15px;font-weight:800;margin:0 0 6px;letter-spacing:-0.02em;color:#fff;}
+      #talent-expertise .lad.s4 h4{color:#bcd0ff;}
+      #talent-expertise .lad p{font-size:12px;color:#7f8597;margin:0;line-height:1.5;}
+      #talent-expertise .tx-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+      #talent-expertise .pf{background:#0a0a14;border:1px solid var(--txhair);border-radius:16px;padding:24px 22px;position:relative;overflow:hidden;}
+      #talent-expertise .pf::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--txgrad);opacity:.85;}
+      #talent-expertise .pf .k{font-size:12px;color:#8fb0f2;font-weight:600;letter-spacing:0.04em;margin-bottom:10px;}
+      #talent-expertise .pf .v{font-size:30px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:8px;color:#fff;}
+      #talent-expertise .pf .v.ch{font-size:23px;display:flex;align-items:center;gap:9px;}
+      #talent-expertise .pf .v.ch svg{width:24px;height:24px;flex:0 0 24px;color:#3b82f6;}
+      #talent-expertise .pf .v.sm{font-size:23px;}
+      #talent-expertise .pf .v .sep{color:#3b82f6;margin:0 3px;}
+      #talent-expertise .pf .v .unit{font-size:17px;font-weight:700;color:#b8bccb;margin-left:2px;}
+      #talent-expertise .pf .d{font-size:12.5px;color:#7f8597;line-height:1.6;margin:0;}
+      #talent-expertise .tx-income{margin-top:40px;text-align:center;font-size:clamp(15px,1.7vw,18px);font-weight:700;letter-spacing:-0.02em;color:#fff;}
+      #talent-expertise .tx-income .hl{background:linear-gradient(to right,#3b82f6,#60a5fa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+      #talent-expertise .tx-cue{margin:14px 0 0;text-align:center;font-size:13px;color:#8fb0f2;font-weight:600;}
+      @media (max-width:820px){
+        #talent-expertise .tx-ladder{grid-template-columns:1fr 1fr;}
+        #talent-expertise .tx-ladder::before{display:none;}
+        #talent-expertise .tx-proof{grid-template-columns:1fr;}
+      }
+    </style>
+    <section class="talent-section" id="talent-expertise">
       <header class="talent-header">
         <span class="talent-label" style="display:none">EXPERTISE</span>
         <h2 class="talent-headline">단순 보험 판매를 넘어 <span class="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">종합 금융전문가</span>로</h2>
         <div class="talent-divider"></div>
-        <p class="talent-sub">보험 한 분야에 갇히지 않습니다. <strong>CFP·AFPK 자격증으로 부동산·세무·자산관리까지 가능한 컨설턴트를 키웁니다.</strong></p>
+        <p class="talent-sub">보험 한 분야에 갇히지 않습니다. <strong>CFP·AFPK 자격을 기반으로 부동산·세무·자산관리까지 아우르는 종합 설계 역량을 키웁니다.</strong></p>
       </header>
-      <div class="expertise-grid">
-        <div class="expertise-card">
-          <h3>CFP(국제공인재무설계사) 프로젝트</h3>
-          <ul>
-            <li>금융 전문 유튜브 채널 운영</li>
-            <li>전문 지식 기반의 금융 교육</li>
-            <li>종합 금융전문가 양성</li>
-          </ul>
-        </div>
-        <div class="expertise-card">
-          <h3>지적 자산이 곧 소득의 크기가 되는 시스템</h3>
-          <ul>
-            <li>AFPK · CFP 등 금융전문가 자격증 시험 준비</li>
-            <li>조직내 자격 소지자 증가</li>
-            <li>다가올 금융전문가 시대에 대한 준비</li>
-          </ul>
+
+      <div class="tx-block">
+        <div class="tx-label"><span class="n">STEP</span> 자격으로 완성하는 성장 경로</div>
+        <div class="tx-ladder">
+          <div class="lad s1"><div class="dot">1</div><h4>보험 설계사</h4><p>출발점 — 보장 분석 전문성</p></div>
+          <div class="lad s2"><div class="dot">2</div><h4>AFPK</h4><p>재무설계사<br>재무설계 기초 자격</p></div>
+          <div class="lad s3"><div class="dot">3</div><h4>CFP</h4><p>국제공인재무설계사<br>종합 재무설계 자격</p></div>
+          <div class="lad s4"><div class="dot">★</div><h4>종합자산관리 · WM</h4><p>법인·고액자산가 컨설팅</p></div>
         </div>
       </div>
+
+      <div class="tx-block">
+        <div class="tx-label"><span class="n">PROOF</span> 말이 아니라 인프라로 증명합니다</div>
+        <div class="tx-proof">
+          <div class="pf">
+            <div class="k">금융 전문 유튜브 채널</div>
+            <div class="v ch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M10.5 9.2v5.6l4.5-2.8z" fill="currentColor" stroke="none"/></svg>pro보험스쿨</div>
+            <p class="d">자체 운영 금융 전문 콘텐츠 채널 — 전문성을 시장에 직접 증명합니다.</p>
+          </div>
+          <div class="pf">
+            <div class="k">조직 내 자격 소지자</div>
+            <div class="v sm">CFP 2 <span class="sep">·</span> AFPK 5</div>
+            <p class="d">국제공인재무설계사(CFP)·재무설계사(AFPK) 보유 인원. 함께 공부하고 합격하는 조직 문화.</p>
+          </div>
+          <div class="pf">
+            <div class="k">사내 직강 교수진</div>
+            <div class="v">20<span class="unit">명</span></div>
+            <p class="d">외부 학원이 아닌 사내 전문가 직강 + 시험 준비반·독자 교재.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="tx-income">자격은 곧 <span class="hl">상담할 수 있는 고객의 크기</span>입니다 — 법인·고액자산가까지.</p>
+      <p class="tx-cue">↓ 보험을 넘어, 전 분야 전문 파트너가 함께합니다</p>
     </section>
+
+    <!-- 섹션 4: 제휴 네트워크 (v=20260629 신규 — 확장형 아코디언) -->
+    <style>
+      #partner-network{ --pngrad:linear-gradient(135deg,#2a46a2 0%,#1C49C8 100%); --pnhair:rgba(255,255,255,0.08);
+        position:relative;border-top:1px solid rgba(255,255,255,0.06);padding:80px 24px 56px;word-break:keep-all;overflow:hidden; }
+      #partner-network *{box-sizing:border-box;}
+      #partner-network::before{content:"";position:absolute;top:-6%;left:50%;transform:translateX(-50%);width:80%;height:55%;background:radial-gradient(60% 60% at 50% 0%, rgba(40,68,150,0.20), rgba(40,68,150,0) 70%);pointer-events:none;}
+      #partner-network .pn-inner{max-width:1160px;margin:0 auto;position:relative;}
+      #partner-network .pn-head{text-align:center;margin-bottom:44px;}
+      #partner-network .pn-eyebrow{font-size:12px;font-weight:700;letter-spacing:0.18em;color:#8fb0f2;margin-bottom:14px;}
+      #partner-network .pn-head h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;letter-spacing:-0.04em;line-height:1.18;margin:0 0 14px;color:#fff;}
+      #partner-network .pn-head h2 .hl{background:linear-gradient(to right,#3b82f6,#60a5fa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+      #partner-network .pn-head p{font-size:clamp(14px,1.5vw,16px);color:#b8bccb;line-height:1.7;max-width:600px;margin:0 auto;}
+      #partner-network .acc{display:flex;gap:12px;height:420px;}
+      #partner-network .acc-item{position:relative;flex:1 1 0%;min-width:0;background:#0a0a14;border:1px solid var(--pnhair);border-radius:18px;overflow:hidden;cursor:pointer;transition:flex-grow .55s cubic-bezier(.4,0,.2,1), border-color .3s, background .3s;}
+      #partner-network .acc-item:hover{border-color:rgba(59,130,246,0.35);}
+      #partner-network .acc-item.is-open{flex:4.2;background:#0c1322;border-color:rgba(59,130,246,0.4);}
+      #partner-network .acc-item.is-open.free{border-color:rgba(96,165,250,0.55);}
+      #partner-network .acc-rail{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:22px 0;transition:opacity .3s;}
+      #partner-network .acc-item.is-open .acc-rail{opacity:0;pointer-events:none;}
+      #partner-network .acc-rail .num{font-size:12px;font-weight:700;color:#5f6478;}
+      #partner-network .acc-rail .rname{writing-mode:vertical-rl;transform:rotate(180deg);font-size:16px;font-weight:800;letter-spacing:0.02em;color:#cdd3e2;white-space:nowrap;}
+      #partner-network .acc-rail .ic{width:34px;height:34px;border-radius:9px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.22);display:flex;align-items:center;justify-content:center;color:#8fb0f2;}
+      #partner-network .acc-rail .ic svg{width:18px;height:18px;}
+      #partner-network .acc-body{position:absolute;inset:0;padding:30px;display:flex;flex-direction:column;opacity:0;transition:opacity .4s .15s;pointer-events:none;min-width:300px;}
+      #partner-network .acc-item.is-open .acc-body{opacity:1;pointer-events:auto;}
+      #partner-network .acc-body .top{display:flex;align-items:center;gap:12px;margin-bottom:auto;}
+      #partner-network .acc-body .ic{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:var(--pngrad);display:flex;align-items:center;justify-content:center;color:#fff;}
+      #partner-network .acc-body .ic svg{width:24px;height:24px;}
+      #partner-network .acc-body .area{font-size:12px;font-weight:700;letter-spacing:0.04em;color:#8fb0f2;}
+      #partner-network .acc-body .free-badge{display:inline-block;font-size:11px;font-weight:700;color:#bcd0ff;background:rgba(59,130,246,0.22);border-radius:6px;padding:2px 9px;margin-left:8px;letter-spacing:0;}
+      #partner-network .acc-body h3{font-size:clamp(22px,2.4vw,30px);font-weight:800;letter-spacing:-0.03em;margin:14px 0 6px;color:#fff;}
+      #partner-network .acc-body .sub{font-size:13px;color:#8a90a0;margin:0 0 16px;}
+      #partner-network .acc-body .desc{font-size:14.5px;color:#c4c9d6;line-height:1.7;margin:0;max-width:460px;}
+      #partner-network .acc-hint{text-align:center;font-size:12px;color:#7f8597;margin-top:22px;}
+      @media (max-width:860px){
+        #partner-network .acc{flex-direction:column;height:auto;}
+        #partner-network .acc-item{flex:none !important;background:#0c1322;}
+        #partner-network .acc-rail{display:none;}
+        #partner-network .acc-body{position:relative;opacity:1;pointer-events:auto;padding:24px;min-width:0;}
+        #partner-network .acc-body .top{margin-bottom:0;}
+        #partner-network .acc-hint{display:none;}
+      }
+    </style>
+    <section id="partner-network" aria-label="제휴 네트워크">
+      <div class="pn-inner">
+        <div class="pn-head">
+          <div class="pn-eyebrow">PARTNER NETWORK</div>
+          <h2>혼자가 아닙니다 — <span class="hl">전 분야 제휴 네트워크</span></h2>
+          <p>보험 본업에 더해, 각 금융 분야의 전문 파트너가 동반상담으로 함께합니다.</p>
+        </div>
+        <div class="acc" id="pn-acc">
+          <div class="acc-item">
+            <div class="acc-rail"><span class="num">01</span><span class="rname">모기지리더스</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></span></div>
+            <div class="acc-body">
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></span><span class="area">부동산 · 대출</span></div>
+              <h3>모기지리더스</h3>
+              <p class="sub">신한은행 대출모집법인 제휴</p>
+              <p class="desc">고객의 아파트 매매·전세 시 은행 대출상품을 상담·중개합니다. 보험을 넘어 부동산 금융까지, 토탈 금융서비스 전문가로 함께 성장합니다.</p>
+            </div>
+          </div>
+          <div class="acc-item is-open">
+            <div class="acc-rail"><span class="num">02</span><span class="rname">Hexagon 투자자문</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 4 7-8"/><path d="M16 4h4v4"/></svg></span></div>
+            <div class="acc-body">
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 4 7-8"/><path d="M16 4h4v4"/></svg></span><span class="area">투자 · 자산관리</span></div>
+              <h3>Hexagon 투자자문</h3>
+              <p class="sub">AI 빅데이터 자산배분 자문 제휴</p>
+              <p class="desc">전 세계 빅데이터를 AI 알고리즘으로 분석해 시장 상황을 진단하고, 투자의 본질에 기반한 자산배분 전략을 제공하는 협력사입니다.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-rail"><span class="num">03</span><span class="rname">세무법인 글로비</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 12h6M9 17h3"/><rect x="5" y="3" width="14" height="18" rx="2"/></svg></span></div>
+            <div class="acc-body">
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 12h6M9 17h3"/><rect x="5" y="3" width="14" height="18" rx="2"/></svg></span><span class="area">세무 · 절세</span></div>
+              <h3>세무법인 글로비</h3>
+              <p class="sub">세무법인 제휴 (GLOBEE TAX)</p>
+              <p class="desc">각종 세금 관련 질의·응답부터 법인·고소득자 동반상담까지. 고객의 절세 설계를 세무 전문가와 함께 풀어갑니다.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-rail"><span class="num">04</span><span class="rname">법무법인 대진</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M5 11l3 7h8l3-7M5 11l3-2M19 11l-3-2M5 11h14"/></svg></span></div>
+            <div class="acc-body">
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M5 11l3 7h8l3-7M5 11l3-2M19 11l-3-2M5 11h14"/></svg></span><span class="area">법률 · 상속</span></div>
+              <h3>법무법인 대진</h3>
+              <p class="sub">법무법인 제휴</p>
+              <p class="desc">법률 관련 질의응답과 동반상담을 지원합니다. 상속·법인 등 법률 검토가 필요한 상담에서 전문가가 함께합니다.</p>
+            </div>
+          </div>
+          <div class="acc-item free">
+            <div class="acc-rail"><span class="num">05</span><span class="rname">보케어 BOCARE</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h6M7 12h4"/></svg></span></div>
+            <div class="acc-body">
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h6M7 12h4"/></svg></span><span class="area">보험 실무 <span class="free-badge">무상제공</span></span></div>
+              <h3>보케어 BOCARE</h3>
+              <p class="sub">대한민국 최대 보험영업지원 시스템</p>
+              <p class="desc">최대 50장까지 보험금 청구, 고객 등록부터 정기 터치·일정관리까지. 프로사업단총괄 구성원이라면 누구나 무상으로 제공됩니다.</p>
+            </div>
+          </div>
+        </div>
+        <p class="acc-hint">탭을 클릭하면 펼쳐집니다 · 모바일에서는 카드로 표시</p>
+      </div>
+    </section>
+    <script>
+      (function(){
+        var acc=document.getElementById('pn-acc');
+        if(!acc) return;
+        acc.querySelectorAll('.acc-item').forEach(function(it){
+          it.addEventListener('click',function(){
+            acc.querySelectorAll('.acc-item').forEach(function(x){x.classList.remove('is-open');});
+            it.classList.add('is-open');
+          });
+        });
+      })();
+    </script>
 
   </div>
 </div>
