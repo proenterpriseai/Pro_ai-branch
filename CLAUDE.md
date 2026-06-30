@@ -241,6 +241,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260630b** (main `0d9fb98`, tag `v20260630b`, **프로덕션 배포 LIVE 700명**) — 인재양성 자격 사다리 왼쪽부터 순차 등장 애니. `preview/20260630-ladder-reveal` 2커밋 FF 머지. 라이브 검증: `ladReveal` 키프레임·`tx-anim`·`animation-delay 1.15s` 반영.
+  - **`#talent-expertise .tx-ladder` 순차 등장**: EXPERTISE "자격으로 완성하는 성장 경로" 4카드(s1 보험설계사→s2 AFPK→s3 CFP→s4 종합자산관리·WM)가 화면 진입 시 **왼쪽부터 하나씩** 슬라이드+페이드(`@keyframes ladReveal` opacity 0→1, translateX -22px→0). 트리거=**IntersectionObserver**(사다리 직후 인라인 `<script>`, threshold [0,0.25]; ≥0.25 진입 시 `.reveal` 추가, 완전 이탈 시 제거=재진입 재생). 연결선(`::before`)도 함께 페이드인.
+  - **타이밍(대표님 "천천히 자연스럽게")**: 각 카드 `.9s cubic-bezier(.22,.61,.36,1)`, stagger 간격 0.35s(delay .1/.45/.8/1.15s), 연결선 `transition:opacity 1s ease .7s` → 전체 ~2s. (1차 .55s·간격 .17s에서 완화.)
+  - **graceful**: JS 활성 시에만 `.tx-anim`으로 초기 숨김(무JS·IO 미지원=즉시 표시), `prefers-reduced-motion: reduce` 시 animation 없이 즉시 표시.
 - **v=20260630a** (main `5501b82`, tag `v20260630a`, **프로덕션 배포 LIVE 700명**) — 제휴 이미지 압축 + 문구 2건 + 허브 코어 깜빡임. `preview/20260630-png-text` 2커밋 FF 머지. 라이브 검증: jpg 3종 200·옛 png 404·"PRO AI HUB" 0·"전문 파트너" 존재·`pro-hub-core`/`proHubCorePulse` 존재.
   - ① **제휴 네트워크 PNG 3종 JPEG 압축**(`assets/images/partners/`): hexagon(1670KB)·mortgage(1953KB)·bocare(1531KB) PNG → JPEG(Pillow, 폭 1400px 상한·q82·progressive·optimize) = **~5.15MB→379KB(-93%)**. 알파 전부 불투명(255)이라 투명도 손실 0, object-position만 조정된 풀 배너라 크롭 불필요(globee/daejin과 달리 단순 리사이즈/압축). `.acc-photo` src 3건 `.png`→`.jpg` 교체(15006/15016/15046), 옛 png 제거. 이제 제휴 5사 전부 `.jpg`.
   - ② **WHY PRO 허브 "PRO AI HUB" 라벨 삭제**: 중앙 발광 오브 아래 배지+구분선 묶음(`absolute translate-y-28` 컨테이너) 그룹째 제거(텍스트만 지우면 구분선 고아 → 그룹 전체). absolute라 레이아웃 영향 0, 오브·궤도·링·연결선 불변.

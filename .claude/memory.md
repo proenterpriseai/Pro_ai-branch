@@ -6,11 +6,14 @@
 
 ---
 
-## 2026-06-30 세션 — 제휴 이미지 압축 + 문구 2건 + 허브 코어 깜빡임 (v=20260630a 프로덕션 LIVE 700명, tag `v20260630a`, main `5501b82`)
+## 2026-06-30 세션 — 제휴 이미지 압축 + 문구 2건 + 허브 코어 깜빡임 + 자격 사다리 순차 등장 (v=20260630a/b 프로덕션 LIVE 700명, 최신 tag `v20260630b`, main `0d9fb98`)
 
-> 워크플로우: `preview/20260630-png-text` 브랜치에 2커밋 쌓고 Vercel 프리뷰로 대표님 육안 확인 → OK → main FF 머지 + 태그 + 프로덕션 배포. 라이브(ai-branch.vercel.app) 전수 검증 통과.
+> 워크플로우: 프리뷰 브랜치(png-text / ladder-reveal)에 커밋 쌓고 Vercel 프리뷰로 대표님 육안 확인 → OK → main FF 머지 + 태그 + 프로덕션 배포. 라이브(ai-branch.vercel.app) 전수 검증 통과.
 
-### ✅ 배포 내용 (4건)
+### ✅ 추가 배포 — v=20260630b (main `0d9fb98`, tag `v20260630b`)
+**인재양성 자격 사다리(`#talent-expertise .tx-ladder`) 왼쪽부터 순차 등장 애니.** EXPERTISE "자격으로 완성하는 성장 경로" 4카드(보험설계사→AFPK→CFP→종합자산관리·WM)가 화면 진입 시 하나씩 슬라이드+페이드(`@keyframes ladReveal`). 트리거=사다리 직후 인라인 `<script>` IntersectionObserver(threshold [0,0.25], ≥0.25 진입 `.reveal` 추가/완전 이탈 제거=재진입 재생). 타이밍=대표님 "천천히 자연스럽게" 요청으로 각 카드 .9s + 간격 .35s(delay .1/.45/.8/1.15s)=전체 ~2s(1차 .55s/.17s에서 완화). graceful: JS 활성 시에만 `.tx-anim` 초기숨김(무JS/IO미지원=즉시표시), reduced-motion=즉시표시. 라이브 검증 OK.
+
+### ✅ 배포 내용 (v=20260630a, 4건)
 1. **제휴 PNG 3종 JPEG 압축**(`assets/images/partners/`): hexagon·mortgage·bocare PNG→JPEG(Pillow 폭1400 상한·q82·progressive·optimize) = **~5.15MB→379KB(-93%)**. 알파 전부 255(불투명)=투명도 손실0, object-position만 조정된 풀 배너라 **크롭 불필요**(globee/daejin과 달리 단순 리사이즈). `.acc-photo` src 3건 `.png`→`.jpg`, 옛 png 제거. 제휴 5사 전부 `.jpg`.
 2. **"PRO AI HUB" 라벨 삭제**: WHY PRO 허브 중앙 오브 아래 배지+구분선 그룹(`absolute translate-y-28`)째 제거(텍스트만 지우면 구분선 고아). absolute=레이아웃 영향0.
 3. **제휴 헤딩 "PRO 네트워크"→"PRO 전문 파트너"**(`#partner-network h2` `.hl`).
@@ -205,4 +208,4 @@ STEP1(교육체계)만 0.3s 지연 blur 페이드로 늦게 떠 어색 → 인�
 ---
 
 ## 다음 대화 첫 질문 (복붙용)
-"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-30에 v=20260630a 프로덕션 배포 완료(최신 tag `v20260630a`, main `5501b82`, 700명 LIVE) — 제휴 PNG 3종 JPEG 압축(~5.15MB→379KB)·"PRO AI HUB" 라벨 삭제·"PRO 네트워크"→"PRO 전문 파트너"·WHY PRO 허브 중앙 코어 점 깜빡임 애니. 오늘은 [Web3Forms 키 교체(승인?) / 배너 크롭 미세조정 / 새 작업: ___] 중 ___ 부터 하자."
+"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-30에 v=20260630b까지 프로덕션 배포 완료(최신 tag `v20260630b`, main `0d9fb98`, 700명 LIVE) — (a) 제휴 PNG 3종 JPEG 압축(~5.15MB→379KB)·"PRO AI HUB" 라벨 삭제·"PRO 네트워크"→"PRO 전문 파트너"·허브 중앙 코어 점 깜빡임 / (b) 인재양성 자격 사다리 왼쪽부터 순차 등장 애니(천천히, ~2s). 오늘은 [Web3Forms 키 교체(승인?) / 배너 크롭 미세조정 / 새 작업: ___] 중 ___ 부터 하자."
