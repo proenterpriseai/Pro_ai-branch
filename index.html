@@ -14879,6 +14879,20 @@
       #talent-expertise .lad h4{font-size:15px;font-weight:800;margin:0 0 6px;letter-spacing:-0.02em;color:#fff;}
       #talent-expertise .lad.s4 h4{color:#bcd0ff;}
       #talent-expertise .lad p{font-size:12px;color:#7f8597;margin:0;line-height:1.5;}
+      /* 자격 사다리 순차 등장 (JS 활성 시에만 숨김 → 무JS graceful) */
+      #talent-expertise .tx-ladder.tx-anim .lad{opacity:0;transform:translateX(-22px);}
+      #talent-expertise .tx-ladder.tx-anim::before{opacity:0;transition:opacity .6s ease .45s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad{animation:ladReveal .55s cubic-bezier(.22,.61,.36,1) forwards;}
+      #talent-expertise .tx-ladder.tx-anim.reveal::before{opacity:1;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s1{animation-delay:.05s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s2{animation-delay:.22s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s3{animation-delay:.39s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s4{animation-delay:.56s;}
+      @keyframes ladReveal{to{opacity:1;transform:translateX(0);}}
+      @media (prefers-reduced-motion: reduce){
+        #talent-expertise .tx-ladder.tx-anim .lad{opacity:1;transform:none;animation:none;}
+        #talent-expertise .tx-ladder.tx-anim::before{opacity:1;transition:none;}
+      }
       #talent-expertise .tx-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
       #talent-expertise .pf{background:#0a0a14;border:1px solid var(--txhair);border-radius:16px;padding:24px 22px;position:relative;overflow:hidden;}
       #talent-expertise .pf::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--txgrad);opacity:.85;}
@@ -14915,6 +14929,21 @@
           <div class="lad s3"><div class="dot">3</div><h4>CFP</h4><p>국제공인재무설계사<br>종합 재무설계 자격</p></div>
           <div class="lad s4"><div class="dot">★</div><h4>종합자산관리 · WM</h4><p>법인·고액자산가 컨설팅</p></div>
         </div>
+        <script>
+        (function(){
+          var ladder = document.querySelector('#talent-expertise .tx-ladder');
+          if(!ladder) return;
+          ladder.classList.add('tx-anim'); // JS 활성 표시 → 초기 숨김 적용
+          if(!('IntersectionObserver' in window)){ ladder.classList.add('reveal'); return; }
+          var io = new IntersectionObserver(function(entries){
+            entries.forEach(function(e){
+              if(e.isIntersecting && e.intersectionRatio >= 0.25){ ladder.classList.add('reveal'); }
+              else if(!e.isIntersecting){ ladder.classList.remove('reveal'); } // 완전히 벗어나면 재생 대기로 리셋
+            });
+          }, { threshold: [0, 0.25] });
+          io.observe(ladder);
+        })();
+        </script>
       </div>
 
       <div class="tx-block">
