@@ -241,6 +241,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260630a** (main `5501b82`, tag `v20260630a`, **프로덕션 배포 LIVE 700명**) — 제휴 이미지 압축 + 문구 2건 + 허브 코어 깜빡임. `preview/20260630-png-text` 2커밋 FF 머지. 라이브 검증: jpg 3종 200·옛 png 404·"PRO AI HUB" 0·"전문 파트너" 존재·`pro-hub-core`/`proHubCorePulse` 존재.
+  - ① **제휴 네트워크 PNG 3종 JPEG 압축**(`assets/images/partners/`): hexagon(1670KB)·mortgage(1953KB)·bocare(1531KB) PNG → JPEG(Pillow, 폭 1400px 상한·q82·progressive·optimize) = **~5.15MB→379KB(-93%)**. 알파 전부 불투명(255)이라 투명도 손실 0, object-position만 조정된 풀 배너라 크롭 불필요(globee/daejin과 달리 단순 리사이즈/압축). `.acc-photo` src 3건 `.png`→`.jpg` 교체(15006/15016/15046), 옛 png 제거. 이제 제휴 5사 전부 `.jpg`.
+  - ② **WHY PRO 허브 "PRO AI HUB" 라벨 삭제**: 중앙 발광 오브 아래 배지+구분선 묶음(`absolute translate-y-28` 컨테이너) 그룹째 제거(텍스트만 지우면 구분선 고아 → 그룹 전체). absolute라 레이아웃 영향 0, 오브·궤도·링·연결선 불변.
+  - ③ **제휴 헤딩 "PRO 네트워크"→"PRO 전문 파트너"**(`#partner-network h2`, `전문 파트너`=`.hl` 블루).
+  - ④ **WHY PRO 허브 중앙 코어 점 깜빡임(맥동) 추가**: 코어 점(`.pro-hub-core`, 데스크톱 허브 `w-3.5 h-3.5 bg-blue-400`)에 `@keyframes proHubCorePulse 1.6s ease-in-out infinite`(opacity 1→0.35, scale 1→0.78, glow box-shadow 강약 펄스). 스코프 `<style>`(블러 글로우 div 다음), 점 1개에만. `prefers-reduced-motion: reduce` 시 animation:none. ⚠️ **헤드리스 프리뷰는 백그라운드 탭=CSS 애니 frozen**→`getAnimations()` 빈 배열, computed `animationName`으로 바인딩만 검증(실브라우저 정상).
+  - 🔴 **남은 일**: 배너 크롭%·object-position 미세조정 여지 / Web3Forms 키 교체 여전히 보류.
 - **v=20260629a** (main `17966f8`, tag `v20260629a`, **프로덕션 배포 LIVE 700명**) — 인재양성·프로사업단총괄 대규모 추가/재설계. `preview/wm-center` 브랜치 **12커밋 FF 머지**(프리뷰 반복 검증 후). 라이브 확인: ai-branch.vercel.app에 `#wm-center`·`#partner-network`·"PRO 네트워크" 반영(HTTP 200).
   - ① **WM센터 섹션 신규**(`#wm-center`, 프로사업단총괄 오버레이 교육↔조직문화 사이) — "2026년 7월 출범" 배지 + "법인 고객 및 고액 자산가를 위한 WM센터" + 2트랙(법인/CEO·개인/고액자산가, **역할만·이름/번호 제외**) + 혜택 3카드(자산 맞춤 컨설팅 / WM 특화 자료·교육 / VIP 고객 관리 지원). 🔴**내부문서(수수료·출장비·센터장 번호·신청서) 전부 공개 제외**(WM 70/30·출장비 등은 내부 정산이라 영입 페이지 부적합). `#wm-center` 스코프 독립 블록.
   - ② **교육 가로스크롤 패널 가운데 공백 축소**(`.edu-horiz-panel`) — `padding-inline:max(2rem,calc((100vw-1180px)/2))`(중앙 1180px 밴드)+`column-gap:3rem`, `.edu-hp-text` 좌패딩 `8rem→3rem 1rem`. 와이드(1680px) 가운데 공백 **~630→55px**. 모바일 1열 무영향.

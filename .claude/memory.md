@@ -6,6 +6,28 @@
 
 ---
 
+## 2026-06-30 세션 — 제휴 이미지 압축 + 문구 2건 + 허브 코어 깜빡임 (v=20260630a 프로덕션 LIVE 700명, tag `v20260630a`, main `5501b82`)
+
+> 워크플로우: `preview/20260630-png-text` 브랜치에 2커밋 쌓고 Vercel 프리뷰로 대표님 육안 확인 → OK → main FF 머지 + 태그 + 프로덕션 배포. 라이브(ai-branch.vercel.app) 전수 검증 통과.
+
+### ✅ 배포 내용 (4건)
+1. **제휴 PNG 3종 JPEG 압축**(`assets/images/partners/`): hexagon·mortgage·bocare PNG→JPEG(Pillow 폭1400 상한·q82·progressive·optimize) = **~5.15MB→379KB(-93%)**. 알파 전부 255(불투명)=투명도 손실0, object-position만 조정된 풀 배너라 **크롭 불필요**(globee/daejin과 달리 단순 리사이즈). `.acc-photo` src 3건 `.png`→`.jpg`, 옛 png 제거. 제휴 5사 전부 `.jpg`.
+2. **"PRO AI HUB" 라벨 삭제**: WHY PRO 허브 중앙 오브 아래 배지+구분선 그룹(`absolute translate-y-28`)째 제거(텍스트만 지우면 구분선 고아). absolute=레이아웃 영향0.
+3. **제휴 헤딩 "PRO 네트워크"→"PRO 전문 파트너"**(`#partner-network h2` `.hl`).
+4. **허브 중앙 코어 점 깜빡임**: `.pro-hub-core`(데스크톱 허브 `w-3.5 h-3.5 bg-blue-400`)에 `@keyframes proHubCorePulse 1.6s ease-in-out infinite`(opacity 1→0.35, scale 1→0.78, glow 펄스). 스코프 `<style>`, 점1개만, reduced-motion off.
+
+### ⚠️ 기술 메모
+- **이미지 압축 도구**: Python 3.14 + Pillow 12.2.0 로컬 사용 가능(`python`). `convert`는 Windows 내장(ImageMagick 아님)이라 무시.
+- **헤드리스 프리뷰 한계 재확인**: preview_eval=백그라운드 탭(docHidden)이라 CSS 애니 clock frozen → `getAnimations()` 빈 배열, `currentTime` 주입도 객체 없으면 불가. **computed `animationName`으로 바인딩만 검증**(실브라우저 정상). 이미지/텍스트는 fetch 200·DOM 실측으로 검증.
+- **라이브 검증법**: `curl` HTTP 코드(jpg 200·옛png 404) + 홈 HTML grep("PRO AI HUB" 0·"전문 파트너" 존재·`pro-hub-core`/`proHubCorePulse` 존재).
+
+### 🔴 남은 일(보류)
+- **Web3Forms 키 교체**(대표 승인 대기, 현재 `c96794c6…`=전략실장 수신).
+- 배너 크롭%·object-position 미세조정 여지.
+- (참고·미래) `api/chat.js` `gemini-2.5-flash` 2026-10-16 퇴역 → 그 전 교체.
+
+---
+
 ## 2026-06-29 세션 — WM센터 + 인재양성 EXPERTISE 재설계 + 제휴 네트워크 아코디언 (v=20260629a 프로덕션 LIVE 700명, tag `v20260629a`, main `17966f8`)
 
 > 워크플로우: 모든 작업을 `preview/wm-center` 브랜치에 쌓고 **Vercel 프리뷰(SSO 보호, 대표/전략실장 로그인 확인)로 반복 검증** → 최종 **12커밋 FF 머지 → main → 프로덕션 배포**. 디자인 시안은 **아티팩트**로 먼저 보여주고 합의 후 index.html 이식. 비판적/비관적 시각으로 공개 vs 내부 자료 구분이 핵심이었음.
@@ -183,4 +205,4 @@ STEP1(교육체계)만 0.3s 지연 blur 페이드로 늦게 떠 어색 → 인�
 ---
 
 ## 다음 대화 첫 질문 (복붙용)
-"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-29에 v=20260629a 프로덕션 배포 완료(최신 tag `v20260629a`, 700명 LIVE) — WM센터 섹션·교육 공백 축소·성과 화살표·인재양성 EXPERTISE 재설계(자격사다리+증거)·제휴 네트워크 아코디언(헥사곤→모기지→대진→글로비→보케어)·현황 체크마크·PRO 네트워크 등. 오늘은 [제휴 이미지 PNG 압축 / Web3Forms 키 교체(승인?) / 새 작업: ___] 중 ___ 부터 하자."
+"ai-branch(AI 홈페이지) 이어서 작업할게. `ai-branch/CLAUDE.md`랑 `ai-branch/.claude/memory.md` 읽어줘. 2026-06-30에 v=20260630a 프로덕션 배포 완료(최신 tag `v20260630a`, main `5501b82`, 700명 LIVE) — 제휴 PNG 3종 JPEG 압축(~5.15MB→379KB)·"PRO AI HUB" 라벨 삭제·"PRO 네트워크"→"PRO 전문 파트너"·WHY PRO 허브 중앙 코어 점 깜빡임 애니. 오늘은 [Web3Forms 키 교체(승인?) / 배너 크롭 미세조정 / 새 작업: ___] 중 ___ 부터 하자."
