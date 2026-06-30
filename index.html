@@ -14881,13 +14881,13 @@
       #talent-expertise .lad p{font-size:12px;color:#7f8597;margin:0;line-height:1.5;}
       /* 자격 사다리 순차 등장 (JS 활성 시에만 숨김 → 무JS graceful) */
       #talent-expertise .tx-ladder.tx-anim .lad{opacity:0;transform:translateX(-22px);}
-      #talent-expertise .tx-ladder.tx-anim::before{opacity:0;transition:opacity .6s ease .45s;}
-      #talent-expertise .tx-ladder.tx-anim.reveal .lad{animation:ladReveal .55s cubic-bezier(.22,.61,.36,1) forwards;}
+      #talent-expertise .tx-ladder.tx-anim::before{opacity:0;transition:opacity 1s ease .7s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad{animation:ladReveal .9s cubic-bezier(.22,.61,.36,1) forwards;}
       #talent-expertise .tx-ladder.tx-anim.reveal::before{opacity:1;}
-      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s1{animation-delay:.05s;}
-      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s2{animation-delay:.22s;}
-      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s3{animation-delay:.39s;}
-      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s4{animation-delay:.56s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s1{animation-delay:.1s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s2{animation-delay:.45s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s3{animation-delay:.8s;}
+      #talent-expertise .tx-ladder.tx-anim.reveal .lad.s4{animation-delay:1.15s;}
       @keyframes ladReveal{to{opacity:1;transform:translateX(0);}}
       @media (prefers-reduced-motion: reduce){
         #talent-expertise .tx-ladder.tx-anim .lad{opacity:1;transform:none;animation:none;}
