@@ -4250,29 +4250,7 @@
         <!-- Desktop App Showcase -->
         <div id="ai-showcase" class="relative rounded-2xl overflow-hidden" style="background:#08091a;border:1px solid rgba(28,73,200,0.12);box-shadow:0 0 80px -20px rgba(28,73,200,0.08);">
 
-          <!-- Browser Chrome / Toolbar -->
-          <div class="flex items-center px-4 sm:px-5" style="height:44px;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.06);">
-            <!-- Traffic Lights -->
-            <div class="flex items-center gap-1.5">
-              <span class="block" style="width:11px;height:11px;border-radius:50%;background:#ff5f57;"></span>
-              <span class="block" style="width:11px;height:11px;border-radius:50%;background:#febc2e;"></span>
-              <span class="block" style="width:11px;height:11px;border-radius:50%;background:#28c840;"></span>
-            </div>
-            <!-- Center URL Bar -->
-            <div class="flex-1 flex justify-center">
-              <div class="px-5 py-1 rounded-md text-[11px] text-zinc-500 font-mono flex items-center gap-2" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
-                <svg class="w-3 h-3 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                <span class="hidden sm:inline">pro-ai-branch.com</span>
-                <span class="sm:hidden">AI Branch</span>
-              </div>
-            </div>
-            <!-- Right: window controls placeholder -->
-            <div style="width:52px;" class="flex items-center justify-end gap-2">
-              <span class="block w-4 h-0.5 rounded bg-zinc-700"></span>
-              <span class="block w-3 h-3 rounded-sm border border-zinc-700"></span>
-            </div>
-          </div>
-
+          <!-- v=20260704b — 브라우저 크롬 제거 → SaaS 앱 스타일 (Nexora 헤더는 메인 컬럼 내부) -->
           <!-- Mobile Tab Bar (lg 이하에서만 보임) -->
           <div id="ai-mobile-tabs" class="lg:hidden flex overflow-x-auto gap-2 px-4 py-2.5 no-scrollbar" style="border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01);">
             <!-- JS가 7개 pill 버튼 생성 -->
@@ -4288,6 +4266,27 @@
 
             <!-- Main Content: Demo Area -->
             <div class="flex-1 flex flex-col relative overflow-hidden" style="background:rgba(0,0,0,0.15);">
+              <!-- v=20260704b — SaaS 앱 헤더 (타이틀 · 검색 · 계정) -->
+              <div id="ai-app-header" class="flex items-center justify-between gap-3 px-5 py-3.5" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <div class="min-w-0">
+                  <h3 class="text-base sm:text-lg font-bold text-white tracking-tight truncate">AI 통합 시스템</h3>
+                  <p class="text-[11px] text-zinc-500 mt-0.5 truncate">7대 AI 영업 시스템을 한 곳에서 활용하세요.</p>
+                </div>
+                <div class="flex items-center gap-3 flex-shrink-0">
+                  <div class="hidden lg:flex items-center gap-2 h-9 w-52 px-3 rounded-xl transition-colors focus-within:border-blue-500/40" style="background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);">
+                    <svg class="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+                    <input id="ai-search-input" type="text" placeholder="시스템 검색..." autocomplete="off" class="flex-1 min-w-0 bg-transparent text-xs text-zinc-300 placeholder-zinc-600 outline-none">
+                  </div>
+                  <button class="flex items-center gap-2 rounded-xl px-2 py-1.5 text-left transition hover:bg-white/[0.04]" style="border:1px solid transparent;" onmouseover="this.style.borderColor='rgba(255,255,255,0.08)'" onmouseout="this.style.borderColor='transparent'">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#3b82f6,#1C49C8);box-shadow:0 0 14px rgba(59,130,246,0.35);ring:1px;border:1px solid rgba(255,255,255,0.12);">P</div>
+                    <div class="hidden sm:block leading-tight">
+                      <p class="text-xs font-medium text-white">PRO 컨설턴트</p>
+                      <p class="text-[10px] text-zinc-500">내 워크스페이스</p>
+                    </div>
+                    <svg class="hidden sm:block w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                </div>
+              </div>
               <!-- v=20260704 Nexora 스킨: KPI 스트립 (통합 관제 지표 — 기존 대시보드 stats 데이터 동일) -->
               <div id="ai-kpi-strip" class="hidden md:grid grid-cols-4 gap-2.5 px-5 pt-4 pb-1">
                 <div class="nxk-card">
@@ -8600,7 +8599,11 @@
       function renderSidebar() {
         var sidebar = document.getElementById('ai-sidebar');
         if (!sidebar) return;
-        var html = '<div class="px-3 py-2 mb-1"><span class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">AI 시스템</span></div>';
+        // v=20260704b — 상단 브랜드 블록 (Nexora 워드마크 자리)
+        var html = '<div class="px-4 pt-1.5 pb-3.5 mb-2" style="border-bottom:1px solid rgba(255,255,255,0.05);">'
+          + '<p class="text-sm font-bold tracking-[-0.02em] text-white">PRO enterprise</p>'
+          + '<p class="text-[10px] text-zinc-600 mt-0.5">AI automation</p></div>'
+          + '<div class="px-3 py-2 mb-1"><span class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">AI 시스템</span></div>';
         engines.forEach(function(e, i) {
           var c = colorMap[e.color];
           html += '<div class="ai-nav-item flex items-center gap-3 px-4 py-2.5 mx-2 rounded-lg' + (i === 0 ? ' active' : '') + '" data-index="' + i + '">'
@@ -8718,6 +8721,31 @@
         autoCycleTimer = null;
         setActiveEngine(idx);
       });
+
+      // v=20260704b — 헤더 검색: 시스템명 실시간 매칭 → 자동 전환 (예: "보장" → 보장분석)
+      var searchInput = document.getElementById('ai-search-input');
+      if (searchInput) {
+        var _searchDeb = null;
+        searchInput.addEventListener('input', function() {
+          clearTimeout(_searchDeb);
+          var q = this.value.trim().toLowerCase();
+          if (!q) return;
+          _searchDeb = setTimeout(function() {
+            for (var i = 0; i < engines.length; i++) {
+              var e = engines[i];
+              if ((e.name + ' ' + e.short + ' ' + e.desc).toLowerCase().indexOf(q) !== -1) {
+                if (i !== currentIndex) { autoCycleTimer = null; setActiveEngine(i); }
+                searchInput.style.color = '#93c5fd';
+                setTimeout(function(){ searchInput.style.color = ''; }, 600);
+                return;
+              }
+            }
+          }, 280);
+        });
+        // 데모 영역 클릭 방지 스크롤 튐 없음 — 입력 시 자동 순환 일시 정지
+        searchInput.addEventListener('focus', function(){ stopAutoCycle(); });
+        searchInput.addEventListener('blur', function(){ if (!this.value.trim()) startAutoCycle(); });
+      }
 
       renderSidebar();
       renderMobileTabs();
@@ -14811,11 +14839,8 @@
       #talent-overlay .tsk-intro h2 .hl{background:linear-gradient(to right,#3b82f6,#60a5fa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
       #talent-overlay .tsk-intro p{font-size:clamp(14px,1.6vw,17px);color:#b8bccb;line-height:1.75;max-width:620px;margin:0 auto;}
       #talent-overlay .tsk-stack{display:flex;flex-direction:column;gap:30vh;max-width:1160px;margin:0 auto;padding:24px 24px 16vh;}
-      #talent-overlay .tsk-card{position:sticky;overflow:hidden;border-radius:30px;border:1px solid rgba(255,255,255,0.10);background:#02050e;transform-origin:top center;will-change:transform,opacity,filter;word-break:keep-all;}
-      #talent-overlay .tsk-card[data-i="0"]{top:88px;}
-      #talent-overlay .tsk-card[data-i="1"]{top:104px;}
-      #talent-overlay .tsk-card[data-i="2"]{top:120px;}
-      #talent-overlay .tsk-card[data-i="3"]{top:136px;}
+      /* v=20260704b — top 통일(88px): 새 카드가 이전 카드를 완전히 덮음(계단 노출 제거) + JS 높이 균등화와 세트 */
+      #talent-overlay .tsk-card{position:sticky;top:88px;overflow:hidden;border-radius:30px;border:1px solid rgba(255,255,255,0.10);background:#02050e;transform-origin:top center;will-change:transform,opacity,filter;word-break:keep-all;}
       #talent-overlay .tsk-tint{position:absolute;inset:0;pointer-events:none;}
       #talent-overlay .tsk-card[data-i="0"] .tsk-tint{background:radial-gradient(ellipse at top left,rgba(28,73,200,0.24),transparent 55%);}
       #talent-overlay .tsk-card[data-i="1"] .tsk-tint{background:radial-gradient(ellipse at top left,rgba(59,130,246,0.20),transparent 55%);}
@@ -14905,9 +14930,42 @@
       #talent-overlay .tsk-spark .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
       #talent-overlay .tsk-spark .sh .a{font-size:11px;font-weight:700;color:#fff;}
       #talent-overlay .tsk-spark .sh .b{font-size:10px;font-weight:700;color:#93c5fd;background:rgba(59,130,246,0.13);border:1px solid rgba(59,130,246,0.26);border-radius:999px;padding:2px 8px;}
+      /* ── v=20260704b 목업 동적화 — .play(화면 진입 시 IO가 부여) 게이트, 화면 밖 정지 ── */
+      /* 01 성장 트래커: 단계가 순서대로 차오르는 시퀀스 (9s 루프) */
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(1) .tsk-bar>i{animation:tskFillA 9s ease-in-out infinite;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(2) .tsk-bar>i{animation:tskFillB 9s ease-in-out infinite;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(3) .tsk-bar>i{animation:tskFillC 9s ease-in-out infinite;}
+      @keyframes tskFillA{0%{width:0}14%{width:100%}100%{width:100%}}
+      @keyframes tskFillB{0%,13%{width:0}28%{width:100%}100%{width:100%}}
+      @keyframes tskFillC{0%,26%{width:0}42%{width:62%}55%{width:62%}62%{width:58%}70%{width:62%}100%{width:62%}}
+      /* 02 브랜드 콘솔: 하이라이트가 4개 축을 순환 점등 (8s 루프) */
+      #talent-overlay .tsk-brow{border-radius:12px;transition:background .3s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(1){animation:tskRowGlow 8s ease-in-out infinite 0s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(2){animation:tskRowGlow 8s ease-in-out infinite 2s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(3){animation:tskRowGlow 8s ease-in-out infinite 4s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(4){animation:tskRowGlow 8s ease-in-out infinite 6s;}
+      @keyframes tskRowGlow{0%,25%,100%{background:transparent;}5%,15%{background:rgba(28,73,200,0.20);}}
+      /* 03 자격 워크플로우: 연결선 빛 점 하강 + 단계 순차 점등 + ★ 글로우 펄스 (6s 루프) */
+      #talent-overlay .tsk-card[data-i="2"] .tsk-mock.play .tsk-cert::after{content:"";position:absolute;left:21px;top:22px;width:7px;height:7px;border-radius:50%;background:#60a5fa;box-shadow:0 0 14px rgba(96,165,250,0.95);animation:tskDot 6s ease-in-out infinite;z-index:2;}
+      @keyframes tskDot{0%{transform:translateY(0);opacity:0}8%{opacity:1}88%{opacity:1}100%{transform:translateY(196px);opacity:0}}
+      #talent-overlay .tsk-card[data-i="2"] .tsk-mock.play .tsk-crow:nth-child(1) .cic{animation:tskStep 6s ease-in-out infinite 0s;}
+      #talent-overlay .tsk-card[data-i="2"] .tsk-mock.play .tsk-crow:nth-child(2) .cic{animation:tskStep 6s ease-in-out infinite 1.6s;}
+      #talent-overlay .tsk-card[data-i="2"] .tsk-mock.play .tsk-crow:nth-child(3) .cic{animation:tskStep 6s ease-in-out infinite 3.2s;}
+      @keyframes tskStep{0%,100%{box-shadow:none;}6%{box-shadow:0 0 20px rgba(96,165,250,0.6);border-color:rgba(96,165,250,0.6);}14%{box-shadow:none;}}
+      #talent-overlay .tsk-card[data-i="2"] .tsk-mock.play .tsk-crow.hot .cic{animation:tskStar 2.8s ease-in-out infinite;}
+      @keyframes tskStar{0%,100%{box-shadow:0 0 20px rgba(59,130,246,0.4);}50%{box-shadow:0 0 34px rgba(96,165,250,0.85);}}
+      /* 04 AI 대시보드: 바 차오름(진입 시) + 스파크라인 드로우 루프 */
+      #talent-overlay .tsk-card[data-i="3"] .tsk-kbar>i{width:0;transition:width 1.3s cubic-bezier(.22,.61,.36,1);}
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-kbar>i{width:var(--w,0%);}
+      #talent-overlay .tsk-spark path.ln{stroke-dasharray:240;stroke-dashoffset:240;}
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-spark path.ln{animation:tskDraw 7s ease-in-out infinite;}
+      @keyframes tskDraw{0%{stroke-dashoffset:240;opacity:.5}42%{stroke-dashoffset:0;opacity:1}86%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:-240;opacity:.5}}
       @media (prefers-reduced-motion: reduce){
         #talent-overlay .tsk-cert.tsk-anim .tsk-crow{opacity:1;transform:none;animation:none;}
         #talent-overlay .tsk-trow.is-run .tsk-bar > i{animation:none;}
+        #talent-overlay .tsk-mock.play *{animation:none !important;}
+        #talent-overlay .tsk-card[data-i="3"] .tsk-kbar>i{width:var(--w,0%);transition:none;}
+        #talent-overlay .tsk-spark path.ln{stroke-dasharray:none;stroke-dashoffset:0;}
       }
       @media (max-width:980px){
         #talent-overlay .tsk-grid{grid-template-columns:1fr;gap:30px;}
@@ -15035,17 +15093,17 @@
               <span class="tsk-live"><span class="dt"></span>Live</span>
             </div>
             <div class="tsk-kgrid">
-              <div class="tsk-kpi"><div class="k">AI 시스템</div><div class="v">7대</div><div class="tsk-kbar"><i style="width:100%;"></i></div></div>
-              <div class="tsk-kpi"><div class="k">금일 분석</div><div class="v">47건<span class="u">↑</span></div><div class="tsk-kbar"><i style="width:72%;"></i></div></div>
-              <div class="tsk-kpi"><div class="k">조직 구성원</div><div class="v">700+</div><div class="tsk-kbar"><i style="width:88%;"></i></div></div>
-              <div class="tsk-kpi"><div class="k">AI 응답률</div><div class="v">99.2%<span class="u">↑</span></div><div class="tsk-kbar"><i style="width:96%;"></i></div></div>
+              <div class="tsk-kpi"><div class="k">AI 시스템</div><div class="v"><span class="tsk-cnt" data-t="7" data-dec="0" data-suf="대">0대</span></div><div class="tsk-kbar"><i style="--w:100%;"></i></div></div>
+              <div class="tsk-kpi"><div class="k">금일 분석</div><div class="v"><span class="tsk-cnt" data-t="47" data-dec="0" data-suf="건">0건</span><span class="u">↑</span></div><div class="tsk-kbar"><i style="--w:72%;"></i></div></div>
+              <div class="tsk-kpi"><div class="k">조직 구성원</div><div class="v"><span class="tsk-cnt" data-t="700" data-dec="0" data-suf="+">0+</span></div><div class="tsk-kbar"><i style="--w:88%;"></i></div></div>
+              <div class="tsk-kpi"><div class="k">AI 응답률</div><div class="v"><span class="tsk-cnt" data-t="99.2" data-dec="1" data-suf="%">0%</span><span class="u">↑</span></div><div class="tsk-kbar"><i style="--w:96%;"></i></div></div>
             </div>
             <div class="tsk-spark">
               <div class="sh"><span class="a">자동화 처리량</span><span class="b">+18.4%</span></div>
               <svg viewBox="0 0 100 26" preserveAspectRatio="none" style="width:100%;height:44px;overflow:visible;">
                 <defs><linearGradient id="tskSparkF" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.22"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs>
                 <path d="M0,21 C10,18 16,23 26,14 C36,6 46,11 56,9 C66,7 74,15 84,8 C90,4 100,3 100,3 L100,26 L0,26 Z" fill="url(#tskSparkF)"/>
-                <path d="M0,21 C10,18 16,23 26,14 C36,6 46,11 56,9 C66,7 74,15 84,8 C90,4 100,3 100,3" fill="none" stroke="#60a5fa" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                <path class="ln" d="M0,21 C10,18 16,23 26,14 C36,6 46,11 56,9 C66,7 74,15 84,8 C90,4 100,3 100,3" fill="none" stroke="#60a5fa" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
                 <circle cx="100" cy="3" r="2.4" fill="#93c5fd"/>
               </svg>
             </div>
@@ -15067,22 +15125,38 @@
       if(!ov) return;
       var cards = ov.querySelectorAll('.tsk-card');
       if(!cards.length) return;
-      var TOPS = [88,104,120,136];
       var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      /* v=20260704b — 임계값(고정 top) 의존 제거: "다음 카드까지의 실거리(gap)"만으로 판정.
+         오버레이 스크롤포트 원점이 뷰포트 0이 아니어도(실측 stuck=108px) 항상 동작. */
       function updateStack(){
         if(reduced || window.innerWidth <= 768) return;
         for(var i=0;i<cards.length;i++){
           var card = cards[i], next = cards[i+1];
           if(!next){ card.style.transform=''; card.style.opacity=''; card.style.filter=''; continue; }
-          var r = card.getBoundingClientRect();
-          if(r.top <= TOPS[i] + 1){
-            var gap = next.getBoundingClientRect().top - TOPS[i];
-            var ratio = Math.max(0, Math.min(1, gap / (window.innerHeight * 0.5)));
+          var gap = next.getBoundingClientRect().top - card.getBoundingClientRect().top;
+          var ratio = Math.max(0, Math.min(1, gap / (window.innerHeight * 0.5)));
+          if(ratio >= 1){
+            card.style.transform=''; card.style.opacity=''; card.style.filter='';
+          } else {
             card.style.transform = 'scale(' + (0.92 + 0.08 * ratio).toFixed(4) + ')';
             card.style.opacity = String(0.55 + 0.45 * ratio);
             card.style.filter = 'brightness(' + Math.round(55 + 45 * ratio) + '%)';
-          } else {
-            card.style.transform=''; card.style.opacity=''; card.style.filter='';
+          }
+        }
+        updateMocks();
+      }
+      /* v=20260704b — 목업 .play 토글: IO 대신 스크롤 핸들러 실측(백그라운드 탭 IO 동결 무관, 화면 밖 정지 동일) */
+      var mocks = ov.querySelectorAll('.tsk-mock');
+      function updateMocks(){
+        var vh = window.innerHeight;
+        for(var i=0;i<mocks.length;i++){
+          var mr = mocks[i].getBoundingClientRect();
+          var visible = mr.top < vh * 0.85 && mr.bottom > vh * 0.12;
+          if(visible && !mocks[i].classList.contains('play')){
+            mocks[i].classList.add('play');
+            if(mocks[i].querySelector('.tsk-cnt')) runCounters(mocks[i]);
+          } else if(!visible && mocks[i].classList.contains('play')){
+            mocks[i].classList.remove('play');
           }
         }
       }
@@ -15090,6 +15164,41 @@
       ov.addEventListener('scroll', updateStack, { passive: true });
       window.addEventListener('resize', updateStack);
       updateStack();
+      /* v=20260704b — 카드 높이 균등화: 이전 카드 꼬리가 새 카드 밑으로 비어져 나오는 것 차단.
+         오버레이가 열릴 때(레이아웃 확정 시점) 최댓값으로 min-height 통일. */
+      function equalizeCards(){
+        if(window.innerWidth <= 768) { for(var i=0;i<cards.length;i++) cards[i].style.minHeight=''; return; }
+        var max = 0;
+        for(var i=0;i<cards.length;i++){ cards[i].style.minHeight=''; }
+        for(var i=0;i<cards.length;i++){ var h = cards[i].offsetHeight; if(h > max) max = h; }
+        if(max > 0){ for(var i=0;i<cards.length;i++){ cards[i].style.minHeight = max + 'px'; } }
+      }
+      var _eqObs = new MutationObserver(function(){
+        if(ov.classList.contains('ceo-overlay--active')){
+          /* rAF는 백그라운드 탭에서 정지될 수 있어 setTimeout 사용 (레이아웃 확정 후 실행) */
+          setTimeout(function(){ equalizeCards(); updateStack(); }, 60);
+        }
+      });
+      _eqObs.observe(ov, { attributes: true, attributeFilter: ['class'] });
+      window.addEventListener('resize', equalizeCards);
+      /* v=20260704b — 카운트업 (rAF, 탭 비활성 시 즉시 최종값) */
+      function runCounters(mock){
+        mock.querySelectorAll('.tsk-cnt').forEach(function(el){
+          if(el._cntRaf) cancelAnimationFrame(el._cntRaf);
+          var t = parseFloat(el.dataset.t), dec = parseInt(el.dataset.dec)||0, suf = el.dataset.suf||'';
+          var fin = (dec ? t.toFixed(dec) : String(Math.round(t))) + suf;
+          if(reduced || document.hidden){ el.textContent = fin; return; }
+          var t0 = null, DUR = 1400;
+          function step(ts){
+            if(t0===null) t0 = ts;
+            var p = Math.min(1,(ts-t0)/DUR), ease = 1-Math.pow(1-p,3);
+            el.textContent = (dec? (t*ease).toFixed(dec) : Math.round(t*ease)) + suf;
+            if(p<1) el._cntRaf = requestAnimationFrame(step); else el.textContent = fin;
+          }
+          el._cntRaf = requestAnimationFrame(step);
+        });
+      }
+      updateMocks();
       /* 자격 워크플로우 순차 등장 (기존 tx-ladder 애니 계승 — IO, 재진입 시 재생) */
       var cert = document.getElementById('tsk-cert');
       if(cert){
