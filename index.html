@@ -126,9 +126,36 @@
       100% { stroke-dashoffset: -180; opacity: .4; }
     }
     .nxk-spark path.draw { stroke-dasharray: 180; animation: nxkDraw 7s ease-in-out infinite; }
-    .nxk-dot7 span { width: 7px; height: 14px; border-radius: 3px; background: rgba(96,165,250,0.75); display: inline-block; }
+    .nxk-dot7 span { width: 7px; height: 14px; border-radius: 3px; background: rgba(96,165,250,0.75); display: inline-block; transform-origin: bottom; animation: nxkDotSeq 2.8s ease-in-out infinite; }
     .nxk-dot7 span:nth-child(odd) { background: rgba(28,73,200,0.85); }
-    @media (prefers-reduced-motion: reduce) { .nxk-spark path.draw { animation: none; stroke-dasharray: none; } }
+    .nxk-dot7 span:nth-child(1) { animation-delay: 0s; }
+    .nxk-dot7 span:nth-child(2) { animation-delay: .18s; }
+    .nxk-dot7 span:nth-child(3) { animation-delay: .36s; }
+    .nxk-dot7 span:nth-child(4) { animation-delay: .54s; }
+    .nxk-dot7 span:nth-child(5) { animation-delay: .72s; }
+    .nxk-dot7 span:nth-child(6) { animation-delay: .9s; }
+    .nxk-dot7 span:nth-child(7) { animation-delay: 1.08s; }
+    @keyframes nxkDotSeq {
+      0%, 100% { opacity: .4; transform: scaleY(.66); }
+      10% { opacity: 1; transform: scaleY(1.18); box-shadow: 0 0 10px rgba(96,165,250,0.6); }
+      22% { opacity: .4; transform: scaleY(.66); }
+    }
+    .nxk-bars span { transform-origin: bottom; animation: nxkBarSeq 3.2s ease-in-out infinite; }
+    .nxk-bars span:nth-child(1) { animation-delay: 0s; }
+    .nxk-bars span:nth-child(2) { animation-delay: .16s; }
+    .nxk-bars span:nth-child(3) { animation-delay: .32s; }
+    .nxk-bars span:nth-child(4) { animation-delay: .48s; }
+    .nxk-bars span:nth-child(5) { animation-delay: .64s; }
+    .nxk-bars span:nth-child(6) { animation-delay: .8s; }
+    @keyframes nxkBarSeq {
+      0%, 100% { transform: scaleY(.5); opacity: .65; }
+      14% { transform: scaleY(1.05); opacity: 1; }
+      30% { transform: scaleY(.5); opacity: .65; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nxk-spark path.draw { animation: none; stroke-dasharray: none; }
+      .nxk-dot7 span, .nxk-bars span { animation: none; }
+    }
     .ai-mobile-tab {
       transition: all 0.25s ease;
       cursor: pointer;
@@ -4266,25 +4293,15 @@
 
             <!-- Main Content: Demo Area -->
             <div class="flex-1 flex flex-col relative overflow-hidden" style="background:rgba(0,0,0,0.15);">
-              <!-- v=20260704b — SaaS 앱 헤더 (타이틀 · 검색 · 계정) -->
-              <div id="ai-app-header" class="flex items-center justify-between gap-3 px-5 py-3.5" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+              <!-- v=20260704c — SaaS 앱 헤더: 검색창을 우측 끝으로(계정 칩은 우측 패널 상단으로 이동), 높이 68px 고정 = 우측 패널 상단 행과 라인 일치 -->
+              <div id="ai-app-header" class="flex items-center justify-between gap-3 px-5 h-[68px] flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.05);">
                 <div class="min-w-0">
                   <h3 class="text-base sm:text-lg font-bold text-white tracking-tight truncate">AI 통합 시스템</h3>
                   <p class="text-[11px] text-zinc-500 mt-0.5 truncate">7대 AI 영업 시스템을 한 곳에서 활용하세요.</p>
                 </div>
-                <div class="flex items-center gap-3 flex-shrink-0">
-                  <div class="hidden lg:flex items-center gap-2 h-9 w-52 px-3 rounded-xl transition-colors focus-within:border-blue-500/40" style="background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);">
-                    <svg class="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
-                    <input id="ai-search-input" type="text" placeholder="시스템 검색..." autocomplete="off" class="flex-1 min-w-0 bg-transparent text-xs text-zinc-300 placeholder-zinc-600 outline-none">
-                  </div>
-                  <button class="flex items-center gap-2 rounded-xl px-2 py-1.5 text-left transition hover:bg-white/[0.04]" style="border:1px solid transparent;" onmouseover="this.style.borderColor='rgba(255,255,255,0.08)'" onmouseout="this.style.borderColor='transparent'">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#3b82f6,#1C49C8);box-shadow:0 0 14px rgba(59,130,246,0.35);ring:1px;border:1px solid rgba(255,255,255,0.12);">P</div>
-                    <div class="hidden sm:block leading-tight">
-                      <p class="text-xs font-medium text-white">PRO 컨설턴트</p>
-                      <p class="text-[10px] text-zinc-500">내 워크스페이스</p>
-                    </div>
-                    <svg class="hidden sm:block w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/></svg>
-                  </button>
+                <div class="hidden lg:flex items-center gap-2 h-9 w-56 px-3 rounded-xl flex-shrink-0 transition-colors focus-within:border-blue-500/40" style="background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);">
+                  <svg class="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+                  <input id="ai-search-input" type="text" placeholder="시스템 검색..." autocomplete="off" class="flex-1 min-w-0 bg-transparent text-xs text-zinc-300 placeholder-zinc-600 outline-none">
                 </div>
               </div>
               <!-- v=20260704 Nexora 스킨: KPI 스트립 (통합 관제 지표 — 기존 대시보드 stats 데이터 동일) -->
@@ -4304,7 +4321,7 @@
                 <div class="nxk-card">
                   <p class="nxk-label">조직 구성원</p>
                   <p class="nxk-value">700+</p>
-                  <div class="flex items-end gap-1 mt-1.5 h-7" aria-hidden="true">
+                  <div class="nxk-bars flex items-end gap-1 mt-1.5 h-7" aria-hidden="true">
                     <span class="w-1.5 rounded-full" style="height:35%;background:rgba(96,165,250,0.55);"></span>
                     <span class="w-1.5 rounded-full" style="height:55%;background:rgba(59,130,246,0.7);"></span>
                     <span class="w-1.5 rounded-full" style="height:45%;background:rgba(96,165,250,0.55);"></span>
@@ -4347,13 +4364,7 @@
           </div>
         </div>
         <!-- // Desktop App Showcase 끝 -->
-        <div class="text-center mt-8">
-          <button data-nav="prosolution-open"
-            class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-full ring-1 ring-blue-400/30 transition-all hover:-translate-y-0.5 cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            AI 시스템 체험하기
-          </button>
-        </div>
+        <!-- v=20260704c — "AI 시스템 체험하기" 버튼 제거(전략실장 요청) — CTA는 쇼케이스 사이드바 "체험하기"가 담당 -->
       </div>
     </section>
 
@@ -8660,7 +8671,13 @@
             + '<span style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(to right,' + c.dot + ',transparent);opacity:.7;"></span>'
             + '<p class="text-[10px] text-zinc-500 mb-1">' + s.l + '</p><p class="text-sm font-bold" style="color:' + c.text + ';">' + s.v + '</p></div>';
         });
-        panel.innerHTML = '<div class="p-5 flex flex-col h-full">'
+        // v=20260704c — 상단 계정 칩 행(높이 68px = 앱 헤더와 라인 일치) + 엔진 정보는 KPI 스트립 행 높이로 정렬(pt-4)
+        panel.innerHTML = '<div class="flex items-center gap-2.5 px-4 h-[68px] flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.05);">'
+          + '<div class="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#3b82f6,#1C49C8);box-shadow:0 0 14px rgba(59,130,246,0.35);border:1px solid rgba(255,255,255,0.12);">P</div>'
+          + '<div class="flex-1 min-w-0 leading-tight"><p class="text-xs font-medium text-white truncate">PRO 컨설턴트</p><p class="text-[10px] text-zinc-500 truncate">내 워크스페이스</p></div>'
+          + '<svg class="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/></svg>'
+          + '</div>'
+          + '<div class="px-5 pt-4 pb-5 flex flex-col flex-1 min-h-0">'
           + '<div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:' + c.bg + ';border:1px solid ' + c.border + ';color:' + c.text + ';box-shadow:0 0 22px -6px ' + c.border + ';">' + e.icon.replace('w-4 h-4','w-5 h-5') + '</div>'
           + '<div><h4 class="text-sm font-bold text-white">' + e.name + '</h4><p class="text-[10px] text-zinc-500">' + e.desc + '</p></div></div>'
           + '<div class="h-px mb-4" style="background:linear-gradient(to right,rgba(96,165,250,0.35),transparent);"></div>'
