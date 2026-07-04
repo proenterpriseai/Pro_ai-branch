@@ -15557,17 +15557,18 @@
       #wm-center .wm-track-desc{font-size:14px;color:#7f8597;line-height:1.75;margin:0;}
       #wm-center .wm-track-desc b{color:#b8bccb;font-weight:500;}
       #wm-center .wm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+      /* v=20260704j — 혜택 3카드 다크 리스킨(전략실장 결정): 흰 본문 → 상단 트랙 카드와 동일한 다크 글래스(#0a0a14+헤어라인), 로열블루 헤더 밴드는 유지 */
       #wm-center .wm-card{
-        background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;
-        box-shadow:0 18px 50px -24px rgba(28,73,200,0.55);transition:transform .25s ease, box-shadow .25s ease;
+        background:#0a0a14;border:1px solid var(--wmc-hair);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;
+        box-shadow:0 18px 50px -24px rgba(28,73,200,0.45);transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
       }
-      #wm-center .wm-card:hover{transform:translateY(-4px);box-shadow:0 26px 60px -22px rgba(28,73,200,0.7);}
+      #wm-center .wm-card:hover{transform:translateY(-4px);border-color:rgba(96,165,250,0.35);box-shadow:0 26px 60px -22px rgba(28,73,200,0.6);}
       #wm-center .wm-card-head{
         background:var(--wmc-grad);color:#fff;padding:22px;font-size:18px;font-weight:800;line-height:1.4;
         letter-spacing:-0.02em;text-align:center;min-height:88px;display:flex;align-items:center;justify-content:center;
       }
       #wm-center .wm-card-body{padding:24px 22px 28px;text-align:center;flex:1;display:flex;align-items:center;justify-content:center;}
-      #wm-center .wm-card-body p{margin:0;font-size:14.5px;color:#41454f;line-height:1.75;}
+      #wm-center .wm-card-body p{margin:0;font-size:14.5px;color:#b8bccb;line-height:1.75;}
       @media (max-width:820px){
         #wm-center{padding:72px 18px 84px;}
         #wm-center .wm-tracks{grid-template-columns:1fr;}
