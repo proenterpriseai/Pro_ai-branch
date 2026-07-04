@@ -14958,15 +14958,18 @@
       #talent-overlay .tsk-card[data-i="1"] .tsk-copy,
       #talent-overlay .tsk-card[data-i="2"] .tsk-copy,
       #talent-overlay .tsk-card[data-i="3"] .tsk-copy{display:flex;flex-direction:column;justify-content:center;}
-      /* 목업 패널이 카드 높이를 꽉 채우고(死공간 제거) — 헤더는 상단 고정, 본문은 남는 공간에서 세로 중앙(auto 마진, 늘리지 않음 → 타임라인 라인/구조 유지, space-between의 성긴 간격 회피). 01과 헤더 위치 일관. */
+      /* v=20260704i — 목업 패널이 카드 높이를 꽉 채우고(死공간 제거), 내부 블록들은 균등 분배.
+         02: 행 4개를 space-evenly로 위→아래 일정 간격 / 03·04: 헤더·본문·하단 블록을 space-between(등간격, 타임라인 ::before는 cert 자연 높이 유지라 안전) */
       #talent-overlay .tsk-card[data-i="1"] .tsk-mock,
       #talent-overlay .tsk-card[data-i="2"] .tsk-mock,
       #talent-overlay .tsk-card[data-i="3"] .tsk-mock{display:flex;flex-direction:column;}
-      #talent-overlay .tsk-card[data-i="1"] .tsk-brand{margin-top:auto;margin-bottom:auto;}
-      #talent-overlay .tsk-card[data-i="2"] .tsk-cert{margin-top:auto;}
-      #talent-overlay .tsk-card[data-i="2"] .tsk-cstats{margin-bottom:auto;}
-      #talent-overlay .tsk-card[data-i="3"] .tsk-kgrid{margin-top:auto;}
-      #talent-overlay .tsk-card[data-i="3"] .tsk-spark{margin-bottom:auto;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-brand{flex:1 1 auto;justify-content:space-evenly;}
+      #talent-overlay .tsk-card[data-i="2"] .tsk-mock,
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock{justify-content:space-between;}
+      /* 라벨 pill이 flex 컨테이너에서 가로로 늘어나는 것 방지(01과 동일하게 내용 크기만) */
+      #talent-overlay .tsk-card[data-i="1"] .tsk-copy .lab,
+      #talent-overlay .tsk-card[data-i="2"] .tsk-copy .lab,
+      #talent-overlay .tsk-card[data-i="3"] .tsk-copy .lab{align-self:flex-start;}
       /* 가독성: 행이 적은 목업의 내부 리듬을 소폭 확대 */
       #talent-overlay .tsk-card[data-i="1"] .tsk-brow{padding-top:16px;padding-bottom:16px;}
       #talent-overlay .tsk-card[data-i="2"] .tsk-cert{gap:13px;}
