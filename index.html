@@ -14998,13 +14998,11 @@
       #talent-overlay .tsk-card[data-i="1"] .tsk-brow{padding-top:16px;padding-bottom:16px;}
       #talent-overlay .tsk-card[data-i="2"] .tsk-cert{gap:24px;} /* v=20260704k 1~4단계 행 간격 확대(하단 cstats는 space-between으로 바닥 고정 = 위치 불변) */
       /* ── v=20260704b 목업 동적화 — .play(화면 진입 시 IO가 부여) 게이트, 화면 밖 정지 ── */
-      /* 01 성장 트래커: 단계가 순서대로 차오르는 시퀀스 (9s 루프) */
-      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(1) .tsk-bar>i{animation:tskFillA 9s ease-in-out infinite;}
-      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(2) .tsk-bar>i{animation:tskFillB 9s ease-in-out infinite;}
-      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(3) .tsk-bar>i{animation:tskFillC 9s ease-in-out infinite;}
-      @keyframes tskFillA{0%{width:0}14%{width:100%}100%{width:100%}}
-      @keyframes tskFillB{0%,13%{width:0}28%{width:100%}100%{width:100%}}
-      @keyframes tskFillC{0%,26%{width:0}42%{width:62%}55%{width:62%}62%{width:58%}70%{width:62%}100%{width:62%}}
+      /* v=20260704m — 01 성장 트래커: NEXUS풍 미터 오실레이션(전략실장 요청). 채워진 바(1~3행)가 scaleX 1↔0.72로 서로 다른 위상(음수 delay=즉시 어긋남)으로 계속 왕복. width가 아닌 transform이라 GPU 저비용. 4·5행(대기 0%)은 무애니 유지. 기존 tskFillA/B/C 시퀀스 대체 */
+      @keyframes tskOsc{0%,100%{transform:scaleX(1);opacity:1;}50%{transform:scaleX(0.72);opacity:.78;}}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(1) .tsk-bar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(2) .tsk-bar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite -1.1s;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(3) .tsk-bar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite -2.3s;}
       /* 02 브랜드 콘솔: 하이라이트가 4개 축을 순환 점등 (8s 루프) */
       #talent-overlay .tsk-brow{border-radius:12px;transition:background .3s;}
       #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(1){animation:tskRowGlow 8s ease-in-out infinite 0s;}
@@ -15024,6 +15022,11 @@
       /* 04 AI 대시보드: 바 차오름(진입 시) + 스파크라인 드로우 루프 */
       #talent-overlay .tsk-card[data-i="3"] .tsk-kbar>i{width:0;transition:width 1.3s cubic-bezier(.22,.61,.36,1);}
       #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-kbar>i{width:var(--w,0%);}
+      /* v=20260704m — 04 KPI 바: 차오름(1.3s) 완료 후 NEXUS풍 오실레이션 합류. tskOsc가 0%=scaleX(1)이라 양수 delay 시작 시 점프 없음, 바별 스태거로 제각각 왕복 */
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-kpi:nth-child(1) .tsk-kbar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite 1.4s;}
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-kpi:nth-child(2) .tsk-kbar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite 1.8s;}
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-kpi:nth-child(3) .tsk-kbar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite 2.2s;}
+      #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-kpi:nth-child(4) .tsk-kbar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite 2.6s;}
       #talent-overlay .tsk-spark path.ln{stroke-dasharray:240;stroke-dashoffset:240;}
       #talent-overlay .tsk-card[data-i="3"] .tsk-mock.play .tsk-spark path.ln{animation:tskDraw 7s ease-in-out infinite;}
       @keyframes tskDraw{0%{stroke-dashoffset:240;opacity:.5}42%{stroke-dashoffset:0;opacity:1}86%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:-240;opacity:.5}}
