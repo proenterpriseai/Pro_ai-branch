@@ -6,6 +6,11 @@
   <link rel="preconnect" href="https://www.youtube.com">
   <link rel="preconnect" href="https://i.ytimg.com">
   <link rel="dns-prefetch" href="https://www.youtube.com">
+  <!-- v=20260704l — 히어로 UnicornStudio 스포트라이트 선로딩(첫 로드 시 어두운 폴백→효과 등장 텀 최소화): ①스크립트 preload ②프로젝트 데이터(storage.googleapis.com, 캐시버스팅이라 매 로드 fetch) preconnect -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preload" as="script" href="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.34/dist/unicornStudio.umd.js">
+  <link rel="preconnect" href="https://storage.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://storage.googleapis.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pro Enterprise AI — AI가 바꾸는 보험 영업의 미래</title>
   <meta name="description" content="프로사업단총괄의 8대 핵심 AI 시스템. 보장분석부터 고객관리, 금융계산까지.">
@@ -9201,7 +9206,18 @@
         }, 0);
       }
 
+      /* v=20260704l — ① 로고(top): 오버레이에서 복귀 시 스크롤 애니 없이 즉시 히어로 ② 오버레이는 열 때마다 항상 맨 위부터 */
+      function _anyOverlayOpen() {
+        return !!document.querySelector('#ceo-overlay.ceo-overlay--active, #prosolution-overlay.ceo-overlay--active, #pro-intro-overlay.ceo-overlay--active, #talent-overlay.ceo-overlay--active, #contact.active');
+      }
+      function _resetOverlayScroll(el) {
+        if (!el) return;
+        el.scrollTop = 0;
+        var inner = el.querySelector('.ceo-overlay__content');
+        if (inner) inner.scrollTop = 0;
+      }
       function navigateTo(target, pushHistory) {
+        var wasOverlay = _anyOverlayOpen();
         closeAllOverlays();
         // 오버레이 타겟
         if (target === 'ceo') {
@@ -9209,6 +9225,7 @@
           document.body.classList.add('ceo-overlay-open');
           ceo.classList.add('ceo-overlay--active');
           ceo.setAttribute('aria-hidden', 'false');
+          _resetOverlayScroll(ceo);
           if (pushHistory) history.pushState({ nav: 'ceo' }, '', '#ceo');
           var vid = document.getElementById('ceo-video');
           if (vid) vid.src = 'https://www.youtube.com/embed/Vft3wpiJKUE?autoplay=1&enablejsapi=1&vq=hd2160';
@@ -9219,18 +9236,23 @@
           pro.classList.add('ceo-overlay--active');
           pro.setAttribute('aria-hidden', 'false');
           document.body.style.overflow = 'hidden';
+          _resetOverlayScroll(pro);
           if (pushHistory) history.pushState({ nav: 'prosolution-open' }, '', '#prosolution');
           return;
         }
         if (target === 'contact') {
-          document.getElementById('contact').classList.add('active');
+          var contactEl = document.getElementById('contact');
+          contactEl.classList.add('active');
           document.body.classList.add('contact-overlay-open');
+          _resetOverlayScroll(contactEl);
           if (pushHistory) history.pushState({ nav: 'contact' }, '', '#contact');
           return;
         }
         // 스크롤 타겟
         if (target === 'top') {
-          window.scrollTo({ top: 0 });
+          // 오버레이에서 복귀 = 즉시 히어로(스크롤 애니 생략), 메인 페이지 내에서는 기존 smooth 유지
+          if (wasOverlay) { window.scrollTo({ top: 0, behavior: 'instant' }); }
+          else { window.scrollTo({ top: 0 }); }
           if (pushHistory) history.pushState({ nav: 'top' }, '', window.location.pathname);
           return;
         }
@@ -9248,6 +9270,7 @@
             proOverlay.classList.add('ceo-overlay--active');
             proOverlay.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
+            _resetOverlayScroll(proOverlay);
           }
           if (pushHistory) history.pushState({ nav: 'pro-intro' }, '', '#pro-intro');
           return;
@@ -9259,6 +9282,7 @@
             talentOverlay.classList.add('ceo-overlay--active');
             talentOverlay.setAttribute('aria-hidden', 'false');
             document.body.classList.add('ceo-overlay-open');
+            _resetOverlayScroll(talentOverlay);
             playRoadmapSequence();
           }
           if (pushHistory) history.pushState({ nav: 'talent-open' }, '', '#talent');
