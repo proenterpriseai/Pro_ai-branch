@@ -9288,8 +9288,6 @@
         if (talentOv && talentOv.classList.contains('ceo-overlay--active')) {
           talentOv.classList.remove('ceo-overlay--active');
           talentOv.setAttribute('aria-hidden', 'true');
-          // spotlight 무한 loop 정리 (setInterval leak 방지)
-          if (typeof stopRoadmapSpotLoop === 'function') stopRoadmapSpotLoop();
         }
         var contact = document.getElementById('contact');
         if (contact) contact.classList.remove('active');
@@ -9307,73 +9305,7 @@
         window.scrollTo({ top: el.offsetTop + padTop - navH });
       }
 
-      // 5단계 로드맵 시퀀스 애니메이션 (v=20260504a)
-      // talent-overlay 열릴 때마다 점이 단계별로 켜지고 라인이 채워짐
-      var roadmapSpotInterval = null;
-      var roadmapSpotIdx = -1;
-      function stopRoadmapSpotLoop() {
-        if (roadmapSpotInterval) {
-          clearInterval(roadmapSpotInterval);
-          roadmapSpotInterval = null;
-        }
-        var spots = document.querySelectorAll('#talent-overlay .roadmap-step.is-spot');
-        spots.forEach(function(s){ s.classList.remove('is-spot'); });
-        roadmapSpotIdx = -1;
-      }
-      function startRoadmapSpotLoop() {
-        // 항상 fresh 시작
-        stopRoadmapSpotLoop();
-        // reduced motion 시 spotlight loop 스킵
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        var steps = document.querySelectorAll('#talent-overlay .roadmap-step');
-        if (!steps.length) return;
-        // 0번부터 시작
-        steps[0].classList.add('is-spot');
-        roadmapSpotIdx = 0;
-        // 1.2초 간격으로 다음 노드로 spotlight 이동 (1→2→3→4→5→1→...)
-        roadmapSpotInterval = setInterval(function(){
-          var stepsNow = document.querySelectorAll('#talent-overlay .roadmap-step');
-          if (!stepsNow.length) { stopRoadmapSpotLoop(); return; }
-          if (roadmapSpotIdx >= 0 && roadmapSpotIdx < stepsNow.length) {
-            stepsNow[roadmapSpotIdx].classList.remove('is-spot');
-          }
-          roadmapSpotIdx = (roadmapSpotIdx + 1) % stepsNow.length;
-          stepsNow[roadmapSpotIdx].classList.add('is-spot');
-        }, 1200);
-      }
-      function playRoadmapSequence() {
-        var track = document.querySelector('#talent-overlay .roadmap-track');
-        if (!track) return;
-        // 재진입 가드 — 짧은 시간 내 다중 호출(클릭 핸들러 다중 등록 등) 시 첫 호출만 처리
-        if (track.dataset.playing === '1') return;
-        track.dataset.playing = '1';
-        // 이전 spotlight loop 정리 (재오픈 대비)
-        stopRoadmapSpotLoop();
-        var steps = track.querySelectorAll('.roadmap-step');
-        // 리셋
-        steps.forEach(function(s){ s.classList.remove('is-lit'); });
-        track.classList.remove('is-playing');
-        void track.offsetWidth; // reflow → transition 재시작 보장
-        // reduced motion: 즉시 점등 (spotlight loop는 startRoadmapSpotLoop에서 자체 스킵)
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          steps.forEach(function(s){ s.classList.add('is-lit'); });
-          track.classList.add('is-playing');
-          setTimeout(function(){ track.dataset.playing = ''; }, 50);
-          return;
-        }
-        // 정상 시퀀스: line-fill 0→80% (2.4s), dots stagger 300ms + i*450ms
-        // setTimeout(0)으로 reflow 후 다음 task에서 add → transition 발화 보장 (rAF는 page hidden 시 throttle 됨)
-        setTimeout(function(){
-          track.classList.add('is-playing');
-          steps.forEach(function(s, i){
-            setTimeout(function(){ s.classList.add('is-lit'); }, 300 + i * 450);
-          });
-          // 시퀀스 종료 후 가드 해제 (spotlight loop는 빛 동기화 물결(CSS roadmap-rise)로 교체)
-          setTimeout(function(){
-            track.dataset.playing = '';
-          }, 2600);
-        }, 0);
-      }
+      // (v=20260705g) 구 roadmap 시퀀스 JS 제거 — 인재양성은 .tsk-* 스택 카드로 대체됨(관련 마크업 없음)
 
       /* v=20260704l — ① 로고(top): 오버레이에서 복귀 시 스크롤 애니 없이 즉시 히어로 ② 오버레이는 열 때마다 항상 맨 위부터 */
       function _anyOverlayOpen() {
@@ -9452,7 +9384,6 @@
             talentOverlay.setAttribute('aria-hidden', 'false');
             document.body.classList.add('ceo-overlay-open');
             _resetOverlayScroll(talentOverlay);
-            playRoadmapSequence();
           }
           if (pushHistory) history.pushState({ nav: 'talent-open' }, '', '#talent');
           return;
@@ -14692,261 +14623,7 @@
   #talent-overlay .talent-sub strong {
     color: #fff; font-weight: 700;
   }
-  /* 섹션 1 — 5단계 로드맵 (v=20260520h: QUANTCORE System Architecture 디자인 이식) */
-  /* 흐름 글로우 애니메이션 키프레임 */
-  @keyframes roadmap-flow-h {
-    0%   { left: 0%;   transform: translateX(-100%); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { left: 100%; transform: translateX(0);     opacity: 0; }
-  }
-  @keyframes roadmap-flow-v {
-    0%   { top: 0%;   transform: translateY(-100%); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { top: 100%; transform: translateY(0);     opacity: 0; }
-  }
-  @keyframes roadmap-pulse {
-    0%, 100% { transform: scale(1);   opacity: 0.9; }
-    50%      { transform: scale(1.3); opacity: 0.4; }
-  }
-  /* 컨테이너 — gradient bg + rounded panel + 내부 grid 패턴 + backdrop blur */
-  #talent-overlay .roadmap-track {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0;
-    position: relative;
-    padding: 64px 48px 48px;
-    border-radius: 32px;
-    border: 1px solid rgba(255,255,255,0.05);
-    background: linear-gradient(180deg, rgba(10,16,31,0.9) 0%, rgba(2,4,10,0.9) 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.04),
-      0 30px 80px rgba(0,0,0,0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    overflow: hidden;
-  }
-  /* 내부 grid 패턴 배경 */
-  #talent-overlay .roadmap-bg-grid {
-    position: absolute; inset: 0; pointer-events: none;
-    opacity: 0.03;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
-    background-size: 24px 24px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-            mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-  }
-  /* 가로 연결 라인 (베이스) */
-  #talent-overlay .roadmap-line {
-    position: absolute; top: 101px;
-    left: 14%; right: 14%;
-    height: 1px;
-    background: rgba(255,255,255,0.1);
-    z-index: 1;
-  }
-  /* 흐르는 글로우 라인 — track.is-playing 시 활성화. cyan + indigo 2개 staggered */
-  #talent-overlay .roadmap-line-fill {
-    position: absolute; top: 96px;
-    left: 14%; width: 18%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #38bdf8, transparent);
-    box-shadow: 0 0 12px #38bdf8;
-    opacity: 0;
-    z-index: 2;
-    pointer-events: none;
-    transform: translateY(-1px);
-  }
-  #talent-overlay .roadmap-track.is-playing .roadmap-line-fill {
-    animation: roadmap-flow-h 3s ease-in-out infinite;
-  }
-  #talent-overlay .roadmap-line-fill--alt {
-    background: linear-gradient(90deg, transparent, #4f46e5, transparent);
-    box-shadow: 0 0 12px #4f46e5;
-  }
-  #talent-overlay .roadmap-track.is-playing .roadmap-line-fill--alt {
-    animation: roadmap-flow-h 3s ease-in-out infinite 1.5s;
-  }
-  /* 빛 흐름 동기화 물결 — 빛이 각 단계를 지날 때 아이콘이 부드럽게 떴다 내려옴 (왼→오 무한 wave) */
-  @keyframes roadmap-rise {
-    0%   { transform: translateY(0); }
-    11%  { transform: translateY(-11px); }
-    26%  { transform: translateY(0); }
-    100% { transform: translateY(0); }
-  }
-  #talent-overlay .roadmap-track.is-playing .roadmap-step .roadmap-icon {
-    animation: roadmap-rise 3s ease-in-out infinite;
-  }
-  /* .roadmap-step은 track의 5~9번째 자식 (앞의 bg-grid·line·line-fill×2 = 4개 다음) → 단계별 시차로 물결 연결 */
-  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(5) .roadmap-icon { animation-delay: 0s; }
-  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(6) .roadmap-icon { animation-delay: 0.45s; }
-  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(7) .roadmap-icon { animation-delay: 0.9s; }
-  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(8) .roadmap-icon { animation-delay: 1.35s; }
-  #talent-overlay .roadmap-track.is-playing .roadmap-step:nth-child(9) .roadmap-icon { animation-delay: 1.8s; }
-  /* 5개 노드 컨테이너 */
-  #talent-overlay .roadmap-step {
-    position: relative;
-    z-index: 3;
-    text-align: center;
-    padding: 0 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  /* 아이콘 박스 글로우 (hover/lit/spot 시 활성화) */
-  #talent-overlay .roadmap-icon-glow {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 74px; height: 74px;
-    border-radius: 18px;
-    background: transparent;
-    filter: blur(16px);
-    z-index: 0;
-    transition: background 600ms ease, opacity 600ms ease;
-    opacity: 0;
-  }
-  #talent-overlay .roadmap-step.is-lit .roadmap-icon-glow {
-    background: rgba(56,189,248,0.18);
-    opacity: 1;
-  }
-  #talent-overlay .roadmap-step.is-center.is-lit .roadmap-icon-glow {
-    background: rgba(56,189,248,0.28);
-  }
-  #talent-overlay .roadmap-step.is-final.is-lit .roadmap-icon-glow {
-    background: rgba(167,139,250,0.28);
-  }
-  #talent-overlay .roadmap-step.is-spot .roadmap-icon-glow {
-    background: rgba(56,189,248,0.4);
-    opacity: 1;
-  }
-  /* 아이콘 박스 본체 — 64x64 rounded-2xl, dark bg, 상단 그라데이션 라인 */
-  #talent-overlay .roadmap-icon {
-    position: relative;
-    width: 74px; height: 74px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: #060b18;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 22px;
-    overflow: hidden;
-    z-index: 1;
-    transition: border-color 600ms ease, transform 400ms cubic-bezier(.16,1,.3,1), box-shadow 400ms ease;
-  }
-  #talent-overlay .roadmap-icon svg {
-    width: 30px; height: 30px;
-    color: rgba(148,163,184,0.85);
-    transition: color 600ms ease, transform 400ms ease;
-  }
-  /* 아이콘 박스 상단 그라데이션 라인 */
-  #talent-overlay .roadmap-icon-topline {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: background 600ms ease;
-  }
-  /* lit 상태 — 일반 4개 노드 (cyan glow) */
-  #talent-overlay .roadmap-step.is-lit .roadmap-icon {
-    border-color: rgba(56,189,248,0.4);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 30px rgba(56,189,248,0.15);
-  }
-  #talent-overlay .roadmap-step.is-lit .roadmap-icon-topline {
-    background: linear-gradient(90deg, transparent, #38bdf8, transparent);
-  }
-  #talent-overlay .roadmap-step.is-lit .roadmap-icon svg {
-    color: #38bdf8;
-  }
-  /* center 강조 노드 (03 관리자 양성) — 진한 cyan + pulse dot */
-  #talent-overlay .roadmap-step.is-center .roadmap-icon {
-    border-color: rgba(56,189,248,0.35);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 30px rgba(56,189,248,0.18);
-  }
-  #talent-overlay .roadmap-step.is-center .roadmap-icon-topline {
-    background: linear-gradient(90deg, transparent, #38bdf8, transparent);
-  }
-  #talent-overlay .roadmap-step.is-center .roadmap-icon svg {
-    color: #38bdf8;
-  }
-  #talent-overlay .roadmap-icon-pulse {
-    position: absolute; top: 6px; right: 6px;
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #38bdf8;
-    box-shadow: 0 0 6px #38bdf8;
-    animation: roadmap-pulse 2s ease-in-out infinite;
-    z-index: 2;
-  }
-  /* final 노드 (05 WM 마스터) — indigo·purple glow */
-  #talent-overlay .roadmap-step.is-final.is-lit .roadmap-icon {
-    border-color: rgba(167,139,250,0.5);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 30px rgba(167,139,250,0.25);
-  }
-  #talent-overlay .roadmap-step.is-final.is-lit .roadmap-icon-topline {
-    background: linear-gradient(90deg, transparent, #a78bfa, transparent);
-  }
-  #talent-overlay .roadmap-step.is-final.is-lit .roadmap-icon svg {
-    color: #a78bfa;
-  }
-  /* spotlight — 1.2초 간격 무한 loop, 강한 cyan glow + 살짝 위로 */
-  #talent-overlay .roadmap-step.is-spot .roadmap-icon {
-    border-color: rgba(56,189,248,0.7);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(56,189,248,0.4);
-    transform: translateY(-4px);
-  }
-  #talent-overlay .roadmap-step.is-spot .roadmap-icon svg {
-    color: #67e8f9;
-    transform: scale(1.05);
-  }
-  #talent-overlay .roadmap-step.is-final.is-spot .roadmap-icon {
-    border-color: rgba(167,139,250,0.7);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(167,139,250,0.45);
-  }
-  #talent-overlay .roadmap-step.is-final.is-spot .roadmap-icon svg {
-    color: #c4b5fd;
-  }
-  /* 기존 .roadmap-dot은 더 이상 시각 요소로 안 씀 — JS 호환만 유지 (display:none) */
-  #talent-overlay .roadmap-dot { display: none; }
-  /* 텍스트 — stepname, stepdesc */
-  #talent-overlay .roadmap-stepname {
-    font-size: 16px; font-weight: 600; color: #fff;
-    margin-bottom: 6px; letter-spacing: -0.01em;
-    opacity: 0.45;
-    transition: opacity 600ms ease, color 600ms ease;
-  }
-  #talent-overlay .roadmap-step.is-lit .roadmap-stepname { opacity: 1; }
-  #talent-overlay .roadmap-step.is-spot .roadmap-stepname { color: #67e8f9; }
-  #talent-overlay .roadmap-step.is-final.is-spot .roadmap-stepname { color: #c4b5fd; }
-  #talent-overlay .roadmap-stepdesc {
-    font-size: 13px; color: rgba(148,163,184,0.85);
-    line-height: 1.55;
-    letter-spacing: 0.04em;
-    text-transform: none;
-    opacity: 0.4;
-    transition: opacity 600ms ease;
-  }
-  #talent-overlay .roadmap-step.is-lit .roadmap-stepdesc { opacity: 1; }
-  /* 호버 효과 — 노드 살짝 위로 + 글로우 */
-  #talent-overlay .roadmap-step:hover .roadmap-icon {
-    transform: translateY(-3px);
-    border-color: rgba(56,189,248,0.5);
-    box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 30px rgba(56,189,248,0.2);
-  }
-  #talent-overlay .roadmap-step:hover .roadmap-icon svg {
-    color: #38bdf8;
-  }
-  /* prefers-reduced-motion: 트랜지션/애니메이션 제거 */
-  @media (prefers-reduced-motion: reduce) {
-    #talent-overlay .roadmap-icon,
-    #talent-overlay .roadmap-icon-glow,
-    #talent-overlay .roadmap-icon svg,
-    #talent-overlay .roadmap-icon-topline,
-    #talent-overlay .roadmap-stepname,
-    #talent-overlay .roadmap-stepdesc { transition: none !important; }
-    #talent-overlay .roadmap-line-fill,
-    #talent-overlay .roadmap-icon-pulse { animation: none !important; opacity: 0; }
-    #talent-overlay .roadmap-icon { animation: none !important; }
-  }
+  /* (v=20260705g) 구 roadmap(.roadmap-*) CSS 제거 — 인재양성 섹션1은 .tsk-* 스택 카드로 대체됨(마크업 없음) */
   /* 섹션 2 — 4-카드 grid */
   #talent-overlay .support-grid {
     display: grid; grid-template-columns: repeat(2, 1fr);
@@ -15011,26 +14688,6 @@
   }
   @media (max-width: 768px) {
     #talent-overlay .talent-section { padding: 64px 18px; }
-    /* 로드맵 — 모바일 세로 스택, 가로 라인/흐름 글로우 숨김 */
-    #talent-overlay .roadmap-track {
-      grid-template-columns: 1fr;
-      gap: 32px;
-      padding: 36px 24px;
-      border-radius: 24px;
-    }
-    #talent-overlay .roadmap-line,
-    #talent-overlay .roadmap-line-fill,
-    #talent-overlay .roadmap-line-fill--alt { display: none; }
-    #talent-overlay .roadmap-step { padding: 0; }
-    /* 모바일: 호버 효과 비활성 (터치 환경) */
-    #talent-overlay .roadmap-step:hover .roadmap-icon {
-      transform: none;
-      border-color: rgba(255,255,255,0.1);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-    #talent-overlay .roadmap-step:hover .roadmap-icon svg {
-      color: rgba(148,163,184,0.85);
-    }
     #talent-overlay .support-grid,
     #talent-overlay .expertise-grid { grid-template-columns: 1fr; }
   }
@@ -15532,7 +15189,6 @@
       #partner-network .acc-body .ic{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:var(--pngrad);display:flex;align-items:center;justify-content:center;color:#fff;}
       #partner-network .acc-body .ic svg{width:24px;height:24px;}
       #partner-network .acc-body .area{font-size:12px;font-weight:700;letter-spacing:0.04em;color:#8fb0f2;}
-      #partner-network .acc-body .free-badge{display:inline-block;font-size:11px;font-weight:700;color:#bcd0ff;background:rgba(59,130,246,0.22);border-radius:6px;padding:2px 9px;margin-left:8px;letter-spacing:0;}
       #partner-network .acc-body h3{font-size:clamp(22px,2.4vw,30px);font-weight:800;letter-spacing:-0.03em;margin:14px 0 6px;color:#fff;}
       #partner-network .acc-body .sub{font-size:13px;color:#8a90a0;margin:0 0 16px;}
       #partner-network .acc-body .desc{font-size:14.5px;color:#c4c9d6;line-height:1.7;margin:0;max-width:460px;}

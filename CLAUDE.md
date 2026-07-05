@@ -8,7 +8,7 @@ Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 8�
 ## Tech Stack
 | 기술 | 상세 |
 |------|------|
-| 3D | Three.js r128 (CDN global `<script>`) |
+| 배경/히어로 | UnicornStudio (WebGL, `data-us-project` 스포트라이트, CDN 동적 로드 v1.4.34) + CSS fallback glow |
 | Animation | GSAP 3.12.5 + ScrollTrigger (CDN) |
 | CSS | Tailwind CSS (CDN) |
 | Font | Pretendard Variable (CDN) |
@@ -24,14 +24,11 @@ assets/images/      — Logo SVG, CEO portrait
 _serve.js           — Dev server (port 3098)
 ```
 
-## 3D Digital Terrain (index.html inline, ~lines 2537-2681)
-- `PlaneBufferGeometry(120,120,160,160)` + custom `ShaderMaterial` (wireframe, additive blending)
-- 2개 terrain 레이어 (main + distant, intensity 0.3)
-- 커서 추적 `IcosahedronGeometry(0.8, 1)` orb + `PointLight(0x00f7ff, 2, 40)`
-- 250개 ambient `PointsMaterial` 파티클
-- GSAP `ScrollTrigger`: 카메라 위치 + terrain intensity + scroll progress bar
-- `FogExp2(0x050505, 0.02)`, `setClearColor(0x050505, 1)`
-- **Post-processing 없음** (EffectComposer/Bloom 미사용)
+## 히어로 배경 (UnicornStudio, index.html inline ~lines 3755-3766)
+- Loopra 스포트라이트 씬 — `<div data-us-project="7BChNsgjdoJkLPEpWhX3">` + `unicornStudio.umd.js@v1.4.34`(jsdelivr) 동적 `<script>` 삽입 → lazy init
+- 첫 로드 텀 최소화(v=20260704l): `<head>`에 스크립트 `preload` + `storage.googleapis.com` `preconnect`(프로젝트 데이터는 캐시버스팅이라 매 로드 fetch, preconnect로 연결비용만 절감)
+- **CSS fallback glow** — UnicornStudio 로드 전/실패 시 표시(3764~), 외부 WebGL이 늦어도 히어로가 비지 않음
+- ⚠️ **과거 Three.js 3D terrain은 완전 제거됨** — `PlaneBufferGeometry` wireframe terrain·커서 orb·`PointsMaterial` 파티클·`FogExp2`·`#three-canvas`는 더 이상 없음. `THREE` 전역·`js/three-hero.js`도 미사용/미존재
 
 ## Dashboard 8 Panels
 패널 전환: `[data-panel]` nav click → `[data-panel-content]` hidden toggle (IIFE, ~line 1912)
@@ -79,12 +76,11 @@ _serve.js           — Dev server (port 3098)
 - 위 값들은 사용자가 직접 확인/승인한 수치임. **임의 변경 금지**
 
 ## Critical Notes
-- Three.js는 CDN `<script>` (global `THREE`), **importmap/ES Module 아님**
+- 히어로 배경 = **UnicornStudio** WebGL (CDN 동적 `<script>`, `data-us-project`) + CSS fallback glow. `THREE`/`#three-canvas`/3D terrain은 제거됨(위 "히어로 배경" 섹션 참조)
 - 모든 대시보드 JS는 `index.html` 인라인 IIFE — 외부 JS 파일 로드 없음
-- Canvas: `#three-canvas`, CSS `.content-layer` z-index 1이 위에 오버레이
 - CEO 오버레이: `#ceo` hash trigger → modal, body scroll lock, back 버튼 지원
-- `js/three-hero.js`, `js/main.js` — **orphaned** (index.html에서 로드하지 않음)
-- 모바일: terrain은 모든 사이즈에서 렌더 (별도 숨김 없음)
+- `js/three-hero.js`·`js/main.js` — **삭제됨**(v=20260519a dead-code cleanup, `js/` 폴더 없음)
+- 모바일: 히어로 배경은 모든 사이즈에서 렌더 (별도 숨김 없음)
 - **네비 배경색**: `#27398c` (파란색 계열, v=20260406 변경)
 - **`html.smooth-scroll { scroll-behavior: smooth }`** — 로드 후 JS가 활성화, scrollIntoView 미사용 (scrollToContent 헬퍼 사용)
 
@@ -241,13 +237,14 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260704a~20260705f** (브랜치 `preview/nexora-restyle` `63861d9`, **🔴 main 미머지 — 프리뷰 검증 중, 32라운드 반영**) — Nexora 레퍼런스 기반 대규모 리디자인 2건 + 전략실장 피드백 32라운드. 프리뷰 고정 URL `ai-branch-git-preview-nexora-restyle-pro-enterprise-team.vercel.app`(SSO). 상세·라운드별 진실원 → auto-memory `pending-aibranch-nexora-restyle-2026-07-04.md`.
+- **v=20260704a~20260705g** (**main FF 머지 → 프로덕션 LIVE**, tag `v20260705g` — 전략실장 최종 OK 후 공개) — Nexora 레퍼런스 기반 대규모 리디자인 2건 + 전략실장 피드백 32라운드 + 머지 클린업(아래). 상세·라운드별 진실원 → auto-memory `pending-aibranch-nexora-restyle-2026-07-04.md`(→completed 이동).
+  - **머지 클린업(v=20260705g, dead-code)**: 구 roadmap 시퀀스 **JS 제거**(`playRoadmapSequence`/`startRoadmapSpotLoop`/`stopRoadmapSpotLoop` 3함수 + `roadmapSpotIdx` var + `talent-open`/`closeAllOverlays` 호출부 — 인재양성이 `.tsk-*` 스택 카드로 대체돼 `.roadmap-*` 마크업이 없어 전부 inert였음) + 구 roadmap **CSS 전량 제거**(`#talent-overlay .roadmap-*` 규칙 + `@keyframes roadmap-flow-h/v/pulse/rise` + 모바일 @media 내 roadmap 라인, `.support-grid`/`.expertise-*` 라이브 규칙은 보존) + `.free-badge` 데드 CSS 제거. **프리뷰 실측 검증**: 제거 식별자 전부 `undefined`·roadmap/free-badge 마크업 0·talent-open 오버레이 정상 오픈·contact 네비=#join-contact 스크롤(오버레이 미개방)·콘솔 에러 0.
   - **5~32차 요약**(전부 프리뷰 검증·콘솔0): 우측패널 계정칩 중앙+AI풀시스템 카드 이동/자세히보기 제거 · "AI 응답률"→"AI 사용률" · "AI-Powered" 배지 제거 · BOCARE 태그(영업지원·보험)/세로 레일 upright/설명 문구 · 인재양성 라벨 간소화(GROWTH/SUPPORT/EXPERTISE/SYSTEM)·"TALENT PROGRAM" 숨김·04칩 7개·헤드라인 "여러분의" · 스택카드 바닥여백 해소(카드=flex 채움, 헤더 top고정+본문 auto중앙) · 01·04 막대 NEXUS풍 오실레이션(tskOsc) · 쇼케이스 재진입 시 엔진0 리셋(스크롤 rect 실측) · 카드 뷰포트 채움(equalize fill=vh-top*2) · 헤더 "AI시스템" 클릭=엔진0 · 자동화처리량 svg 44→88 · **헤더 "인재양성"→"프로솔루션"**(체험 오버레이 배지는 "AI 풀 시스템 · 7대 통합"으로 분리) · 체험하기/자세히보기 버튼 솔리드 #2563eb · LIVE 초록→블루 · 카드 sticky top 88→124(네비 겹침 해소) · 02 Brand Promise 해시태그化 · **문의하기 인라인 섹션 신규(#join-contact)**: 현황 다음 2단(좌 영입소구 ▶5·우 폼), 헤더 "문의하기"=이 섹션 스크롤, 기존 폼 재사용(_submitContactForm form-scoped)+지역명(name=region) 추가, eyebrow "Join Pro Enterprise"(Inter) · #about "프로솔루션" 번호리스트→**컴팩트 세로 파이프라인**(레일 입체튜브+빛흐름+36px 베젤소켓, 블루3톤) · 3원칙 카드 **이중 베젤**(외곽 프레임+#0a0f1a 리세스 패널) · 금융유튜브 stat 카드03→02(="PRO 보험스쿨") · 지도 방사선 8개 본점(367,179) 정렬 · 승격구조 하단 좌측과 정렬(라벨16·연결선h-5).
-  - ⚠️ **stale 정정 필요(머지 시)**: 이 문서 상단 Tech Stack "3D Three.js r128"·"3D Digital Terrain"·Critical Notes의 Three.js/`#three-canvas` 서술은 **현재 히어로=UnicornStudio(`data-us-project`)로 교체됨**(실제 Three.js 미사용). 머지 커밋 때 함께 정정.
+  - ✅ **stale 정정 완료(v=20260705g)**: Tech Stack·"3D Digital Terrain"→"히어로 배경"·Critical Notes를 **UnicornStudio(`data-us-project="7BChNsgjdoJkLPEpWhX3"`, `unicornstudio.js@v1.4.34` 동적 로드 + CSS fallback glow)** 기준으로 정정. Three.js·`#three-canvas`·3D terrain·`js/` orphan 서술 제거(grep으로 index.html에 `THREE`/`three-canvas` 0건, `js/` 폴더 부재 확인).
   - **① 7대 AI 쇼케이스(#solutions) SaaS 앱화**: 브라우저 크롬(신호등·주소창) 제거 → 사이드바 브랜드 블록(`PRO enterprise / AI automation`) + 앱 헤더(**"AI 통합 시스템" / "7대 AI 영업 시스템을 한 곳에서 활용하세요."**) + **실동작 검색창**(시스템명 매칭 → `setActiveEngine` 자동 전환, 디바운스 280ms, focus 시 자동순환 정지) + KPI 스트립 4카드(`#ai-kpi-strip`, `.nxk-*` — 7대 도트 순차점등 `nxkDotSeq` / 금일47건 스파크라인 `nxkDraw` / 700+ 바 웨이브 `nxkBarSeq` / 99.2% 스파크라인, 전부 동적·reduced-motion 대응). 우측 패널: 상단 **계정 칩 행**(실사진 아바타 `assets/images/consultant-avatar.jpg` 슬롯+P 폴백, 셰브론 텍스트 밀착 10px, **높이 68px = 앱 헤더와 보더 라인 픽셀 일치**) + 엔진 정보는 KPI 스트립과 동일 y 정렬(pt-4) + 지표 카드 컬러 헤어라인·fadeSlideIn 순차·인사이트 박스. 사이드바 하단 "AI 풀 시스템" 카드(data-nav=prosolution-open)+워크스페이스 푸터. **"AI 시스템 체험하기" 하단 버튼 제거**(CTA는 사이드바 체험하기). 데모 스크립트·엔진 데이터·클릭 로직 전부 불변.
   - **② 인재양성(#talent-overlay) 스택 카드**: 기존 섹션 1~3(로드맵 QUANTCORE·support-grid·tx-ladder)을 **01~04 스티키 스택 카드**(`.tsk-*`)로 교체 — 01 성장 트래커(프로그레스 순차 차오름 9s) / 02 브랜드 콘솔(4축 하이라이트 순환 8s) / 03 자격 워크플로우(연결선 빛 하강+순차 점등 6s+★펄스, 기존 사다리 IO 애니 계승) / 04 AI 미니 대시보드(카운트업+바+스파크 드로우). 기존 카피 전부 이식. **파트너 아코디언(#partner-network)·WM센터 무손상**(문구만 3건 변경: 인트로 4축 "교육·브랜딩·전문 자격·시스템"/"자체 WM센터 운영"/"각 금융 분야의 파트너와 함께 합니다").
   - ⚠️ **핵심 교훈 3건**: (a) 오버레이 스크롤포트 원점 ≠ 뷰포트 0(**sticky stuck 위치 실측 108px**) → 스택 JS는 고정 임계값 금지, **gap(다음 카드 실거리) 기반**으로 판정. (b) `.play` 애니 게이트는 IO 대신 **스크롤 핸들러 rect 실측 토글**(백그라운드 탭 IO 동결 무관 + 헤드리스 검증 가능). (c) 스택 카드 완전 은폐 = **top 통일(88px) + 오버레이 열림 시 JS 높이 균등화**(MutationObserver→setTimeout 60ms, rAF는 백그라운드 탭 정지) 세트.
-  - 🔴 **잔여(다음 세션)**: ①전략실장 최종 OK 대기 → main FF 머지(라이브 공개) ②머지 시 한 묶음: 구 roadmap-* CSS·JS 데드코드 정리 + 미사용 `#contact` 오버레이(인라인 섹션으로 대체됨) 정리 + `.free-badge` 등 데드 CSS + 위 stale Three.js 서술 정정 ③Web3Forms 키 `c96794c6…`=전략실장 본인 이메일 → 대표님 이메일 교체 여부 결정(장기 보류) ④선택: 파이프라인/소켓 멀티컬러 여부, #about 3원칙 카드 추가 세련화(강도 미확정—이전에 질문 dismiss됨).
+  - ✅ **머지 완료(v=20260705g)**: 전략실장 최종 OK → `preview/nexora-restyle` **main FF 머지 → 프로덕션 LIVE**. ⚠️ **`#contact` 오버레이는 유지**(핸드오프엔 "미사용→삭제"였으나 코드 검증 결과 6개 CTA[`getElementById('contact')`+scrollTo+`location.hash`]·popstate 라우팅·닫기 버튼이 여전히 참조 = 미사용 아님 → 이번 스코프에서 제외, 전략실장 승인). **Web3Forms 키 `c96794c6…`=전략실장 이메일 유지**(대표님 승인 후 별도 교체, 장기 보류 유지). 🔵 선택 잔여: 파이프라인/소켓 멀티컬러, #about 3원칙 카드 추가 세련화(강도 미확정).
 - **v=20260630b** (main `0d9fb98`, tag `v20260630b`, **프로덕션 배포 LIVE 700명**) — 인재양성 자격 사다리 왼쪽부터 순차 등장 애니. `preview/20260630-ladder-reveal` 2커밋 FF 머지. 라이브 검증: `ladReveal` 키프레임·`tx-anim`·`animation-delay 1.15s` 반영.
   - **`#talent-expertise .tx-ladder` 순차 등장**: EXPERTISE "자격으로 완성하는 성장 경로" 4카드(s1 보험설계사→s2 AFPK→s3 CFP→s4 종합자산관리·WM)가 화면 진입 시 **왼쪽부터 하나씩** 슬라이드+페이드(`@keyframes ladReveal` opacity 0→1, translateX -22px→0). 트리거=**IntersectionObserver**(사다리 직후 인라인 `<script>`, threshold [0,0.25]; ≥0.25 진입 시 `.reveal` 추가, 완전 이탈 시 제거=재진입 재생). 연결선(`::before`)도 함께 페이드인.
   - **타이밍(대표님 "천천히 자연스럽게")**: 각 카드 `.9s cubic-bezier(.22,.61,.36,1)`, stagger 간격 0.35s(delay .1/.45/.8/1.15s), 연결선 `transition:opacity 1s ease .7s` → 전체 ~2s. (1차 .55s·간격 .17s에서 완화.)
