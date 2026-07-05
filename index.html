@@ -6607,7 +6607,7 @@
         <!-- 3원칙 카드 -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           <!-- v=20260705f 이중 베젤(외곽 프레임+안쪽 리세스 패널) — 레퍼런스 이미지1 테두리 -->
-          <div class="relative rounded-2xl p-1.5 animate-on-scroll" style="background:linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02));box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 22px 44px -16px rgba(0,0,0,0.72);">
+          <div class="relative rounded-2xl p-1.5 animate-on-scroll" style="background:rgba(255,255,255,0.10);box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 22px 44px -16px rgba(0,0,0,0.72);">
             <div class="rounded-[14px] border border-white/[0.06] p-7" style="background:#0d0d0d;box-shadow:inset 0 2px 8px rgba(0,0,0,0.55);">
               <div class="flex items-center gap-4 mb-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center flex-shrink-0">
@@ -6622,7 +6622,7 @@
                 확장 프로세스가 정교하게 설계되어 있습니다.</p>
             </div>
           </div>
-          <div class="relative rounded-2xl p-1.5 animate-on-scroll" style="background:linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02));box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 22px 44px -16px rgba(0,0,0,0.72);">
+          <div class="relative rounded-2xl p-1.5 animate-on-scroll" style="background:rgba(255,255,255,0.10);box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 22px 44px -16px rgba(0,0,0,0.72);">
             <div class="rounded-[14px] border border-white/[0.06] p-7" style="background:#0d0d0d;box-shadow:inset 0 2px 8px rgba(0,0,0,0.55);">
               <div class="flex items-center gap-4 mb-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center flex-shrink-0">
@@ -6637,7 +6637,7 @@
                 리더에게는 조직 확장의 확신을 제공합니다.</p>
             </div>
           </div>
-          <div class="relative rounded-2xl p-1.5 animate-on-scroll" style="background:linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02));box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 22px 44px -16px rgba(0,0,0,0.72);">
+          <div class="relative rounded-2xl p-1.5 animate-on-scroll" style="background:rgba(255,255,255,0.10);box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 22px 44px -16px rgba(0,0,0,0.72);">
             <div class="rounded-[14px] border border-white/[0.06] p-7" style="background:#0d0d0d;box-shadow:inset 0 2px 8px rgba(0,0,0,0.55);">
               <div class="flex items-center gap-4 mb-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center flex-shrink-0">
@@ -14782,7 +14782,7 @@
       #talent-overlay .tsk-crow.hot{border-color:rgba(96,165,250,0.4);background:linear-gradient(to right,rgba(28,73,200,0.22),rgba(59,130,246,0.06),rgba(255,255,255,0.03));box-shadow:0 0 32px rgba(28,73,200,0.18);}
       #talent-overlay .tsk-crow.hot .cic{background:linear-gradient(135deg,#3b82f6,#1C49C8);color:#fff;border-color:transparent;box-shadow:0 0 20px rgba(59,130,246,0.4);}
       #talent-overlay .tsk-cstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
-      #talent-overlay .tsk-cstat{border:1px solid rgba(255,255,255,0.09);background:rgba(0,0,0,0.25);border-radius:12px;padding:10px 12px;}
+      #talent-overlay .tsk-cstat{border:1px solid rgba(255,255,255,0.09);background:rgba(0,0,0,0.25);border-radius:12px;padding:10px 12px;text-align:center;}
       #talent-overlay .tsk-cstat .k{font-size:9.5px;color:rgba(255,255,255,0.4);letter-spacing:0.02em;}
       #talent-overlay .tsk-cstat .v{font-size:13px;font-weight:800;color:#93c5fd;margin-top:4px;letter-spacing:-0.01em;}
       /* 자격 워크플로우 순차 등장 (기존 사다리 애니 정신 계승 — IO 기반) */
@@ -14822,7 +14822,7 @@
       #talent-overlay .tsk-card[data-i="2"] .tsk-mock,
       #talent-overlay .tsk-card[data-i="3"] .tsk-mock{display:flex;flex-direction:column;}
       #talent-overlay .tsk-card[data-i="1"] .tsk-brand{flex:1 1 auto;justify-content:space-between;} /* v=20260705f 4행 균일 분포(빈 공간 없이) */
-      #talent-overlay .tsk-card[data-i="1"] .tsk-mock > .tsk-cstats{grid-template-columns:1fr;} /* 금융 유튜브 stat = 채워진 brand 아래(하단) */
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock > .tsk-cstats{grid-template-columns:1fr 1fr;} /* v=20260705i 금융 유튜브 stat = 반폭(왼쪽), 카드03 박스와 폭 통일 + 글자 가운데 */
       #talent-overlay .tsk-card[data-i="2"] .tsk-mock,
       #talent-overlay .tsk-card[data-i="3"] .tsk-mock{justify-content:space-between;}
       /* 라벨 pill이 flex 컨테이너에서 가로로 늘어나는 것 방지(01과 동일하게 내용 크기만) */
@@ -15001,7 +15001,7 @@
             </div>
             <div class="tsk-cstats" style="grid-template-columns:1fr 1fr;">
               <div class="tsk-cstat"><div class="k">조직 자격 보유</div><div class="v">CFP 2 · AFPK 5</div></div>
-              <div class="tsk-cstat"><div class="k">사내 직강 교수진</div><div class="v">20명</div></div>
+              <div class="tsk-cstat"><div class="k">사내 교수진</div><div class="v">23명</div></div>
             </div>
           </div>
           <div class="tsk-copy">
