@@ -6649,29 +6649,79 @@
           <!-- 솔루션 요약 -->
           <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 animate-on-scroll">
             <h3 class="text-2xl font-bold text-white mb-6">프로 솔루션</h3>
-            <div class="space-y-6">
-              <div class="flex gap-4">
-                <span
-                  class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/10 flex items-center justify-center text-blue-500 text-sm font-bold">01</span>
-                <div>
-                  <h4 class="text-white font-semibold mb-1">가망고객 발굴</h4>
-                  <p class="text-sm text-zinc-400">22가지 DB라인업을 기반으로 맞춤형 유료 DB를 매월 140만원 한도 무상지원합니다.</p>
-                </div>
+            <!-- v=20260705c — 프로솔루션 컴팩트 세로 파이프라인(레퍼런스 CommandLayer 재해석: 좌측 레일+빛 흐름+도트 / 우측 노드 카드+지표 미터. 반칼럼 맞춤·블루 모노·인라인 SVG·3노드) -->
+            <style>
+              @keyframes proPipePulse{0%{top:-60px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:100%;opacity:0}}
+              @keyframes proPipeDot{0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,0)}50%{box-shadow:0 0 12px 1px rgba(96,165,250,.75)}}
+              #about .pp-rail-pulse{animation:proPipePulse 3.2s linear infinite}
+              #about .pp-node:nth-child(1) .pp-dot{animation:proPipeDot 2.6s ease-in-out infinite}
+              #about .pp-node:nth-child(2) .pp-dot{animation:proPipeDot 2.6s ease-in-out infinite .5s}
+              #about .pp-node:nth-child(3) .pp-dot{animation:proPipeDot 2.6s ease-in-out infinite 1s}
+              #about .pp-fill{transition:width 1.2s cubic-bezier(.22,.61,.36,1)}
+              @media (prefers-reduced-motion:reduce){#about .pp-rail-pulse,#about .pp-dot{animation:none!important}}
+            </style>
+            <div class="relative">
+              <!-- 중앙 레일(빛 흐름) -->
+              <div class="absolute top-3 bottom-3 overflow-hidden rounded-full" style="left:15px;width:2px;background:rgba(96,165,250,0.14);">
+                <span class="pp-rail-pulse absolute left-0 right-0" style="height:56px;background:linear-gradient(to bottom,transparent,#60a5fa,transparent)"></span>
               </div>
-              <div class="flex gap-4">
-                <span
-                  class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/10 flex items-center justify-center text-blue-500 text-sm font-bold">02</span>
-                <div>
-                  <h4 class="text-white font-semibold mb-1">성장을 설계하는 교육</h4>
-                  <p class="text-sm text-zinc-400">신입부터 관리자까지, 성장 단계에 맞춘 맞춤형 교육 프로그램을 제공합니다.</p>
+              <div class="space-y-4">
+                <!-- 노드 1 -->
+                <div class="pp-node relative" style="padding-left:40px;">
+                  <span class="pp-dot absolute rounded-full" style="left:9px;top:22px;width:14px;height:14px;background:#60a5fa;border:2px solid #0a1020"></span>
+                  <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                    <div class="flex items-start gap-3">
+                      <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(96,165,250,0.12);color:#93c5fd;border:1px solid rgba(96,165,250,0.25)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M21 21l-4.3-4.3m1.8-4.7a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+                      </div>
+                      <div class="min-w-0">
+                        <h4 class="text-white font-semibold text-[15px]">가망고객 발굴</h4>
+                        <p class="text-[13px] text-zinc-400 mt-1 leading-relaxed">22가지 DB라인업 기반 맞춤형 유료 DB를 매월 140만원 한도 무상지원합니다.</p>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <div class="flex justify-between font-mono text-[10px] text-zinc-500 mb-1.5"><span>DB_SUPPORT</span><span class="text-blue-300">월 140만원</span></div>
+                      <div class="h-1.5 rounded-full overflow-hidden" style="background:rgba(0,0,0,0.4)"><div class="pp-fill h-full rounded-full" style="width:78%;background:linear-gradient(to right,#2563eb,#60a5fa);box-shadow:0 0 8px rgba(96,165,250,0.5)"></div></div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="flex gap-4">
-                <span
-                  class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/10 flex items-center justify-center text-blue-500 text-sm font-bold">03</span>
-                <div>
-                  <h4 class="text-white font-semibold mb-1">정직한 보상과 대우</h4>
-                  <p class="text-sm text-zinc-400">정착지원금 선지급 최대 50%, 최고 수수료율 97%, 투명한 관리자 승격체계를 운영합니다.</p>
+                <!-- 노드 2 -->
+                <div class="pp-node relative" style="padding-left:40px;">
+                  <span class="pp-dot absolute rounded-full" style="left:9px;top:22px;width:14px;height:14px;background:#3b82f6;border:2px solid #0a1020"></span>
+                  <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                    <div class="flex items-start gap-3">
+                      <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 4L2 9l10 5 10-5-10-5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M6 11.5V16c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-4.5"/></svg>
+                      </div>
+                      <div class="min-w-0">
+                        <h4 class="text-white font-semibold text-[15px]">성장을 설계하는 교육</h4>
+                        <p class="text-[13px] text-zinc-400 mt-1 leading-relaxed">신입부터 관리자까지, 성장 단계에 맞춘 맞춤형 교육 프로그램을 제공합니다.</p>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <div class="flex justify-between font-mono text-[10px] text-zinc-500 mb-1.5"><span>EDU_STAGE</span><span class="text-blue-300">신입 → 관리자</span></div>
+                      <div class="h-1.5 rounded-full overflow-hidden" style="background:rgba(0,0,0,0.4)"><div class="pp-fill h-full rounded-full" style="width:100%;background:linear-gradient(to right,#1d4ed8,#3b82f6);box-shadow:0 0 8px rgba(59,130,246,0.5)"></div></div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 노드 3 -->
+                <div class="pp-node relative" style="padding-left:40px;">
+                  <span class="pp-dot absolute rounded-full" style="left:9px;top:22px;width:14px;height:14px;background:#2563eb;border:2px solid #0a1020"></span>
+                  <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                    <div class="flex items-start gap-3">
+                      <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(37,99,235,0.14);color:#60a5fa;border:1px solid rgba(37,99,235,0.3)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 3l7 3v5c0 4.2-2.9 7.4-7 8.5-4.1-1.1-7-4.3-7-8.5V6l7-3z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12l2 2 4-4"/></svg>
+                      </div>
+                      <div class="min-w-0">
+                        <h4 class="text-white font-semibold text-[15px]">정직한 보상과 대우</h4>
+                        <p class="text-[13px] text-zinc-400 mt-1 leading-relaxed">정착지원금 선지급 최대 50%, 최고 수수료율 97%, 투명한 관리자 승격체계를 운영합니다.</p>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <div class="flex justify-between font-mono text-[10px] text-zinc-500 mb-1.5"><span>COMMISSION</span><span class="text-blue-300">최대 97%</span></div>
+                      <div class="h-1.5 rounded-full overflow-hidden" style="background:rgba(0,0,0,0.4)"><div class="pp-fill h-full rounded-full" style="width:97%;background:linear-gradient(to right,#1d4ed8,#60a5fa);box-shadow:0 0 8px rgba(96,165,250,0.5)"></div></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
