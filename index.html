@@ -14914,7 +14914,7 @@
       #talent-overlay .tsk-intro p{font-size:clamp(14px,1.6vw,17px);color:#b8bccb;line-height:1.75;max-width:620px;margin:0 auto;}
       #talent-overlay .tsk-stack{display:flex;flex-direction:column;gap:30vh;max-width:1160px;margin:0 auto;padding:24px 24px 16vh;}
       /* v=20260704b — top 통일(88px): 새 카드가 이전 카드를 완전히 덮음(계단 노출 제거) + JS 높이 균등화와 세트 */
-      #talent-overlay .tsk-card{position:sticky;top:88px;overflow:hidden;border-radius:30px;border:1px solid rgba(255,255,255,0.10);background:#02050e;transform-origin:top center;will-change:transform,opacity,filter;word-break:keep-all;}
+      #talent-overlay .tsk-card{position:sticky;top:124px;overflow:hidden;border-radius:30px;border:1px solid rgba(255,255,255,0.10);background:#02050e;transform-origin:top center;will-change:transform,opacity,filter;word-break:keep-all;} /* v=20260704v top 88→124: 고정 네비(bottom~120)와 카드 상단 겹침 해소. stuck≈top+20 오프셋이라 124→stuck~144(gap~24). fill=vh-top*2가 카드 높이 자동 축소 */
       #talent-overlay .tsk-tint{position:absolute;inset:0;pointer-events:none;}
       #talent-overlay .tsk-card[data-i="0"] .tsk-tint{background:radial-gradient(ellipse at top left,rgba(28,73,200,0.24),transparent 55%);}
       #talent-overlay .tsk-card[data-i="1"] .tsk-tint{background:radial-gradient(ellipse at top left,rgba(59,130,246,0.20),transparent 55%);}
@@ -15082,7 +15082,7 @@
       /* v=20260704n — 세로 여유 없는 뷰포트(예: 1080p+윈도우 125% 배율)에서 카드 전체가 한 화면에 들어오도록 컴팩트화(전략실장 요청).
          sticky top 88→64 + 그리드/목업/행 패딩·타이포 축소 → 01(최대 카드) ~708→~560px. equalizeCards가 resize/오버레이 열림 시 재계산하므로 JS 무수정 */
       @media (min-width:769px) and (max-height:899px){
-        #talent-overlay .tsk-card{top:64px;}
+        #talent-overlay .tsk-card{top:124px;} /* v=20260704v 고정 네비 클리어(짧은 화면도 동일 top, 카드는 fill 공식으로 축소) */
         #talent-overlay .tsk-grid{padding:clamp(20px,3vh,36px) clamp(26px,4vw,48px);gap:44px;}
         #talent-overlay .tsk-mock{padding:16px;}
         #talent-overlay .tsk-mhead{margin-bottom:12px;}
@@ -15168,7 +15168,7 @@
             <span class="lab">SUPPORT</span>
             <h3>이미 <span class="hl">신뢰</span>가 만들어집니다</h3>
             <p class="body">설계사가 혼자 알리는 시대는 끝났습니다. <strong>회사가 4축 브랜드로 고객을 먼저 설득합니다.</strong></p>
-            <div class="tsk-quote"><div class="q-label">Brand Promise</div><div class="q-body">유튜브 · 매거진 · 디자인 · 이벤트 — 당신이 상담실 문을 열기 전에, 브랜드가 먼저 도착해 있습니다.</div></div>
+            <div class="tsk-pills"><span class="tsk-pill">유튜브</span><span class="tsk-pill">매거진</span><span class="tsk-pill">디자인</span><span class="tsk-pill">이벤트</span></div>
           </div>
         </div>
       </article>
