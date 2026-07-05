@@ -7092,9 +7092,94 @@
       </div>
     </section>
 
+  <!-- ==================== 프로사업단총괄 문의하기 (인라인 섹션, v=20260704w) ==================== -->
+    <section id="join-contact" class="relative w-full overflow-hidden" style="scroll-margin-top:60px;">
+      <!-- 배경: 다크 그라데이션 + 그리드 패턴 (사이트 다크 톤 일치, 사진 없음) -->
+      <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse 52% 60% at 12% 18%, rgba(28,73,200,0.20), transparent 60%), radial-gradient(ellipse 40% 50% at 88% 82%, rgba(59,130,246,0.10), transparent 60%), #060810;"></div>
+      <div class="absolute inset-0 -z-10 pointer-events-none" style="background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 28% 38%, black, transparent 78%);mask-image:radial-gradient(ellipse at 28% 38%, black, transparent 78%);"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+          <!-- 좌: 영입 소구 문구 -->
+          <div class="animate-on-scroll">
+            <p class="text-xs font-bold tracking-[0.25em] text-blue-400/80 uppercase mb-5">JOIN PRO ENTERPRISE</p>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-9" style="word-break:keep-all;">프로사업단총괄 <span class="text-blue-500">문의하기</span></h2>
+            <ul class="space-y-5">
+              <li class="flex items-start gap-3 text-[15px] sm:text-base text-zinc-300 leading-relaxed" style="word-break:keep-all;"><span class="text-blue-500 flex-shrink-0 mt-0.5">▶</span><span>당신의 성장, <strong class="text-white font-semibold">프로사업단총괄</strong>이 끝까지 함께합니다.</span></li>
+              <li class="flex items-start gap-3 text-[15px] sm:text-base text-zinc-300 leading-relaxed" style="word-break:keep-all;"><span class="text-blue-500 flex-shrink-0 mt-0.5">▶</span><span>보험을 넘어 <strong class="text-white font-semibold">종합 금융전문가</strong>로 — 지금이 바로 그 시작입니다.</span></li>
+              <li class="flex items-start gap-3 text-[15px] sm:text-base text-zinc-300 leading-relaxed" style="word-break:keep-all;"><span class="text-blue-500 flex-shrink-0 mt-0.5">▶</span><span><strong class="text-white font-semibold">더 나은 환경</strong>에서 더 큰 고객을 만나고 싶다면?</span></li>
+              <li class="flex items-start gap-3 text-[15px] sm:text-base text-zinc-300 leading-relaxed" style="word-break:keep-all;"><span class="text-blue-500 flex-shrink-0 mt-0.5">▶</span><span><strong class="text-white font-semibold">7대 AI 시스템과 체계적 교육</strong>이 당신의 무기가 됩니다.</span></li>
+              <li class="flex items-start gap-3 text-[15px] sm:text-base text-zinc-300 leading-relaxed" style="word-break:keep-all;"><span class="text-blue-500 flex-shrink-0 mt-0.5">▶</span><span>인카 <strong class="text-white font-semibold">프로사업단총괄</strong>이 그 해답입니다.</span></li>
+            </ul>
+          </div>
+
+          <!-- 우: 문의하기 폼 (기존 오버레이 폼과 동일 필드 · _submitContactForm 공용) -->
+          <div class="bg-white/[0.03] backdrop-blur-xl rounded-2xl border border-white/10 p-6 sm:p-8 animate-on-scroll">
+            <form class="space-y-6" onsubmit="return _submitContactForm(this, event);">
+              <!-- 경력회사 -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">경력회사</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <label class="relative cursor-pointer"><input type="radio" name="career-company" value="생명보험" class="peer sr-only" required><div class="flex items-center justify-center rounded-xl px-3 py-2.5 text-sm text-zinc-400 bg-white/5 ring-1 ring-white/10 transition-all peer-checked:ring-blue-500/60 peer-checked:bg-blue-600/10 peer-checked:text-blue-400 hover:bg-white/10">생명보험</div></label>
+                  <label class="relative cursor-pointer"><input type="radio" name="career-company" value="손해보험" class="peer sr-only"><div class="flex items-center justify-center rounded-xl px-3 py-2.5 text-sm text-zinc-400 bg-white/5 ring-1 ring-white/10 transition-all peer-checked:ring-blue-500/60 peer-checked:bg-blue-600/10 peer-checked:text-blue-400 hover:bg-white/10">손해보험</div></label>
+                  <label class="relative cursor-pointer"><input type="radio" name="career-company" value="대리점(GA)" class="peer sr-only"><div class="flex items-center justify-center rounded-xl px-3 py-2.5 text-sm text-zinc-400 bg-white/5 ring-1 ring-white/10 transition-all peer-checked:ring-blue-500/60 peer-checked:bg-blue-600/10 peer-checked:text-blue-400 hover:bg-white/10">대리점(GA)</div></label>
+                  <label class="relative cursor-pointer"><input type="radio" name="career-company" value="경력 없음" class="peer sr-only"><div class="flex items-center justify-center rounded-xl px-3 py-2.5 text-sm text-zinc-400 bg-white/5 ring-1 ring-white/10 transition-all peer-checked:ring-blue-500/60 peer-checked:bg-blue-600/10 peer-checked:text-blue-400 hover:bg-white/10">경력 없음</div></label>
+                </div>
+              </div>
+              <!-- 문의유형 -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">문의유형</label>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <label class="relative cursor-pointer"><input type="radio" name="inquiry-type" value="입사" class="peer sr-only" required><div class="flex items-center justify-center rounded-xl px-3 py-2.5 text-sm text-zinc-400 bg-white/5 ring-1 ring-white/10 transition-all peer-checked:ring-blue-500/60 peer-checked:bg-blue-600/10 peer-checked:text-blue-400 hover:bg-white/10">입사</div></label>
+                  <label class="relative cursor-pointer"><input type="radio" name="inquiry-type" value="지사개설" class="peer sr-only"><div class="flex items-center justify-center rounded-xl px-3 py-2.5 text-sm text-zinc-400 bg-white/5 ring-1 ring-white/10 transition-all peer-checked:ring-blue-500/60 peer-checked:bg-blue-600/10 peer-checked:text-blue-400 hover:bg-white/10">지사개설</div></label>
+                </div>
+              </div>
+              <!-- 이름 -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">이름</label>
+                <input type="text" placeholder="이름을 입력해 주세요" required class="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none ring-1 ring-white/10 focus:ring-blue-500/60 transition">
+              </div>
+              <!-- 전화번호 -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">전화번호</label>
+                <input type="tel" placeholder="전화번호를 입력해 주세요" required class="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none ring-1 ring-white/10 focus:ring-blue-500/60 transition">
+              </div>
+              <!-- 문의내용 -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">문의내용</label>
+                <textarea placeholder="문의 내용을 입력해 주세요" rows="4" class="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none ring-1 ring-white/10 focus:ring-blue-500/60 transition resize-none"></textarea>
+              </div>
+              <!-- 개인정보 동의 -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">개인정보 수집 및 이용 동의</label>
+                <div class="rounded-xl bg-white/5 ring-1 ring-white/10 p-4 max-h-28 overflow-y-auto text-xs text-zinc-500 leading-relaxed mb-3">
+                  <p class="font-semibold text-zinc-400 mb-2">[개인정보 수집 및 이용 동의]</p>
+                  <p>1. 수집 항목: 이름, 전화번호, 경력회사, 문의내용</p>
+                  <p>2. 수집 목적: 입사 및 지사개설 문의 상담, 연락 회신</p>
+                  <p>3. 보유 기간: 문의 접수일로부터 1년간 보유 후 파기</p>
+                  <p>4. 동의 거부 시 문의 접수가 제한될 수 있습니다.</p>
+                  <p class="mt-2">프로사업단총괄은 「개인정보 보호법」에 따라 귀하의 개인정보를 안전하게 관리하며, 수집 목적 이외의 용도로 사용하지 않습니다.</p>
+                </div>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 rounded border-white/20 bg-white/5 text-blue-600 focus:ring-blue-500/60 focus:ring-offset-0 cursor-pointer accent-blue-600">
+                  <span class="text-sm text-zinc-300 group-hover:text-zinc-100 transition">개인정보 수집 및 이용에 동의합니다.</span>
+                </label>
+              </div>
+              <!-- 제출 -->
+              <button type="submit" class="group relative inline-flex items-center justify-center w-full h-14 text-base font-semibold cursor-pointer overflow-hidden rounded-2xl text-white shadow-[inset_0_2px_8px_rgba(255,255,255,0.25),_inset_0_-3px_8px_rgba(0,0,0,0.35),_0_4px_10px_rgba(0,0,0,0.4)] transition-all duration-500 hover:-translate-y-[3px]" style="background:linear-gradient(45deg,#1a3fa0,#1C49C8,#1a3fa0);">
+                <span class="relative z-10">상담 신청</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
 
 
-  <!-- ==================== CONTACT / 문의하기 (오버레이) ==================== -->
+
+  <!-- ==================== CONTACT / 문의하기 (오버레이 — 인라인 섹션으로 대체, 코드 보존) ==================== -->
   <div class="contact-overlay" id="contact">
     <!-- 닫기 버튼 -->
     <button
@@ -9272,11 +9357,10 @@
           return;
         }
         if (target === 'contact') {
-          var contactEl = document.getElementById('contact');
-          contactEl.classList.add('active');
-          document.body.classList.add('contact-overlay-open');
-          _resetOverlayScroll(contactEl);
-          if (pushHistory) history.pushState({ nav: 'contact' }, '', '#contact');
+          // v=20260704w — 오버레이 대신 인라인 섹션(#join-contact)으로 스크롤(전략실장 결정)
+          var jc = document.getElementById('join-contact');
+          if (jc) { scrollToContent(jc); }
+          if (pushHistory) history.pushState({ nav: 'contact' }, '', '#join-contact');
           return;
         }
         // 스크롤 타겟
@@ -14477,11 +14561,11 @@
   <script>
     window._submitContactForm = async function (form, ev) {
       if (ev && ev.preventDefault) ev.preventDefault();
-      var agree = document.getElementById('privacy-agree');
+      var agree = form.querySelector('input[type="checkbox"]'); /* v=20260704w — form-scoped(중복 ID 없이 오버레이·인라인 두 폼 공용) */
       if (!agree || !agree.checked) { alert('개인정보 수집 및 이용에 동의해 주세요.'); return false; }
       var val = function (sel) { var el = form.querySelector(sel); return el ? (el.value || '').trim() : ''; };
       var radio = function (nm) { var el = form.querySelector('input[name="' + nm + '"]:checked'); return el ? el.value : ''; };
-      var name = val('#join-form-name');
+      var name = val('#join-form-name') || val('input[type="text"]');
       var tel = val('input[type="tel"]');
       var msg = val('textarea');
       var company = radio('career-company');
