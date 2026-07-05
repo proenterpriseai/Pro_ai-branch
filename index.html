@@ -6661,14 +6661,16 @@
               @media (prefers-reduced-motion:reduce){#about .pp-rail-pulse,#about .pp-dot{animation:none!important}}
             </style>
             <div class="relative">
-              <!-- 중앙 레일(빛 흐름) -->
-              <div class="absolute top-3 bottom-3 overflow-hidden rounded-full" style="left:15px;width:2px;background:rgba(96,165,250,0.14);">
-                <span class="pp-rail-pulse absolute left-0 right-0" style="height:56px;background:linear-gradient(to bottom,transparent,#60a5fa,transparent)"></span>
+              <!-- 좌측 레일(입체 튜브 + 내부 빛 흐름) — 레퍼런스 CommandLayer 스타일 -->
+              <div class="absolute" style="left:16px;top:6px;bottom:6px;width:12px;border-radius:9999px;background:linear-gradient(to bottom,#0a0f1c,#111827);box-shadow:inset 0 2px 8px rgba(0,0,0,0.75),inset 0 1px 0 rgba(255,255,255,0.05);">
+                <div class="absolute overflow-hidden rounded-full" style="left:50%;top:5px;bottom:5px;width:3px;transform:translateX(-50%);background:#0c1322;">
+                  <span class="pp-rail-pulse absolute left-0 right-0" style="height:56px;background:linear-gradient(to bottom,transparent,#60a5fa,transparent)"></span>
+                </div>
               </div>
               <div class="space-y-4">
                 <!-- 노드 1 -->
-                <div class="pp-node relative" style="padding-left:40px;">
-                  <span class="pp-dot absolute rounded-full" style="left:9px;top:22px;width:14px;height:14px;background:#60a5fa;border:2px solid #0a1020"></span>
+                <div class="pp-node relative" style="padding-left:56px;">
+                  <span class="pp-socket absolute flex items-center justify-center" style="left:4px;top:16px;width:36px;height:36px;border-radius:9999px;background:linear-gradient(to bottom,#141c30,#0b1120);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 12px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.08);"><span class="pp-dot rounded-full" style="width:12px;height:12px;background:#60a5fa;border:1px solid #000;box-shadow:0 0 10px rgba(96,165,250,0.85)"></span></span>
                   <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
                     <div class="flex items-start gap-3">
                       <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(96,165,250,0.12);color:#93c5fd;border:1px solid rgba(96,165,250,0.25)">
@@ -6686,8 +6688,8 @@
                   </div>
                 </div>
                 <!-- 노드 2 -->
-                <div class="pp-node relative" style="padding-left:40px;">
-                  <span class="pp-dot absolute rounded-full" style="left:9px;top:22px;width:14px;height:14px;background:#3b82f6;border:2px solid #0a1020"></span>
+                <div class="pp-node relative" style="padding-left:56px;">
+                  <span class="pp-socket absolute flex items-center justify-center" style="left:4px;top:16px;width:36px;height:36px;border-radius:9999px;background:linear-gradient(to bottom,#141c30,#0b1120);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 12px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.08);"><span class="pp-dot rounded-full" style="width:12px;height:12px;background:#3b82f6;border:1px solid #000;box-shadow:0 0 10px rgba(59,130,246,0.85)"></span></span>
                   <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
                     <div class="flex items-start gap-3">
                       <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25)">
@@ -6705,8 +6707,8 @@
                   </div>
                 </div>
                 <!-- 노드 3 -->
-                <div class="pp-node relative" style="padding-left:40px;">
-                  <span class="pp-dot absolute rounded-full" style="left:9px;top:22px;width:14px;height:14px;background:#2563eb;border:2px solid #0a1020"></span>
+                <div class="pp-node relative" style="padding-left:56px;">
+                  <span class="pp-socket absolute flex items-center justify-center" style="left:4px;top:16px;width:36px;height:36px;border-radius:9999px;background:linear-gradient(to bottom,#141c30,#0b1120);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 12px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.08);"><span class="pp-dot rounded-full" style="width:12px;height:12px;background:#2563eb;border:1px solid #000;box-shadow:0 0 10px rgba(37,99,235,0.9)"></span></span>
                   <div class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
                     <div class="flex items-start gap-3">
                       <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(37,99,235,0.14);color:#60a5fa;border:1px solid rgba(37,99,235,0.3)">
@@ -6845,7 +6847,7 @@
         <span class="stories-label-pill" style="display:none">PEOPLE</span>
         <h2 class="stories-headline">압도적 격차는 <span class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">사람</span>이 만듭니다</h2>
         <div class="stories-divider"></div>
-        <p class="stories-sub">7대 AI 시스템과 함께 성장한 PRO 사람들의 진짜 이야기.</p>
+        <p class="stories-sub">함께 성장한 PRO 사람들의 진짜 이야기.</p>
         <p class="stories-caption">AI 시스템 · 월례 시상식 · 교육 현장 · 1등 — 같은 출발선의 다른 결과.</p>
       </div>
     </section>
@@ -7192,6 +7194,11 @@
               <div>
                 <label class="block text-sm font-semibold text-zinc-200 mb-3">전화번호</label>
                 <input type="tel" placeholder="전화번호를 입력해 주세요" required class="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none ring-1 ring-white/10 focus:ring-blue-500/60 transition">
+              </div>
+              <!-- 지역명 (v=20260705d 추가) -->
+              <div>
+                <label class="block text-sm font-semibold text-zinc-200 mb-3">지역명</label>
+                <input type="text" name="region" placeholder="지역명을 입력해 주세요 (예: 서울 성수)" class="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none ring-1 ring-white/10 focus:ring-blue-500/60 transition">
               </div>
               <!-- 문의내용 -->
               <div>
@@ -9003,7 +9010,7 @@
           id: 'ita-imseongmi', type: 'youtube', src: 'KUWgdv7DGqQ', start: 301,
           thumb: 'https://img.youtube.com/vi/KUWgdv7DGqQ/maxresdefault.jpg',
           label: 'YouTube', tone: 'red',
-          title: 'ITA 2회 달성 임성미FA',
+          title: 'ITA 2회 달성 임성미 이사',
           subtitle: '2회 연속 ITA, 우연이 아닌 시스템의 힘'
         }
       ];
@@ -14615,6 +14622,7 @@
       var radio = function (nm) { var el = form.querySelector('input[name="' + nm + '"]:checked'); return el ? el.value : ''; };
       var name = val('#join-form-name') || val('input[type="text"]');
       var tel = val('input[type="tel"]');
+      var region = val('input[name="region"]'); /* v=20260705d 지역명(선택) */
       var msg = val('textarea');
       var company = radio('career-company');
       var itype = radio('inquiry-type');
@@ -14625,6 +14633,7 @@
         from_name: '프로사업단총괄 홈페이지',
         '이름': name,
         '전화번호': tel,
+        '지역명': region || '(없음)',
         '경력회사': company,
         '문의유형': itype,
         '문의내용': msg || '(없음)'
@@ -15043,7 +15052,7 @@
       #talent-overlay .tsk-eyebrow .sl{color:#3b82f6;}
       #talent-overlay .tsk-intro h2{margin:22px 0 14px;font-size:clamp(2rem,4.4vw,3.4rem);font-weight:800;letter-spacing:-0.04em;line-height:1.14;color:#fff;}
       #talent-overlay .tsk-intro h2 .hl{background:linear-gradient(to right,#3b82f6,#60a5fa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-      #talent-overlay .tsk-intro p{font-size:clamp(14px,1.6vw,17px);color:#b8bccb;line-height:1.75;max-width:620px;margin:0 auto;}
+      #talent-overlay .tsk-intro p{font-size:clamp(14px,1.6vw,17px);color:#b8bccb;line-height:1.75;max-width:620px;margin:26px auto 0;} /* v=20260705d 헤드라인과 간격 확보(아래로 내림) */
       #talent-overlay .tsk-stack{display:flex;flex-direction:column;gap:30vh;max-width:1160px;margin:0 auto;padding:24px 24px 16vh;}
       /* v=20260704b — top 통일(88px): 새 카드가 이전 카드를 완전히 덮음(계단 노출 제거) + JS 높이 균등화와 세트 */
       #talent-overlay .tsk-card{position:sticky;top:124px;overflow:hidden;border-radius:30px;border:1px solid rgba(255,255,255,0.10);background:#02050e;transform-origin:top center;will-change:transform,opacity,filter;word-break:keep-all;} /* v=20260704v top 88→124: 고정 네비(bottom~120)와 카드 상단 겹침 해소. stuck≈top+20 오프셋이라 124→stuck~144(gap~24). fill=vh-top*2가 카드 높이 자동 축소 */
@@ -15241,7 +15250,7 @@
       <!-- v=20260704g — "TALENT PROGRAM" 텍스트 제거하되 공간 유지(visibility:hidden) → 아래 헤드라인 위치 불변(전략실장 요청) -->
       <span class="tsk-eyebrow" style="visibility:hidden;" aria-hidden="true"><span class="sl">//</span> TALENT PROGRAM</span>
       <h2>PRO는 <span class="hl">사람</span>에 투자합니다</h2>
-      <p>교육 · 브랜딩 · 전문 자격 · 시스템 —<br>네 개의 축으로 입사부터 정점까지, 성장의 전 구간을 지원합니다.</p>
+      <p>교육 · 브랜딩 · 전문 자격 · 시스템<br>네 개의 축으로 입사부터 정점까지, 성장의 전 구간을 지원합니다.</p>
     </header>
 
     <div class="tsk-stack" id="tsk-stack">
