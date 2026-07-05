@@ -8792,6 +8792,15 @@
       window.addEventListener('scroll', _scCheckReentry, { passive: true });
       _scCheckReentry();
 
+      /* v=20260704o — 헤더 "AI 시스템" 클릭 등 외부에서 강제 1번(PRO 대시보드) 리셋 (전략실장: 헤더 클릭=항상 첫 화면) */
+      window._aiShowcaseReset = function(){
+        var _paused = autoCycleTimer === 'paused';
+        clearTimeout(autoCycleTimer);
+        autoCycleTimer = _paused ? 'paused' : true;
+        _scWasIn = true;
+        if (currentIndex !== 0) setActiveEngine(0);
+      };
+
       renderSidebar();
       renderMobileTabs();
       setActiveEngine(0);
@@ -9278,10 +9287,11 @@
           if (pushHistory) history.pushState({ nav: 'top' }, '', window.location.pathname);
           return;
         }
-        // AI 시스템 → #solutions 섹션
+        // AI 시스템 → #solutions 섹션 (v=20260704o — 클릭 시 항상 엔진 1번 PRO 대시보드부터)
         if (target === 'ai-system') {
           var sol = document.getElementById('solutions');
           if (sol) scrollToContent(sol);
+          if (typeof window._aiShowcaseReset === 'function') window._aiShowcaseReset();
           if (pushHistory) history.pushState({ nav: 'ai-system' }, '', '#solutions');
           return;
         }
@@ -15016,6 +15026,13 @@
       #talent-overlay .tsk-card[data-i="1"] .tsk-copy .lab,
       #talent-overlay .tsk-card[data-i="2"] .tsk-copy .lab,
       #talent-overlay .tsk-card[data-i="3"] .tsk-copy .lab{align-self:flex-start;}
+      /* v=20260704o — 뷰포트 채움 equalize로 카드가 자연높이보다 커질 수 있어 01도 채움 구조로 전환(바닥 死공간 방지): 헤더 상단 고정 + 트래커 행 균등 분배 + 카피 세로 중앙 */
+      #talent-overlay .tsk-card[data-i="0"]{display:flex;flex-direction:column;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-grid{flex:1 1 auto;align-items:stretch;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-copy{display:flex;flex-direction:column;justify-content:center;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-copy .lab{align-self:flex-start;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-mock{display:flex;flex-direction:column;}
+      #talent-overlay .tsk-card[data-i="0"] .tsk-track{flex:1 1 auto;justify-content:space-evenly;}
       /* 가독성: 행이 적은 목업의 내부 리듬을 소폭 확대 */
       #talent-overlay .tsk-card[data-i="1"] .tsk-brow{padding-top:16px;padding-bottom:16px;}
       #talent-overlay .tsk-card[data-i="2"] .tsk-cert{gap:24px;} /* v=20260704k 1~4단계 행 간격 확대(하단 cstats는 space-between으로 바닥 고정 = 위치 불변) */
@@ -15212,7 +15229,8 @@
             </div>
             <div class="tsk-spark">
               <div class="sh"><span class="a">자동화 처리량</span><span class="b">+18.4%</span></div>
-              <svg viewBox="0 0 100 26" preserveAspectRatio="none" style="width:100%;height:44px;overflow:visible;">
+              <!-- v=20260704o — 세로 88px(기존 44) 확장: mock이 space-between이라 spark 하단 고정, 위쪽으로만 커짐(전략실장 요청) -->
+              <svg viewBox="0 0 100 26" preserveAspectRatio="none" style="width:100%;height:88px;overflow:visible;">
                 <defs><linearGradient id="tskSparkF" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.22"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs>
                 <path d="M0,21 C10,18 16,23 26,14 C36,6 46,11 56,9 C66,7 74,15 84,8 C90,4 100,3 100,3 L100,26 L0,26 Z" fill="url(#tskSparkF)"/>
                 <path class="ln" d="M0,21 C10,18 16,23 26,14 C36,6 46,11 56,9 C66,7 74,15 84,8 C90,4 100,3 100,3" fill="none" stroke="#60a5fa" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
@@ -15283,7 +15301,11 @@
         var max = 0;
         for(var i=0;i<cards.length;i++){ cards[i].style.minHeight=''; }
         for(var i=0;i<cards.length;i++){ var h = cards[i].offsetHeight; if(h > max) max = h; }
-        if(max > 0){ for(var i=0;i<cards.length;i++){ cards[i].style.minHeight = max + 'px'; } }
+        /* v=20260704o — 카드 아래 남는 화면 여백 흡수(전략실장 요청): 뷰포트 채움 높이(상·하 stickyTop 대칭 여백)까지 확장, 과확장은 자연높이 1.4배 cap */
+        var stickyTop = parseInt(getComputedStyle(cards[0]).top) || 88;
+        var fill = window.innerHeight - stickyTop * 2;
+        var target = Math.max(max, Math.min(fill, Math.round(max * 1.4)));
+        if(max > 0){ for(var i=0;i<cards.length;i++){ cards[i].style.minHeight = target + 'px'; } }
       }
       var _eqObs = new MutationObserver(function(){
         if(ov.classList.contains('ceo-overlay--active')){
