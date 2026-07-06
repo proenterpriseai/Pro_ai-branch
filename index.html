@@ -3751,7 +3751,7 @@
             <a href="#" data-nav="pro-intro" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">프로사업단총괄</a>
             <a href="#" data-nav="ai-system" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">AI 시스템</a>
             <a href="#" data-nav="ceo" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">CEO 인사말</a>
-            <a href="#" data-nav="talent-open" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">프로솔루션</a>
+            <a href="#" data-nav="talent-open" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">인재양성</a>
             <a href="#" data-nav="contact" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">문의하기</a>
           </div>
           <!-- 우: 그라데이션 버튼 + 모바일 햄버거 -->
@@ -14854,7 +14854,7 @@
     #talent-overlay .expertise-grid { grid-template-columns: 1fr; }
   }
 </style>
-<div id="talent-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="프로솔루션">
+<div id="talent-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="인재양성">
   <div class="ceo-overlay__bg" style="background:#050505;"></div>
   <button class="ceo-overlay__close" aria-label="닫기" onclick="document.getElementById('talent-overlay').classList.remove('ceo-overlay--active');document.getElementById('talent-overlay').setAttribute('aria-hidden','true');document.body.classList.remove('ceo-overlay-open');">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -15443,6 +15443,28 @@
       })();
     </script>
 
+    <!-- v=20260706b: 오버레이 하단 푸터 — 다른 오버레이(프로솔루션/CEO/프로인트로)와 동일, 유일하게 누락돼 있던 것 보강 -->
+    <div style="background:#27398c; margin-top:48px; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
+      <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
+          <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise AI" style="height:32px;">
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">TEL.</span>
+            <a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em;">0507-1379-0640</a>
+          </div>
+        </div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:2; display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+          <p style="font-weight:600; color:#fff; margin:0;">인카금융서비스 프로사업단총괄</p>
+          <p style="margin:0;"><span style="font-weight:500; color:rgba(255,255,255,0.8);">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
+          <p style="margin:0;"><span style="font-weight:500; color:rgba(255,255,255,0.8);">총괄대표</span> 임형준</p>
+          <p style="margin:0;"><span style="font-weight:500; color:rgba(255,255,255,0.8);">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.2); padding-top:24px; text-align:center;">
+          <p style="font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em; margin:0;">COPYRIGHT (C) 2026 인카금융서비스 프로사업단총괄 ALL RIGHTS RESERVED</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -15982,7 +16004,7 @@
       <a href="#" data-nav="pro-intro" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">프로사업단총괄</a>
       <a href="#" data-nav="ai-system" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">AI 시스템</a>
       <a href="#" data-nav="ceo" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">CEO 인사말</a>
-      <a href="#" data-nav="talent-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">프로솔루션</a>
+      <a href="#" data-nav="talent-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">인재양성</a>
       <a href="#" data-nav="contact" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; text-decoration:none;">문의하기</a>
     </div>
   </div>
@@ -15992,7 +16014,7 @@
 // 오버레이 푸터 전체 너비 계산: overlay clientWidth를 CSS 변수로 동기화
 (function(){
   function updateOverlayWidth(){
-    ['prosolution-overlay','ceo-overlay','pro-intro-overlay'].forEach(function(id){
+    ['prosolution-overlay','ceo-overlay','pro-intro-overlay','talent-overlay'].forEach(function(id){
       var el = document.getElementById(id);
       if(el) el.style.setProperty('--ov-w', el.clientWidth + 'px');
     });
