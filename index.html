@@ -9312,6 +9312,60 @@
       requestAnimationFrame(loop);
     })();
 
+    // ─── F5 새로고침 시 보던 오버레이(페이지) 복원 (v=20260706b, 독립 블록) ───
+    //   오버레이를 열면 URL 해시(#prosolution/#talent/#pro-intro/#ceo)가 남지만
+    //   초기 로드에 해시를 읽어 다시 여는 로직이 없어 F5 시 메인으로 떨어지던 문제.
+    //   pagehide에 오버레이 내부 scrollTop도 저장해 새로고침이면 그 위치까지 복원.
+    (function () {
+      var MAP = { 'ceo': 'ceo-overlay', 'prosolution': 'prosolution-overlay', 'pro-intro': 'pro-intro-overlay', 'talent': 'talent-overlay' };
+      var KEY = 'proai_overlayScroll';
+      window.addEventListener('pagehide', function () {
+        try {
+          var act = document.querySelector('.ceo-overlay--active');
+          if (act) sessionStorage.setItem(KEY, act.id + '|' + Math.round(act.scrollTop));
+          else sessionStorage.removeItem(KEY);
+        } catch (e) {}
+      });
+      document.addEventListener('DOMContentLoaded', function () {
+        var hash = (location.hash || '').replace('#', '');
+        var id = MAP[hash];
+        if (!id) return;
+        var ov = document.getElementById(id);
+        if (!ov || ov.classList.contains('ceo-overlay--active')) return;
+        ov.classList.add('ceo-overlay--active');
+        ov.setAttribute('aria-hidden', 'false');
+        // body 잠금 방식은 navigateTo와 동일하게 오버레이별로
+        if (id === 'ceo-overlay' || id === 'talent-overlay') document.body.classList.add('ceo-overlay-open');
+        else document.body.style.overflow = 'hidden';
+        if (id === 'ceo-overlay') {
+          var vid = document.getElementById('ceo-video');
+          if (vid) vid.src = 'https://www.youtube.com/embed/Vft3wpiJKUE?autoplay=1&enablejsapi=1&vq=hd2160';
+        }
+        // 새로고침이면 오버레이 내부 스크롤 위치 복원 (초기화 스크립트들이 60~450ms에 도니 그 뒤에)
+        var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+        var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
+          : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
+        if (!isReload) return;
+        var saved = '';
+        try { saved = sessionStorage.getItem(KEY) || ''; } catch (e) {}
+        var parts = saved.split('|');
+        if (parts[0] !== id) return;
+        var top = parseInt(parts[1], 10);
+        if (!(top > 0)) return;
+        // 2회만 세팅(초기화 스크립트 이후) — 교육 가로스크롤 등 섹션 자체 스냅과 싸우지 않음(스냅 조정은 의도된 동작).
+        var moved = false;
+        ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
+          ov.addEventListener(ev, function () { moved = true; }, { passive: true, once: true });
+        });
+        [250, 700].forEach(function (ms) {
+          setTimeout(function () {
+            if (moved) return;
+            ov.scrollTop = Math.min(top, ov.scrollHeight - ov.clientHeight);
+          }, ms);
+        });
+      });
+    })();
+
     // ─── 페이지 로드 완료 후 smooth scroll 활성화 (새로고침 시 깜빡임 방지) ───
     window.addEventListener('load', function () {
       requestAnimationFrame(function () {
