@@ -3418,14 +3418,15 @@
     .edu-hp-num { display:none; }
     .edu-hp-kicker { display:none; }
     /* v=20260706b: 교육 패널 제목 56→44px — 본문(16px) 대비 3.5:1 과대 + 오버레이 히어로(56)와 위계 충돌 해소, 섹션 44px 표준 편입 */
-    .edu-hp-title { font-size:clamp(2rem,4vw,2.75rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.1; margin-bottom:1.5rem; }
-    .edu-hp-desc { font-size:15px; color:rgba(255,255,255,0.7); line-height:1.75; max-width:440px; margin-bottom:2rem; }
+    /* v=20260706b: 교육 패널 제목 한 줄 전환(keep-all) + 본문 크기 소폭 상향(전략실장 요청) */
+    .edu-hp-title { font-size:clamp(2rem,4vw,2.75rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.1; margin-bottom:1.5rem; word-break:keep-all; }
+    .edu-hp-desc { font-size:16px; color:rgba(255,255,255,0.7); line-height:1.75; max-width:460px; margin-bottom:2rem; }
     .edu-hp-courses { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
     .edu-hp-course { padding:10px 14px; border-left:2px solid rgba(255,255,255,0.08); }
-    .edu-hp-course h4 { font-size:14px; font-weight:600; color:rgba(255,255,255,0.8); margin:0 0 3px; }
-    .edu-hp-course p { font-size:12px; color:rgba(255,255,255,0.5); margin:0; line-height:1.4; }
+    .edu-hp-course h4 { font-size:15px; font-weight:600; color:rgba(255,255,255,0.8); margin:0 0 3px; }
+    .edu-hp-course p { font-size:13px; color:rgba(255,255,255,0.5); margin:0; line-height:1.45; }
     .edu-hp-tags { display:flex; gap:6px; flex-wrap:wrap; }
-    .edu-hp-tag { font-size:10px; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.6); letter-spacing:0.08em; }
+    .edu-hp-tag { font-size:11px; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.6); letter-spacing:0.08em; }
     .edu-hp-img { position:relative; overflow:hidden; margin:auto; width:min(88%, 470px); aspect-ratio:4/5; max-height:calc(100vh - 12rem); border-radius:22px; border:6px solid rgba(255,255,255,0.10); background:#0d0d0d; box-shadow:0 32px 70px -26px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.16), inset 0 2px 10px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; }
     .edu-hp-img img { position:absolute; top:10px; left:10px; width:calc(100% - 20px); height:calc(100% - 20px); object-fit:contain; border-radius:12px; transition:opacity 1.2s ease; }
     .edu-hp-course.active { border-left-color:rgba(255,255,255,0.7); }
@@ -4278,7 +4279,7 @@
           <!-- v=20260704f — "✦ AI-Powered Pro Sales Tools" 배지 제거(전략실장 요청) -->
           <h2 class="text-3xl sm:text-4xl lg:text-[44px] font-bold text-white" style="line-height:1.25;">소득의 격차를 만드는<br><span
               class="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">7대 핵심 AI 시스템</span></h2>
-          <p class="text-zinc-400 mt-4 max-w-2xl mx-auto text-sm sm:text-base">영업 자동화의 정점, 'AI 풀 시스템'을 제공합니다.<br>당신의 영업에 AI를 더하다.</p>
+          <p class="text-zinc-400 mt-4 max-w-2xl mx-auto text-sm sm:text-base">영업 자동화의 정점, 'AI 풀 시스템'을 제공합니다.</p>
         </div>
 
         <!-- Desktop App Showcase -->
@@ -6390,7 +6391,7 @@
               두배로</span>
           </h2>
           <p class="text-sm sm:text-base text-zinc-400 max-w-2xl">
-            프로사업단총괄은<br>7대 AI 시스템으로 당신의 성장을 뒷받침합니다.
+            프로사업단총괄은 7대 AI 시스템으로 당신의 성장을 뒷받침합니다.
           </p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -6606,7 +6607,7 @@
         <div class="text-center mb-16">
           <h2 class="text-4xl sm:text-[44px] font-bold text-white" style="line-height:1.25;">프로사업단총괄<br><span
               class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">우리는 이런 조직입니다</span></h2>
-          <p class="text-zinc-400 mt-4 max-w-2xl mx-auto text-center">인카금융서비스 프로사업단총괄은<br>AI 기술과 체계적 시스템으로 보험 영업의 패러다임을<br>바꾸고 있습니다.</p>
+          <p class="text-zinc-400 mt-4 max-w-2xl mx-auto text-center">인카금융서비스 프로사업단총괄은 AI 기술과 체계적 시스템으로<br>보험 영업의 패러다임을 바꾸고 있습니다.</p>
         </div>
 
         <!-- 3원칙 카드 -->
@@ -15326,7 +15327,7 @@
             <div class="edu-hp-text">
               <div class="edu-hp-num">01</div>
               <div class="edu-hp-kicker">01 — Education</div>
-              <h2 class="edu-hp-title">신인 / 저차월<br>교육</h2>
+              <h2 class="edu-hp-title">신인 / 저차월 교육</h2>
               <p class="edu-hp-desc">입사 첫 2주가 3년을 결정합니다. 7단계 표준 화법부터 AI 보장분석 도구까지, 현장에서 바로 통하는 실전형 커리큘럼으로 시작합니다.</p>
               <div class="edu-hp-courses">
                 <div class="edu-hp-course"><h4>신입 교육 (2주)</h4><p>매월 2회 정기 진행 · 독자 개발 교재</p></div>
@@ -15348,7 +15349,7 @@
             <div class="edu-hp-text">
               <div class="edu-hp-num">02</div>
               <div class="edu-hp-kicker">02 — Education</div>
-              <h2 class="edu-hp-title">관리자<br>양성과정</h2>
+              <h2 class="edu-hp-title">관리자 양성과정</h2>
               <p class="edu-hp-desc">'운에 맡기지 않는 조직 성장'의 표준을 만듭니다. 팀 빌딩의 원리부터 KPI 설계까지, 현장 리더가 갖춰야 할 모든 역량을 체계적으로 전수합니다.</p>
               <div class="edu-hp-courses">
                 <div class="edu-hp-course"><h4>관리자 역량 강화 과정</h4><p>팀 빌딩 · 성과 코칭 · KPI 설계</p></div>
@@ -15372,7 +15373,7 @@
             <div class="edu-hp-text">
               <div class="edu-hp-num">03</div>
               <div class="edu-hp-kicker">03 — Education</div>
-              <h2 class="edu-hp-title">전문 역량<br>특화 과정</h2>
+              <h2 class="edu-hp-title">전문 역량 특화 과정</h2>
               <p class="edu-hp-desc">22가지 DB 라인업을 꿰뚫고, AI가 예측하는 전환율로 승부합니다. 데이터가 주도하는 영업의 새로운 표준, 여기서 시작됩니다.</p>
               <div class="edu-hp-courses">
                 <div class="edu-hp-course"><h4>DB 영업 전문가 과정</h4><p>DB 유형 분류 · AI 전환율 예측</p></div>
@@ -15397,7 +15398,7 @@
             <div class="edu-hp-text">
               <div class="edu-hp-num">04</div>
               <div class="edu-hp-kicker">04 — Education</div>
-              <h2 class="edu-hp-title">경제 / 법인<br>전문가 과정</h2>
+              <h2 class="edu-hp-title">경제 / 법인 전문가 과정</h2>
               <p class="edu-hp-desc">CFP·AFPK 사내 교수진의 직강과 헥사곤 투자자문의 거시경제 통찰. 보험을 넘어 종합 자산관리 전문가로 도약하는 최상위 과정입니다.</p>
               <div class="edu-hp-courses">
                 <div class="edu-hp-course"><h4>펀드투자권유대행인 자격 특강</h4><p>자격증 연계 · 단기 집중 완성</p></div>
