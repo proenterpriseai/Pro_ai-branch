@@ -237,6 +237,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260706g~20260706h** (**main 직커밋 LIVE**, tag `v20260706h`, main `92d6005`, 2026-07-06) — CEO 오버레이 제목("당신을 위한 최고의 / 서포터가 되겠습니다.", `index.html:7717`) 행간 조정. 전부 실측·라이브 확인.
+  - **g**(76be59f→e239856): 전략실장 "좁다" 2회 → `leading-[1.2]`→`[1.45]`→`[1.6]` 단계 확대.
+  - **h**(92d6005): 전략실장 요청 "1번 제목과 행간 통일" → `leading-[1.6]`(class) → **`style="line-height:1.25;"`**. #stats 히어로 제목 "소득의 격차를 만드는 / 7대 핵심 AI 시스템"(`index.html:4335`, `line-height:1.25`)과 **완전 동일 값**. ⚠️ 방향상 g의 확대와 반대(간격 ~26px→11px 축소)지만 "두 제목 통일"이 최종 결정. 폰트 44px 동일이라 값=시각 1:1. 라이브 실측: `ai-branch.vercel.app` HTML에 `line-height:1.25;">당신을 위한` 확인.
+
 - **v=20260706d~20260706f** (**main 직커밋 LIVE**, tag `v20260706f`, 2026-07-06) — 모바일 폴리시 집중.
   - **d**: 인재양성 04 카드 카운터 0 fix(`updateStack`이 모바일서 통째 return→`updateMocks()`(=.play+runCounters) 미실행이 원인, 데스크톱 스택 트랜스폼만 skip하도록 분리). 모바일 본문 `<br>`→공백 치환(JS `brToSpace`, DOMContentLoaded+load+400ms — `display:none`이면 "한도로무상" 단어 붙는 부작용 회피)+히어로 타이핑 '|'→모바일 공백. 데스크톱 p br 42개 유지.
   - **e**: 모바일 #about/자격카드 5건 — 파이프라인 카드 외곽 p-8→16·pp-node 56→38·아이콘 30·본문폭 164→196px(6→3줄) / 승격구조 라벨 13px·패딩축소(영업수석지점장 옆칼럼 침범 해소) / tsk-live·tsk-cstat .v nowrap(STEP4·CFP·AFPK) / 모기지 배너 object-position 32%→8%(베이크된 "모기지리더스와 함께" 텍스트 크롭). 전부 모바일 @media = 데스크톱 무영향.
