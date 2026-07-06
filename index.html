@@ -2783,9 +2783,6 @@
       /* 데모 내부 어떤 요소도 데모 영역 밖으로 넘쳐 잘리지 않게 (숫자·카드 폭 안전망) */
       #ai-demo-area, #ai-demo-area * { max-width: 100%; }
 
-      /* v=20260706d: 본문(p) 내 데스크톱용 <br>는 모바일에서 숨김 → 좁은 폭에서 자연 줄바꿈(어중간한 줄바꿈 해소).
-         제목(h1~h3)의 의도적 대구 줄바꿈은 유지. */
-      p br { display: none !important; }
 
       /* ── 수정2: Hero 서브텍스트 좌우 잘림 방지 ── */
       #hero-typing {
@@ -9438,6 +9435,20 @@
       window.addEventListener('load', function () { clearHeaderFocus(); setTimeout(clearHeaderFocus, 120); });
     })();
 
+    // ─── 모바일 본문 <br>를 공백으로 치환 (v=20260706d) ───
+    //   데스크톱용 <br>를 모바일에서 숨기면(display:none) 단어가 붙어버림("한도로무상").
+    //   → <p> 안 <br>를 공백 텍스트로 치환해 자연 줄바꿈+정상 띄어쓰기. 데스크톱(>768px) 미실행 = 기존 줄바꿈 유지.
+    (function () {
+      function brToSpace() {
+        if (window.innerWidth > 768) return;
+        document.querySelectorAll('p br').forEach(function (b) {
+          if (b.isConnected) b.replaceWith(document.createTextNode(' '));
+        });
+      }
+      document.addEventListener('DOMContentLoaded', brToSpace);
+      window.addEventListener('load', function () { brToSpace(); setTimeout(brToSpace, 400); });
+    })();
+
     // ─── 페이지 로드 완료 후 smooth scroll 활성화 (새로고침 시 깜빡임 방지) ───
     window.addEventListener('load', function () {
       requestAnimationFrame(function () {
@@ -9632,7 +9643,7 @@
         el.textContent = '';
         var iv = setInterval(function () {
           if (i < text.length) {
-            if (text.charAt(i) === '|') { el.innerHTML += '<br>'; } else { el.innerHTML += text.charAt(i); }
+            if (text.charAt(i) === '|') { el.innerHTML += (window.innerWidth <= 768 ? ' ' : '<br>'); } else { el.innerHTML += text.charAt(i); }
             i++;
           } else {
             clearInterval(iv);
