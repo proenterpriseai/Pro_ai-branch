@@ -237,6 +237,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260706d~20260706f** (**main 직커밋 LIVE**, tag `v20260706f`, 2026-07-06) — 모바일 폴리시 집중.
+  - **d**: 인재양성 04 카드 카운터 0 fix(`updateStack`이 모바일서 통째 return→`updateMocks()`(=.play+runCounters) 미실행이 원인, 데스크톱 스택 트랜스폼만 skip하도록 분리). 모바일 본문 `<br>`→공백 치환(JS `brToSpace`, DOMContentLoaded+load+400ms — `display:none`이면 "한도로무상" 단어 붙는 부작용 회피)+히어로 타이핑 '|'→모바일 공백. 데스크톱 p br 42개 유지.
+  - **e**: 모바일 #about/자격카드 5건 — 파이프라인 카드 외곽 p-8→16·pp-node 56→38·아이콘 30·본문폭 164→196px(6→3줄) / 승격구조 라벨 13px·패딩축소(영업수석지점장 옆칼럼 침범 해소) / tsk-live·tsk-cstat .v nowrap(STEP4·CFP·AFPK) / 모기지 배너 object-position 32%→8%(베이크된 "모기지리더스와 함께" 텍스트 크롭). 전부 모바일 @media = 데스크톱 무영향.
+  - **f**: #branch-map "인카금융서비스 프로사업단총괄 현황" 행간 leading-tight→line-height:1.45.
 - **v=20260706c** (**main 직커밋 LIVE**, tag `v20260706c`, main `31e7895`, 2026-07-06) — 대표님 시연 직전 폴리시 12건(전부 main 직배포·실측·콘솔0).
   - 헤더 "채팅상담" 버튼 확대(14→16px). 히어로 제목·부제 **text-shadow**(움직이는 블루실크 위 흰글자 가독성, 색·굵기 불변, 부제 타이핑 유지).
   - **모바일**: 전역 `body{word-break:keep-all;overflow-wrap:break-word}`(한글 단어중간 줄바꿈 "라인/업"·"설계하/는" 방지) / AI 쇼케이스 데모 2단→모바일 세로스택(`#ai-demo-area` display:flex+height:100% → column, 계산기 "7,764만" 짤림 해소, 데스크톱 무영향) / 375·320px 오버플로우0·짤림0 확인.
