@@ -237,6 +237,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260706a~20260706b** (**main FF 머지 → 프로덕션 LIVE**, tag `v20260706b`, main `7421287`, 2026-07-06) — 타이포 통일 + 새로고침 복원 3종 + 채널톡 활성화 (`preview/typo-scale-44` 22커밋, 라운드별 실측 검증·콘솔0).
+  - **타이포 스케일 통일**: 섹션 제목 **44px 완전 통일**(전 페이지 예외 없음 — Tailwind 9곳 text-[44px] + clamp 6곳 2.75rem + #recruit 48→44 + 프로솔루션 36→44 + 오버레이 히어로 3곳). 근거=공식 proenterprise.co.kr 실측(40~45px 밴드)+일반 관례. 부제 **17px 통일**(19곳, 공식 동일문장 17px 기준). 교육 패널 제목 한 줄+본문 상향(desc17/h4 15/p13/tag11). 한 줄 전환(#stats·#contact·#branch-map·캐러셀×2·교육4) + 어중간 줄바꿈 일괄 정리(WM카드 제목 1줄·설명 자연흐름, 왜PRO/승격/조직문화/파트너 지정 위치 개행). 성과 카드 라벨 18px·"2억 9,242만" 정정·카드3 배경 밝힘(#224075→#33619b). 3원칙 카드 이너 `h-full`(하단 베젤 6px 균일). 파트너 레일 20px·"보케어"(BOCARE 제거)·AFPK 국내공인재무설계사. 카드02 펀치라인("고객은 이미 우리를 알고 있습니다").
+  - **F5 복원 3종**(전략실장 지적): ①메인 스크롤(`scrollRestoration=manual`+sessionStorage `proai_scrollY`+rAF 루프 2.5s, 섹션 해시 잔재에도 동작—오버레이 해시만 제외) ②오버레이 재개방(해시 매핑 ceo/prosolution/pro-intro/talent + 내부 scrollTop `proai_overlayScroll`, 직접 URL 진입도 열림) ③복원 전 메인 플래시 가림막(head 인라인 `pro-restore-pending`, 첫 적용 즉시 `__proReveal()`, failsafe 1800ms). +헤더 포커스 링 blur(F5 후 흰 네모=UA focus ring, 로드 시 nav 내부만 해제·Tab 접근성 유지).
+  - **채널톡 활성화**: 공식홈 동일 워크스페이스 pluginKey `3863b31b-…` 주입(공식홈 공개 HTML서 확인·재사용). "지원하기"→**"채팅상담"**(2곳), 런처 버블 상시 표시(hideChannelButton 제거), `showMessenger`. ⚠️도메인 화이트리스트 시 ai-branch.vercel.app 추가 필요 가능 / 문의가 공식홈 콘솔로 합류=운영 동의 공유 권장.
+  - 기타: 헤더 "프로솔루션"→**"인재양성"**(+aria) / **talent 오버레이 푸터 보강**(4개 중 유일 누락, --ov-w 목록 추가) / 프로솔루션 인사말 타이핑=**오버레이 열림 트리거**(로드 시 실행돼 정적으로 보이던 것) + 배지 "AI 풀 시스템·7대 통합" 삭제 / #about 부제 mt-6 / 부제 줄바꿈·문구 다수("AI 활용법까지" 등).
+  - ⚠️ **오버레이 푸터 우측 ~16px 여백 = 스크롤바 영역**(4개 오버레이 공통, 정상). **Web3Forms 대표님 교체 절차**: 주소만으론 불가 — web3forms.com에 대표님 이메일 입력→Access Key가 그 메일로 발송→키 전달받아 1줄 교체. 🔵 잔여: `preview/gray-tint-scale`(회색 3단 위계+블루틴트) 미머지 — main 이동으로 rebase 필요.
 - **v=20260705h~20260705o** (**main FF 머지 → 프로덕션 LIVE**, tag `v20260705o` — 전략실장 프리뷰 확인 후 공개, 2026-07-05) — nexora-restyle 후속 UI 다듬기 8건(33~40차). 전부 preview 브랜치에서 라운드별 진행·실측 검증·콘솔0 후 일괄 FF 머지.
   - **h(33차)**: #about 3원칙 카드 — 제목을 아이콘 오른쪽으로(flex 행) + 이너 배경 `#0a0f1a`(네이비)→`#0d0d0d`(=bg-white/5 over black, 프로솔루션·승격구조와 톤 통일). 승격구조 사다리 10개 라벨 `text-center`.
   - **i(34차)**: 3원칙 카드 베젤 균일화 — `linear-gradient(0.10→0.02)` → 균일 `rgba(255,255,255,0.10)`(하단 흐림 해소). 자격 스탯(`.tsk-cstat`) 3개 `text-center` + "사내 직강 교수진 20명"→"사내 교수진 23명". 금융유튜브 stat 박스 `1fr`→`1fr 1fr`(반폭 왼쪽).
