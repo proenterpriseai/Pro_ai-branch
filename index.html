@@ -3758,11 +3758,11 @@
           <div class="flex gap-2 items-center">
             <button type="button" onclick="_openSupportChat()" class="hidden sm:inline-flex group relative shadow-[0_8px_16px_-4px_rgba(151,65,252,0.2)] hover:shadow-[0_12px_20px_-6px_rgba(151,65,252,0.28)] transition duration-300 ease-out select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 transform-gpu hover:-translate-y-0.5 text-white rounded-md p-[1px]" style="background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);">
               <span class="flex items-center justify-center text-[14px] leading-none min-w-[84px] h-full transition-colors duration-300 group-hover:bg-transparent font-semibold bg-[#0b0f17] rounded-md py-2 px-4">
-                지원하기
+                채팅상담
               </span>
             </button>
             <!-- 모바일 지원하기 버튼 -->
-            <button onclick="_openSupportChat()" class="sm:hidden inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white rounded-md" style="background:#27398c; border:none;">지원하기</button>
+            <button onclick="_openSupportChat()" class="sm:hidden inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white rounded-md" style="background:#27398c; border:none;">채팅상담</button>
             <button onclick="document.getElementById('mobile-nav-overlay').style.display='block';"
               class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full text-zinc-100 hover:bg-white/10" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -14654,9 +14654,10 @@
         });
       }
 
-      // ─── Channel Talk SDK + 지원하기 버튼 통합 (v=20260504a) ───
-      // plugin key는 channel.io 어드민 → 일반 → 보안에서 발급 후 아래 변수만 교체
-      var _CHANNEL_IO_PLUGIN_KEY = '<<INSERT_CHANNEL_IO_PLUGIN_KEY_HERE>>';
+      // ─── Channel Talk SDK + 채팅상담 버튼 통합 (v=20260504a → v=20260706b 활성화) ───
+      // v=20260706b: 공식 홈페이지(proenterprise.co.kr)와 동일 채널톡 워크스페이스 키 주입(전략실장 지시)
+      //   → 문의가 공식홈과 같은 채널톡 콘솔로 수신. 하단 우측 런처 버블 상시 표시(hideChannelButton 제거).
+      var _CHANNEL_IO_PLUGIN_KEY = '3863b31b-16a5-4497-85c3-ed10c0eafafb';
       function _hasChannelKey() {
         return !!_CHANNEL_IO_PLUGIN_KEY && _CHANNEL_IO_PLUGIN_KEY.charAt(0) !== '<';
       }
@@ -14679,15 +14680,14 @@
         if (document.readyState === 'complete') l();
         else { w.addEventListener('DOMContentLoaded', l); w.addEventListener('load', l); }
       })();
-      // plugin key가 실제로 설정되어 있으면 자동 boot + 떠 있는 버블 숨김 (옵션 A)
+      // plugin key가 실제로 설정되어 있으면 자동 boot — 하단 우측 런처 버블 상시 표시(공식홈과 동일 UX)
       if (_hasChannelKey()) {
         ChannelIO('boot', { pluginKey: _CHANNEL_IO_PLUGIN_KEY });
-        ChannelIO('hideChannelButton');
       }
-      // 헤더 "지원하기" 버튼 onclick 핸들러
+      // 헤더 "채팅상담" 버튼 onclick 핸들러
       window._openSupportChat = function () {
         if (_hasChannelKey() && typeof ChannelIO === 'function') {
-          ChannelIO('show');
+          ChannelIO('showMessenger');
         } else {
           // plugin key 미설정 fallback: contact 오버레이 (문의하기) 열기
           var contact = document.getElementById('contact');
