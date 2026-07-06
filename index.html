@@ -2783,6 +2783,10 @@
       /* 데모 내부 어떤 요소도 데모 영역 밖으로 넘쳐 잘리지 않게 (숫자·카드 폭 안전망) */
       #ai-demo-area, #ai-demo-area * { max-width: 100%; }
 
+      /* v=20260706d: 본문(p) 내 데스크톱용 <br>는 모바일에서 숨김 → 좁은 폭에서 자연 줄바꿈(어중간한 줄바꿈 해소).
+         제목(h1~h3)의 의도적 대구 줄바꿈은 유지. */
+      p br { display: none !important; }
+
       /* ── 수정2: Hero 서브텍스트 좌우 잘림 방지 ── */
       #hero-typing {
         font-size: 14px !important;
@@ -15246,18 +15250,21 @@
       /* v=20260704b — 임계값(고정 top) 의존 제거: "다음 카드까지의 실거리(gap)"만으로 판정.
          오버레이 스크롤포트 원점이 뷰포트 0이 아니어도(실측 stuck=108px) 항상 동작. */
       function updateStack(){
-        if(reduced || window.innerWidth <= 768) return;
-        for(var i=0;i<cards.length;i++){
-          var card = cards[i], next = cards[i+1];
-          if(!next){ card.style.transform=''; card.style.opacity=''; card.style.filter=''; continue; }
-          var gap = next.getBoundingClientRect().top - card.getBoundingClientRect().top;
-          var ratio = Math.max(0, Math.min(1, gap / (window.innerHeight * 0.5)));
-          if(ratio >= 1){
-            card.style.transform=''; card.style.opacity=''; card.style.filter='';
-          } else {
-            card.style.transform = 'scale(' + (0.92 + 0.08 * ratio).toFixed(4) + ')';
-            card.style.opacity = String(0.55 + 0.45 * ratio);
-            card.style.filter = 'brightness(' + Math.round(55 + 45 * ratio) + '%)';
+        // v=20260706d: 데스크톱 스택 트랜스폼만 모바일/리듀스드에서 skip. 목업 .play+카운터는 모바일에서도 실행
+        // (기존엔 여기서 통째 return → 모바일 04 카드 카운터가 0에 멈춤).
+        if(!(reduced || window.innerWidth <= 768)){
+          for(var i=0;i<cards.length;i++){
+            var card = cards[i], next = cards[i+1];
+            if(!next){ card.style.transform=''; card.style.opacity=''; card.style.filter=''; continue; }
+            var gap = next.getBoundingClientRect().top - card.getBoundingClientRect().top;
+            var ratio = Math.max(0, Math.min(1, gap / (window.innerHeight * 0.5)));
+            if(ratio >= 1){
+              card.style.transform=''; card.style.opacity=''; card.style.filter='';
+            } else {
+              card.style.transform = 'scale(' + (0.92 + 0.08 * ratio).toFixed(4) + ')';
+              card.style.opacity = String(0.55 + 0.45 * ratio);
+              card.style.filter = 'brightness(' + Math.round(55 + 45 * ratio) + '%)';
+            }
           }
         }
         updateMocks();
