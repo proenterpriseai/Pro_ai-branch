@@ -7462,7 +7462,7 @@
                     <span class="text-[10px] text-zinc-500">방금</span>
                   </div>
                   <div class="rounded-2xl rounded-tl-sm p-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
-                    <p class="text-[13px] text-zinc-300 leading-relaxed">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br><span id="sol-main-greeting-typing" data-typing-text="시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요."></span></p>
+                    <p class="text-[13px] text-zinc-300 leading-relaxed" id="sol-main-greeting" data-l1="안녕하세요! 프로사업단총괄 AI 어시스턴트입니다." data-l2="시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.">안녕하세요! 프로사업단총괄 <span class="text-blue-400 font-medium">AI 어시스턴트</span>입니다.<br>시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.</p>
                   </div>
                 </div>
               </div>
@@ -7774,41 +7774,46 @@
       autoContainer.innerHTML = cards + cards; // 14장 → 28장 (원본+복제)
     })();
 
-    // ─── 메인 챗봇 인사말 타이핑 효과 (v=20260520i) ───
-    //   #sol-main-greeting-typing 요소의 data-typing-text를 한 글자씩 표시.
-    //   첫줄("안녕하세요! ... AI 어시스턴트입니다.")은 정적, 두번째 줄만 타이핑.
-    //   페이지 로드 + 600ms 딜레이 후 시작. prefers-reduced-motion 시 즉시 표시.
+    // ─── 메인 챗봇 인사말 타이핑 효과 (v=20260706b) ───
+    //   #sol-main-greeting 두 줄(data-l1/data-l2) 전체를 한 글자씩 타이핑.
+    //   ⚠️ 페이지 로드가 아니라 **프로솔루션 오버레이가 열릴 때** 실행(닫힌 동안 끝나 정적으로 보이던 문제 해결).
+    //   재열 때마다 재생. prefers-reduced-motion 시 즉시 완성 표시. no-JS는 마크업 초기 내용(완성본) 유지.
     (function () {
       document.addEventListener('DOMContentLoaded', function () {
-        var target = document.getElementById('sol-main-greeting-typing');
-        if (!target) return;
-        var fullText = target.getAttribute('data-typing-text') || '';
-        if (!fullText) return;
-        // reduced motion: 즉시 표시
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          target.textContent = fullText;
-          return;
-        }
-        var speed = 35; // ms per char
-        var startDelay = 600;
-        setTimeout(function () {
-          var i = 0;
-          // 깜빡이는 커서 시작
+        var target = document.getElementById('sol-main-greeting');
+        var ov = document.getElementById('prosolution-overlay');
+        if (!target || !ov) return;
+        var l1 = target.getAttribute('data-l1') || '';
+        var l2 = target.getAttribute('data-l2') || '';
+        var FINAL = l1.replace('AI 어시스턴트', '<span class="text-blue-400 font-medium">AI 어시스턴트</span>') + '<br>' + l2;
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var timer = null;
+        function run() {
+          if (reduce) { target.innerHTML = FINAL; return; }
+          if (timer) { clearInterval(timer); timer = null; }
+          var plain = l1 + '\n' + l2;
+          var i = 0, speed = 32;
           target.innerHTML = '<span class="sol-typing-cursor">▍</span>';
-          var interval = setInterval(function () {
-            if (i >= fullText.length) {
-              clearInterval(interval);
-              target.textContent = fullText;
-              return;
-            }
-            target.textContent = fullText.slice(0, i + 1);
-            var cursor = document.createElement('span');
-            cursor.className = 'sol-typing-cursor';
-            cursor.textContent = '▍';
-            target.appendChild(cursor);
-            i++;
-          }, speed);
-        }, startDelay);
+          setTimeout(function () {
+            timer = setInterval(function () {
+              if (i >= plain.length) {
+                clearInterval(timer); timer = null;
+                target.innerHTML = FINAL;
+                return;
+              }
+              i++;
+              target.innerHTML = plain.slice(0, i).replace(/\n/g, '<br>') + '<span class="sol-typing-cursor">▍</span>';
+            }, speed);
+          }, 350);
+        }
+        var wasActive = ov.classList.contains('ceo-overlay--active');
+        var mo = new MutationObserver(function () {
+          var active = ov.classList.contains('ceo-overlay--active');
+          if (active && !wasActive) run();
+          wasActive = active;
+        });
+        mo.observe(ov, { attributes: true, attributeFilter: ['class'] });
+        if (wasActive) run();
       });
     })();
 
