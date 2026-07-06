@@ -8805,11 +8805,12 @@
         if (!panel) return;
         var e = engines[idx], c = colorMap[e.color];
         // v=20260704 Nexora 스킨 — 지표 카드에 상단 헤어라인 + 컬러 인디케이터, 인사이트 박스화, 순차 등장
+        // v=20260706a — 우측 패널 제목/라벨/인사이트 본문 회색→흰색(전략실장 요청): 핵심 지표·AI 인사이트 라벨, stat 라벨(분석 항목 등), 인사이트 박스 본문
         var statsHtml = '';
         e.stats.forEach(function(s, si) {
           statsHtml += '<div class="p-3 rounded-lg relative overflow-hidden" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);animation:fadeSlideIn .5s ease-out ' + (0.08 + si * 0.07) + 's both;">'
             + '<span style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(to right,' + c.dot + ',transparent);opacity:.7;"></span>'
-            + '<p class="text-[10px] text-zinc-500 mb-1">' + s.l + '</p><p class="text-sm font-bold" style="color:' + c.text + ';">' + s.v + '</p></div>';
+            + '<p class="text-[10px] text-white mb-1">' + s.l + '</p><p class="text-sm font-bold" style="color:' + c.text + ';">' + s.v + '</p></div>';
         });
         // v=20260704c — 상단 계정 칩 행(높이 68px = 앱 헤더와 라인 일치) + 엔진 정보는 KPI 스트립 행 높이로 정렬(pt-4)
         // v=20260704d — 아바타=실사진(assets/images/consultant-avatar.jpg, 얼굴 중심 상체 크롭 · 미존재 시 P 폴백) + 셰브론을 텍스트 옆 밀착(Nexora 간격)
@@ -8825,11 +8826,11 @@
           + '<div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:' + c.bg + ';border:1px solid ' + c.border + ';color:' + c.text + ';box-shadow:0 0 22px -6px ' + c.border + ';">' + e.icon.replace('w-4 h-4','w-5 h-5') + '</div>'
           + '<div><h4 class="text-sm font-bold text-white">' + e.name + '</h4><p class="text-[10px] text-zinc-500">' + e.desc + '</p></div></div>'
           + '<div class="h-px mb-4" style="background:linear-gradient(to right,rgba(96,165,250,0.35),transparent);"></div>'
-          + '<p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-3">핵심 지표</p>'
+          + '<p class="text-[10px] font-semibold text-white uppercase tracking-widest mb-3">핵심 지표</p>'
           + '<div class="grid grid-cols-2 gap-2.5 mb-5">' + statsHtml + '</div>'
-          + '<p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-3">AI 인사이트</p>'
+          + '<p class="text-[10px] font-semibold text-white uppercase tracking-widest mb-3">AI 인사이트</p>'
           + '<div class="rounded-xl p-3" style="background:linear-gradient(135deg,rgba(28,73,200,0.10),rgba(28,73,200,0.02));border:1px solid rgba(59,130,246,0.14);">'
-          + '<p class="text-[11px] text-zinc-400 leading-relaxed">' + e.insight + '</p></div>'
+          + '<p class="text-[11px] text-white leading-relaxed">' + e.insight + '</p></div>'
           // v=20260704e — 사이드바에 있던 "AI 풀 시스템" CTA 카드를 AI 인사이트 아래 빈 공간으로 이동. 자세히보기 링크·flex-1 spacer 제거 → 콘텐츠 하단 자동 상승.
           + '<div class="mt-4 rounded-2xl p-3.5 relative overflow-hidden" style="background:linear-gradient(135deg,rgba(28,73,200,0.16),rgba(28,73,200,0.03));border:1px solid rgba(59,130,246,0.2);">'
           +   '<div class="w-7 h-7 rounded-lg flex items-center justify-center mb-2" style="background:rgba(59,130,246,0.14);color:#93c5fd;">'
