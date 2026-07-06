@@ -9274,6 +9274,44 @@
       }
     })();
 
+    // ─── F5 새로고침 시 마지막 스크롤 위치 복원 (v=20260706b) ───
+    //   기본 'auto' 복원은 히어로 WebGL·CDN 폰트·이미지가 로드 후 높이를 바꿔 어긋남(맨 위로 튐).
+    //   → scrollRestoration='manual'로 잡고 sessionStorage에 위치 저장, 콘텐츠 안정될 때까지 재시도 복원.
+    (function () {
+      if (!('scrollRestoration' in history)) return;
+      history.scrollRestoration = 'manual';
+      var KEY = 'proai_scrollY';
+      var t = null;
+      window.addEventListener('scroll', function () {
+        if (t) return;
+        t = setTimeout(function () { t = null; try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} }, 200);
+      }, { passive: true });
+      window.addEventListener('pagehide', function () { try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} });
+      // 복원: 새로고침·앞뒤 이동일 때만, 해시(오버레이/앵커) 없을 때만
+      var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+      var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
+        : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
+      if (!isReload || location.hash) return;
+      var y = parseInt(sessionStorage.getItem(KEY) || '', 10);
+      if (!(y > 0)) return;
+      var done = false, userMoved = false;
+      function now() { return (window.performance && performance.now) ? performance.now() : Date.now(); }
+      var t0 = now();
+      ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
+        window.addEventListener(ev, function () { userMoved = true; }, { passive: true, once: true });
+      });
+      // 히어로 WebGL·폰트·이미지로 문서 높이가 늦게 커지므로, 목표 위치에 도달할 때까지 rAF로 재시도(최대 2.5s).
+      function loop() {
+        if (done || userMoved) return;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        var target = Math.min(y, max);
+        if (Math.round(window.scrollY) !== Math.round(target)) window.scrollTo({ top: target, behavior: 'instant' });
+        if (max >= y && Math.abs(window.scrollY - y) <= 2) { done = true; return; } // 콘텐츠 충분히 자람 → 완료
+        if (now() - t0 < 2500) requestAnimationFrame(loop); else done = true;
+      }
+      requestAnimationFrame(loop);
+    })();
+
     // ─── 페이지 로드 완료 후 smooth scroll 활성화 (새로고침 시 깜빡임 방지) ───
     window.addEventListener('load', function () {
       requestAnimationFrame(function () {
