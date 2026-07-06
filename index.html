@@ -30,6 +30,18 @@
       font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
     }
 
+    /* ── v=20260706b 브랜드 틴트 그레이 스케일 (다크 섹션 텍스트 가독성 통일) ──
+       회색 텍스트 유틸리티(zinc/neutral)를 살짝 블루가 도는 스케일로 리매핑.
+       - 위계 유지: 300 > 400 > 500 > 600 순으로 명도 단조 감소, 가장 어두운 600도 대비 ~5.5:1(WCAG AA 통과).
+       - `body ` 접두어로 명시도만 +1 → Tailwind 기본 `.text-*`는 이기고, `hover:text-*`(:hover, 명시도 더 높음)는 그대로 유지(호버 밝히기 보존).
+       - 인라인 style="color:#9aa2b8/#a1a1aa" 텍스트는 CSS가 못 이기므로 hex를 직접 치환함(아래 마크업).
+       - 흰 배경 섹션(#stats·프로사업단총괄·조직문화)은 텍스트에 인라인 색(#27398c/#666 등)을 써서 이 규칙의 영향을 받지 않음(검증 완료). */
+    body .text-zinc-300, body .text-neutral-300 { color: #d5dae6; }
+    body .text-neutral-200 { color: #e2e6ef; }
+    body .text-zinc-400, body .text-neutral-400 { color: #bfc6d6; }
+    body .text-zinc-500, body .text-neutral-500 { color: #9aa2b8; }
+    body .text-zinc-600, body .text-neutral-600, body .text-neutral-700 { color: #7c8599; }
+
     .content-layer {
       position: relative;
     }
@@ -8352,25 +8364,25 @@
             }).join('');
             return '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px 10px;margin-bottom:6px;">'
               +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="font-size:12px;">'+icon+'</span><span style="font-size:10px;font-weight:700;color:#fff;">'+title+'</span></div>'
-              +'<p style="font-size:8px;color:#a1a1aa;line-height:1.5;margin-bottom:4px;">'+desc+'</p>'
+              +'<p style="font-size:8px;color:#bfc6d6;line-height:1.5;margin-bottom:4px;">'+desc+'</p>'
               +'<div style="display:flex;flex-wrap:wrap;gap:2px;">'+t+'</div></div>';
           }
           return '<div style="padding:10px;height:100%;overflow-y:auto;">'
             // ── 현 보유 계약 요약 ──
             +'<div style="border-left:3px solid #3b82f6;padding-left:8px;margin-bottom:8px;"><p style="font-size:12px;font-weight:700;color:#fff;">현 보유 계약 요약</p></div>'
             +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">'
-            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;"><p style="font-size:8px;color:#71717a;">총 보험계약</p><p style="font-size:16px;font-weight:800;color:#fff;">7<span style="font-size:10px;color:#71717a;">건</span></p></div>'
-            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;"><p style="font-size:8px;color:#71717a;">월 합산 보험료</p><p style="font-size:14px;font-weight:800;color:#ef4444;">101,890<span style="font-size:9px;">원</span></p></div>'
-            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;"><p style="font-size:8px;color:#71717a;">보장 준비 수준</p><p style="font-size:14px;font-weight:800;color:#ef4444;">부족<span style="font-size:9px;color:#71717a;">단계</span></p></div>'
+            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;"><p style="font-size:8px;color:#9aa2b8;">총 보험계약</p><p style="font-size:16px;font-weight:800;color:#fff;">7<span style="font-size:10px;color:#9aa2b8;">건</span></p></div>'
+            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;"><p style="font-size:8px;color:#9aa2b8;">월 합산 보험료</p><p style="font-size:14px;font-weight:800;color:#ef4444;">101,890<span style="font-size:9px;">원</span></p></div>'
+            +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;"><p style="font-size:8px;color:#9aa2b8;">보장 준비 수준</p><p style="font-size:14px;font-weight:800;color:#ef4444;">부족<span style="font-size:9px;color:#9aa2b8;">단계</span></p></div>'
             +'</div>'
             +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">'
-            +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:6px;text-align:center;"><p style="font-size:7px;color:#71717a;">총액 보험료</p><p style="font-size:11px;font-weight:700;color:#fff;">1,320만<span style="font-size:8px;color:#71717a;">원</span></p></div>'
-            +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:6px;text-align:center;"><p style="font-size:7px;color:#71717a;">기납입 보험료</p><p style="font-size:11px;font-weight:700;color:#ef4444;">321만<span style="font-size:8px;color:#71717a;">원</span></p></div>'
-            +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:6px;text-align:center;"><p style="font-size:7px;color:#71717a;">잔여 보험료</p><p style="font-size:11px;font-weight:700;color:#3b82f6;">1,000만<span style="font-size:8px;color:#71717a;">원</span></p></div>'
+            +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:6px;text-align:center;"><p style="font-size:7px;color:#9aa2b8;">총액 보험료</p><p style="font-size:11px;font-weight:700;color:#fff;">1,320만<span style="font-size:8px;color:#9aa2b8;">원</span></p></div>'
+            +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:6px;text-align:center;"><p style="font-size:7px;color:#9aa2b8;">기납입 보험료</p><p style="font-size:11px;font-weight:700;color:#ef4444;">321만<span style="font-size:8px;color:#9aa2b8;">원</span></p></div>'
+            +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:6px;text-align:center;"><p style="font-size:7px;color:#9aa2b8;">잔여 보험료</p><p style="font-size:11px;font-weight:700;color:#3b82f6;">1,000만<span style="font-size:8px;color:#9aa2b8;">원</span></p></div>'
             +'</div>'
             // ── 보유 계약 상세 내역 ──
             +'<div style="border-left:3px solid #3b82f6;padding-left:8px;margin-bottom:6px;"><p style="font-size:11px;font-weight:700;color:#fff;">보유 계약 상세 내역</p></div>'
-            +'<div style="overflow-x:auto;margin-bottom:10px;-webkit-overflow-scrolling:touch;"><table style="width:100%;font-size:7px;color:#a1a1aa;border-collapse:collapse;min-width:280px;">'
+            +'<div style="overflow-x:auto;margin-bottom:10px;-webkit-overflow-scrolling:touch;"><table style="width:100%;font-size:7px;color:#bfc6d6;border-collapse:collapse;min-width:280px;">'
             +'<tr style="background:rgba(59,130,246,0.15);"><th style="padding:4px 3px;text-align:left;color:#fff;font-size:7px;">No.</th><th style="padding:4px 3px;text-align:left;color:#fff;">회사명</th><th style="padding:4px 3px;text-align:left;color:#fff;">상품명</th><th style="padding:4px 3px;text-align:right;color:#fff;">보험료</th><th style="padding:4px 3px;text-align:center;color:#fff;">납입현황</th></tr>'
             +'<tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:3px;">1</td><td>메리츠화재</td><td>무배당대한굿모닝건강보험1</td><td style="text-align:right;color:#10b981;">납입완료</td><td style="text-align:center;">120/120</td></tr>'
             +'<tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:3px;">2</td><td>삼성화재</td><td>다이렉트(TM)개인용</td><td style="text-align:right;">-</td><td style="text-align:center;">11/240</td></tr>'
@@ -8427,7 +8439,7 @@
             // 투자비용
             +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;">'
             +'<p style="font-size:11px;font-weight:700;color:#fff;margin-bottom:8px;">유형별 투자비용</p>'
-            +'<table style="width:100%;font-size:9px;color:#a1a1aa;border-collapse:collapse;">'
+            +'<table style="width:100%;font-size:9px;color:#bfc6d6;border-collapse:collapse;">'
             +'<tr style="border-bottom:1px solid rgba(255,255,255,0.06);"><th style="text-align:left;padding:3px 0;color:#fff;">DB 유형</th><th style="text-align:right;padding:3px 0;">수량</th><th style="text-align:right;padding:3px 0;">단가</th></tr>'
             +'<tr><td style="padding:3px 0;"><span style="color:#3b82f6;">●</span> 보장DB</td><td style="text-align:right;">20</td><td style="text-align:right;">80,000</td></tr>'
             +'<tr><td style="padding:3px 0;"><span style="color:#8b5cf6;">●</span> 재무DB</td><td style="text-align:right;">0</td><td style="text-align:right;">-</td></tr>'
@@ -8450,15 +8462,15 @@
             // 좌측 입력
             +'<div style="flex:1;">'
             +'<p style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">🎯 목적자금 설계</p>'
-            +'<p style="font-size:9px;color:#71717a;margin-bottom:10px;">투자와 적금을 비교하여 목표 자금 달성을 위한 최적의 전략을 설계합니다.</p>'
+            +'<p style="font-size:9px;color:#9aa2b8;margin-bottom:10px;">투자와 적금을 비교하여 목표 자금 달성을 위한 최적의 전략을 설계합니다.</p>'
             +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;margin-bottom:8px;">'
-            +'<p style="font-size:10px;color:#71717a;margin-bottom:4px;">👤 고객정보</p>'
+            +'<p style="font-size:10px;color:#9aa2b8;margin-bottom:4px;">👤 고객정보</p>'
             +'<div style="display:flex;gap:6px;">'
             +'<div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:11px;color:#fff;">김프로</div>'
             +'<div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:11px;color:#fff;">40세</div>'
             +'</div></div>'
             +'<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;">'
-            +'<p style="font-size:10px;color:#71717a;margin-bottom:4px;">🎯 목표 설정</p>'
+            +'<p style="font-size:10px;color:#9aa2b8;margin-bottom:4px;">🎯 목표 설정</p>'
             +'<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:11px;color:#fff;">매월 500,000원</div>'
             +'</div></div>'
             // 우측 결과
@@ -8479,7 +8491,7 @@
             + _bar(20,'#10b981') + _bar(28,'#10b981') + _bar(35,'#10b981') + _bar(42,'#10b981') + _bar(50,'#10b981')
             + _bar(58,'#10b981') + _bar(68,'#10b981') + _bar(78,'#10b981') + _bar(88,'#10b981') + _bar(100,'#10b981')
             +'</div>'
-            +'<div style="display:flex;justify-content:space-between;margin-top:2px;"><span style="font-size:7px;color:#71717a;">1년</span><span style="font-size:7px;color:#71717a;">10년</span></div>'
+            +'<div style="display:flex;justify-content:space-between;margin-top:2px;"><span style="font-size:7px;color:#9aa2b8;">1년</span><span style="font-size:7px;color:#9aa2b8;">10년</span></div>'
             +'</div></div></div></div>';
         },
         __COACHING__: function() {
@@ -8488,10 +8500,10 @@
             +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
             +'<span style="font-size:16px;">금</span>'
             +'<div><p style="font-size:12px;font-weight:700;color:#fff;">금융 & 보험 상담 전문가이자 코치</p>'
-            +'<p style="font-size:9px;color:#71717a;">사용자설정 Gem</p></div></div>'
+            +'<p style="font-size:9px;color:#9aa2b8;">사용자설정 Gem</p></div></div>'
             +'<p style="font-size:11px;color:#d4d4d8;line-height:1.7;margin-bottom:10px;">반갑습니다! 저는 인카금융서비스 프로사업단총괄의 [2.0 시스템 수석 전략 코치]입니다.</p>'
             +'<p style="font-size:11px;color:#d4d4d8;line-height:1.7;margin-bottom:10px;">[저를 이렇게 활용해 보세요:]</p>'
-            +'<p style="font-size:10px;color:#a1a1aa;line-height:1.7;">'
+            +'<p style="font-size:10px;color:#bfc6d6;line-height:1.7;">'
             +'<span style="color:#22d3ee;">[전 금융권 상품 분석]</span>: 다양한 금융 상품 분석과 국내외 금융, 경제 환경을 천재적 통찰로 해부<br>'
             +'<span style="color:#22d3ee;">[상담 전략 및 거절 처리]</span>: 고객의 심리 편향을 깨뜨리는 송곳 질문과 화법<br>'
             +'<span style="color:#22d3ee;">[세일즈 프로세스 교육]</span>: 신입 팀장님도 즉시 복제 가능한 7단계 표준 모델</p>'
@@ -8506,7 +8518,7 @@
           return '<div style="padding:12px;height:100%;overflow-y:auto;">'
             +'<div style="text-align:center;margin-bottom:10px;">'
             +'<p style="font-size:14px;font-weight:700;color:#fff;">예상 보험금 산출 결과</p>'
-            +'<p style="font-size:10px;color:#71717a;">급성 심근경색 | 입원 14일</p></div>'
+            +'<p style="font-size:10px;color:#9aa2b8;">급성 심근경색 | 입원 14일</p></div>'
             +'<div style="background:linear-gradient(135deg,rgba(249,115,22,0.12),rgba(249,115,22,0.04));border:1px solid rgba(249,115,22,0.2);border-radius:12px;padding:14px;text-align:center;margin-bottom:10px;">'
             +'<p style="font-size:10px;color:#fb923c;">총 예상 보험금</p>'
             +'<p style="font-size:26px;font-weight:800;color:#fff;">3,696<span style="font-size:14px;">만원</span></p></div>'
@@ -8517,14 +8529,14 @@
             +'</div>'
             +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;">'
             +'<p style="font-size:10px;font-weight:700;color:#fff;margin-bottom:6px;">💡 청구 전략</p>'
-            +'<p style="font-size:9px;color:#a1a1aa;line-height:1.6;">1. 진단서 + 수술확인서 + 입퇴원확인서 준비<br>2. CI보험금 선청구 후 입원비 후청구<br>3. 실손의료비 별도 청구 (비급여 포함)</p></div></div>';
+            +'<p style="font-size:9px;color:#bfc6d6;line-height:1.6;">1. 진단서 + 수술확인서 + 입퇴원확인서 준비<br>2. CI보험금 선청구 후 입원비 후청구<br>3. 실손의료비 별도 청구 (비급여 포함)</p></div></div>';
         },
         __COMPLETESALES__: function() {
           var b = { g:'color:#34d399;', y:'color:#fbbf24;', bl:'color:#60a5fa;', r:'color:#f87171;' };
           function _s(title,items,borderColor){
             var h='<div style="background:rgba(255,255,255,0.02);border:1px solid '+borderColor+';border-radius:10px;padding:12px;margin-bottom:8px;">'
               +'<p style="font-size:11px;font-weight:700;color:#fff;margin-bottom:8px;">'+title+'</p>';
-            items.forEach(function(it){ h+='<p style="font-size:9px;color:#a1a1aa;line-height:1.7;margin-bottom:5px;">'+it+'</p>'; });
+            items.forEach(function(it){ h+='<p style="font-size:9px;color:#bfc6d6;line-height:1.7;margin-bottom:5px;">'+it+'</p>'; });
             return h+'</div>';
           }
           return '<div style="padding:10px;height:100%;overflow-y:auto;">'
@@ -8568,9 +8580,9 @@
         __HEALTHCHECK__: function() {
           return '<div style="padding:12px;height:100%;overflow-y:auto;">'
             +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'
-            +'<div><p style="font-size:14px;font-weight:700;color:#fff;">건강검진 분석 리포트</p><p style="font-size:10px;color:#71717a;">2025년 검진 결과 기반</p></div>'
+            +'<div><p style="font-size:14px;font-weight:700;color:#fff;">건강검진 분석 리포트</p><p style="font-size:10px;color:#9aa2b8;">2025년 검진 결과 기반</p></div>'
             +'<div style="width:50px;height:50px;border-radius:50%;border:3px solid #a855f7;display:flex;align-items:center;justify-content:center;flex-direction:column;">'
-            +'<span style="font-size:14px;font-weight:800;color:#fff;">88</span><span style="font-size:7px;color:#a1a1aa;">/100</span></div></div>'
+            +'<span style="font-size:14px;font-weight:800;color:#fff;">88</span><span style="font-size:7px;color:#bfc6d6;">/100</span></div></div>'
             +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">'
             + _healthCard('공복혈당','118 mg/dL','경계','#f59e0b')
             + _healthCard('총콜레스테롤','195 mg/dL','정상','#10b981')
@@ -8579,10 +8591,10 @@
             +'</div>'
             +'<div style="background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.15);border-radius:10px;padding:10px;margin-bottom:8px;">'
             +'<p style="font-size:10px;font-weight:700;color:#c084fc;margin-bottom:4px;">⚠️ 질병 리스크 분석</p>'
-            +'<p style="font-size:9px;color:#a1a1aa;line-height:1.6;">당뇨 전단계 주의 (공복혈당 118) → 3개월 후 재검 권장<br>경계성 고혈압 → 생활습관 개선 필요</p></div>'
+            +'<p style="font-size:9px;color:#bfc6d6;line-height:1.6;">당뇨 전단계 주의 (공복혈당 118) → 3개월 후 재검 권장<br>경계성 고혈압 → 생활습관 개선 필요</p></div>'
             +'<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;">'
             +'<p style="font-size:10px;font-weight:700;color:#fff;margin-bottom:4px;">🛡️ 권장 보장 설계</p>'
-            +'<p style="font-size:9px;color:#a1a1aa;line-height:1.6;">1. 당뇨 진단비 특약 추가 권장<br>2. 3대 진단비 (암/뇌/심장) 보장 강화<br>3. 실손의료비 5세대 전환 검토</p></div></div>';
+            +'<p style="font-size:9px;color:#bfc6d6;line-height:1.6;">1. 당뇨 진단비 특약 추가 권장<br>2. 3대 진단비 (암/뇌/심장) 보장 강화<br>3. 실손의료비 5세대 전환 검토</p></div></div>';
         }
       };
 
@@ -8592,31 +8604,31 @@
         return '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;display:flex;flex-direction:column;">'
           +'<div style="font-size:24px;margin-bottom:6px;">'+icon+'</div>'
           +'<p style="font-size:11px;font-weight:700;color:#fff;margin-bottom:3px;">'+title+' →</p>'
-          +'<p style="font-size:8px;color:#a1a1aa;margin-bottom:8px;flex:1;">'+desc+'</p>'
+          +'<p style="font-size:8px;color:#bfc6d6;margin-bottom:8px;flex:1;">'+desc+'</p>'
           +'<div style="display:flex;gap:3px;flex-wrap:wrap;">'+t+'</div></div>';
       }
       function _scoreCard(label, value, status, color) {
         return '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;">'
-          +'<p style="font-size:9px;color:#71717a;margin-bottom:2px;">'+label+'</p>'
+          +'<p style="font-size:9px;color:#9aa2b8;margin-bottom:2px;">'+label+'</p>'
           +'<p style="font-size:13px;font-weight:700;color:'+color+';">'+value+'</p>'
           +'<p style="font-size:9px;">'+status+'</p></div>';
       }
       function _funnelRow(label, pct, color) {
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);"><span style="font-size:9px;color:#a1a1aa;">'+label+'</span><span style="font-size:11px;font-weight:700;color:'+color+';">'+pct+'</span></div>';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);"><span style="font-size:9px;color:#bfc6d6;">'+label+'</span><span style="font-size:11px;font-weight:700;color:'+color+';">'+pct+'</span></div>';
       }
       function _insRow(title, desc, amount, color) {
         return '<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px 10px;">'
-          +'<div><p style="font-size:10px;font-weight:600;color:#fff;">'+title+'</p><p style="font-size:8px;color:#71717a;">'+desc+'</p></div>'
+          +'<div><p style="font-size:10px;font-weight:600;color:#fff;">'+title+'</p><p style="font-size:8px;color:#9aa2b8;">'+desc+'</p></div>'
           +'<span style="font-size:12px;font-weight:700;color:'+color+';">'+amount+'</span></div>';
       }
       function _typeCard(letter, desc, color) {
         return '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;text-align:center;">'
           +'<p style="font-size:12px;font-weight:800;color:'+color+';margin-bottom:3px;">유형 '+letter+'</p>'
-          +'<p style="font-size:8px;color:#a1a1aa;white-space:pre-line;line-height:1.4;">'+desc+'</p></div>';
+          +'<p style="font-size:8px;color:#bfc6d6;white-space:pre-line;line-height:1.4;">'+desc+'</p></div>';
       }
       function _healthCard(label, value, status, color) {
         return '<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px;">'
-          +'<p style="font-size:9px;color:#71717a;margin-bottom:2px;">'+label+'</p>'
+          +'<p style="font-size:9px;color:#9aa2b8;margin-bottom:2px;">'+label+'</p>'
           +'<p style="font-size:12px;font-weight:700;color:#fff;">'+value+'</p>'
           +'<span style="font-size:8px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,0.05);color:'+color+';">'+status+'</span></div>';
       }
@@ -8783,7 +8795,7 @@
         if (!tabs) return;
         var html = '';
         engines.forEach(function(e, i) {
-          html += '<button class="ai-mobile-tab flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap' + (i === 0 ? ' active' : '') + '" data-index="' + i + '" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:#a1a1aa;">' + e.short + '</button>';
+          html += '<button class="ai-mobile-tab flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap' + (i === 0 ? ' active' : '') + '" data-index="' + i + '" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:#bfc6d6;">' + e.short + '</button>';
         });
         tabs.innerHTML = html;
       }
@@ -8805,12 +8817,12 @@
         if (!panel) return;
         var e = engines[idx], c = colorMap[e.color];
         // v=20260704 Nexora 스킨 — 지표 카드에 상단 헤어라인 + 컬러 인디케이터, 인사이트 박스화, 순차 등장
-        // v=20260706a — 우측 패널 제목/라벨/인사이트 본문 회색→흰색(전략실장 요청): 핵심 지표·AI 인사이트 라벨, stat 라벨(분석 항목 등), 인사이트 박스 본문
+        // v=20260706b — 우측 패널 라벨/본문을 전역 브랜드 틴트 그레이 스케일에 편입(head <style> 참조). zinc-500/600/400 유지 → 전역 규칙이 블루틴트로 리매핑
         var statsHtml = '';
         e.stats.forEach(function(s, si) {
           statsHtml += '<div class="p-3 rounded-lg relative overflow-hidden" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);animation:fadeSlideIn .5s ease-out ' + (0.08 + si * 0.07) + 's both;">'
             + '<span style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(to right,' + c.dot + ',transparent);opacity:.7;"></span>'
-            + '<p class="text-[10px] text-white mb-1">' + s.l + '</p><p class="text-sm font-bold" style="color:' + c.text + ';">' + s.v + '</p></div>';
+            + '<p class="text-[10px] text-zinc-500 mb-1">' + s.l + '</p><p class="text-sm font-bold" style="color:' + c.text + ';">' + s.v + '</p></div>';
         });
         // v=20260704c — 상단 계정 칩 행(높이 68px = 앱 헤더와 라인 일치) + 엔진 정보는 KPI 스트립 행 높이로 정렬(pt-4)
         // v=20260704d — 아바타=실사진(assets/images/consultant-avatar.jpg, 얼굴 중심 상체 크롭 · 미존재 시 P 폴백) + 셰브론을 텍스트 옆 밀착(Nexora 간격)
@@ -8826,11 +8838,11 @@
           + '<div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:' + c.bg + ';border:1px solid ' + c.border + ';color:' + c.text + ';box-shadow:0 0 22px -6px ' + c.border + ';">' + e.icon.replace('w-4 h-4','w-5 h-5') + '</div>'
           + '<div><h4 class="text-sm font-bold text-white">' + e.name + '</h4><p class="text-[10px] text-zinc-500">' + e.desc + '</p></div></div>'
           + '<div class="h-px mb-4" style="background:linear-gradient(to right,rgba(96,165,250,0.35),transparent);"></div>'
-          + '<p class="text-[10px] font-semibold text-white uppercase tracking-widest mb-3">핵심 지표</p>'
+          + '<p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-3">핵심 지표</p>'
           + '<div class="grid grid-cols-2 gap-2.5 mb-5">' + statsHtml + '</div>'
-          + '<p class="text-[10px] font-semibold text-white uppercase tracking-widest mb-3">AI 인사이트</p>'
+          + '<p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-3">AI 인사이트</p>'
           + '<div class="rounded-xl p-3" style="background:linear-gradient(135deg,rgba(28,73,200,0.10),rgba(28,73,200,0.02));border:1px solid rgba(59,130,246,0.14);">'
-          + '<p class="text-[11px] text-white leading-relaxed">' + e.insight + '</p></div>'
+          + '<p class="text-[11px] text-zinc-400 leading-relaxed">' + e.insight + '</p></div>'
           // v=20260704e — 사이드바에 있던 "AI 풀 시스템" CTA 카드를 AI 인사이트 아래 빈 공간으로 이동. 자세히보기 링크·flex-1 spacer 제거 → 콘텐츠 하단 자동 상승.
           + '<div class="mt-4 rounded-2xl p-3.5 relative overflow-hidden" style="background:linear-gradient(135deg,rgba(28,73,200,0.16),rgba(28,73,200,0.03));border:1px solid rgba(59,130,246,0.2);">'
           +   '<div class="w-7 h-7 rounded-lg flex items-center justify-center mb-2" style="background:rgba(59,130,246,0.14);color:#93c5fd;">'
