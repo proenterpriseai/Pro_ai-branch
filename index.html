@@ -3417,7 +3417,8 @@
     .edu-hp-text { padding:3rem 1rem; display:flex; flex-direction:column; justify-content:center; height:100%; position:relative; }
     .edu-hp-num { display:none; }
     .edu-hp-kicker { display:none; }
-    .edu-hp-title { font-size:clamp(2rem,4vw,3.5rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.05; margin-bottom:1.5rem; }
+    /* v=20260706b: 교육 패널 제목 56→44px — 본문(16px) 대비 3.5:1 과대 + 오버레이 히어로(56)와 위계 충돌 해소, 섹션 44px 표준 편입 */
+    .edu-hp-title { font-size:clamp(2rem,4vw,2.75rem); font-weight:700; color:#fff; letter-spacing:-0.04em; line-height:1.1; margin-bottom:1.5rem; }
     .edu-hp-desc { font-size:15px; color:rgba(255,255,255,0.7); line-height:1.75; max-width:440px; margin-bottom:2rem; }
     .edu-hp-courses { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
     .edu-hp-course { padding:10px 14px; border-left:2px solid rgba(255,255,255,0.08); }
