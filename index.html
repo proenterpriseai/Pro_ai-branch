@@ -14895,6 +14895,11 @@
       #talent-overlay .tsk-card[data-i="2"] .tsk-tint{background:radial-gradient(ellipse at top left,rgba(99,102,241,0.20),transparent 55%);}
       #talent-overlay .tsk-card[data-i="3"] .tsk-tint{background:radial-gradient(ellipse at top left,rgba(96,165,250,0.18),transparent 55%);}
       #talent-overlay .tsk-orb{position:absolute;width:300px;height:300px;border-radius:50%;filter:blur(90px);pointer-events:none;background:rgba(40,68,150,0.28);right:-90px;top:-90px;}
+      /* v=20260706c: 4장 카드 orb 색을 각 카드 tint 색조와 일치시켜 구분(기존엔 orb 색 동일+01·03 위치 동일이라 겹쳐 보임). 위치는 인라인에서 4코너로 분리. */
+      #talent-overlay .tsk-card[data-i="0"] .tsk-orb{background:rgba(28,73,200,0.30);}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-orb{background:rgba(59,130,246,0.26);}
+      #talent-overlay .tsk-card[data-i="2"] .tsk-orb{background:rgba(99,102,241,0.30);}
+      #talent-overlay .tsk-card[data-i="3"] .tsk-orb{background:rgba(96,165,250,0.24);}
       /* v=20260706c: 스택 카드 배경 숫자 0.055→0.12 (거의 안 보이던 것 적당히 보이게, 전략실장 요청) */
       #talent-overlay .tsk-num{position:absolute;right:18px;top:2px;font-size:clamp(110px,13vw,180px);font-weight:700;line-height:1;letter-spacing:-0.06em;color:rgba(255,255,255,0.12);pointer-events:none;user-select:none;}
       #talent-overlay .tsk-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding:clamp(30px,5vw,72px);}
@@ -15158,7 +15163,7 @@
 
       <!-- 카드 03 — 자격 성장 경로 (기존 섹션 3 콘텐츠 — 사다리·PROOF 계승) -->
       <article class="tsk-card" data-i="2">
-        <div class="tsk-tint"></div><div class="tsk-orb"></div>
+        <div class="tsk-tint"></div><div class="tsk-orb" style="top:auto;bottom:-90px;"></div>
         <div class="tsk-num">03</div>
         <div class="tsk-grid">
           <div class="tsk-mock">
