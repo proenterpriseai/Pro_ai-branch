@@ -2783,6 +2783,20 @@
       /* 데모 내부 어떤 요소도 데모 영역 밖으로 넘쳐 잘리지 않게 (숫자·카드 폭 안전망) */
       #ai-demo-area, #ai-demo-area * { max-width: 100%; }
 
+      /* v=20260706e 모바일 #about/자격카드 가독성 — 좁은 폭에서 텍스트 폭 확보·넘침 방지 */
+      /* ① 파이프라인 카드(가망고객 발굴 등): 외곽/레일/카드 패딩 축소 → 본문 폭 넓혀 잦은 줄바꿈 완화 */
+      #about .p-8 { padding: 16px !important; }
+      #about .pp-node { padding-left: 38px !important; }
+      #about .pp-node > .rounded-xl { padding: 12px !important; }
+      #about .pp-node .w-9 { width: 30px !important; height: 30px !important; }
+      #about .pp-node .flex.items-start { gap: 8px !important; }
+      /* ② 승격 구조 라벨: 폰트·패딩 축소로 "영업수석지점장" 옆 칼럼 침범 방지 */
+      #about .promo-flow .flex > span:last-child { font-size: 13px !important; padding: 9px 6px !important; }
+      #about .promo-flow .flex { gap: 6px !important; }
+      /* ③ 자격 성장 경로 카드: STEP 배지·조직자격 값 줄바꿈 방지 */
+      #talent-overlay .tsk-live { white-space: nowrap; flex-shrink: 0; }
+      #talent-overlay .tsk-cstat .v { white-space: nowrap; font-size: 12px !important; }
+
 
       /* ── 수정2: Hero 서브텍스트 좌우 잘림 방지 ── */
       #hero-typing {
@@ -15433,7 +15447,7 @@
               <p class="sub">신한은행 대출모집법인 제휴</p>
               <p class="desc">고객의 아파트 매매·전세 시 은행 대출상품을 상담·중개합니다.<br>보험을 넘어 부동산 금융까지, 토탈 금융서비스 전문가로 함께 성장합니다.</p>
             </div>
-            <img class="acc-photo" src="assets/images/partners/mortgage.jpg" alt="모기지리더스 부동산 대출" loading="lazy" style="object-position:center 32%;">
+            <img class="acc-photo" src="assets/images/partners/mortgage.jpg" alt="모기지리더스 부동산 대출" loading="lazy" style="object-position:center 8%;">
           </div>
           <div class="acc-item">
             <div class="acc-rail"><span class="num">03</span><span class="rname">법무법인 대진</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M5 11l3 7h8l3-7M5 11l3-2M19 11l-3-2M5 11h14"/></svg></span></div>
