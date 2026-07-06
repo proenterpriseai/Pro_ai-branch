@@ -54,6 +54,10 @@
       font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
     }
 
+    /* v=20260706c — 한글 단어 단위 줄바꿈 전역 기본(모바일 좁은 폭에서 "라인/업"·"설계하/는" 같은 단어중간 짤림 방지).
+       overflow-wrap:break-word = 컨테이너보다 긴 토큰(URL·긴 숫자)만 예외적으로 분절 → 오버플로우 방지 안전망. 데스크톱 <br>·레이아웃 불변. */
+    body { word-break: keep-all; overflow-wrap: break-word; }
+
     .content-layer {
       position: relative;
     }
