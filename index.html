@@ -2774,6 +2774,15 @@
         margin-bottom: 0.75rem;
       }
 
+      /* v=20260706c: 쇼케이스 데모(계산기 등) 2단 가로 레이아웃 → 모바일 세로 스택 (결과 숫자 "7,764만…" 짤림 방지) */
+      #ai-demo-area div[style*="display:flex"][style*="height:100%"] {
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 8px !important;
+      }
+      /* 데모 내부 어떤 요소도 데모 영역 밖으로 넘쳐 잘리지 않게 (숫자·카드 폭 안전망) */
+      #ai-demo-area, #ai-demo-area * { max-width: 100%; }
+
       /* ── 수정2: Hero 서브텍스트 좌우 잘림 방지 ── */
       #hero-typing {
         font-size: 14px !important;
