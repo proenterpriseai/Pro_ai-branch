@@ -3,6 +3,30 @@
 
 <head>
   <meta charset="UTF-8">
+  <!-- v=20260706b — F5 복원 플래시 방지: 복원(오버레이 재개방/스크롤 위치)이 적용되기 전에
+       메인 히어로가 잠깐 보였다 사라지는 현상 차단. 복원 대상이 있을 때만 body를 잠깐 가리고(검정 유지),
+       복원 스크립트가 위치 적용 직후 __proReveal()로 해제. 실패 대비 1800ms 강제 해제. -->
+  <script>
+    (function () {
+      try {
+        var h = (location.hash || '').replace('#', '');
+        var overlayHash = (h === 'ceo' || h === 'prosolution' || h === 'pro-intro' || h === 'talent');
+        var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+        var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
+          : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
+        var savedY = 0;
+        try { savedY = parseInt(sessionStorage.getItem('proai_scrollY') || '0', 10) || 0; } catch (e) {}
+        var need = overlayHash || (isReload && savedY > 0);
+        window.__proReveal = function () { document.documentElement.classList.remove('pro-restore-pending'); };
+        if (!need) return;
+        document.documentElement.classList.add('pro-restore-pending');
+        var st = document.createElement('style');
+        st.textContent = 'html.pro-restore-pending{background:#000;}html.pro-restore-pending body{visibility:hidden;}';
+        document.head.appendChild(st);
+        setTimeout(window.__proReveal, 1800); // failsafe — 어떤 경우에도 화면은 뜬다
+      } catch (e) { try { window.__proReveal && window.__proReveal(); } catch (e2) {} }
+    })();
+  </script>
   <link rel="preconnect" href="https://www.youtube.com">
   <link rel="preconnect" href="https://i.ytimg.com">
   <link rel="dns-prefetch" href="https://www.youtube.com">
@@ -9287,11 +9311,14 @@
         t = setTimeout(function () { t = null; try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} }, 200);
       }, { passive: true });
       window.addEventListener('pagehide', function () { try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} });
-      // 복원: 새로고침·앞뒤 이동일 때만, 해시(오버레이/앵커) 없을 때만
+      // 복원: 새로고침·앞뒤 이동일 때만. 해시는 **오버레이 해시만 제외**(섹션 해시 #solutions·#news 등은
+      //   네비 클릭 잔재라 남아있어도 실제 본 위치(savedY)로 복원해야 함 — v=20260706b 전략실장 지적 반영)
       var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
       var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
         : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
-      if (!isReload || location.hash) return;
+      var _h = (location.hash || '').replace('#', '');
+      var _isOverlayHash = (_h === 'ceo' || _h === 'prosolution' || _h === 'pro-intro' || _h === 'talent');
+      if (!isReload || _isOverlayHash) return;
       var y = parseInt(sessionStorage.getItem(KEY) || '', 10);
       if (!(y > 0)) return;
       var done = false, userMoved = false;
@@ -9301,14 +9328,23 @@
         window.addEventListener(ev, function () { userMoved = true; }, { passive: true, once: true });
       });
       // 히어로 WebGL·폰트·이미지로 문서 높이가 늦게 커지므로, 목표 위치에 도달할 때까지 rAF로 재시도(최대 2.5s).
+      var revealed = false;
+      function reveal() { if (!revealed) { revealed = true; if (window.__proReveal) window.__proReveal(); } }
       function loop() {
-        if (done || userMoved) return;
+        if (done || userMoved) { reveal(); return; }
         var max = document.documentElement.scrollHeight - window.innerHeight;
         var target = Math.min(y, max);
         if (Math.round(window.scrollY) !== Math.round(target)) window.scrollTo({ top: target, behavior: 'instant' });
+        reveal(); // 첫 위치 적용 즉시 화면 공개(플래시 방지 가림막 해제) — 이후 루프는 미세 보정만
         if (max >= y && Math.abs(window.scrollY - y) <= 2) { done = true; return; } // 콘텐츠 충분히 자람 → 완료
         if (now() - t0 < 2500) requestAnimationFrame(loop); else done = true;
       }
+      // rAF는 백그라운드 탭에서 정지하므로 첫 적용은 DOMContentLoaded에서도 직접 실행
+      document.addEventListener('DOMContentLoaded', function () {
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        window.scrollTo({ top: Math.min(y, max), behavior: 'instant' });
+        reveal();
+      });
       requestAnimationFrame(loop);
     })();
 
@@ -9331,7 +9367,7 @@
         var id = MAP[hash];
         if (!id) return;
         var ov = document.getElementById(id);
-        if (!ov || ov.classList.contains('ceo-overlay--active')) return;
+        if (!ov || ov.classList.contains('ceo-overlay--active')) { if (window.__proReveal) window.__proReveal(); return; }
         ov.classList.add('ceo-overlay--active');
         ov.setAttribute('aria-hidden', 'false');
         // body 잠금 방식은 navigateTo와 동일하게 오버레이별로
@@ -9342,16 +9378,20 @@
           if (vid) vid.src = 'https://www.youtube.com/embed/Vft3wpiJKUE?autoplay=1&enablejsapi=1&vq=hd2160';
         }
         // 새로고침이면 오버레이 내부 스크롤 위치 복원 (초기화 스크립트들이 60~450ms에 도니 그 뒤에)
+        function reveal() { if (window.__proReveal) window.__proReveal(); }
         var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
         var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
           : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
-        if (!isReload) return;
+        if (!isReload) { reveal(); return; }
         var saved = '';
         try { saved = sessionStorage.getItem(KEY) || ''; } catch (e) {}
         var parts = saved.split('|');
-        if (parts[0] !== id) return;
+        if (parts[0] !== id) { reveal(); return; }
         var top = parseInt(parts[1], 10);
-        if (!(top > 0)) return;
+        if (!(top > 0)) { reveal(); return; }
+        // 즉시 1차 적용 후 화면 공개(가림막 해제) — 이후 250/700ms 재적용은 미세 보정
+        ov.scrollTop = Math.min(top, ov.scrollHeight - ov.clientHeight);
+        reveal();
         // 2회만 세팅(초기화 스크립트 이후) — 교육 가로스크롤 등 섹션 자체 스냅과 싸우지 않음(스냅 조정은 의도된 동작).
         var moved = false;
         ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
