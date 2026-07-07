@@ -160,6 +160,8 @@
       100% { stroke-dashoffset: -180; opacity: .4; }
     }
     .nxk-spark path.draw { stroke-dasharray: 180; animation: nxkDraw 7s ease-in-out infinite; }
+    /* v=20260707b — AI 사용률 스파크라인만 주기·위상 분리(금일 분석과 동일하게 움직이던 것 해소): 9.5s + 음수 딜레이로 영구 비동기 */
+    .nxk-spark path.draw-alt { animation-duration: 9.5s; animation-delay: -3.5s; }
     .nxk-dot7 span { width: 7px; height: 14px; border-radius: 3px; background: rgba(96,165,250,0.75); display: inline-block; transform-origin: bottom; animation: nxkDotSeq 2.8s ease-in-out infinite; }
     .nxk-dot7 span:nth-child(odd) { background: rgba(28,73,200,0.85); }
     .nxk-dot7 span:nth-child(1) { animation-delay: 0s; }
@@ -4398,7 +4400,7 @@
                   <p class="nxk-label">AI 사용률</p>
                   <p class="nxk-value">99.2%<span class="nxk-trend">↑</span></p>
                   <svg class="nxk-spark mt-1.5 w-full h-7 overflow-visible" viewBox="0 0 140 30" preserveAspectRatio="none" aria-hidden="true">
-                    <path class="draw" d="M2 20 L20 22 L36 15 L52 17 L68 10 L84 12 L100 6 L118 9 L138 3" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                    <path class="draw draw-alt" d="M2 20 L20 22 L36 15 L52 17 L68 10 L84 12 L100 6 L118 9 L138 3" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
                   </svg>
                 </div>
               </div>
