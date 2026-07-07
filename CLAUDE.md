@@ -237,6 +237,17 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260707a~20260707j** (**main 직커밋 LIVE**, tag `v20260707j`, main `5303401`, 2026-07-07) — 7대 AI 쇼케이스(#solutions) + 승격 구조(#about) 폴리시 10건. 전부 프리뷰 DOM 실측·라이브 캐시버스터 grep·콘솔0 후 배포. 상세 진실원 → auto-memory `session-20260707-aibranch-showcase-polish.md`.
+  - **a**(`2d4c53f`): KPI 4카드 그래프 풀폭(`nxk-dot7`·`nxk-bars` `gap-1`→`justify-between` = 스파크라인과 동일 113px) + KPI/사이드바 "AI 시스템" 라벨/우측패널(핵심 지표·지표박스·AI 인사이트) 가운데 정렬 + AI 풀 시스템 카드 아이콘 우측 이동·글자 확대 + **보장분석 `__COVERAGE__` 리포트 "AI 카테고리 분석" 16카드 섹션 제거**(미사용 `_cat` 헬퍼 동반 제거, ①요약·②상세표·③점수카드 유지=종합점수 B+에서 종료).
+  - **b**(`b99b92d`): 금일 분석·AI 사용률 스파크라인이 동일 nxkDraw 7s 동시 시작으로 똑같이 움직이던 것 → AI 사용률만 `.draw-alt`(duration 9.5s + delay -3.5s)로 영구 비동기.
+  - **c**(`1bd00cf`): AI 인사이트 **본문** text-center 제거→좌측 복구(제목은 center 유지) + 풀시스템 설명 zinc-500→zinc-400.
+  - **d**(`74afc2e`): 사이드바 "AI 시스템" 라벨 zinc-600→white.
+  - **e**(`fa1eba4`): 우측패널 CTA "AI 풀 시스템"→**"AI 통합 시스템"** + 설명 zinc-400→white.
+  - **f**(`c645a65`): 사이드바 "AI 시스템" 라벨 10px→**14px**(우측패널 엔진 제목 text-sm과 동일).
+  - **g**(`dfc3185`): KPI 라벨 4종(`.nxk-label`) rgba(255,255,255,0.5)→**#fff**.
+  - **h~j**(`d8c1371`/`1d027d5`/`5303401`): 승격 구조 "영업인 루트"/"관리자 루트" — text-center(h) + text-sm→text-base 16px=설계사 박스 동일(i) + **`pl-[22px]`로 박스 기준 가운데 정정**(j). ⚠️ 행 구조 `[●점 flex-shrink-0]+[gap-3 12px]+[박스 flex-1]`라 박스 중심이 컬럼 중심보다 +11px 우측 → text-center만으론 라벨이 11px 좌측 치우침. 점10+gap12=22px 좌패딩으로 실측 diff 0.
+  - ⚠️ **교훈**: (1) 배포 직후 라이브 검증은 CDN 엣지 구캐시 혼합 응답 → `?cb=timestamp` 캐시버스터 필수. (2) 쇼케이스 데모는 렌더 후 3s 자동 다음엔진 전환 → 결과물 검증 시 `setTimeout` d===3000 드롭 패치로 고정(검색창 focus만으론 orphan 타이머로 불충분). (3) 스크린샷 무한애니 타임아웃=기존 한계, DOM 실측 대체.
+
 - **v=20260706g~20260706h** (**main 직커밋 LIVE**, tag `v20260706h`, main `92d6005`, 2026-07-06) — CEO 오버레이 제목("당신을 위한 최고의 / 서포터가 되겠습니다.", `index.html:7717`) 행간 조정. 전부 실측·라이브 확인.
   - **g**(76be59f→e239856): 전략실장 "좁다" 2회 → `leading-[1.2]`→`[1.45]`→`[1.6]` 단계 확대.
   - **h**(92d6005): 전략실장 요청 "1번 제목과 행간 통일" → `leading-[1.6]`(class) → **`style="line-height:1.25;"`**. #stats 히어로 제목 "소득의 격차를 만드는 / 7대 핵심 AI 시스템"(`index.html:4335`, `line-height:1.25`)과 **완전 동일 값**. ⚠️ 방향상 g의 확대와 반대(간격 ~26px→11px 축소)지만 "두 제목 통일"이 최종 결정. 폰트 44px 동일이라 값=시각 1:1. 라이브 실측: `ai-branch.vercel.app` HTML에 `line-height:1.25;">당신을 위한` 확인.
