@@ -3372,28 +3372,28 @@
       mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
     }
 
-    /* ── 조직문화 4 카드 자동 순환 캐러셀 (v=20260504b) ── */
-    @keyframes culture-carousel-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .culture-carousel-mask {
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-      mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-    }
-    .culture-carousel-auto {
+    /* ── 조직문화 카드 수동 캐러셀 (v=20260710e: 자동순환→화살표 클릭 이동, 대표님 요청. STORIES와 동일 transform 트랙 방식) ── */
+    .culture-viewport { overflow: hidden; }
+    .culture-track {
       display: flex;
       gap: 32px;
-      /* v=20260706c: 조직문화 캐러셀 속도 60s→38s (지사 캐러셀 ~63px/s와 동일 체감. 트랙폭 실측 기반) */
-      animation: culture-carousel-scroll 38s linear infinite;
-      width: max-content;
-      padding: 0 32px;
+      padding: 4px 0 8px;
+      transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
-    .culture-carousel-auto:hover { animation-play-state: paused; }
-    @media (prefers-reduced-motion: reduce) {
-      .culture-carousel-auto { animation: none; }
+    .culture-nav {
+      position: absolute; top: 178px; transform: translateY(-50%);
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(17,24,39,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 5;
+      transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
     }
+    .culture-nav:hover { background: rgba(17,24,39,0.82); transform: translateY(-50%) scale(1.08); }
+    .culture-nav-prev { left: 10px; }
+    .culture-nav-next { right: 10px; }
+    .culture-nav[disabled] { opacity: 0; pointer-events: none; }
     .culture-card {
       width: 560px;
       flex-shrink: 0;
@@ -3427,12 +3427,14 @@
       .culture-card { width: 440px; }
       .culture-card-title { font-size: 20px; }
       .culture-card-desc { font-size: 14px; }
+      .culture-nav { top: 140px; }
     }
     @media (max-width: 768px) {
       .culture-card { width: 320px; }
       .culture-card-title { font-size: 18px; }
       .culture-card-desc { font-size: 13px; }
-      .culture-carousel-auto { gap: 20px; padding: 0 20px; animation-duration: 45s; }
+      .culture-track { gap: 20px; }
+      .culture-nav { top: 100px; width: 40px; height: 40px; font-size: 16px; }
     }
 
     /* ── 교육 인프라 + 보상 체계 공통 ── */
@@ -9038,6 +9040,7 @@
       var STORIES = [
         {
           id: 'annual-awards', type: 'mp4', src: 'assets/video/2025-annual-awards.mp4',
+          poster: 'AI 홈페이지/PRO ENTERPRISE AWARD.jpg',
           thumb: '', label: '현장 영상', tone: 'cyan',
           title: '2025 프로사업단 연도대상',
           subtitle: '한 해의 압도적 성과, 그 영광의 시상식 현장'
@@ -9070,7 +9073,7 @@
       function buildCard(s) {
         var thumbHtml = s.type === 'youtube'
           ? '<img src="' + s.thumb + '" alt="' + s.title + '" loading="lazy" onerror="this.src=\'https://img.youtube.com/vi/' + s.src + '/hqdefault.jpg\'">'
-          : '<video src="' + s.src + '" muted playsinline preload="metadata"></video>';
+          : '<video src="' + s.src + '"' + (s.poster ? ' poster="' + s.poster + '"' : '') + ' muted playsinline preload="metadata"></video>';
         return ''
           + '<div class="story-card">'
           +   '<div class="story-card-inner" data-story-card data-id="' + s.id + '">'
@@ -9303,12 +9306,15 @@
       // ─── v=20260710d: CEO 화이트 오버레이 동안 네비 pill 다크(흰 로고·글자 가독성) ───
       //   #nav-bar 배경은 이 IIFE의 인라인 스타일이 단일 소스(스크롤 핸들러) → CSS :has로 못 이김.
       //   오버레이 class 변화를 관찰해 열리면 다크, 닫히면 스크롤 위치 기준 원복(스크롤 락 상태라 충돌 없음).
-      var ceoOv = document.getElementById('ceo-overlay');
-      if (ceoOv) {
-        new MutationObserver(function () {
-          if (ceoOv.classList.contains('ceo-overlay--active')) {
+      // 흰 배경 섹션이 있는 오버레이(CEO 화이트 / 프로인트로 조직문화 흰섹션) 열림 동안 네비 pill 다크
+      //   ⚠️ pro-intro-overlay 마크업은 이 스크립트보다 아래에 있어 파싱 전 → DOMContentLoaded 후 셋업
+      function setupDarkNav() {
+        var darkNavOvs = ['ceo-overlay', 'pro-intro-overlay'].map(function (id) { return document.getElementById(id); }).filter(Boolean);
+        if (!darkNavOvs.length) return;
+        var applyDarkNav = function () {
+          var anyActive = darkNavOvs.some(function (o) { return o.classList.contains('ceo-overlay--active'); });
+          if (anyActive) {
             // 여러 핸들러(scroll·brightObs)가 인라인 배경을 경합 → important로 확실히 우선
-            ceoOv.classList.contains('ceo-overlay--active');
             navBar.style.setProperty('background', 'rgba(15,15,30,0.92)', 'important');
             navBar.style.setProperty('box-shadow', '0 4px 30px rgba(0,0,0,0.5)', 'important');
             navBar.style.borderColor = 'rgba(255,255,255,0.1)';
@@ -9317,8 +9323,12 @@
             navBar.style.removeProperty('box-shadow');
             if (window.scrollY > 50) navScrolled(); else navTop();
           }
-        }).observe(ceoOv, { attributes: true, attributeFilter: ['class'] });
+        };
+        var darkNavMo = new MutationObserver(applyDarkNav);
+        darkNavOvs.forEach(function (o) { darkNavMo.observe(o, { attributes: true, attributeFilter: ['class'] }); });
       }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupDarkNav);
+      else setupDarkNav();
     })();
 
     // ─── F5 새로고침 시 마지막 스크롤 위치 복원 (v=20260706b) ───
@@ -15157,7 +15167,7 @@
             <div class="tsk-mhead">
               <div class="l">
                 <span class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>
-                <div><div class="t">브랜드 지원 콘솔</div><div class="s">회사가 먼저 고객을 설득하는 5축</div></div>
+                <div><div class="t">통합 브랜드 지원</div><div class="s">회사가 먼저 고객을 설득하는 5축</div></div>
               </div>
               <span class="tsk-live"><span class="dt"></span>Live</span>
             </div>
@@ -15470,7 +15480,7 @@
             <div class="acc-body">
               <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.8-4.2A2 2 0 0 1 8.6 5.5h6.8a2 2 0 0 1 1.8 1.3L19 11"/><rect x="3" y="11" width="18" height="6" rx="1.5"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg></span><span class="area">영업지원 · 자동차보험</span></div>
               <h3>CARING</h3>
-              <p class="sub">대한민국 최대 자동차 보험 플랫폼</p>
+              <p class="sub">대한민국 자동차 보험 플랫폼</p>
               <p class="desc">개인정보 + 차량번호만 있으면 10분만에 전 보험사 비교견적 제공<br>배서와 청약까지 원스톱으로 가능합니다.</p>
             </div>
             <img class="acc-photo" src="assets/images/partners/caring.jpg" alt="CARING 자동차 보험 플랫폼" loading="lazy" style="object-position:center 50%;">
@@ -15746,9 +15756,10 @@
         <h2 style="font-size:clamp(1.8rem,3.5vw,2.75rem); font-weight:800; color:#27398c; letter-spacing:-0.04em; line-height:1.2; margin:0 0 1.2rem;">성장을 지속시키는 조직문화</h2>
         <p style="font-size:17px; color:#666; line-height:1.75; margin:0;">프로사업단총괄은 다양한 행사와 시상식을 통해<br>확실한 <strong style="color:#111;">동기부여와 지속적인 원동력</strong>을 제공합니다.</p>
       </div>
-      <div class="culture-carousel-mask">
-        <div class="culture-carousel-auto">
-          <!-- ── 4 카드 (1차) ── -->
+      <!-- v=20260710e: 자동 순환 → 수동 캐러셀(화살표 클릭). 복제 카드 제거, 4카드만 -->
+      <div style="position:relative; max-width:1400px; margin:0 auto; padding:0 clamp(1rem,3vw,3.5rem);">
+        <div class="culture-viewport">
+        <div class="culture-track" id="culture-track">
           <!-- 카드 1: PRO ENTERPRISE AWARD -->
           <div class="culture-card">
             <div class="culture-card-img"><img src="AI 홈페이지/PRO ENTERPRISE AWARD.jpg" alt="PRO ENTERPRISE AWARD" loading="lazy"></div>
@@ -15773,30 +15784,37 @@
             <h3 class="culture-card-title">연합 세미나</h3>
             <p class="culture-card-desc">서로의 영업 경험을 나누고, 서로의 방식을 배우며 한 단계 더 성장하기 위한 세미나입니다.</p>
           </div>
-          <!-- ── 4 카드 (2차 복제, 무한 루프용) ── -->
-          <div class="culture-card" aria-hidden="true">
-            <div class="culture-card-img"><img src="AI 홈페이지/PRO ENTERPRISE AWARD.jpg" alt="" loading="lazy"></div>
-            <h3 class="culture-card-title">PRO ENTERPRISE AWARD</h3>
-            <p class="culture-card-desc">매년 호텔 대연회장에서 성대하게 진행되는 프로사업단총괄의 상징적 행사로서 단순한 축하를<br>넘어 모든 조직 구성원이 자부심을 고취시키는 동기부여의 장입니다.</p>
-          </div>
-          <div class="culture-card" aria-hidden="true">
-            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_609209788_18548645803044475_1784252764972083977_n.jpg" alt="" style="object-position:center top;" loading="lazy"></div>
-            <h3 class="culture-card-title">매년 1회 진행되는 리크루팅 시책</h3>
-            <p class="culture-card-desc">조직성장과 리크루팅 독려를 위해 진행되는 해외여행 시책으로 프로사업단총괄의 성장원동력<br>중 하나입니다.</p>
-          </div>
-          <div class="culture-card" aria-hidden="true">
-            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_553366514_18527788099044475_834571941900801774_n.jpg" alt="" loading="lazy"></div>
-            <h3 class="culture-card-title">리더십 양성과정</h3>
-            <p class="culture-card-desc">관리자의 마인드, 역할, 조직 운영의 기준, 성과를 만드는 리더 교육 시스템입니다.</p>
-          </div>
-          <div class="culture-card" aria-hidden="true">
-            <div class="culture-card-img"><img src="프로 사진/SnapInsta.to_645446871_18567064273044475_659110489197144112_n.jpg" alt="" loading="lazy"></div>
-            <h3 class="culture-card-title">연합 세미나</h3>
-            <p class="culture-card-desc">서로의 영업 경험을 나누고, 서로의 방식을 배우며 한 단계 더 성장하기 위한 세미나입니다.</p>
-          </div>
         </div>
+        </div>
+        <button class="culture-nav culture-nav-prev" id="culture-prev" type="button" aria-label="이전">❮</button>
+        <button class="culture-nav culture-nav-next" id="culture-next" type="button" aria-label="다음">❯</button>
       </div>
     </div>
+    <script>
+      (function () {
+        var track = document.getElementById('culture-track');
+        var prev = document.getElementById('culture-prev');
+        var next = document.getElementById('culture-next');
+        if (!track || !prev || !next) return;
+        var idx = 0;
+        function cardStep() { var c = track.children[0]; return c ? c.getBoundingClientRect().width + 32 : 400; }
+        function maxIdx() {
+          var vp = track.parentElement; // .culture-viewport
+          var per = Math.max(1, Math.round(vp.clientWidth / cardStep()));
+          return Math.max(0, track.children.length - per);
+        }
+        function render() {
+          idx = Math.max(0, Math.min(idx, maxIdx()));
+          track.style.transform = 'translateX(-' + (idx * cardStep()) + 'px)';
+          prev.disabled = idx <= 0;
+          next.disabled = idx >= maxIdx();
+        }
+        prev.addEventListener('click', function () { idx--; render(); });
+        next.addEventListener('click', function () { idx++; render(); });
+        window.addEventListener('resize', render);
+        render();
+      })();
+    </script>
 
     <!-- Scene 2: 가로 스크롤 캐러셀 -->
     <div id="pro-carousel-overlay" style="background:#050505; padding-bottom:4rem;">
