@@ -9034,7 +9034,14 @@
       var root = document.querySelector('[data-stories]');
       if (!root) return;
 
+      // v=20260710c 대표님 피드백: ITA 임성미 카드 → 2025 연도대상 영상 교체 + 순서 연도대상→월례 시상식→AI 워크샵
       var STORIES = [
+        {
+          id: 'annual-awards', type: 'mp4', src: 'assets/video/2025-annual-awards.mp4',
+          thumb: '', label: '현장 영상', tone: 'cyan',
+          title: '2025 프로사업단 연도대상',
+          subtitle: '한 해의 압도적 성과, 그 영광의 시상식 현장'
+        },
         {
           id: 'monthly-awards', type: 'youtube', src: 'UV4gcGuM5oo',
           thumb: 'https://img.youtube.com/vi/UV4gcGuM5oo/maxresdefault.jpg',
@@ -9047,13 +9054,6 @@
           thumb: '', label: '현장 영상', tone: 'cyan',
           title: 'PRO 7대 AI 시스템 Workshop',
           subtitle: '7대 AI 시스템으로 만드는 압도적 격차, 그 교육 현장'
-        },
-        {
-          id: 'ita-imseongmi', type: 'youtube', src: 'KUWgdv7DGqQ', start: 301,
-          thumb: 'https://img.youtube.com/vi/KUWgdv7DGqQ/maxresdefault.jpg',
-          label: 'YouTube', tone: 'red',
-          title: 'ITA 2회 달성 임성미 이사',
-          subtitle: '2회 연속 ITA, 우연이 아닌 시스템의 힘'
         }
       ];
 
@@ -15144,14 +15144,14 @@
             <div class="tsk-brand">
               <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M10.5 9.2v5.6l4.5-2.8z" fill="currentColor" stroke="none"/></svg></span><div class="bt"><div class="n">유튜브 채널</div><div class="d">전용 채널로 외부 유입 강화 · 조직원 전문성 노출</div></div><span class="tag">콘텐츠</span></div>
               <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><div class="bt"><div class="n">프로매거진</div><div class="d">정기 웹 매거진 — 현장 상담의 공신력 있는 자료</div></div><span class="tag">콘텐츠</span></div>
-              <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2l5 5-9.5 9.5-5 1 1-5L17 2z" fill="none"/></svg></span><div class="bt"><div class="n">브랜드 디자인</div><div class="d">소속 조직 브랜딩 · 마케팅 툴킷 제작 지원</div></div><span class="tag">디자인</span></div>
-              <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-2V9z"/><path d="M13 5v14"/></svg></span><div class="bt"><div class="n">이벤트 기획</div><div class="d">채용 설명회 · 시상식 등 대내외 행사 기획</div></div><span class="tag">행사</span></div>
-              <!-- v=20260710a 대표님 피드백: 전용 스튜디오 5번째 축 추가 -->
+              <!-- v=20260710c 대표님 피드백: 전용 스튜디오 ↔ 브랜드 디자인 위치 스왑(3↔5) -->
               <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="4"/></svg></span><div class="bt"><div class="n">전용 스튜디오</div><div class="d">촬영장비부터 배경까지, 찍기만 하면 되는 스튜디오 제공</div></div><span class="tag">촬영</span></div>
+              <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-2V9z"/><path d="M13 5v14"/></svg></span><div class="bt"><div class="n">이벤트 기획</div><div class="d">채용 설명회 · 시상식 등 대내외 행사 기획</div></div><span class="tag">행사</span></div>
+              <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2l5 5-9.5 9.5-5 1 1-5L17 2z" fill="none"/></svg></span><div class="bt"><div class="n">브랜드 디자인</div><div class="d">소속 조직 브랜딩 · 마케팅 툴킷 제작 지원</div></div><span class="tag">디자인</span></div>
             </div>
             <!-- v=20260705f 금융 유튜브 stat 카드 03→02 하단 이동 -->
             <div class="tsk-cstats">
-              <div class="tsk-cstat"><div class="k">금융 유튜브</div><div class="v">PROCAST</div></div>
+              <div class="tsk-cstat"><div class="k">유튜브</div><div class="v">PROCAST</div></div>
               <div class="tsk-cstat"><div class="k">SNS 인스타그램</div><div class="v">PRO 매거진</div></div>
             </div>
           </div>
@@ -15160,7 +15160,7 @@
             <h3>이미 <span class="hl">신뢰</span>가 만들어집니다</h3>
             <p class="body">설계사가 혼자 알리는 시대는 끝났습니다.<br><strong>회사가 5축 브랜드로 고객을 먼저 설득합니다.</strong></p>
             <p class="body" style="margin-top:14px;">당신이 상담을 시작하기 전, <strong>고객은 이미 우리를 알고 있습니다.</strong></p>
-            <div class="tsk-pills"><span class="tsk-pill">유튜브</span><span class="tsk-pill">매거진</span><span class="tsk-pill">디자인</span><span class="tsk-pill">이벤트</span><span class="tsk-pill">스튜디오</span></div>
+            <div class="tsk-pills"><span class="tsk-pill">유튜브</span><span class="tsk-pill">매거진</span><span class="tsk-pill">스튜디오</span><span class="tsk-pill">이벤트</span><span class="tsk-pill">디자인</span></div>
           </div>
         </div>
       </article>
