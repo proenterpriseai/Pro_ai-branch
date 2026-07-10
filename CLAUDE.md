@@ -237,6 +237,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260710g~k** (**main 직커밋 LIVE**, tag `v20260710k`, main `3a8ab80`, 2026-07-10) — 대표님 피드백 3라운드. 상세 → auto-memory `session-20260710-aibranch-ceo-feedback.md`.
+  - **g**: STORIES 카드 "YouTube"/"현장 영상" 라벨 칩 제거(+tone dead CSS), 제목 14→18px·부제 11→13.5px.
+  - **h**: 지사 캐러셀 **형광(초록/노랑) 박힌글자 이미지 6장 삭제**(1행 천안·하남·일산·다산·구미 / 2행 로얄본부 직할 2곳) → 흰 글자 톤만 잔존(1행 9장·2행 4+4). ⚠️**잠복 버그 fix**: 1행 복제 IIFE(~7822)가 마크업(~15816)보다 위라 즉시 실행 시 null→**복제가 한 번도 안 되고 있었음** → DOMContentLoaded로 이동(9→18장). 루프 이음새 gap 절반 보정 `calc(-50% - 0.625rem)`(양방향 키프레임). 조직문화 캐러셀: 뷰포트 = 정확히 카드 2장 폭(1152/912px, 모바일 320px 1장) + **심리스 무한 루프**(앞 2장 클론+transitionend 무애니 스냅+폴백 700ms+연타 가드) — 되감기 점프 제거.
+  - **i**: 지사 캐러셀 윗줄 속도 정정 26→**63s**. h에서 duration 보정(40→26s)이 복제 fix로 트랙 2배 된 걸 미반영해 위 138 vs 아래 57px/s로 벌어졌던 것 → **위아래 동일 57px/s 통일**(실측). ⚠️교훈: 트랙 카드 수 변경 시 px/s = (트랙폭/2)/duration 실측으로 검증.
+  - **j**: STORIES 영상 캐러셀도 **심리스 무한 루프**(h와 동일 방식: 클론 2장+스냅). pageCount(페이지) 개념 제거→카드 시작 위치 0..2, 점 3개 고정(PC/모바일 동일), 자동재생(6s)도 순방향 순환. 클론 카드도 위임 클릭+data-id라 라이트박스 정상.
+  - **k**: 조직 소개 히어로 — 사무실 사진 슬라이드쇼 3장 삭제 → **100vh 블루 실크 풀배경 + 중앙 흰 카피**("처음부터 정점까지/당신의 성장을 설계하다"+부제, 구 흰 배경 텍스트 블록 통합). 배경 = **메인 히어로와 동일 UnicornStudio 씬**(`7BChNsgjdoJkLPEpWhX3`)을 `addScene({elementId:'pro-hero-silk-scene'})`으로 재사용 — 오버레이 첫 오픈 시 lazy init(MutationObserver), 실패 시 CSS fallback glow, 메인 씬 중복 없음 실측(캔버스 1+1). ⚠️공식홈(proenterprise.co.kr) 히어로는 **아임웹 인터랙티브 배경(vendor ThreeCanvas.js)** — 빌더 내장이라 추출 불가, UnicornStudio 동일 씬 재사용이 정답.
 - **v=20260710b~f** (**main 직커밋 LIVE**, tag `v20260710f`, main `1e3ea20`, 2026-07-10) — 대표님 피드백 후속 라운드. 상세 → auto-memory `session-20260710-aibranch-ceo-feedback.md`.
   - **b→d→f CEO 사진 사이징 수렴**: 660px(너무 큼)→560px→**최종 f=텍스트 컬럼 스팬**(위=제목 2행 "서포터가…" ±3px, 아래=서명+44px, 실측 499×742). 구현=우측 컬럼 `lg:self-stretch`+absolute 래퍼(`top:110px; bottom:-40px`)+img `height:100%`. ⚠️함정: `height:calc(100%)`+self-stretch=순환 사이징 폭주 / **abspos replaced(img)는 top+bottom으로 높이 미결정**(고유 크기)→래퍼 div 필수.
   - **d 네비 다크 옵저버**: 흰 오버레이(CEO·프로인트로) 열림 동안 `#nav-bar` 인라인 `background rgba(15,15,30,0.92) !important`(MutationObserver). 스크롤 핸들러가 인라인 단일소스라 **CSS `:has()`로는 못 이김**. 셋업은 DOMContentLoaded 후(프로인트로 마크업이 스크립트 아래).
