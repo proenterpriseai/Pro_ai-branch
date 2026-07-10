@@ -3780,10 +3780,10 @@
           </a>
           <!-- 중앙: 네비 메뉴 -->
           <div class="hidden md:flex items-center gap-12">
-            <a href="#" data-nav="pro-intro" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">프로사업단총괄</a>
+            <a href="#" data-nav="pro-intro" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">조직 소개</a>
             <a href="#" data-nav="ai-system" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">AI 시스템</a>
             <a href="#" data-nav="ceo" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">CEO 인사말</a>
-            <a href="#" data-nav="talent-open" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">인재양성</a>
+            <a href="#" data-nav="talent-open" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">성장 시스템</a>
             <a href="#" data-nav="contact" class="text-[16px] font-semibold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">문의하기</a>
           </div>
           <!-- 우: 그라데이션 버튼 + 모바일 햄버거 -->
@@ -7693,8 +7693,14 @@
     </div>
   </div>
 
+  <!-- v=20260710a 대표님 피드백: CEO 인사말 화이트 전환(공식홈 레퍼런스) + 영상→대표님 사진. 오버라이드는 #ceo-overlay 스코프만(클래스 4개 오버레이 공유) -->
+  <style>
+    #ceo-overlay .ceo-overlay__bg::after { display: none; } /* 다크용 노이즈 텍스처 제거 */
+    #ceo-overlay .ceo-overlay__close { background: rgba(17,24,39,0.04); border-color: rgba(17,24,39,0.15); color: rgba(17,24,39,0.6); }
+    #ceo-overlay .ceo-overlay__close:hover { background: rgba(17,24,39,0.08); border-color: rgba(17,24,39,0.3); color: #111827; }
+  </style>
   <div id="ceo-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="CEO 인사말">
-    <div class="ceo-overlay__bg" style="background: #050505;"></div>
+    <div class="ceo-overlay__bg" style="background: #ffffff;"></div>
     <button class="ceo-overlay__close" aria-label="닫기">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -7709,43 +7715,33 @@
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-xs text-zinc-400 mb-6" style="visibility:hidden;">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>CEO 인사말
             </div>
-            <!-- 모바일 전용: 키커 바로 아래에 영상 (lg에서 숨김) -->
+            <!-- 모바일 전용: 키커 바로 아래에 대표님 사진 (lg에서 숨김) -->
             <div class="lg:hidden mb-8">
-              <div class="relative w-full rounded-2xl overflow-hidden bg-black" style="box-shadow: 0 20px 60px -15px rgba(0,0,0,0.6);">
-                <div class="relative w-full" style="aspect-ratio:16/9;">
-                  <iframe src="https://www.youtube.com/embed/Vft3wpiJKUE?autoplay=1&mute=1&modestbranding=1&rel=0&playsinline=1" title="프로사업단총괄 대표 임형준" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" class="absolute inset-0 w-full h-full"></iframe>
-                </div>
-              </div>
+              <img src="assets/images/ceo-lim.png" alt="프로사업단총괄 대표 임형준" class="w-3/4 max-w-[300px] mx-auto" loading="lazy">
             </div>
-            <h2 class="text-3xl sm:text-4xl lg:text-[44px] font-bold text-white mb-8 lg:mb-12" style="line-height:1.25;">당신을 위한 최고의<br><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-500">서포터</span>가 되겠습니다.</h2>
-            <div class="space-y-6" style="border-left: 2px solid rgba(28,73,200,0.2); padding-left: 24px;">
-              <p class="text-white leading-[1.8] text-[15px]">안녕하세요.<br>인카금융서비스 프로사업단 총괄 대표 임형준입니다.</p>
-              <p class="text-white leading-[1.8] text-[15px]">우리는 단순히 보험을 판매하는 조직이 아니라,<br>보험 그 이상의 성장을 만드는 GA 2.0 시대를 열고자 합니다.</p>
-              <p class="text-white/80 leading-[1.8] text-[14px]">지식과 경험이 자산이 되는 시대, 금융 전문가를 꿈꾸는 누구나 더 빠르게, 더 깊게 성장할 수 있는 새로운 환경이 필요합니다. 그래서 저희는 기존 GA의 한계를 넘어 시장 발굴, 교육, 보상 시스템을 완전히 재설계했습니다.</p>
-              <p class="text-white/80 leading-[1.8] text-[14px]">프로사업단총괄은 설계사가 홀로 고객을 찾고, 영업 방식을 스스로 만들어가야 했던 기존의 방식을 넘어, 성장을 시스템으로 구축한 GA 모델입니다.</p>
-              <p class="text-white leading-[1.8] text-[15px]">그 결과, 프로사업단총괄은 인당 연봉 <span class="text-white font-bold text-lg">9,000만원</span>, 18회차 유지율 <span class="text-white font-bold text-lg">91.68%</span>라는 업계 최고 수준의 성과를 달성했습니다.</p>
-              <p class="text-white/80 leading-[1.8] text-[14px]">이제 우리는 더 나아가, 모든 영업인이 안정된 소득과 지속 가능한 커리어 성장을 쌓을 수 있는 길을 열고자 합니다. 그리고 그 여정을 여러분과 함께 하겠습니다.</p>
-              <p class="text-white leading-[1.8] text-[15px] font-medium">프로사업단총괄은 여러분의 성장을 지원하는 최고의 파트너가 되겠습니다.</p>
+            <h2 class="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#27398c] mb-8 lg:mb-12" style="line-height:1.25;">당신을 위한 최고의<br>서포터가 되겠습니다.</h2>
+            <div class="space-y-6" style="border-left: 2px solid rgba(39,57,140,0.25); padding-left: 24px;">
+              <p class="text-[#1f2937] leading-[1.8] text-[15px]">안녕하세요.<br>인카금융서비스 프로사업단 총괄 대표 임형준입니다.</p>
+              <p class="text-[#1f2937] leading-[1.8] text-[15px]">우리는 단순히 보험을 판매하는 조직이 아니라,<br>보험 그 이상의 성장을 만드는 GA 2.0 시대를 열고자 합니다.</p>
+              <p class="text-[#4b5563] leading-[1.8] text-[14px]">지식과 경험이 자산이 되는 시대, 금융 전문가를 꿈꾸는 누구나 더 빠르게, 더 깊게 성장할 수 있는 새로운 환경이 필요합니다. 그래서 저희는 기존 GA의 한계를 넘어 시장 발굴, 교육, 보상 시스템을 완전히 재설계했습니다.</p>
+              <p class="text-[#4b5563] leading-[1.8] text-[14px]">프로사업단총괄은 설계사가 홀로 고객을 찾고, 영업 방식을 스스로 만들어가야 했던 기존의 방식을 넘어, 성장을 시스템으로 구축한 GA 모델입니다.</p>
+              <p class="text-[#1f2937] leading-[1.8] text-[15px]">그 결과, 프로사업단총괄은 인당 연봉 <span class="text-[#27398c] font-bold text-lg">9,000만원</span>, 18회차 유지율 <span class="text-[#27398c] font-bold text-lg">91.68%</span>라는 업계 최고 수준의 성과를 달성했습니다.</p>
+              <p class="text-[#4b5563] leading-[1.8] text-[14px]">이제 우리는 더 나아가, 모든 영업인이 안정된 소득과 지속 가능한 커리어 성장을 쌓을 수 있는 길을 열고자 합니다. 그리고 그 여정을 여러분과 함께 하겠습니다.</p>
+              <p class="text-[#1f2937] leading-[1.8] text-[15px] font-medium">프로사업단총괄은 여러분의 성장을 지원하는 최고의 파트너가 되겠습니다.</p>
             </div>
             <div class="mt-12" style="padding-left: 24px;">
               <div class="flex items-end gap-6">
                 <div>
-                  <p class="text-sm text-zinc-300 tracking-wider mb-3">프로사업단총괄 대표</p>
-                  <p class="text-2xl font-bold text-white tracking-tight" style="padding-left: 2.5em;">임형준</p>
+                  <p class="text-sm text-[#4b5563] tracking-wider mb-3">프로사업단총괄 대표</p>
+                  <p class="text-2xl font-bold text-[#111827] tracking-tight" style="padding-left: 2.5em;">임형준</p>
                 </div>
-                <img src="assets/images/ceo-signature.png" alt="임형준 서명" class="h-16 opacity-80 mb-1" style="filter: invert(1) brightness(1.2);">
+                <img src="assets/images/ceo-signature.png" alt="임형준 서명" class="h-16 opacity-80 mb-1">
               </div>
             </div>
           </div>
-          <!-- 우측: 메인 YouTube 영상 (모바일에서는 위에 이미 표시됨) -->
-          <div class="hidden lg:flex flex-col justify-center">
-            <div class="relative w-full rounded-2xl overflow-hidden bg-black" style="box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6);">
-              <div class="w-full h-8 bg-black"></div>
-              <div class="relative w-full" style="aspect-ratio:16/9;">
-                <iframe id="ceo-video" src="https://www.youtube.com/embed/Vft3wpiJKUE?enablejsapi=1&vq=hd2160&modestbranding=1&rel=0" title="프로사업단총괄 대표 임형준" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="eager" class="absolute inset-0 w-full h-full"></iframe>
-              </div>
-              <div class="w-full h-8 bg-black"></div>
-            </div>
+          <!-- 우측: 대표님 사진 (모바일에서는 위에 이미 표시됨) — v=20260710a 영상→사진 교체 -->
+          <div class="hidden lg:flex flex-col justify-end items-center h-full">
+            <img src="assets/images/ceo-lim.png" alt="프로사업단총괄 대표 임형준" class="w-full max-w-[500px]" style="max-height:80vh; object-fit:contain; object-position:bottom;" loading="eager">
           </div>
         </div>
 
@@ -9642,9 +9638,9 @@
             var cursor = document.getElementById('hero-cursor');
             if (cursor) cursor.style.display = 'none';
           }
-        }, 85);
+        }, 45); /* v=20260710a 85→45ms: 대표님 피드백 — 타이핑 너무 느림 */
       }
-      setTimeout(typeLine, 1500);
+      setTimeout(typeLine, 800); /* v=20260710a 1500→800ms 시작 지연 단축 */
     })();
 
     // ─── System Search → Panel Navigation ───
@@ -14938,10 +14934,7 @@
       #talent-overlay .tsk-trow .nm{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;color:#fff;}
       #talent-overlay .tsk-trow .no{font-size:10px;font-weight:800;color:#8fb0f2;background:rgba(59,130,246,0.14);border-radius:6px;padding:2px 7px;letter-spacing:0.06em;}
       #talent-overlay .tsk-trow .ds{font-size:11px;color:rgba(255,255,255,0.42);}
-      #talent-overlay .tsk-trow .st{font-size:10px;font-weight:700;border-radius:999px;padding:2.5px 9px;}
-      #talent-overlay .tsk-trow .st.done{color:#93c5fd;background:rgba(59,130,246,0.14);border:1px solid rgba(59,130,246,0.28);}
-      #talent-overlay .tsk-trow .st.run{color:#bcd0ff;background:rgba(28,73,200,0.30);border:1px solid rgba(96,165,250,0.45);}
-      #talent-overlay .tsk-trow .st.wait{color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);}
+      /* v=20260710a: 행 상태 pill(.st done/run/wait) 마크업 삭제에 따라 dead CSS 제거 */
       #talent-overlay .tsk-bar{height:7px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;}
       #talent-overlay .tsk-bar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(to right,#3b82f6,#1C49C8);}
       #talent-overlay .tsk-trow.is-run{border-color:rgba(96,165,250,0.4);background:linear-gradient(to right,rgba(28,73,200,0.18),rgba(255,255,255,0.03));box-shadow:0 0 30px rgba(28,73,200,0.16);}
@@ -15035,10 +15028,12 @@
       #talent-overlay .tsk-card[data-i="0"] .tsk-mock.play .tsk-trow:nth-child(5) .tsk-bar>i{transform-origin:left center;animation:tskOsc 3.4s ease-in-out infinite -1.7s;}
       /* 02 브랜드 콘솔: 하이라이트가 4개 축을 순환 점등 (8s 루프) */
       #talent-overlay .tsk-brow{border-radius:12px;transition:background .3s;}
+      /* v=20260710a 전용 스튜디오 5축 추가 — 8s 주기 유지, delay 1.6s 간격 재배분 */
       #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(1){animation:tskRowGlow 8s ease-in-out infinite 0s;}
-      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(2){animation:tskRowGlow 8s ease-in-out infinite 2s;}
-      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(3){animation:tskRowGlow 8s ease-in-out infinite 4s;}
-      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(4){animation:tskRowGlow 8s ease-in-out infinite 6s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(2){animation:tskRowGlow 8s ease-in-out infinite 1.6s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(3){animation:tskRowGlow 8s ease-in-out infinite 3.2s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(4){animation:tskRowGlow 8s ease-in-out infinite 4.8s;}
+      #talent-overlay .tsk-card[data-i="1"] .tsk-mock.play .tsk-brow:nth-child(5){animation:tskRowGlow 8s ease-in-out infinite 6.4s;}
       @keyframes tskRowGlow{0%,25%,100%{background:transparent;}5%,15%{background:rgba(28,73,200,0.20);}}
       /* 03 자격 워크플로우: 연결선 빛 점 하강 + 단계 순차 점등 + ★ 글로우 펄스 (6s 루프) */
       #talent-overlay .tsk-card[data-i="2"] .tsk-mock.play .tsk-cert::after{content:"";position:absolute;left:21px;top:22px;width:7px;height:7px;border-radius:50%;background:#60a5fa;box-shadow:0 0 14px rgba(96,165,250,0.95);animation:tskDot 6s ease-in-out infinite;z-index:2;}
@@ -15111,28 +15106,29 @@
             <div class="tsk-mhead">
               <div class="l">
                 <span class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg></span>
-                <div><div class="t">성장 로드맵 트래커</div><div class="s">입사부터 WM 마스터까지 · 5단계</div></div>
+                <div><div class="t">성장 로드맵</div><div class="s">입문부터 WM전문가과정까지 · 5단계</div></div>
               </div>
-              <span class="tsk-live"><span class="dt"></span>진행 중</span>
+              <span class="tsk-live"><span class="dt"></span>운영 중</span>
             </div>
             <div class="tsk-track">
-              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">01</span>입사 교육</span><span class="st done">완료</span></div><div class="ds" style="margin-bottom:7px;">사이버 입문 · 서울 본사 집합</div><div class="tsk-bar"><i style="width:100%;"></i></div></div>
-              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">02</span>신인 교육</span><span class="st done">완료</span></div><div class="ds" style="margin-bottom:7px;">2주 집중 코스 · 실전 RP 트레이닝</div><div class="tsk-bar"><i style="width:100%;"></i></div></div>
-              <div class="tsk-trow is-run"><div class="r1"><span class="nm"><span class="no">03</span>관리자 양성</span><span class="st run">진행 중</span></div><div class="ds" style="margin-bottom:7px;">예비 리더십 · 조직 관리 솔루션</div><div class="tsk-bar"><i style="width:62%;"></i></div></div>
-              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">04</span>전문 역량 특화</span><span class="st wait">대기</span></div><div class="ds" style="margin-bottom:7px;">재무 · 메디컬 · DB 스페셜리스트</div><div class="tsk-bar"><i style="width:34%;"></i></div></div>
-              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">05</span>WM 마스터</span><span class="st wait">대기</span></div><div class="ds" style="margin-bottom:7px;">종합 자산관리 전문 에이전트 완성</div><div class="tsk-bar"><i style="width:18%;"></i></div></div>
+              <!-- v=20260710a 대표님 피드백: 행별 완료/진행 중/대기 상태 pill 삭제, 05행 문구 WM전문가과정 체계로 교체 -->
+              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">01</span>입사 교육</span></div><div class="ds" style="margin-bottom:7px;">사이버 입문 · 서울 본사 집합</div><div class="tsk-bar"><i style="width:100%;"></i></div></div>
+              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">02</span>신인 교육</span></div><div class="ds" style="margin-bottom:7px;">2주 집중 코스 · 실전 RP 트레이닝</div><div class="tsk-bar"><i style="width:100%;"></i></div></div>
+              <div class="tsk-trow is-run"><div class="r1"><span class="nm"><span class="no">03</span>관리자 양성</span></div><div class="ds" style="margin-bottom:7px;">예비 리더십 · 조직 관리 솔루션</div><div class="tsk-bar"><i style="width:62%;"></i></div></div>
+              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">04</span>전문 역량 특화</span></div><div class="ds" style="margin-bottom:7px;">재무 · 메디컬 · DB 스페셜리스트</div><div class="tsk-bar"><i style="width:34%;"></i></div></div>
+              <div class="tsk-trow"><div class="r1"><span class="nm"><span class="no">05</span>WM센터장 주관 법인/고액 자산가/재무설계 전문가 과정</span></div><div class="ds" style="margin-bottom:7px;">법인·CEO, 자산가 시장 컨설팅 — Wealth Manager로 성장</div><div class="tsk-bar"><i style="width:18%;"></i></div></div>
             </div>
           </div>
           <div class="tsk-copy">
             <span class="lab">GROWTH</span>
             <h3><span class="hl">단계별로</span> 확실하게 키웁니다</h3>
-            <p class="body">타사가 1~2주 교육 후 현장에 투입할 때, PRO는 입사부터 WM 마스터까지 <strong>5단계로 끝까지 책임집니다.</strong></p>
-            <div class="tsk-pills"><span class="tsk-pill">입사 교육</span><span class="tsk-pill">신인 2주 집중</span><span class="tsk-pill">관리자 양성</span><span class="tsk-pill">전문 특화</span><span class="tsk-pill">WM 마스터</span></div>
+            <p class="body">타사가 2주 교육 후 현장에 내보낼 때,<br>PRO는 입문부터 WM전문가과정까지, <strong>5단계 시스템으로 끝까지 책임집니다.</strong><br>프로사업단총괄, 높은 생산성의 이유입니다.</p>
+            <div class="tsk-pills"><span class="tsk-pill">입사 교육</span><span class="tsk-pill">신인 2주 집중</span><span class="tsk-pill">관리자 양성</span><span class="tsk-pill">전문 특화</span><span class="tsk-pill">WM 전문가 과정</span></div>
           </div>
         </div>
       </article>
 
-      <!-- 카드 02 — 4축 브랜드 지원 (기존 섹션 2 콘텐츠) -->
+      <!-- 카드 02 — 5축 브랜드 지원 (기존 섹션 2 콘텐츠) -->
       <article class="tsk-card" data-i="1">
         <div class="tsk-tint"></div><div class="tsk-orb" style="top:auto;bottom:-90px;"></div>
         <div class="tsk-num">02</div>
@@ -15141,7 +15137,7 @@
             <div class="tsk-mhead">
               <div class="l">
                 <span class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>
-                <div><div class="t">브랜드 지원 콘솔</div><div class="s">회사가 먼저 고객을 설득하는 4축</div></div>
+                <div><div class="t">브랜드 지원 콘솔</div><div class="s">회사가 먼저 고객을 설득하는 5축</div></div>
               </div>
               <span class="tsk-live"><span class="dt"></span>Live</span>
             </div>
@@ -15150,19 +15146,21 @@
               <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><div class="bt"><div class="n">프로매거진</div><div class="d">정기 웹 매거진 — 현장 상담의 공신력 있는 자료</div></div><span class="tag">콘텐츠</span></div>
               <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2l5 5-9.5 9.5-5 1 1-5L17 2z" fill="none"/></svg></span><div class="bt"><div class="n">브랜드 디자인</div><div class="d">소속 조직 브랜딩 · 마케팅 툴킷 제작 지원</div></div><span class="tag">디자인</span></div>
               <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-2V9z"/><path d="M13 5v14"/></svg></span><div class="bt"><div class="n">이벤트 기획</div><div class="d">채용 설명회 · 시상식 등 대내외 행사 기획</div></div><span class="tag">행사</span></div>
+              <!-- v=20260710a 대표님 피드백: 전용 스튜디오 5번째 축 추가 -->
+              <div class="tsk-brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="4"/></svg></span><div class="bt"><div class="n">전용 스튜디오</div><div class="d">촬영장비부터 배경까지, 찍기만 하면 되는 스튜디오 제공</div></div><span class="tag">촬영</span></div>
             </div>
             <!-- v=20260705f 금융 유튜브 stat 카드 03→02 하단 이동 -->
             <div class="tsk-cstats">
-              <div class="tsk-cstat"><div class="k">금융 유튜브</div><div class="v">PRO 보험스쿨</div></div>
+              <div class="tsk-cstat"><div class="k">금융 유튜브</div><div class="v">PROCAST</div></div>
               <div class="tsk-cstat"><div class="k">SNS 인스타그램</div><div class="v">PRO 매거진</div></div>
             </div>
           </div>
           <div class="tsk-copy">
             <span class="lab">SUPPORT</span>
             <h3>이미 <span class="hl">신뢰</span>가 만들어집니다</h3>
-            <p class="body">설계사가 혼자 알리는 시대는 끝났습니다.<br><strong>회사가 4축 브랜드로 고객을 먼저 설득합니다.</strong></p>
+            <p class="body">설계사가 혼자 알리는 시대는 끝났습니다.<br><strong>회사가 5축 브랜드로 고객을 먼저 설득합니다.</strong></p>
             <p class="body" style="margin-top:14px;">당신이 상담을 시작하기 전, <strong>고객은 이미 우리를 알고 있습니다.</strong></p>
-            <div class="tsk-pills"><span class="tsk-pill">유튜브</span><span class="tsk-pill">매거진</span><span class="tsk-pill">디자인</span><span class="tsk-pill">이벤트</span></div>
+            <div class="tsk-pills"><span class="tsk-pill">유튜브</span><span class="tsk-pill">매거진</span><span class="tsk-pill">디자인</span><span class="tsk-pill">이벤트</span><span class="tsk-pill">스튜디오</span></div>
           </div>
         </div>
       </article>
@@ -15447,14 +15445,15 @@
             <img class="acc-photo" src="assets/images/partners/globee.jpg" alt="세무법인 글로비" loading="lazy" style="object-position:center 50%;">
           </div>
           <div class="acc-item free">
-            <div class="acc-rail"><span class="num">05</span><span class="rname">보케어</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h6M7 12h4"/></svg></span></div>
+            <div class="acc-rail"><span class="num">05</span><span class="rname">CARING</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.8-4.2A2 2 0 0 1 8.6 5.5h6.8a2 2 0 0 1 1.8 1.3L19 11"/><rect x="3" y="11" width="18" height="6" rx="1.5"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg></span></div>
+            <!-- v=20260710a 대표님 피드백: 보케어 → CARING(자동차 보험 플랫폼) 교체 -->
             <div class="acc-body">
-              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h6M7 12h4"/></svg></span><span class="area">영업지원 · 보험</span></div>
-              <h3>보케어</h3>
-              <p class="sub">대한민국 최대 보험영업지원 시스템</p>
-              <p class="desc">최대 50장까지 보험금 청구, 고객 등록부터 정기 터치·일정관리까지<br>프로사업단총괄 구성원이라면 누구나 활용 가능합니다.</p>
+              <div class="top"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.8-4.2A2 2 0 0 1 8.6 5.5h6.8a2 2 0 0 1 1.8 1.3L19 11"/><rect x="3" y="11" width="18" height="6" rx="1.5"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg></span><span class="area">영업지원 · 자동차보험</span></div>
+              <h3>CARING</h3>
+              <p class="sub">대한민국 최대 자동차 보험 플랫폼</p>
+              <p class="desc">개인정보 + 차량번호만 있으면 10분만에 전 보험사 비교견적 제공<br>배서와 청약까지 원스톱으로 가능합니다.</p>
             </div>
-            <img class="acc-photo" src="assets/images/partners/bocare.jpg" alt="보케어 보험영업지원 시스템" loading="lazy" style="object-position:center 56%;">
+            <img class="acc-photo" src="assets/images/partners/caring.jpg" alt="CARING 자동차 보험 플랫폼" loading="lazy" style="object-position:center 50%;">
           </div>
         </div>
         <p class="acc-hint">탭을 클릭하면 펼쳐집니다 · 모바일에서는 카드로 표시</p>
@@ -16032,10 +16031,10 @@
       </button>
     </div>
     <div style="padding:8px 28px 40px;">
-      <a href="#" data-nav="pro-intro" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">프로사업단총괄</a>
+      <a href="#" data-nav="pro-intro" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">조직 소개</a>
       <a href="#" data-nav="ai-system" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">AI 시스템</a>
       <a href="#" data-nav="ceo" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">CEO 인사말</a>
-      <a href="#" data-nav="talent-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">인재양성</a>
+      <a href="#" data-nav="talent-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.15); text-decoration:none;">성장 시스템</a>
       <a href="#" data-nav="contact" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#ffffff; font-size:18px; font-weight:600; padding:22px 0; text-decoration:none;">문의하기</a>
     </div>
   </div>
