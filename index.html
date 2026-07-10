@@ -3314,24 +3314,25 @@
     }
 
     /* ── 캐러셀 자동 순환 ── */
+    /* v=20260710h: 루프 지점 오프셋 정밀화 — 트랙(원본+복제)의 -50%는 gap 절반(0.625rem)만큼 카드 경계에서 어긋나 점프가 보임 → calc 보정 */
     @keyframes pro-carousel-scroll {
       0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      100% { transform: translateX(calc(-50% - 0.625rem)); }
     }
     @keyframes pro-carousel-scroll-reverse {
-      0% { transform: translateX(-50%); }
+      0% { transform: translateX(calc(-50% - 0.625rem)); }
       100% { transform: translateX(0); }
     }
     .pro-carousel-auto {
       display: flex;
       gap: 1.25rem;
-      animation: pro-carousel-scroll 40s linear infinite;
+      animation: pro-carousel-scroll 26s linear infinite; /* v=20260710h 40→26s: 14→9장 트랙 축소분 보정(px/s 유지) */
       width: max-content;
     }
     .pro-carousel-auto-reverse {
       display: flex;
       gap: 1.25rem;
-      animation: pro-carousel-scroll-reverse 35s linear infinite;
+      animation: pro-carousel-scroll-reverse 28s linear infinite; /* v=20260710h 35→28s: 5→4장 보정 */
       width: max-content;
     }
     .pro-carousel-auto:hover,
@@ -3373,7 +3374,8 @@
     }
 
     /* ── 조직문화 카드 수동 캐러셀 (v=20260710e: 자동순환→화살표 클릭 이동, 대표님 요청. STORIES와 동일 transform 트랙 방식) ── */
-    .culture-viewport { overflow: hidden; }
+    /* v=20260710h: 뷰포트를 정확히 카드 2장 폭으로 제한(3번째 카드 잘림 노출 제거) — 카드 560/440/320 브레이크포인트와 세트 */
+    .culture-viewport { overflow: hidden; max-width: calc(560px * 2 + 32px); margin: 0 auto; }
     .culture-track {
       display: flex;
       gap: 32px;
@@ -3428,6 +3430,7 @@
       .culture-card-title { font-size: 20px; }
       .culture-card-desc { font-size: 14px; }
       .culture-nav { top: 140px; }
+      .culture-viewport { max-width: calc(440px * 2 + 32px); }
     }
     @media (max-width: 768px) {
       .culture-card { width: 320px; }
@@ -3435,6 +3438,7 @@
       .culture-card-desc { font-size: 13px; }
       .culture-track { gap: 20px; }
       .culture-nav { top: 100px; width: 40px; height: 40px; font-size: 16px; }
+      .culture-viewport { max-width: 320px; } /* 모바일 1장 뷰 */
     }
 
     /* ── 교육 인프라 + 보상 체계 공통 ── */
@@ -7819,11 +7823,14 @@
     })();
 
     // ─── 프로사업단총괄: 캐러셀 카드 복제 (무한 루프용) ───
+    // v=20260710h fix: 이 스크립트가 캐러셀 마크업보다 위에 있어 즉시 실행 시 getElementById가 null → 복제가 전혀 안 되고 있었음(잠복 버그). DOMContentLoaded로 이동.
     (function () {
-      var autoContainer = document.getElementById('pro-carousel-auto');
-      if (!autoContainer) return;
-      var cards = autoContainer.innerHTML;
-      autoContainer.innerHTML = cards + cards; // 14장 → 28장 (원본+복제)
+      document.addEventListener('DOMContentLoaded', function () {
+        var autoContainer = document.getElementById('pro-carousel-auto');
+        if (!autoContainer) return;
+        var cards = autoContainer.innerHTML;
+        autoContainer.innerHTML = cards + cards; // 9장 → 18장 (원본+복제)
+      });
     })();
 
     // ─── 메인 챗봇 인사말 타이핑 효과 (v=20260706b) ───
@@ -15788,25 +15795,47 @@
     </div>
     <script>
       (function () {
+        // v=20260710h: 심리스 무한 루프(대표님: 마지막에서 되감기 점프 X, 첫 카드가 앞으로 계속 이어져야 함)
+        //   앞 2장 클론을 트랙 끝에 부착 → 클론 구간 도달 시 transitionend에서 동일 화면인 원본 위치로 무애니 스냅.
         var track = document.getElementById('culture-track');
         var prev = document.getElementById('culture-prev');
         var next = document.getElementById('culture-next');
         if (!track || !prev || !next) return;
-        // v=20260710f: 끝에서 멈추지 않고 계속 순환(다음 클릭 시 처음으로, 이전도 반대로 순환) — 화살표 항상 활성
-        var idx = 0;
-        function cardStep() { var c = track.children[0]; return c ? c.getBoundingClientRect().width + 32 : 400; }
-        function maxIdx() {
-          var vp = track.parentElement; // .culture-viewport
-          var per = Math.max(1, Math.round(vp.clientWidth / cardStep()));
-          return Math.max(0, track.children.length - per);
+        var realCount = track.children.length; // 원본 4장
+        for (var i = 0; i < 2; i++) {
+          var clone = track.children[i].cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          track.appendChild(clone);
         }
-        function render() {
-          track.style.transform = 'translateX(-' + (idx * cardStep()) + 'px)';
+        var idx = 0, animating = false, fbTimer = null;
+        function gapPx() { var g = parseFloat(getComputedStyle(track).columnGap); return isNaN(g) ? 32 : g; }
+        function stepPx() { return track.children[0].getBoundingClientRect().width + gapPx(); }
+        function setX(noAnim) {
+          if (noAnim) track.style.transition = 'none';
+          track.style.transform = 'translateX(-' + (idx * stepPx()) + 'px)';
+          if (noAnim) { void track.offsetWidth; track.style.transition = ''; }
         }
-        prev.addEventListener('click', function () { var m = maxIdx(); idx = (idx - 1 + m + 1) % (m + 1); render(); });
-        next.addEventListener('click', function () { var m = maxIdx(); idx = (idx + 1) % (m + 1); render(); });
-        window.addEventListener('resize', function () { idx = Math.min(idx, maxIdx()); render(); });
-        render();
+        function settle() {
+          animating = false;
+          if (idx >= realCount) { idx -= realCount; setX(true); } // 클론 화면 = 원본 0/1 화면과 동일 → 스냅
+        }
+        track.addEventListener('transitionend', function (e) {
+          if (e.propertyName !== 'transform' || e.target !== track) return;
+          clearTimeout(fbTimer); settle();
+        });
+        function go(delta) {
+          if (animating) return;
+          if (delta < 0 && idx <= 0) { idx = realCount; setX(true); } // 왼쪽 순환: 동일 화면인 클론 위치로 스냅 후 후진
+          animating = true;
+          idx += delta;
+          setX();
+          clearTimeout(fbTimer);
+          fbTimer = setTimeout(settle, 700); // transitionend 미발화(reduced-motion 등) 폴백
+        }
+        prev.addEventListener('click', function () { go(-1); });
+        next.addEventListener('click', function () { go(1); });
+        window.addEventListener('resize', function () { if (idx >= realCount) idx -= realCount; setX(true); });
+        setX(true);
       })();
     </script>
 
@@ -15817,12 +15846,8 @@
         <p style="font-size:17px; color:rgba(255,255,255,0.45); max-width:560px; line-height:1.7; margin-top:12px; letter-spacing:-0.01em;">어디서든 동일한 질의 교육 시스템.<br>AI 도입 및 교육을 통해 전국 거점의 평균 생산성이 향상되었습니다.</p>
       </div>
       <div class="pro-carousel-mask" style="padding-bottom:2rem;">
+      <!-- v=20260710h 대표님 피드백: 형광(초록/노랑) 박힌글자 이미지 5장 삭제(천안·하남·일산·다산·구미) — 흰 글자 톤과 안 맞음 -->
       <div class="pro-carousel-auto" id="pro-carousel-auto">
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_480555216_18486389035044475_5864857882588538982_n.jpg" alt="천안"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_487907354_18494429746044475_6822488276694192828_n.jpg" alt="하남"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_488476436_18495026956044475_5138488651792882962_n.jpg" alt="일산"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_503658173_18510173311044475_7747044559720016238_n.jpg" alt="다산"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_505374120_18511250893044475_255991899910992209_n.jpg" alt="구미"></div>
         <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_529685325_18519418372044475_8501219250524993644_n.jpg" alt="수원"></div>
         <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_534403531_18520910029044475_6003089725500412866_n.jpg" alt="영등포"></div>
         <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_542224506_18524451025044475_363482378010657968_n.jpg" alt="부산"></div>
@@ -15835,7 +15860,7 @@
       </div><!-- end pro-carousel-auto -->
       </div><!-- end pro-carousel-mask -->
 
-      <!-- 두번째 줄: 오른쪽으로 흐르는 5장 -->
+      <!-- 두번째 줄: 오른쪽으로 흐르는 4장 -->
       <div class="pro-carousel-mask" style="padding-bottom:2rem; margin-top:1.25rem;">
       <div class="pro-carousel-auto-reverse">
         <div class="pro-carousel-card"><img src="프로 사진/경북도청지사.jpg" alt="경북도청지사"></div>
@@ -15844,16 +15869,14 @@
           <div class="pro-carousel-label"><span class="pro-carousel-label__title">프로사업단총괄 성수 본점 오픈</span><span class="pro-carousel-label__tags">#성수본점 #HQ #프로사업단총괄</span></div>
         </div>
         <div class="pro-carousel-card"><img src="프로 사진/퍼스트지점 성수.jpg" alt="퍼스트지점 성수"></div>
-        <div class="pro-carousel-card"><img src="프로 사진/로얄본부 직할.jpg" alt="로얄본부 직할"></div>
         <div class="pro-carousel-card"><img src="프로 사진/광주지사.jpg" alt="광주지사"></div>
-        <!-- 무한 루프용 복제 -->
+        <!-- 무한 루프용 복제 (v=20260710h: 로얄본부 직할 형광글자 이미지 삭제) -->
         <div class="pro-carousel-card"><img src="프로 사진/경북도청지사.jpg" alt="경북도청지사"></div>
         <div class="pro-carousel-card pro-carousel-card--label">
           <img src="프로 사진/총괄 성수지점.jpg" alt="프로사업단총괄 성수 본점">
           <div class="pro-carousel-label"><span class="pro-carousel-label__title">프로사업단총괄 성수 본점 오픈</span><span class="pro-carousel-label__tags">#성수본점 #HQ #프로사업단총괄</span></div>
         </div>
         <div class="pro-carousel-card"><img src="프로 사진/퍼스트지점 성수.jpg" alt="퍼스트지점 성수"></div>
-        <div class="pro-carousel-card"><img src="프로 사진/로얄본부 직할.jpg" alt="로얄본부 직할"></div>
         <div class="pro-carousel-card"><img src="프로 사진/광주지사.jpg" alt="광주지사"></div>
       </div>
       </div>
