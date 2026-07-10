@@ -3612,15 +3612,10 @@
     }
     .story-play svg { fill: #0a0a0a; width: 11px; height: 11px; margin-left: 1.5px; }
     .story-card-inner:hover .story-play { transform: scale(1.12); background: #fff; }
+    /* v=20260710g: YouTube/현장 영상 라벨 칩 제거 + 제목/부제 확대 (대표님 요청) */
     .story-meta { padding: 18px 20px 22px; }
-    .story-meta .label-chip {
-      display: inline-block; font-size: 9px; padding: 2px 8px; border-radius: 4px;
-      font-family: ui-monospace, SFMono-Regular, monospace; margin-bottom: 8px;
-    }
-    .story-meta .label-chip.tone-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
-    .story-meta .label-chip.tone-cyan { background: rgba(6,182,212,0.15); color: #22d3ee; border: 1px solid rgba(6,182,212,0.2); }
-    .story-meta h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 4px; }
-    .story-meta p { font-size: 11px; color: #71717a; line-height: 1.6; margin: 0; }
+    .story-meta h3 { font-size: 18px; font-weight: 700; color: #fff; margin: 0 0 6px; }
+    .story-meta p { font-size: 13.5px; color: #8b8b94; line-height: 1.6; margin: 0; }
 
     .story-nav {
       position: absolute; top: 50%; transform: translateY(-50%);
@@ -9084,7 +9079,6 @@
           +       '<div class="story-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>'
           +     '</div>'
           +     '<div class="story-meta">'
-          +       '<span class="label-chip tone-' + s.tone + '">' + s.label + '</span>'
           +       '<h3>' + s.title + '</h3>'
           +       '<p>' + s.subtitle + '</p>'
           +     '</div>'
