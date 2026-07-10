@@ -15559,16 +15559,18 @@
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
   <div class="ceo-overlay__content" style="background:#050505;">
-    <!-- Section 1: 히어로 — 4장 자동 순환 슬라이드쇼 + 텍스트 아래 분리 -->
+    <!-- Section 1: 히어로 — v=20260710k 대표님 요청: 사무실 사진 슬라이드쇼 3장 제거 → 공식홈(proenterprise.co.kr) 무드의 블루 실크 풀배경 + 중앙 카피. 배경=메인 히어로와 동일 UnicornStudio 씬(오버레이 첫 오픈 시 lazy init, 4대 규칙 준수) -->
     <div>
-      <div id="pro-hero-slideshow" style="width:100%; height:100vh; overflow:hidden; position:relative;">
-        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_518833892_18514520467044475_1176112434704197527_n.jpg" alt="INCAR 간판" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 50%; display:block; transition:opacity 1.2s ease; opacity:1;">
-        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_520971332_18514520449044475_9164603155049382195_n.jpg" alt="오픈 오피스" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 55%; display:block; transition:opacity 1.2s ease; opacity:0;">
-        <img src="프로 사진/프로사업단총괄 성수 본점/SnapInsta.to_519675232_18514520458044475_7410046597585279408_n.jpg" alt="식물벽 오피스" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 65%; display:block; transition:opacity 1.2s ease; opacity:0;">
-      </div>
-      <div data-nav-bright style="padding:9rem 3rem 8rem; text-align:center; display:flex; flex-direction:column; align-items:center; background:#f5f5f7;">
-        <h2 style="font-size:clamp(2rem,5vw,2.75rem); font-weight:700; line-height:1.15; letter-spacing:-0.04em; color:#27398c; margin:0 0 24px; word-break:keep-all;">처음부터 정점까지<br>당신의 성장을 설계하다</h2>
-        <p style="font-size:17px; color:#666; line-height:1.8; max-width:600px; margin:0; word-break:keep-all;">PRO AI 시스템과 체계적인 교육으로<br>영업인이 끊임없이 성장하는 최적의 환경을 만듭니다.</p>
+      <div id="pro-hero-silk" style="width:100%; height:100vh; overflow:hidden; position:relative; background:#101a45;">
+        <!-- CSS fallback glow (씬 로드 전/실패 시에도 블루 실크 톤 유지) -->
+        <div style="position:absolute; inset:0; background:radial-gradient(ellipse at 28% 38%, rgba(59,130,246,0.55), transparent 62%), radial-gradient(ellipse at 76% 68%, rgba(28,73,200,0.55), transparent 58%), linear-gradient(160deg, #16225c 0%, #1d3fa8 55%, #101a45 100%);"></div>
+        <!-- UnicornStudio 씬 마운트 지점 (lazy) -->
+        <div id="pro-hero-silk-scene" style="position:absolute; inset:0; z-index:1;"></div>
+        <!-- 중앙 카피 -->
+        <div style="position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 2rem;">
+          <h2 style="font-size:clamp(2rem,5vw,2.75rem); font-weight:700; line-height:1.25; letter-spacing:-0.04em; color:#fff; margin:0 0 24px; word-break:keep-all; text-shadow:0 2px 24px rgba(0,20,80,0.45);">처음부터 정점까지<br>당신의 성장을 설계하다</h2>
+          <p style="font-size:17px; color:rgba(255,255,255,0.92); line-height:1.8; max-width:600px; margin:0; word-break:keep-all; text-shadow:0 1px 14px rgba(0,20,80,0.45);">PRO AI 시스템과 체계적인 교육으로<br>영업인이 끊임없이 성장하는 최적의 환경을 만듭니다.</p>
+        </div>
       </div>
     </div>
 
@@ -15935,18 +15937,24 @@
   if(!overlay) return;
   var scrollContainer = overlay.querySelector('.ceo-overlay__content') || overlay;
 
-  /* ── 0. 히어로 4장 자동 순환 슬라이드쇼 ── */
+  /* ── 0. 히어로 블루 실크 (v=20260710k: 사진 슬라이드쇼 → 메인 히어로와 동일 UnicornStudio 씬) ──
+     오버레이 첫 오픈 시에만 addScene(lazy init) → 초기 로드 성능 영향 0. 실패/미로드 시 CSS fallback glow가 그대로 보임(graceful). */
   (function(){
-    var ss = document.getElementById('pro-hero-slideshow');
-    if(!ss) return;
-    var imgs = ss.querySelectorAll('img');
-    if(imgs.length < 2) return;
-    var cur = 0;
-    setInterval(function(){
-      imgs[cur].style.opacity = '0';
-      cur = (cur + 1) % imgs.length;
-      imgs[cur].style.opacity = '1';
-    }, 4000);
+    var scene = document.getElementById('pro-hero-silk-scene');
+    if(!scene) return;
+    var inited = false;
+    function initSilk(){
+      if(inited || !overlay.classList.contains('ceo-overlay--active')) return;
+      var us = window.UnicornStudio;
+      if(!us || !us.addScene) return; // 아직 로드 전이면 다음 open/class 변화 때 재시도
+      inited = true;
+      try {
+        us.addScene({ elementId: 'pro-hero-silk-scene', projectId: '7BChNsgjdoJkLPEpWhX3' })
+          .catch(function(){ inited = false; });
+      } catch(e) { inited = false; }
+    }
+    new MutationObserver(initSilk).observe(overlay, { attributes:true, attributeFilter:['class'] });
+    initSilk();
   })();
 
   /* ── 1. 교육 가로 스크롤 (sticky + vanilla scroll) ── */
