@@ -237,6 +237,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260710b~f** (**main 직커밋 LIVE**, tag `v20260710f`, main `1e3ea20`, 2026-07-10) — 대표님 피드백 후속 라운드. 상세 → auto-memory `session-20260710-aibranch-ceo-feedback.md`.
+  - **b→d→f CEO 사진 사이징 수렴**: 660px(너무 큼)→560px→**최종 f=텍스트 컬럼 스팬**(위=제목 2행 "서포터가…" ±3px, 아래=서명+44px, 실측 499×742). 구현=우측 컬럼 `lg:self-stretch`+absolute 래퍼(`top:110px; bottom:-40px`)+img `height:100%`. ⚠️함정: `height:calc(100%)`+self-stretch=순환 사이징 폭주 / **abspos replaced(img)는 top+bottom으로 높이 미결정**(고유 크기)→래퍼 div 필수.
+  - **d 네비 다크 옵저버**: 흰 오버레이(CEO·프로인트로) 열림 동안 `#nav-bar` 인라인 `background rgba(15,15,30,0.92) !important`(MutationObserver). 스크롤 핸들러가 인라인 단일소스라 **CSS `:has()`로는 못 이김**. 셋업은 DOMContentLoaded 후(프로인트로 마크업이 스크립트 아래).
+  - **c**: 02카드 "금융 유튜브"→"유튜브"·스튜디오↔디자인 스왑(3↔5)·STORIES ITA 임성미→**2025 연도대상**(`assets/video/2025-annual-awards.mp4` 31MB), 순서 연도대상→월례→워크샵. ⚠️PS 커밋 -m에 큰따옴표=인자 깨짐 → **커밋 메시지는 `git commit -F 파일` 고정**.
+  - **e**: CARING sub "최대" 제거·02카드 제목 **"통합 브랜드 지원"**·조직문화 **자동(38s)→화살표 수동 캐러셀**(`.culture-track` transform 방식, 복제 카드 제거. scroll-snap/scrollLeft은 백그라운드 탭 frozen이라 검증 불가+비채택)·연도대상 poster=`AI 홈페이지/PRO ENTERPRISE AWARD.jpg` 재활용(브라우저 video 프레임 캡처 이 환경 전부 검정, ffmpeg/cv2 없음).
+  - **f**: 조직문화 캐러셀 **무한 순환**(next 끝→처음/prev 처음→끝 랩, `% (m+1)`, 화살표 상시 활성).
 - **v=20260710a** (**main 직커밋 LIVE**, tag `v20260710a`, main `bebec28`, 2026-07-10) — 대표님 피드백 11건 일괄 반영. 로컬 DOM 실측(1440+375px)·콘솔0·라이브 캐시버스터 grep 13/13·잔재 0 검증. 상세 진실원 → auto-memory `session-20260710-aibranch-ceo-feedback.md`.
   - 히어로 부제 타이핑 85→**45ms**/자, 시작 지연 1500→800ms (9645·9647 근처).
   - 헤더+모바일 네비 라벨: "프로사업단총괄"→**"조직 소개"**, "인재양성"→**"성장 시스템"** (data-nav 불변).
