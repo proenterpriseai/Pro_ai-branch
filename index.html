@@ -9069,10 +9069,11 @@
       var btnPrev = root.querySelector('[data-story-prev]');
       var btnNext = root.querySelector('[data-story-next]');
       var perView = window.matchMedia('(max-width: 768px)').matches ? 1 : 2;
-      var pageCount = Math.max(1, STORIES.length - perView + 1);
+      var realCount = STORIES.length; // v=20260710j: 심리스 무한 루프(조직문화 캐러셀과 동일 방식) — 페이지 개념 대신 카드 시작 위치 0..realCount-1
       var idx = 0;
       var autoTimer = null;
       var AUTO_MS = 6000;
+      var animating = false, fbTimer = null;
 
       function buildCard(s) {
         var thumbHtml = s.type === 'youtube'
@@ -9093,26 +9094,52 @@
           + '</div>';
       }
       track.innerHTML = STORIES.map(buildCard).join('');
+      // 무한 루프용 앞 2장(=최대 perView) 클론 부착 — 클릭은 위임 방식·data-id 동일이라 클론도 라이트박스 정상
+      for (var ci = 0; ci < 2; ci++) {
+        var cl = track.children[ci].cloneNode(true);
+        cl.setAttribute('aria-hidden', 'true');
+        track.appendChild(cl);
+      }
 
-      // 페이지네이션 점
+      // 페이지네이션 점 (카드 시작 위치 기준 realCount개 — 데스크톱/모바일 동일)
       var dotsHtml = '';
-      for (var i = 0; i < pageCount; i++) {
+      for (var i = 0; i < realCount; i++) {
         dotsHtml += '<button class="story-dot' + (i === 0 ? ' active' : '') + '" data-story-dot="' + i + '" aria-label="페이지 ' + (i + 1) + '"></button>';
       }
       dotsWrap.innerHTML = dotsHtml;
 
-      function update() {
+      function update(noAnim) {
+        if (noAnim) track.style.transition = 'none';
         var shift = -(100 / perView) * idx;
         track.style.transform = 'translateX(' + shift + '%)';
+        if (noAnim) { void track.offsetWidth; track.style.transition = ''; }
         var dots = dotsWrap.querySelectorAll('.story-dot');
-        for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === idx);
+        var active = idx % realCount;
+        for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === active);
+      }
+      function settle() {
+        animating = false;
+        if (idx >= realCount) { idx -= realCount; update(true); } // 클론 화면 = 원본 화면과 동일 → 무애니 스냅
+      }
+      track.addEventListener('transitionend', function (e) {
+        if (e.propertyName !== 'transform' || e.target !== track) return;
+        clearTimeout(fbTimer); settle();
+      });
+      function armSettle() { clearTimeout(fbTimer); fbTimer = setTimeout(settle, 800); } // transitionend 미발화 폴백
+      function next() {
+        if (animating) return;
+        animating = true; idx += 1; update(); armSettle();
+      }
+      function prev() {
+        if (animating) return;
+        if (idx <= 0) { idx = realCount; update(true); } // 왼쪽 순환: 동일 화면인 클론 위치로 스냅 후 후진
+        animating = true; idx -= 1; update(); armSettle();
       }
       function go(n) {
-        idx = (n + pageCount) % pageCount;
-        update();
+        if (animating) return;
+        idx = ((n % realCount) + realCount) % realCount;
+        animating = true; update(); armSettle();
       }
-      function next() { go(idx + 1); }
-      function prev() { go(idx - 1); }
 
       btnPrev.addEventListener('click', function () { prev(); resetAuto(); });
       btnNext.addEventListener('click', function () { next(); resetAuto(); });
@@ -9147,19 +9174,14 @@
       });
       track.addEventListener('pointercancel', function () { dragging = false; startAuto(); });
 
-      // viewport 리사이즈 시 perView 갱신
+      // viewport 리사이즈 시 perView 갱신 (점은 realCount 고정이라 재생성 불필요)
       var mq = window.matchMedia('(max-width: 768px)');
       function onMq() {
         var newPv = mq.matches ? 1 : 2;
         if (newPv !== perView) {
           perView = newPv;
-          pageCount = Math.max(1, STORIES.length - perView + 1);
-          // 점 다시 생성
-          var html = '';
-          for (var i = 0; i < pageCount; i++) html += '<button class="story-dot" data-story-dot="' + i + '"></button>';
-          dotsWrap.innerHTML = html;
-          if (idx >= pageCount) idx = pageCount - 1;
-          update();
+          if (idx >= realCount) idx -= realCount;
+          update(true);
         }
       }
       if (mq.addEventListener) mq.addEventListener('change', onMq);
