@@ -237,6 +237,13 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260710a** (**main 직커밋 LIVE**, tag `v20260710a`, main `bebec28`, 2026-07-10) — 대표님 피드백 11건 일괄 반영. 로컬 DOM 실측(1440+375px)·콘솔0·라이브 캐시버스터 grep 13/13·잔재 0 검증. 상세 진실원 → auto-memory `session-20260710-aibranch-ceo-feedback.md`.
+  - 히어로 부제 타이핑 85→**45ms**/자, 시작 지연 1500→800ms (9645·9647 근처).
+  - 헤더+모바일 네비 라벨: "프로사업단총괄"→**"조직 소개"**, "인재양성"→**"성장 시스템"** (data-nav 불변).
+  - **CEO 오버레이 화이트 전환**(공식홈 레퍼런스): bg `#050505`→`#ffffff`, YouTube iframe 2개(PC `#ceo-video`+모바일) 삭제→`assets/images/ceo-lim.png`(기존 미사용 파일 재활용, PC 우측 max-w 500px + 모바일 상단 300px), 제목 그라데이션 span 제거→전체 `#27398c`, 본문 gray-800/600, 서명 invert 필터 제거, 닫기버튼 다크 보정. **오버라이드 전부 `#ceo-overlay` 스코프 `<style>`**(.ceo-overlay 클래스는 4개 오버레이 공유). ⚠️ `ceo-video` JS 참조 5곳은 전부 `if(vid)` null-safe라 미수정(의도적 잔존). Shorts 5카드·푸터 유지.
+  - 성장 로드맵(01 카드): "성장 로드맵 트래커"→**"성장 로드맵"**, 부제 "입문부터 WM전문가과정까지 · 5단계", 배지 "진행 중"→**"운영 중"**, 행 상태 pill 5개(완료/진행 중/대기) 삭제+dead CSS(.st.*) 제거(`is-run` 발광·바 유지, JS는 pill 미참조 확인), 05행 제목 "WM센터장 주관 법인/고액 자산가/재무설계 전문가 과정"(12.5px 유지, 데스크톱 한 줄 312px 실측·모바일 2줄 랩), 05행 설명 "법인·CEO, 자산가 시장 컨설팅 — Wealth Manager로 성장", GROWTH 부제 3줄 교체("타사가 2주 교육 후…높은 생산성의 이유입니다.", 모바일은 brToSpace가 br→공백=기존 패턴), 칩 "WM 마스터"→"WM 전문가 과정".
+  - 02 카드: **"전용 스튜디오" 5번째 축 추가**(카메라 SVG+태그 "촬영"), "4축"→"5축" 3곳(부제/카피/주석), tskRowGlow delay 0/1.6/3.2/4.8/6.4s 재배분+nth-child(5), 칩 "스튜디오" 추가, "PRO 보험스쿨"→**"PROCAST"**.
+  - 파트너 05: **보케어→CARING**(자동차 보험 플랫폼) — rname/h3 "CARING"(free 클래스 upright=라틴 정립 그대로 적합), area "영업지원 · 자동차보험", sub "대한민국 최대 자동차 보험 플랫폼", desc 비교견적/배서·청약 카피, 아이콘 자동차로, `partners/caring.jpg` 신규(원본 바탕화면 `카링. 자동차보험.PNG` 2115×811 → Pillow 1400px q82 JPEG 85KB). 구 bocare.jpg 파일은 관례대로 유지(참조만 제거).
 - **v=20260707a~20260707j** (**main 직커밋 LIVE**, tag `v20260707j`, main `5303401`, 2026-07-07) — 7대 AI 쇼케이스(#solutions) + 승격 구조(#about) 폴리시 10건. 전부 프리뷰 DOM 실측·라이브 캐시버스터 grep·콘솔0 후 배포. 상세 진실원 → auto-memory `session-20260707-aibranch-showcase-polish.md`.
   - **a**(`2d4c53f`): KPI 4카드 그래프 풀폭(`nxk-dot7`·`nxk-bars` `gap-1`→`justify-between` = 스파크라인과 동일 113px) + KPI/사이드바 "AI 시스템" 라벨/우측패널(핵심 지표·지표박스·AI 인사이트) 가운데 정렬 + AI 풀 시스템 카드 아이콘 우측 이동·글자 확대 + **보장분석 `__COVERAGE__` 리포트 "AI 카테고리 분석" 16카드 섹션 제거**(미사용 `_cat` 헬퍼 동반 제거, ①요약·②상세표·③점수카드 유지=종합점수 B+에서 종료).
   - **b**(`b99b92d`): 금일 분석·AI 사용률 스파크라인이 동일 nxkDraw 7s 동시 시작으로 똑같이 움직이던 것 → AI 사용률만 `.draw-alt`(duration 9.5s + delay -3.5s)로 영구 비동기.
