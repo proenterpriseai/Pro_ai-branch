@@ -3817,7 +3817,12 @@
       <!-- Loopra 배경: UnicornStudio 스포트라이트 + CSS fallback -->
       <div class="absolute top-0 w-full h-[1400px] -z-10 saturate-200 brightness-125 pointer-events-none" data-alpha-mask="80" style="mask-image:linear-gradient(to bottom,transparent,black 0%,black 85%,transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,black 0%,black 85%,transparent);">
         <div class="absolute top-0 w-full h-[1200px] -z-10" data-alpha-mask="80" style="mask-image:linear-gradient(to bottom,transparent,black 0%,black 85%,transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,black 0%,black 85%,transparent);">
-          <div data-us-project="7BChNsgjdoJkLPEpWhX3" class="absolute w-full h-full left-0 top-0 -z-10"></div>
+          <!-- v=20260711b: US 로드 전 다크 폴백 배경 필수 — 아래 틴트가 mix-blend-mode:color(휘도=하단 레이어)라
+               하단이 투명이면 틴트 원색이 통짜로 노출(F5 플래시). 스포트라이트 명암을 흉내낸 다크 radial을 깔아
+               로드 전에도 최종 룩과 같은 어두운 톤으로 시작. 씬 로드되면 canvas가 위를 덮어 무영향. -->
+          <div data-us-project="7BChNsgjdoJkLPEpWhX3" class="absolute w-full h-full left-0 top-0 -z-10" style="background:radial-gradient(ellipse 60% 55% at 50% -8%, #0a2472 0%, #061033 45%, #02040d 80%);"></div>
+          <!-- v=20260711b: 색상만 im-blue 팔레트로 — 스포트라이트 디자인·움직임 불변. mix-blend-mode:color 틴트(휘도=씬 그대로, 색조·채도=팔레트 그라데이션) -->
+          <div class="absolute w-full h-full left-0 top-0" style="mix-blend-mode:color; background:linear-gradient(160deg, #1A6DFF 0%, #0056F5 45%, #002B7A 100%); opacity:0.9;"></div>
           <script type="text/javascript">
             !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.34/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
           </script>
@@ -3845,6 +3850,8 @@
         </h1>
 
         <!-- 서브타이틀 -->
+        <!-- v=20260711b: 데스크톱 부제 20→22px 확대(모바일 14px 오버라이드 불변). id 셀렉터라 유틸리티 클래스보다 우선 -->
+        <style>@media (min-width:768px){ #hero-typing{ font-size:22px; line-height:1.4; } }</style>
         <p id="hero-typing" class="text-lg md:text-xl text-white max-w-2xl font-normal tracking-tight leading-relaxed mt-6 mb-10 font-geist min-h-[3.5rem] [animation:animationIn_0.8s_ease-out_0.4s_both]" style="text-shadow:0 1px 16px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);">
           <span id="hero-typing-text"></span>
         </p>
@@ -7742,8 +7749,9 @@
           </div>
           <!-- 우측: 대표님 사진 (모바일에서는 위에 이미 표시됨) — v=20260710f 텍스트 컬럼 기준 사이징: 위=제목 2행 높이(top:76px), 아래=서명보다 살짝 아래(bottom:-40px). absolute=순환 사이징 방지(컬럼 높이는 좌측 텍스트가 결정) -->
           <div class="hidden lg:block lg:self-stretch relative">
-            <div style="position:absolute; top:110px; bottom:-40px; left:0; right:0; display:flex; justify-content:center;">
-              <img src="assets/images/ceo-lim.png" alt="프로사업단총괄 대표 임형준" style="height:100%; width:auto; max-width:none;" loading="eager">
+            <!-- v=20260711b: top 110→40px(시작점 70px 상승, 넥타이 노출) + 사이즈 과대 피드백 → img 100%→90% 축소(상단 flex-start 앵커 = 올린 높이 유지, 하단만 위로) -->
+            <div style="position:absolute; top:40px; bottom:-40px; left:0; right:0; display:flex; justify-content:center; align-items:flex-start;">
+              <img src="assets/images/ceo-lim.png" alt="프로사업단총괄 대표 임형준" style="height:98%; width:auto; max-width:none;" loading="eager"><!-- v=20260711b: 90→98% — 상단 유지, 하단을 이름·서명 블록보다 ~23px 아래로 연장 -->
             </div>
           </div>
         </div>
@@ -9150,8 +9158,9 @@
         resetAuto();
       });
 
-      // 자동순환
-      function startAuto() { stopAuto(); autoTimer = setInterval(next, AUTO_MS); }
+      // v=20260711b: 자동순환 제거(사용자 요청) — 화살표/점/스와이프 수동 이동만. startAuto는 no-op으로
+      // 두어 기존 호출부(resetAuto/pointerleave/스와이프)를 건드리지 않음.
+      function startAuto() { stopAuto(); }
       function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
       function resetAuto() { startAuto(); }
       root.addEventListener('pointerenter', stopAuto);
@@ -15597,8 +15606,21 @@
         <div id="pro-hero-silk-scene" style="position:absolute; inset:0; z-index:1;"></div>
         <!-- 중앙 카피 -->
         <div style="position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 2rem;">
-          <h2 style="font-size:clamp(2rem,5vw,2.75rem); font-weight:700; line-height:1.25; letter-spacing:-0.04em; color:#fff; margin:0 0 24px; word-break:keep-all; text-shadow:0 2px 24px rgba(0,20,80,0.45);">처음부터 정점까지<br>당신의 성장을 설계하다</h2>
-          <p style="font-size:17px; color:rgba(255,255,255,0.92); line-height:1.8; max-width:600px; margin:0; word-break:keep-all; text-shadow:0 1px 14px rgba(0,20,80,0.45);">PRO AI 시스템과 체계적인 교육으로<br>영업인이 끊임없이 성장하는 최적의 환경을 만듭니다.</p>
+          <!-- v=20260711b: 타이포를 메인 히어로와 동일 스케일로 — 제목 = h1(text-5xl/md:text-6xl = 48→60px)·행간 1.35 / 부제 = (text-lg/md:text-xl = 18→20px)·행간 1.625(leading-relaxed). 동일 768px 브레이크포인트 -->
+          <style>
+            #pro-hero-silk .pro-silk-title{font-size:3rem; font-weight:700; line-height:1.35; letter-spacing:-0.04em; color:#fff; margin:0 0 28px; word-break:keep-all; text-shadow:0 2px 24px rgba(0,20,80,0.45);}
+            #pro-hero-silk .pro-silk-sub{font-size:1.125rem; color:rgba(255,255,255,0.92); line-height:1.625; letter-spacing:-0.025em; max-width:640px; margin:0; word-break:keep-all; text-shadow:0 1px 14px rgba(0,20,80,0.45);}
+            @media (min-width:768px){
+              #pro-hero-silk .pro-silk-title{font-size:3.75rem;}
+              #pro-hero-silk .pro-silk-sub{font-size:22px; line-height:1.4;} /* v=20260711b: 메인 부제와 동일하게 22px/1.4로 확대 */
+            }
+            /* 메인 히어로 부제(#hero-typing)의 모바일 14px 오버라이드와 동일 */
+            @media (max-width:768px){
+              #pro-hero-silk .pro-silk-sub{font-size:14px;}
+            }
+          </style>
+          <h2 class="pro-silk-title">처음부터 정점까지<br>당신의 성장을 설계하다</h2>
+          <p class="pro-silk-sub">PRO AI 시스템과 체계적인 교육으로<br>영업인이 끊임없이 성장하는 최적의 환경을 만듭니다.</p>
         </div>
       </div>
     </div>
@@ -15626,7 +15648,6 @@
               <img src="AI 홈페이지/신입/SnapInsta.to_581774895_18537758704044475_1274972021437159003_n.jpg" alt="Growth Scheduler 교재" data-course="0" style="opacity:1;">
               <img src="AI 홈페이지/신입/SnapInsta.to_551078060_18527030641044475_7593483523123187588_n.jpg" alt="세일즈역량강화 IN BUSAN" data-course="1" style="opacity:0;">
               <img src="AI 홈페이지/신입/12차월 미만 대상 역량 강화 과정.jpg" alt="저차월 역량강화과정" data-course="2" style="opacity:0;">
-              <img src="AI 홈페이지/신입/SnapInsta.to_529646521_18518932852044475_3011110293151240933_n.jpg" alt="세일즈역량강화과정" data-course="2" style="opacity:0;">
             </div>
           </div>
 
@@ -15646,11 +15667,8 @@
             </div>
             <div class="edu-hp-img" data-slideshow>
               <img src="AI 홈페이지/관리자/SnapInsta.to_488081036_18494858635044475_8007968768522893103_n.jpg" alt="관리자 역량강화과정" data-course="0" style="opacity:1;">
-              <img src="AI 홈페이지/관리자/SnapInsta.to_626957428_18556481050044475_3057239203861553995_n.jpg" alt="외부지사 합동교육" data-course="0" style="opacity:0;">
               <img src="AI 홈페이지/관리자/SnapInsta.to_523235892_18515821147044475_1577995994967421797_n.jpg" alt="차세대리더 과정" data-course="1" style="opacity:0;">
               <img src="AI 홈페이지/관리자/관리자 워크샵.jpg" alt="CROTONVILLE 리더십" data-course="2" style="opacity:0;">
-              <img src="AI 홈페이지/관리자/2026-manager-workshop-hanwha.jpg" alt="성수본점 2026 Manager Workshop in 한화리조트" data-course="2" style="opacity:0;">
-              <img src="AI 홈페이지/관리자/SnapInsta.to_651581255_18568761139044475_1103611696124481972_n.jpg" alt="AI Strategy Workshop" data-course="2" style="opacity:0;">
             </div>
           </div>
 
@@ -15671,7 +15689,6 @@
             </div>
             <div class="edu-hp-img" data-slideshow>
               <img src="AI 홈페이지/db영업전문과과정/SnapInsta.to_486669384_18493265659044475_8063352989600581402_n.jpg" alt="DB영업 왜 성과는 다르게 나올까" data-course="0" style="opacity:1;">
-              <img src="AI 홈페이지/db영업전문과과정/SnapInsta.to_486760402_18493265704044475_8334572031290027537_n.jpg" alt="DB영업전문가과정 4기" data-course="0" style="opacity:0;">
               <img src="AI 홈페이지/관리자/SnapInsta.to_539531083_18522442444044475_5901741666639269199_n.jpg" alt="보장전문가 과정" data-course="2" style="opacity:0;">
               <img src="AI 홈페이지/관리자/SnapInsta.to_570551236_18533373706044475_5515075293047894191_n.jpg" alt="재무설계 전문가 과정" data-course="3" style="opacity:0;">
               <img src="AI 홈페이지/관리자/SnapInsta.to_573853513_18534419344044475_1610757311692977324_n.jpg" alt="세일즈역량강화 in SEJONG" data-course="1" style="opacity:0;">
@@ -15982,25 +15999,16 @@
       gl = canvas.getContext('webgl', { antialias:true, preserveDrawingBuffer:true });
       if(!gl){ canvas.remove(); return false; }
       var vs = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+      /* v=20260711b: 공식홈(proenterprise.co.kr) 실크 셰이더 원본 이식 — 사용자가 공식홈 소스에서 추출한
+         fragmentShaderSource 수식·설정 그대로: pattern=0.6+0.4*sin(5(x+y+cos(3x+5y)+0.02T)+sin(20(x+y-0.1T))),
+         색=#3E76F9 단색×패턴, speed 0.6 × time(+0.01/frame≈0.6/s) → T=0.36t, rotation 0, scale 1.0, noise 0 */
       var fs = 'precision highp float;uniform vec2 r;uniform float t;\n'
         + 'void main(){\n'
-        + '  vec2 uv = gl_FragCoord.xy / r;\n'
-        + '  vec2 p = uv - 0.5; p.x *= r.x / r.y;\n'
-        + '  float cs = cos(-0.55), sn = sin(-0.55);\n' /* 대각(약 -31도) 주름 방향 */
-        + '  p = mat2(cs, -sn, sn, cs) * p;\n'
-        + '  vec2 q = p * 4.2; float v = 0.0; float a = 1.0;\n'
-        + '  for(int i = 0; i < 5; i++){\n' /* v=20260710m 후보 G: 이중 주파수 주름(굵기 제각각, 폭 44~257px 실측) + 밝은 로열블루 팔레트(대표님 이미지1 톤) */
-        + '    q.x += 0.4 * a * sin(q.y * 1.9 / a + t * 0.22 + float(i) * 1.7);\n'
-        + '    q.y += 0.3 * a * cos(q.x * 1.4 / a + t * 0.18 + float(i) * 2.3);\n'
-        + '    v += a * ( sin(q.y * 6.2 + q.x * 0.9 + t * 0.12) + 0.55 * sin(q.y * 2.8 - q.x * 0.7 + 1.3 + t * 0.09) );\n'
-        + '    a *= 0.55;\n'
-        + '  }\n'
-        + '  float n = smoothstep(-4.0, 1.0, v);\n'
-        + '  vec3 deep = vec3(0.05, 0.09, 0.26);\n'    /* #0d1742 좁은 골 */
-        + '  vec3 mid  = vec3(0.26, 0.45, 0.94);\n'    /* #4273f0 몸통(지배 색) */
-        + '  vec3 hi   = vec3(0.34, 0.52, 0.99);\n'    /* #5785fc 밝은 능선 */
-        + '  vec3 col = mix(deep, mid, n);\n'
-        + '  col = mix(col, hi, pow(n, 3.0) * 0.7);\n'
+        + '  vec2 tex = gl_FragCoord.xy / r;\n'
+        + '  float T = 0.36 * t;\n'
+        + '  tex.y += 0.03 * sin(8.0 * tex.x - T);\n'
+        + '  float pattern = 0.6 + 0.4 * sin(5.0 * (tex.x + tex.y + cos(3.0 * tex.x + 5.0 * tex.y) + 0.02 * T) + sin(20.0 * (tex.x + tex.y - 0.1 * T)));\n'
+        + '  vec3 col = vec3(0.243, 0.463, 0.976) * pattern;\n' /* #3E76F9 (공식홈 SETTINGS.colorHex) */
         + '  gl_FragColor = vec4(col, 1.0);\n'
         + '}';
       function sh(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
