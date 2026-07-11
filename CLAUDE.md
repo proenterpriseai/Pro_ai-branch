@@ -237,6 +237,13 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260711c** (**main 직커밋 LIVE**, tag `v20260711c`, 2026-07-11) — 히어로 타이포 통일 + 조직소개 하단 재구성 + 라이트 네비 모드. 상세 진실원 → auto-memory `session-20260711-aibranch-nav-glass.md`.
+  - **A. 메인 히어로 타이포 통일**: 제목 `#hero-title` = 조직소개 실크 제목과 동일(Pretendard 700·자간 -0.04em·네이비 그림자) + 배지→제목/제목→부제 **간격 균등**(데스크톱 `margin-top:max(0px,calc(25vh-174px))`+`margin-bottom:calc(25vh-142px)`, 모바일 28px). 부제 `#hero-typing`·배지도 Pretendard 통일(font-geist 제거).
+  - **B. 조직소개 하단 재구성**: 지사 캐러셀(인스타 홍보카드 13장) **통째 삭제**(복제 IIFE는 null-guard라 무해·잔존) → **클로징 섹션 `#pro-closing` 신규**(원금융 "ABOUT US" 디자인 이식): 2톤 영문 헤드라인 **"One Team & / One Financial Group / Only One System"**("One"·"Only One"=`.o` `#27398c`, 나머지 검정 — `Network`→`Group` 교체=원금융 브랜드 반향 회피) + 좌측 라인·CEO결 4문단(지정 줄바꿈) + 우측 **회전 와이어프레임 지구본 SVG**(블루, `pc-spin` 26s. ⚠️Sequra 크레센트 SVG 재현 2회 시도→퀄리티 부족으로 원복, AI 생성 자산 대기). 푸터 `margin-top:48→0`(검은 띠 제거, **조직소개 푸터만** — 다른 3개 오버레이 48px 유지).
+  - **조직문화 섹션 다크 전환**: bg `#f5f5f7`→`#050505`(WM센터와 통일) + 팔레트 매칭(제목·카드제목 `#fff`/부제·설명 `#b8bccb`/강조 `#dfe7fb`) + `data-nav-bright` 제거.
+  - **🔑 라이트 네비 모드 신규(공식홈 스타일)**: 흰 배경 위 헤더 = 밝은 알약 `rgba(255,255,255,0.97)`+**검정 글자·로고 invert(1)**·햄버거 다크(`#nav-light-style` CSS + `navLight(imp)` — `.nav-light` 클래스 스코프). 적용=흰 구간 전수 3곳: 메인 `#stats`(마커 신규)·클로징 `#pro-closing`·**CEO 오버레이**(구 강제 다크→라이트). 다크 섹션 동작 불변.
+  - **네비 판정 재작성**: ①`mainNavUpdate()` 단일 판정(흰 섹션 light > **히어로 보이는 동안 glass 유지**(bottom>120, 구 scrollY>50 다크 대체) > 스크롤 다크) — 스크롤 리스너/IO 콜백/오버레이 닫힘 복원 전부 통일, `scrolled` 플래그 제거. ②**마커 수집 버그 fix**: 파스 시점 `querySelectorAll`이라 스크립트 아래 `#pro-closing` 누락 → `setupBrightObs()` DOMContentLoaded 후 수집. ③`updateProNav` 히어로 아래 분기에 brightCount 라이트 추가.
+  - ⚠️ **교훈**: (1) `data-nav-bright` 마커류 수집은 반드시 DOMContentLoaded 후(마크업이 스크립트 아래) — setupDarkNav와 동일 함정. (2) sed 파일 splice는 삽입 파일 끝 개행 확인(줄 병합 사고). (3) 클로징 컷/배경 `#f6f6f8` 하드코딩 — 섹션 배경 변경 시 동기 필요.
 - **v=20260710g~k** (**main 직커밋 LIVE**, tag `v20260710k`, main `3a8ab80`, 2026-07-10) — 대표님 피드백 3라운드. 상세 → auto-memory `session-20260710-aibranch-ceo-feedback.md`.
   - **g**: STORIES 카드 "YouTube"/"현장 영상" 라벨 칩 제거(+tone dead CSS), 제목 14→18px·부제 11→13.5px.
   - **h**: 지사 캐러셀 **형광(초록/노랑) 박힌글자 이미지 6장 삭제**(1행 천안·하남·일산·다산·구미 / 2행 로얄본부 직할 2곳) → 흰 글자 톤만 잔존(1행 9장·2행 4+4). ⚠️**잠복 버그 fix**: 1행 복제 IIFE(~7822)가 마크업(~15816)보다 위라 즉시 실행 시 null→**복제가 한 번도 안 되고 있었음** → DOMContentLoaded로 이동(9→18장). 루프 이음새 gap 절반 보정 `calc(-50% - 0.625rem)`(양방향 키프레임). 조직문화 캐러셀: 뷰포트 = 정확히 카드 2장 폭(1152/912px, 모바일 320px 1장) + **심리스 무한 루프**(앞 2장 클론+transitionend 무애니 스냅+폴백 700ms+연타 가드) — 되감기 점프 제거.

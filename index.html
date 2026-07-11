@@ -3416,12 +3416,12 @@
     }
     .culture-card-title {
       font-size: 22px; font-weight: 800;
-      color: #111; margin: 0 0 12px;
+      color: #fff; margin: 0 0 12px;
       letter-spacing: -0.02em;
       line-height: 1.35;
     }
     .culture-card-desc {
-      font-size: 15px; color: #6b6b70;
+      font-size: 15px; color: #b8bccb;
       line-height: 1.7; margin: 0;
       letter-spacing: -0.01em;
     }
@@ -3771,6 +3771,14 @@
   <div class="scroll-progress" id="scroll-progress"></div>
 
   <!-- ==================== NAVIGATION (content-layer 바깥, 오버레이 위) ==================== -->
+    <!-- v=20260711c: 라이트 네비 모드(공식홈 스타일) — 흰 배경 섹션 위에서만 #nav-bar에 .nav-light 부착.
+         배경=밝은 프로스티드 글라스, 로고=invert로 검정, 네비 글자=검정. 다크 섹션 동작은 불변. -->
+    <style id="nav-light-style">
+      #nav-bar.nav-light a[data-nav]{ color:#111 !important; }
+      #nav-bar.nav-light a[data-nav]:hover{ color:rgba(17,17,17,0.65) !important; border-bottom-color:rgba(17,17,17,0.4) !important; }
+      #nav-bar.nav-light a[data-nav="top"] img{ filter:invert(1); } /* 흰 로고 → 검정 (공식홈 로고 톤) */
+      #nav-bar.nav-light button.md\:hidden{ color:#111 !important; background:rgba(0,0,0,0.04) !important; border-color:rgba(0,0,0,0.12) !important; }
+    </style>
     <nav class="fixed w-full z-[300] top-0 transition-all duration-300 py-4" style="animation: fadeSlideIn 0.8s ease-out 0.1s both;">
       <div class="max-w-7xl mx-auto px-4">
         <!-- Glass Navbar Container (Accsensia 스타일) -->
@@ -3840,19 +3848,29 @@
         <!-- 키커 -->
         <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 ring-1 ring-white/5 shadow-lg backdrop-blur-xl mb-8 [animation:animationIn_0.8s_ease-out_0.1s_both] cursor-default">
           <span class="w-2 h-2 rounded-full" style="background:#38bdf8; box-shadow:0 0 8px 2px rgba(56,189,248,0.8), 0 0 20px 4px rgba(56,189,248,0.4); animation: heroDotBlink 1.5s ease-in-out infinite;"></span>
-          <span class="text-xs font-medium text-white font-geist tracking-wide">PRO AI 통합 시스템</span>
+          <span class="text-xs font-medium text-white tracking-wide">PRO AI 통합 시스템</span><!-- v=20260711c: font-geist(Inter) 제거 → 본문 기본 Pretendard로 통일(제목·부제와 동일 글꼴) -->
         </div>
 
         <!-- 메인 제목 -->
-        <!-- v=20260706c A안: 움직이는 블루 실크 배경 위 흰 글자 가독성 — text-shadow로 국소 대비 확보(색·굵기 불변) -->
-        <h1 class="md:text-6xl text-5xl text-white tracking-tight font-geist max-w-2xl mb-6 pb-2 font-semibold [animation:animationIn_0.8s_ease-out_0.2s_both]" style="line-height:1.35; text-shadow:0 2px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35);">
+        <!-- v=20260711c: 타이포를 조직소개 실크 히어로(.pro-silk-title)와 완전 동일하게 — font-geist(Inter) 제거→Pretendard,
+             weight 600→700, 자간 -0.04em, 그림자 검정→네이비(0 2px 24px rgba(0,20,80,0.45)). 사이즈·행간은 원래 동일(48/60px·1.35).
+             위치: 부제는 실크와 동일 높이 유지, 제목만 위·아래 간격 균등점으로 상승(전략실장 피드백 — 배지→제목 간격 = 제목→부제 간격).
+             유도: 제목top T=238+mt, 배지bottom 206, 부제top 고정 50vh+84.2(실크 실측) → mt=25vh−174px, mb=mt+32px=25vh−142px.
+             배지(PRO AI 통합 시스템)는 h1 위쪽이라 불변. 모바일(<768px)은 위치 기존 유지(폴드 아래 밀림 방지). -->
+        <style>
+          #hero-title{ margin-bottom:28px; } /* 모바일 기본(실크와 동일 28px) */
+          @media (min-width:768px){ #hero-title{ margin-top:max(0px, calc(25vh - 174px)); margin-bottom:calc(25vh - 142px); } }
+        </style>
+        <h1 id="hero-title" class="md:text-6xl text-5xl text-white max-w-2xl font-bold [animation:animationIn_0.8s_ease-out_0.2s_both]" style="line-height:1.35; letter-spacing:-0.04em; text-shadow:0 2px 24px rgba(0,20,80,0.45);">
           보험을 넘어<br>성장의 정점으로
         </h1>
 
         <!-- 서브타이틀 -->
         <!-- v=20260711b: 데스크톱 부제 20→22px 확대(모바일 14px 오버라이드 불변). id 셀렉터라 유틸리티 클래스보다 우선 -->
+        <!-- v=20260711c: 실크 부제(.pro-silk-sub)와 동일하게 — Inter 제거→Pretendard, 색 흰100%→rgba(255,255,255,0.92),
+             그림자 네이비. 제목과의 간격도 실크와 동일 28px(mt-6 제거, 제목 margin-bottom 28px가 담당). -->
         <style>@media (min-width:768px){ #hero-typing{ font-size:22px; line-height:1.4; } }</style>
-        <p id="hero-typing" class="text-lg md:text-xl text-white max-w-2xl font-normal tracking-tight leading-relaxed mt-6 mb-10 font-geist min-h-[3.5rem] [animation:animationIn_0.8s_ease-out_0.4s_both]" style="text-shadow:0 1px 16px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);">
+        <p id="hero-typing" class="text-lg md:text-xl max-w-2xl font-normal tracking-tight leading-relaxed mb-10 min-h-[3.5rem] [animation:animationIn_0.8s_ease-out_0.4s_both]" style="color:rgba(255,255,255,0.92); text-shadow:0 1px 14px rgba(0,20,80,0.45);">
           <span id="hero-typing-text"></span>
         </p>
 
@@ -4077,7 +4095,7 @@
     </section>
 
     <!-- ==================== 01 | 성과 (독립 섹션) ==================== -->
-    <section class="animate-on-scroll" id="stats" style="background:#f5f5f7; padding:6rem 1rem;">
+    <section class="animate-on-scroll" id="stats" data-nav-bright style="background:#f5f5f7; padding:6rem 1rem;">
       <div class="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div class="text-center mb-12">
             <!-- v=20260706b 타이포 통일: 섹션 제목 48→44px + 한 줄 전환(공식 홈페이지 40~45px 밴드 정합) -->
@@ -9291,8 +9309,8 @@
     (function () {
       var navBar = document.getElementById('nav-bar');
       if (!navBar) return;
-      var scrolled = false;
       function navScrolled() {
+        navBar.classList.remove('nav-light');
         navBar.style.background = 'rgba(15,15,30,0.92)';
         navBar.style.backdropFilter = 'blur(16px) saturate(180%)';
         navBar.style.webkitBackdropFilter = 'blur(16px) saturate(180%)';
@@ -9300,6 +9318,7 @@
         navBar.style.boxShadow = '0 4px 30px rgba(0,0,0,0.5)';
       }
       function navTop() {
+        navBar.classList.remove('nav-light');
         navBar.style.background = 'rgba(255,255,255,0.03)';
         navBar.style.borderTopColor = 'rgba(255,255,255,0.15)';
         navBar.style.borderLeftColor = 'rgba(255,255,255,0.08)';
@@ -9307,16 +9326,35 @@
         navBar.style.borderBottomColor = 'rgba(255,255,255,0.05)';
         navBar.style.boxShadow = '0 8px 32px 0 rgba(0,0,0,0.3)';
       }
+      // ─── v=20260711c: 라이트 네비(공식홈 스타일) — 흰 배경 섹션 위 전용 ───
+      //   밝은 프로스티드 글라스 + .nav-light(글자·로고 검정은 CSS #nav-light-style).
+      //   imp=true면 오버레이 전용 로직(!important 경합) 컨텍스트용.
+      function navLight(imp) {
+        navBar.classList.add('nav-light');
+        // v=20260711c B안: 0.88→0.97 — 알약 뒤 콘텐츠 비침 최소화(공식홈 수준), 알약 형태는 유지
+        if (imp) {
+          navBar.style.setProperty('background', 'rgba(255,255,255,0.97)', 'important');
+          navBar.style.setProperty('box-shadow', '0 8px 32px 0 rgba(0,0,0,0.08)', 'important');
+        } else {
+          navBar.style.background = 'rgba(255,255,255,0.97)';
+          navBar.style.boxShadow = '0 8px 32px 0 rgba(0,0,0,0.08)';
+        }
+        navBar.style.backdropFilter = 'blur(16px) saturate(180%)';
+        navBar.style.webkitBackdropFilter = 'blur(16px) saturate(180%)';
+        navBar.style.borderColor = 'rgba(0,0,0,0.06)';
+      }
       // ─── v=20260711a: 오버레이 열림 동안 네비 상태 헬퍼 ───
       //   CEO(화이트) = 무조건 다크 / 조직소개(pro-intro) = 블루 실크 히어로 위에서는 메인 히어로처럼
       //   glass 투명, 히어로를 지나 흰 섹션(교육·조직문화)으로 스크롤되면 다크. !important로 경합 차단.
       var proOv = null; // setupDarkNav에서 바인딩 (pro-intro 마크업은 이 스크립트보다 아래)
       function navDarkImportant() {
+        navBar.classList.remove('nav-light');
         navBar.style.setProperty('background', 'rgba(15,15,30,0.92)', 'important');
         navBar.style.setProperty('box-shadow', '0 4px 30px rgba(0,0,0,0.5)', 'important');
         navBar.style.borderColor = 'rgba(255,255,255,0.1)';
       }
       function navGlassImportant() {
+        navBar.classList.remove('nav-light');
         navBar.style.setProperty('background', 'rgba(255,255,255,0.03)', 'important');
         navBar.style.setProperty('box-shadow', '0 8px 32px 0 rgba(0,0,0,0.3)', 'important');
         navBar.style.borderTopColor = 'rgba(255,255,255,0.15)';
@@ -9330,42 +9368,47 @@
         var hero = document.getElementById('pro-hero-silk');
         if (!hero) { navDarkImportant(); return true; }
         // 헤더 pill(하단 ~110px)이 실크 히어로 영역 안에 있는 동안 glass
-        if (hero.getBoundingClientRect().bottom > 120) navGlassImportant(); else navDarkImportant();
+        // v=20260711c: 히어로 아래 흰 섹션(#pro-closing, data-nav-bright)에선 라이트, 그 외 다크
+        if (hero.getBoundingClientRect().bottom > 120) navGlassImportant();
+        else if (brightCount > 0) navLight(true);
+        else navDarkImportant();
         return true;
       }
       // ─── 흰 배경 섹션 위에 헤더 있을 때 강제 다크 (오버레이 내부 대응, v=20260522b) ───
       // data-nav-bright 마커 섹션이 헤더 영역(상단 ~60px)에 진입한 동안 navScrolled 강제
       var brightCount = 0;
-      window.addEventListener('scroll', function () {
-        if (brightCount > 0) return;
-        if (window.scrollY > 50 && !scrolled) { scrolled = true; navScrolled(); }
-        else if (window.scrollY <= 50 && scrolled) { scrolled = false; navTop(); }
-      });
-      if (window.scrollY > 50) { scrolled = true; navScrolled(); }
+      // ─── v=20260711c: 메인 네비 상태 단일 판정 — 흰 섹션(light) > 히어로 위(glass) > 스크롤(dark) ───
+      //   히어로가 화면에 보이는 동안엔 스크롤해도 glass 유지(조직소개 실크 히어로와 동일 패턴).
+      var heroSec = document.getElementById('hero-section');
+      function mainNavUpdate() {
+        if (brightCount > 0) { navLight(); return; }
+        if (heroSec && heroSec.getBoundingClientRect().bottom > 120) { navTop(); return; }
+        if (window.scrollY > 50) navScrolled(); else navTop();
+      }
+      window.addEventListener('scroll', mainNavUpdate, { passive: true });
+      mainNavUpdate();
 
-      var brightSections = document.querySelectorAll('[data-nav-bright]');
-      if (brightSections.length && 'IntersectionObserver' in window) {
+      // ─── v=20260711c fix: 마커 수집을 DOMContentLoaded 이후로 ───
+      //   이 스크립트보다 아래에 있는 마커(#pro-closing 등)가 파스 시점 querySelectorAll에
+      //   안 잡혀 관찰 누락되던 버그 수정(클로징 라이트 미전환 원인).
+      function setupBrightObs() {
+        var brightSections = document.querySelectorAll('[data-nav-bright]');
+        if (!brightSections.length || !('IntersectionObserver' in window)) return;
         var brightObs = new IntersectionObserver(function (entries) {
           entries.forEach(function (e) {
             if (e.isIntersecting) brightCount++;
             else brightCount = Math.max(0, brightCount - 1);
           });
-          // v=20260711a: 오버레이 열림 동안은 오버레이 전용 로직이 단일 소스 (경합 방지)
+          // 오버레이 열림 동안은 오버레이 전용 로직이 단일 소스 (경합 방지)
           var ceoEl = document.getElementById('ceo-overlay');
-          if (ceoEl && ceoEl.classList.contains('ceo-overlay--active')) { navDarkImportant(); return; }
+          if (ceoEl && ceoEl.classList.contains('ceo-overlay--active')) { navLight(true); return; } // CEO=화이트 페이지 → 라이트
           if (updateProNav()) return;
-          if (brightCount > 0) {
-            navScrolled();
-          } else if (window.scrollY <= 50) {
-            navTop();
-            scrolled = false;
-          } else {
-            navScrolled();
-            scrolled = true;
-          }
+          mainNavUpdate();
         }, { rootMargin: '-60px 0px -90% 0px', threshold: 0 });
         brightSections.forEach(function (s) { brightObs.observe(s); });
       }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupBrightObs);
+      else setupBrightObs();
 
       // ─── v=20260710d: CEO 화이트 오버레이 동안 네비 pill 다크(흰 로고·글자 가독성) ───
       //   #nav-bar 배경은 이 IIFE의 인라인 스타일이 단일 소스(스크롤 핸들러) → CSS :has로 못 이김.
@@ -9378,12 +9421,13 @@
         var darkNavOvs = [ceoOv, proOv].filter(Boolean);
         if (!darkNavOvs.length) return;
         var applyDarkNav = function () {
-          // CEO 화이트 오버레이 = 무조건 다크 / 조직소개 = 실크 히어로 위 glass·이후 다크(updateProNav)
-          if (ceoOv && ceoOv.classList.contains('ceo-overlay--active')) { navDarkImportant(); return; }
+          // CEO 화이트 오버레이 = 라이트 네비(v=20260711c) / 조직소개 = 실크 glass·흰섹션 라이트·그외 다크(updateProNav)
+          if (ceoOv && ceoOv.classList.contains('ceo-overlay--active')) { navLight(true); return; }
           if (updateProNav()) return;
           navBar.style.removeProperty('background');
           navBar.style.removeProperty('box-shadow');
-          if (window.scrollY > 50) navScrolled(); else navTop();
+          // v=20260711c: 닫힘 복원도 단일 판정(mainNavUpdate) — 흰 섹션 라이트/히어로 glass/스크롤 다크
+          mainNavUpdate();
         };
         var darkNavMo = new MutationObserver(applyDarkNav);
         darkNavOvs.forEach(function (o) { darkNavMo.observe(o, { attributes: true, attributeFilter: ['class'] }); });
@@ -15823,11 +15867,11 @@
     </section>
 
     <!-- ═══ 조직 문화 섹션 (4카드 자동 순환 캐러셀, v=20260504b) ═══ -->
-    <div data-nav-bright style="background:#f5f5f7; padding:5rem 0;">
+    <div style="background:#050505; padding:5rem 0;">
       <div style="text-align:center; margin-bottom:3rem; max-width:700px; margin-left:auto; margin-right:auto; padding:0 3rem;">
         <!-- v=20260706c: 제목 색 #111→#27398c (프로인트로 "처음부터 정점까지…"와 동일 브랜드 네이비, 전략실장 요청) -->
-        <h2 style="font-size:clamp(1.8rem,3.5vw,2.75rem); font-weight:800; color:#27398c; letter-spacing:-0.04em; line-height:1.2; margin:0 0 1.2rem;">성장을 지속시키는 조직문화</h2>
-        <p style="font-size:17px; color:#666; line-height:1.75; margin:0;">프로사업단총괄은 다양한 행사와 시상식을 통해<br>확실한 <strong style="color:#111;">동기부여와 지속적인 원동력</strong>을 제공합니다.</p>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.75rem); font-weight:800; color:#fff; letter-spacing:-0.04em; line-height:1.2; margin:0 0 1.2rem;">성장을 지속시키는 조직문화</h2>
+        <p style="font-size:17px; color:#b8bccb; line-height:1.75; margin:0;">프로사업단총괄은 다양한 행사와 시상식을 통해<br>확실한 <strong style="color:#dfe7fb;">동기부여와 지속적인 원동력</strong>을 제공합니다.</p>
       </div>
       <!-- v=20260710e: 자동 순환 → 수동 캐러셀(화살표 클릭). 복제 카드 제거, 4카드만 -->
       <div style="position:relative; max-width:1400px; margin:0 auto; padding:0 clamp(1rem,3vw,3.5rem);">
@@ -15909,51 +15953,101 @@
       })();
     </script>
 
-    <!-- Scene 2: 가로 스크롤 캐러셀 -->
-    <div id="pro-carousel-overlay" style="background:#050505; padding-bottom:4rem;">
-      <div style="padding:3rem 3rem 1.5rem;">
-        <h2 class="pro-carousel-title" style="margin-top:8px; line-height:1.4; word-break:keep-all;">전국으로 확장하는 프로사업단총괄</h2>
-        <p style="font-size:17px; color:rgba(255,255,255,0.45); max-width:560px; line-height:1.7; margin-top:12px; letter-spacing:-0.01em;">어디서든 동일한 질의 교육 시스템.<br>AI 도입 및 교육을 통해 전국 거점의 평균 생산성이 향상되었습니다.</p>
-      </div>
-      <div class="pro-carousel-mask" style="padding-bottom:2rem;">
-      <!-- v=20260710h 대표님 피드백: 형광(초록/노랑) 박힌글자 이미지 5장 삭제(천안·하남·일산·다산·구미) — 흰 글자 톤과 안 맞음 -->
-      <div class="pro-carousel-auto" id="pro-carousel-auto">
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_529685325_18519418372044475_8501219250524993644_n.jpg" alt="수원"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_534403531_18520910029044475_6003089725500412866_n.jpg" alt="영등포"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_542224506_18524451025044475_363482378010657968_n.jpg" alt="부산"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_554954792_18528152494044475_1528770754987668598_n.jpg" alt="성수"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_558252826_18529452004044475_2674490153879181259_n.jpg" alt="구리"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_564246736_18531233995044475_3317217042662909428_n.jpg" alt="세종"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_588648733_18544473640044475_5398755627660013981_n.jpg" alt="울산"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_630409157_18559011022044475_7327856581181125036_n.jpg" alt="광주"></div>
-        <div class="pro-carousel-card" style="scroll-snap-align:start;"><img src="프로 사진/SnapInsta.to_589907986_18543177430044475_2912944270728361731_n.jpg" alt="경북"></div>
-      </div><!-- end pro-carousel-auto -->
-      </div><!-- end pro-carousel-mask -->
-
-      <!-- 두번째 줄: 오른쪽으로 흐르는 4장 -->
-      <div class="pro-carousel-mask" style="padding-bottom:2rem; margin-top:1.25rem;">
-      <div class="pro-carousel-auto-reverse">
-        <div class="pro-carousel-card"><img src="프로 사진/경북도청지사.jpg" alt="경북도청지사"></div>
-        <div class="pro-carousel-card pro-carousel-card--label">
-          <img src="프로 사진/총괄 성수지점.jpg" alt="프로사업단총괄 성수 본점">
-          <div class="pro-carousel-label"><span class="pro-carousel-label__title">프로사업단총괄 성수 본점 오픈</span><span class="pro-carousel-label__tags">#성수본점 #HQ #프로사업단총괄</span></div>
+    <!-- ═══ 클로징 메시지 (v=20260711c) ═══
+         대표님 피드백 ③+④: 컬러 인스타 홍보 썸네일(지사 캐러셀) 통째 삭제 + "글로 마무리" 클로징.
+         디자인 = 공식 계열 원금융서비스(one-financial.co.kr) "ABOUT US" 섹션 이식 — 2톤 영문 헤드라인 + 좌측 라인·본문 + 우측 회전 와이어프레임 지구본.
+         텍스트는 우리 클로징 문안, 지구본은 우리 블루 팔레트(#27398c/#1C49C8/#3b82f6) SVG로 재현(회전 애니 10s 동일, reduced-motion 정지).
+         ※ 지사 캐러셀 복제 IIFE(7847)는 getElementById null-guard 있어 무해. -->
+    <style>
+      #pro-closing{ background:#f6f6f8; padding:clamp(4.5rem,9vw,7.5rem) 1.5rem; }
+      #pro-closing .pc-inner{ max-width:1280px; margin:0 auto; display:grid; grid-template-columns:1.05fr 0.95fr; gap:clamp(2rem,4vw,4rem); align-items:center; }
+      #pro-closing .pc-head{ font-size:clamp(2.1rem,4.6vw,3.9rem); font-weight:800; line-height:1.16; letter-spacing:-0.02em; color:#1a1a1a; margin:0; word-break:keep-all; }
+      #pro-closing .pc-head .g{ color:#c6cbd4; } /* 2톤 — 회색 강조어 */
+      #pro-closing .pc-head .o{ color:#27398c; } /* "One"·"Only One" 강조 — 브랜드 네이비 */
+      #pro-closing .pc-body{ display:flex; align-items:flex-start; gap:22px; margin-top:clamp(2rem,3vw,3rem); }
+      #pro-closing .pc-body .pc-rule{ flex:0 0 44px; height:2px; background:#1a1a1a; margin-top:16px; }
+      #pro-closing .pc-body .pc-copy{ display:flex; flex-direction:column; gap:1.15rem; max-width:560px; }
+      #pro-closing .pc-body p{ margin:0; font-size:clamp(15px,1.05vw,16.5px); line-height:1.85; color:#4b5563; word-break:keep-all; }
+      #pro-closing .pc-body p.lead{ color:#1a1a1a; font-weight:600; }
+      #pro-closing .pc-body p.close{ color:#1a1a1a; font-weight:700; }
+      #pro-closing .pc-body p .hl{ color:#27398c; font-weight:700; }
+      #pro-closing .pc-globe{ display:flex; justify-content:center; align-items:center; }
+      #pro-closing .pc-globe svg{ width:min(100%,460px); height:auto; }
+      #pro-closing .pc-spin{ transform-box:fill-box; transform-origin:center; animation:proGlobeSpin 26s linear infinite; }
+      @keyframes proGlobeSpin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+      @media (max-width:900px){
+        #pro-closing .pc-inner{ grid-template-columns:1fr; gap:2.5rem; }
+        #pro-closing .pc-globe{ order:-1; }            /* 모바일: 지구본을 위로 */
+        #pro-closing .pc-globe svg{ width:min(72%,340px); }
+        #pro-closing .pc-head{ font-size:clamp(2rem,8vw,2.9rem); }
+      }
+      @media (prefers-reduced-motion:reduce){ #pro-closing .pc-spin{ animation:none; } }
+    </style>
+    <div id="pro-closing" data-nav-bright>
+      <div class="pc-inner">
+        <!-- 좌: 카피 -->
+        <div class="pc-text">
+          <h2 class="pc-head"><span class="o">One</span> Team &amp;<br><span class="o">One</span> Financial Group<br><span class="o">Only One</span> System</h2>
+          <div class="pc-body">
+            <span class="pc-rule" aria-hidden="true"></span>
+            <div class="pc-copy">
+              <p class="lead">좋은 시스템은 누구에게나 길을 열어주고,<br>좋은 문화는 그 길을 끝까지 걷게 합니다.</p>
+              <p>그래서 우리는 성장을 시스템으로 만들고,<br>그 성장이 멈추지 않도록 문화를 쌓아왔습니다.<br>그 결과, 시장 발굴부터 단계별 교육 그리고 AI 통합 시스템까지,<br>성장에 필요한 모든 것을 하나로 갖췄습니다.</p>
+              <p>이제 우리는 한 걸음 더 나아가,<br>모든 영업인이 안정된 소득 위에서 커리어를 지속해 나가는 길을 열고자 합니다.</p>
+              <p class="close">프로사업단총괄은 여러분이 시작하는 순간부터 정점에 이르는 그날까지,<br>최고의 파트너가 되겠습니다.</p>
+            </div>
+          </div>
         </div>
-        <div class="pro-carousel-card"><img src="프로 사진/퍼스트지점 성수.jpg" alt="퍼스트지점 성수"></div>
-        <div class="pro-carousel-card"><img src="프로 사진/광주지사.jpg" alt="광주지사"></div>
-        <!-- 무한 루프용 복제 (v=20260710h: 로얄본부 직할 형광글자 이미지 삭제) -->
-        <div class="pro-carousel-card"><img src="프로 사진/경북도청지사.jpg" alt="경북도청지사"></div>
-        <div class="pro-carousel-card pro-carousel-card--label">
-          <img src="프로 사진/총괄 성수지점.jpg" alt="프로사업단총괄 성수 본점">
-          <div class="pro-carousel-label"><span class="pro-carousel-label__title">프로사업단총괄 성수 본점 오픈</span><span class="pro-carousel-label__tags">#성수본점 #HQ #프로사업단총괄</span></div>
+        <!-- 우: 회전 와이어프레임 지구본 (블루 계열 SVG로 재현) -->
+        <div class="pc-globe" aria-hidden="true">
+          <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img">
+            <defs>
+              <radialGradient id="pcGlobeFill" cx="42%" cy="38%" r="70%">
+                <stop offset="0%" stop-color="#dbe6ff"/>
+                <stop offset="55%" stop-color="#bcd0fb"/>
+                <stop offset="100%" stop-color="#8fb2f2"/>
+              </radialGradient>
+            </defs>
+            <!-- 바깥 점선 궤도 -->
+            <circle cx="240" cy="240" r="228" fill="none" stroke="#9db8ee" stroke-width="1" stroke-dasharray="2 7" opacity="0.7"/>
+            <g class="pc-spin">
+              <!-- 구체 본체 -->
+              <circle cx="240" cy="240" r="170" fill="url(#pcGlobeFill)" opacity="0.55"/>
+              <circle cx="240" cy="240" r="170" fill="none" stroke="#1C49C8" stroke-width="1.4" opacity="0.55"/>
+              <!-- 경도(세로 메리디안) -->
+              <g fill="none" stroke="#3b6ae0" stroke-width="1" opacity="0.6">
+                <ellipse cx="240" cy="240" rx="42" ry="170"/>
+                <ellipse cx="240" cy="240" rx="104" ry="170"/>
+                <ellipse cx="240" cy="240" rx="150" ry="170"/>
+                <line x1="240" y1="70" x2="240" y2="410"/>
+              </g>
+              <!-- 위도(가로 평행선) -->
+              <g fill="none" stroke="#3b6ae0" stroke-width="1" opacity="0.55">
+                <line x1="70" y1="240" x2="410" y2="240"/>
+                <ellipse cx="240" cy="240" rx="170" ry="52"/>
+                <ellipse cx="240" cy="240" rx="170" ry="120"/>
+              </g>
+              <!-- 노드(교차점 발광 점) -->
+              <g fill="#1C49C8">
+                <circle cx="240" cy="70" r="4"/>
+                <circle cx="240" cy="410" r="4"/>
+                <circle cx="70" cy="240" r="4"/>
+                <circle cx="410" cy="240" r="4"/>
+                <circle cx="136" cy="136" r="3.4"/>
+                <circle cx="344" cy="344" r="3.4"/>
+                <circle cx="344" cy="136" r="3.4"/>
+                <circle cx="136" cy="344" r="3.4"/>
+                <circle cx="240" cy="188" r="3" fill="#27398c"/>
+                <circle cx="240" cy="292" r="3" fill="#27398c"/>
+              </g>
+            </g>
+          </svg>
         </div>
-        <div class="pro-carousel-card"><img src="프로 사진/퍼스트지점 성수.jpg" alt="퍼스트지점 성수"></div>
-        <div class="pro-carousel-card"><img src="프로 사진/광주지사.jpg" alt="광주지사"></div>
-      </div>
       </div>
     </div>
 
     <!-- 오버레이 하단 푸터 (메인 페이지 동일 스타일) -->
-    <div style="background:#27398c; margin-top:48px; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
+    <div style="background:#27398c; margin-top:0; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
       <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
           <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise AI" style="height:32px;">
