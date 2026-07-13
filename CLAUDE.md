@@ -237,6 +237,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260713d** (**main 직커밋 LIVE**, tag `v20260713d`, 2026-07-13) — STORIES 캐러셀에 RECRUITING 100 영상 추가 + 전국 캐러셀 부제 교체(사용자 세션). 전부 로컬 DOM 실측·콘솔 0 검증 후 배포.
+  - **RECRUITING 100 영상 카드 신규**: `assets/video/2026-recruiting-100.mp4`(14MB, 인스타 SnapInsta 웹버전 — 226MB 원본 `260112_인카금융_master.mp4`는 GitHub 100MB 리밋으로 미사용) + poster `assets/images/2026-recruiting-100-poster.png`(골드 "다시 한번 '확장의 시대'를 연다" 프레임, 2877×1375·4MB). title=`RECRUITING 100`, subtitle=`290명에서 694명, 1년 만에 200% 성장`.
+  - **STORIES 순서**: RECRUITING 100 → 2025 프로사업단 연도대상 → 프로사업단 월례 시상식 → PRO 7대 AI 시스템 Workshop (점 3→4, 무한루프 클론 2장 유지). ⚠️브라우저 자동화 환경은 하드웨어 비디오 디코딩 프레임이 canvas로 안 넘어와 프레임 추출 불가 → poster는 사용자가 저장한 PNG 사용.
+  - **전국 캐러셀(#pro-carousel-overlay) 부제 교체**: `어디서든 동일한 질의 교육 시스템. AI 도입…향상되었습니다.` → `어디서든 동일한 질의 교육으로,<br>전국 거점의 <strong>평균 생산성</strong>을 끌어올립니다`. 색 `rgba(255,255,255,0.45)`→`#b8bccb`(조직문화 섹션과 통일·가독성). `<br>`은 데스크톱 줄바꿈·모바일 brToSpace 공백(기존 반응형).
 - **v=20260713c** (**main 직커밋 LIVE**, tag `v20260713c`, 2026-07-13) — AI 카드 문구 자연화 + 로고 크기 공식홈 통일.
   - **#why-pro AI 카드 문구**(상담코칭·완전판매): 딱딱한 조각문/jargon → 자연 완결문. 상담코칭 = "고객의 거절 유형을 읽고 상황에 맞는 화법을 실시간으로 제안합니다."(2문장→1문장, "심리 분석…물꼬" 삭제). 완전판매 = "AI가 법적 근거와 판례를 바탕으로 대응 논리를 세워, 민원 위험을 미리 막아 줍니다."("FSS 출신" 제거·`<br>` 제거).
   - **로고 크기 공식홈 통일**: 헤더+메인푸터 `class="h-[30px]"`, 오버레이 푸터 5곳 `height:30px`. ai-branch 로고 원본 754×170(비율 4.435:1) → 공식홈(proenterprise.co.kr) 헤더 로고 가로 133.33px에 맞춰 세로 30px(가로 실측 133.06px). ⚠️로고 크기 기준: 공식홈=가로(width 133.33px 고정), ai-branch=세로(height) → 원본 비율로 환산.
