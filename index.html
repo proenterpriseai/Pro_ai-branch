@@ -38,6 +38,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pro Enterprise AI — AI가 바꾸는 보험 영업의 미래</title>
   <meta name="description" content="프로사업단총괄의 8대 핵심 AI 시스템. 보장분석부터 고객관리, 금융계산까지.">
+  <!-- v=20260713g — OG 메타(카카오톡/SNS 링크 미리보기): 공식홈(proenterprise.co.kr) 카드와 톤 통일 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="인카금융서비스 프로사업단총괄">
+  <meta property="og:description" content="인카금융서비스 프로사업단총괄 AI 홈페이지입니다.">
+  <meta property="og:url" content="https://ai-branch.vercel.app/">
+  <meta property="og:image" content="https://ai-branch.vercel.app/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2713,6 +2722,11 @@
       #prosolution-overlay .pt-28 {
         /* v=20260713f: 5rem→7.5rem — 모바일 고정 네비 알약(하단 ~82px)에 제목이 겹침(-2px) → 다른 섹션 여백감(~38px)으로 확보 */
         padding-top: 7.5rem !important;
+      }
+      /* v=20260713g: 채팅 잠금 CTA 카드 — 인라인 grid-template-columns:1fr 1fr(2열 강제, 13132·14470)이
+         모바일 채팅 폭(~300px)에선 칸당 텍스트 60~80px → 한 글자씩 세로 꺾임(가독성 붕괴). !important로 1열 강제(인라인 override) */
+      .sol-pdf-locked-grid {
+        grid-template-columns: 1fr !important;
       }
       /* 가상키보드 간격 축소 */
       #sol-keyboard .flex {

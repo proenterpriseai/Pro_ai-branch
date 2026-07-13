@@ -237,6 +237,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260713g** (**main 직커밋 LIVE**, tag `v20260713g`, 2026-07-13) — 채팅 잠금 카드 모바일 세로 글자 fix + OG 메타/이미지(사용자 세션). 로컬 375/1280px DOM 실측·콘솔0 검증 후 배포.
+  - **세로 글자 fix**: 채팅 잠금 CTA 카드 렌더 2곳(`_solChatAppendLockedCta` 13132·14470)이 인라인 `grid-template-columns:1fr 1fr` 강제 → 모바일 채팅 폭(~300px)에서 칸당 60~80px, CJK 한 글자씩 세로 꺾임. 모바일 미디어쿼리에 `.sol-pdf-locked-grid{grid-template-columns:1fr !important}` 추가(CSS !important가 인라인 override). 모바일 1열 281px·데스크톱 2열 367px×2 실측(회귀0).
+  - **OG 메타 신규**(기존 og 태그 0 → 카카오 미리보기 generic): og:title=`인카금융서비스 프로사업단총괄` / og:description=`인카금융서비스 프로사업단총괄 AI 홈페이지입니다.` / og:image=`https://ai-branch.vercel.app/assets/images/og-image.png`(1200×630) + twitter:card. `<title>`(브라우저 탭)은 불변.
+  - **og-image.png 생성**: PowerShell System.Drawing — 브랜드 블루 그라데이션(#4273F0→#27398C, 45°)+흰 로고 640px 중앙, 84KB. 공식홈 카카오 카드와 톤 통일. ⚠️카카오는 OG 캐시 → 반영 안 보이면 https://developers.kakao.com/tool/debugger/sharing 에서 초기화.
 - **v=20260713f** (**main 직커밋 LIVE**, tag `v20260713f`, 2026-07-13) — 현황 박스 글로우 마우스 추적 + 모바일 체험하기 CTA + 프로솔루션 오버레이 모바일 행간(사용자 세션). 로컬 DOM 실측·콘솔0 검증 후 배포.
   - **#branch-map 현황 박스**: `glow-target` 클래스+`.glow-border` 자식 추가 → 다른 카드(#solutions 등)와 동일하게 마우스 추적 글로우(기존엔 `border-gradient` 자동 회전만 있어 커서 무반응). 자동 회전 테두리는 타 카드와 동일하게 유지.
   - **모바일 체험하기 CTA**: 기존 "체험하기" 버튼이 `#ai-right-panel`(`hidden md:flex`) 안에 있어 <768px에서 패널째 숨겨짐 → 쇼케이스 아래 `md:hidden` 풀폭 "AI 시스템 체험하기" 버튼 신규(`data-nav="prosolution-open"`). md 이상은 기존 우측 패널 버튼 담당(중복0). "AI 시스템" 네비는 모바일서도 원래 정상(위임 핸들러 공통).
