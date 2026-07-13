@@ -237,6 +237,12 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260713a** (**main 직커밋 LIVE**, tag `v20260713a`, 2026-07-13) — 조직소개 오버레이 폴리시 일괄(사용자 세션). 전부 로컬 DOM 실측·콘솔 0 검증 후 배포.
+  - **헤더 스크롤 다크 복원**: 메인 히어로·조직소개 실크 히어로·CEO 인사말 3곳 모두 "최상단=기존 상태(glass/흰 알약) → 스크롤>50 시 검은 계열 다크"로 통일. `mainNavUpdate`에서 히어로-glass 분기 제거(구 v20260711c "히어로 보이는 동안 glass 유지"는 대형 카피와 헤더 겹침으로 반려), `updateProNav`=`proOv.scrollTop>50`, `updateCeoNav` 신규(흰 페이지라 최상단 흰 알약 유지·스크롤 시 다크) + CEO 오버레이 scroll 리스너.
+  - **조직소개 실크 히어로**: 부제(`.pro-silk-sub`) 삭제했다가 메인 히어로 스타일(22px/1.4·#dfe7fb 아님 rgba .92·네이비 그림자)로 재추가, 텍스트 "PRO AI 시스템과 체계적인 교육 과정으로 / 영업인이 끊임없이 성장하는 최적의 환경을 제공합니다." + 제목 가로·세로 중앙(margin:0).
+  - **클로징(#pro-closing)**: `───` 선을 텍스트 세로 중심에 정렬(margin-top 16→10px) + 본문 3줄 끝 쉼표 삭제(줄바꿈·내부 쉼표 유지) + 헤드라인 최대 62.4→**52px**(3.9→3.25rem, 히어로60>클로징52>섹션44 위계).
+  - **조직문화 카드**: 검정 위 가독성 위해 `.culture-card`에 옅은 패널 배경(rgba .045)+테두리+라운드18(box-sizing border-box라 캐러셀 폭 불변) + 하단 패딩 18px. AWARD·리크루팅 카드 설명 `<br>` 한 단어 앞으로 이동(홀로 떨어지던 "축하를"·"성장원동력" 해소).
+  - **지사/신규 조직 런칭 캐러셀 복원**: v20260711c에서 #pro-closing으로 교체되며 삭제됐던 `#pro-carousel-overlay`(Scene 2 자동 슬라이드)를 5723020 커밋에서 마크업만 복원(CSS·keyframes·클로닝 IIFE 잔존). 위치=조직문화 아래·클로징 위. 헤딩 가운데 정렬(조직문화와 통일)·부제 "평균 생산성이 향상" 강조(#dfe7fb)·부제↔이미지 여백 24→48px.
 - **v=20260712a** (**main 직커밋 LIVE**, tag `v20260712a`, 2026-07-12) — 네비 라이트 고착 버그 fix + 클로징 문안 재구성 + #stats·클로징 다크 통일 + 지구본 유리화. 상세 진실원 → auto-memory `session-20260712-aibranch-dark-unify.md`.
   - **🐛 네비 라이트 알약 고착 버그 fix(핵심)**: 오버레이는 `display:none`이 아니라 `opacity/visibility`로 닫힘 → 내부 `data-nav-bright` 마커(#pro-closing)의 지오메트리가 잔존 → IntersectionObserver가 "이탈"을 못 잡아 `brightCount`가 1로 고착 → 다크 섹션(메인 히어로 등) 위에 라이트 알약이 남고 새로고침해야 풀리던 버그. **fix = `recomputeBrightCount()`**(닫힘 순간 실제 지오메트리 재계산, 닫힌 오버레이 내부 마커는 `.closest('.ceo-overlay')` 활성 클래스로 판별 제외)를 `applyDarkNav`(닫힘 MutationObserver)에서 `mainNavUpdate()` 직전 호출. visibility 트랜지션 0.5s와 무관하게 즉시 정확.
   - **클로징 문안 재구성**: `One Team &`→**`One Team`** / 새 오프닝 리드 **"처음부터 정점까지, 그 여정을 함께하겠습니다."**(`.pc-lead-hero`, 22px·700·흰색 = 조직문화 `.culture-card-title`과 통일) / 기존 lead("좋은 시스템은…") 굵기 제거 / "단계별 교육 그리고"→**"단계별 교육과정,"** / 문단 분리(성장 문화 ↔ 그 결과) / close("프로사업단총괄은…최고의 파트너") 굵기 제거. "—" 라인 유지.
