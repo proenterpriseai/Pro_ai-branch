@@ -109,7 +109,7 @@ _serve.js           — Dev server (port 3098)
 ### 모바일 전용 구조물
 | 요소 | 위치 | 설명 |
 |------|------|------|
-| `#mobile-nav-overlay` | `</body>` 직전 | 모바일 사이드 메뉴 (#27398c 배경, 흰색 텍스트, display:none/block 토글) |
+| `#mobile-nav-overlay` | `</body>` 직전 | 모바일 사이드 메뉴 (v=20260713e: **흰 배경 + #27398c 글자·hairline** 공식홈 룩, 세로=내용 높이만·bottom 미고정·좌하단 radius 20px, display:none/block 토글) |
 | CEO 모바일 영상 | `#ceo-overlay` 내 `lg:hidden` div | 키커 → 영상 → 제목 → 본문 순서 (PC: 좌우 2컬럼) |
 | 모바일 지원하기 버튼 | 네비 내 `sm:hidden` | 햄버거 왼쪽 #27398c 버튼 |
 | 오버레이 하단 푸터 | CEO/AI시스템/문의하기/관리자소개 오버레이 각 하단 | #27398c 배경 동일 푸터 (로고+TEL+회사정보+저작권) |
@@ -237,6 +237,9 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260713e** (**main 직커밋 LIVE**, tag `v20260713e`, 2026-07-13) — 모바일 사이드 메뉴(`#mobile-nav-overlay`) 공식홈 룩으로 반전(사용자 세션·모바일 전용, 데스크톱 영향0). 로컬 375px DOM 실측·스크린샷·콘솔0 검증 후 배포.
+  - **색상 반전**: 패널 배경 `#27398c`→`#ffffff`, 메뉴 글자 `#ffffff`→`#27398c`, 구분선 `rgba(255,255,255,0.15)`→`rgba(39,57,140,0.2)`(브랜드 블루 hairline), X 버튼 원 `rgba(255,255,255,0.1)`→`rgba(39,57,140,0.08)`·아이콘 stroke `#ffffff`→`#27398c`(흰 배경 가시성). 공식홈(proenterprise.co.kr) 모바일 메뉴 룩과 일치.
+  - **세로 자르기**: 패널 full-height(`bottom:0`) 제거 → 내용 높이만(문의하기+40px≈483px/812), 좌하단 `border-radius:0 0 0 20px`(카드 마감). 아래는 다크 스크림.
 - **v=20260713d** (**main 직커밋 LIVE**, tag `v20260713d`, 2026-07-13) — STORIES 캐러셀에 RECRUITING 100 영상 추가 + 전국 캐러셀 부제 교체(사용자 세션). 전부 로컬 DOM 실측·콘솔 0 검증 후 배포.
   - **RECRUITING 100 영상 카드 신규**: `assets/video/2026-recruiting-100.mp4`(14MB, 인스타 SnapInsta 웹버전 — 226MB 원본 `260112_인카금융_master.mp4`는 GitHub 100MB 리밋으로 미사용) + poster `assets/images/2026-recruiting-100-poster.png`(골드 "다시 한번 '확장의 시대'를 연다" 프레임, 2877×1375·4MB). title=`RECRUITING 100`, subtitle=`290명에서 694명, 1년 만에 200% 성장`.
   - **STORIES 순서**: RECRUITING 100 → 2025 프로사업단 연도대상 → 프로사업단 월례 시상식 → PRO 7대 AI 시스템 Workshop (점 3→4, 무한루프 클론 2장 유지). ⚠️브라우저 자동화 환경은 하드웨어 비디오 디코딩 프레임이 canvas로 안 넘어와 프레임 추출 불가 → poster는 사용자가 저장한 PNG 사용.
