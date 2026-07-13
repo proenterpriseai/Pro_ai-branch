@@ -237,6 +237,11 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260713f** (**main 직커밋 LIVE**, tag `v20260713f`, 2026-07-13) — 현황 박스 글로우 마우스 추적 + 모바일 체험하기 CTA + 프로솔루션 오버레이 모바일 행간(사용자 세션). 로컬 DOM 실측·콘솔0 검증 후 배포.
+  - **#branch-map 현황 박스**: `glow-target` 클래스+`.glow-border` 자식 추가 → 다른 카드(#solutions 등)와 동일하게 마우스 추적 글로우(기존엔 `border-gradient` 자동 회전만 있어 커서 무반응). 자동 회전 테두리는 타 카드와 동일하게 유지.
+  - **모바일 체험하기 CTA**: 기존 "체험하기" 버튼이 `#ai-right-panel`(`hidden md:flex`) 안에 있어 <768px에서 패널째 숨겨짐 → 쇼케이스 아래 `md:hidden` 풀폭 "AI 시스템 체험하기" 버튼 신규(`data-nav="prosolution-open"`). md 이상은 기존 우측 패널 버튼 담당(중복0). "AI 시스템" 네비는 모바일서도 원래 정상(위임 핸들러 공통).
+  - **프로솔루션 오버레이 모바일 행간**: 모바일 미디어쿼리 `.pt-28` 5rem→**7.5rem** — 고정 네비 알약(하단 ~82px)에 제목("7대 핵심 AI 시스템, 먼저 만나보세요")이 겹침(-2px) → 간격 58px 확보(타 섹션 여백감). 데스크톱 불변.
+  - ⚠️**로컬 프리뷰 PDF 업로드 실패는 환경 제약**: `_serve.js`=정적 서버라 `/api/chat` 없음→SPA fallback HTML 200→"<!DOCTYPE not valid JSON" 에러. 라이브는 JSON 정상(실측). AI 분석 검증=Vercel 배포에서만.
 - **v=20260713e** (**main 직커밋 LIVE**, tag `v20260713e`, 2026-07-13) — 모바일 사이드 메뉴(`#mobile-nav-overlay`) 공식홈 룩으로 반전(사용자 세션·모바일 전용, 데스크톱 영향0). 로컬 375px DOM 실측·스크린샷·콘솔0 검증 후 배포.
   - **색상 반전**: 패널 배경 `#27398c`→`#ffffff`, 메뉴 글자 `#ffffff`→`#27398c`, 구분선 `rgba(255,255,255,0.15)`→`rgba(39,57,140,0.2)`(브랜드 블루 hairline), X 버튼 원 `rgba(255,255,255,0.1)`→`rgba(39,57,140,0.08)`·아이콘 stroke `#ffffff`→`#27398c`(흰 배경 가시성). 공식홈(proenterprise.co.kr) 모바일 메뉴 룩과 일치.
   - **세로 자르기**: 패널 full-height(`bottom:0`) 제거 → 내용 높이만(문의하기+40px≈483px/812), 좌하단 `border-radius:0 0 0 20px`(카드 마감). 아래는 다크 스크림.

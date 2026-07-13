@@ -2711,7 +2711,8 @@
         min-height: 280px;
       }
       #prosolution-overlay .pt-28 {
-        padding-top: 5rem !important;
+        /* v=20260713f: 5rem→7.5rem — 모바일 고정 네비 알약(하단 ~82px)에 제목이 겹침(-2px) → 다른 섹션 여백감(~38px)으로 확보 */
+        padding-top: 7.5rem !important;
       }
       /* 가상키보드 간격 축소 */
       #sol-keyboard .flex {
@@ -4466,6 +4467,8 @@
         </div>
         <!-- // Desktop App Showcase 끝 -->
         <!-- v=20260704c — "AI 시스템 체험하기" 버튼 제거(전략실장 요청) — CTA는 쇼케이스 사이드바 "체험하기"가 담당 -->
+        <!-- v=20260713f — 모바일 전용 체험하기 CTA: 우측 패널(#ai-right-panel, md:flex)이 <768px에서 숨겨져 체험하기 버튼이 사라지는 문제 보완. md 이상은 우측 패널 버튼이 담당(중복 없음). data-nav 위임 핸들러가 prosolution 오버레이 오픈 -->
+        <button data-nav="prosolution-open" class="md:hidden w-full mt-6 py-3.5 rounded-full text-[15px] font-bold text-white transition cursor-pointer" style="border:1px solid #2563eb; background:#2563eb; box-shadow:0 6px 18px -6px rgba(37,99,235,0.6);">AI 시스템 체험하기</button>
       </div>
     </section>
 
@@ -6995,7 +6998,8 @@
     <section class="sm:px-6 lg:px-8 sm:py-16 animate-on-scroll max-w-7xl mr-auto ml-auto pt-12 pr-4 pb-12 pl-4"
       id="branch-map">
       <div
-        class="border-gradient sm:pt-8 sm:pb-8 sm:pl-10 sm:pr-10 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll rounded-3xl pt-6 pr-5 pb-6 pl-5" style="background:rgba(10,22,40,0.9);">
+        class="border-gradient glow-target sm:pt-8 sm:pb-8 sm:pl-10 sm:pr-10 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll rounded-3xl pt-6 pr-5 pb-6 pl-5" style="background:rgba(10,22,40,0.9);">
+        <div class="glow-border"></div>
         <!-- 2컬럼: 왼쪽 텍스트(5) + 오른쪽 지도(7) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
           <!-- 왼쪽: 텍스트 콘텐츠 -->
