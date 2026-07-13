@@ -2708,6 +2708,14 @@
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch;
       }
+      /* v=20260713h: 오버레이 X 버튼 — 모바일 네비 알약 우측 끝 햄버거(294~334px)와 X(303~351px)가 겹쳐
+         메뉴 탭이 X로 먹히던 문제 → 알약(하단 ~82px) 아래로 내림. 데스크톱 불변 */
+      .ceo-overlay__close {
+        top: 92px;
+        right: 0.75rem;
+        width: 42px;
+        height: 42px;
+      }
 
       /* 3-7. 섹션 좌우 패딩 보강 (넘침 방지) */
       section {

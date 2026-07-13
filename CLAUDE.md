@@ -237,6 +237,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260713h** (**main 직커밋 LIVE**, tag `v20260713h`, 2026-07-13) — 오버레이 X 버튼 모바일 겹침 fix(사용자 세션). 모바일에서 `.ceo-overlay__close`(fixed top:24/right:24, 48px)가 네비 알약 우측 끝 햄버거(294~334px)와 거의 완전 겹침(303~351px, X z-index가 높아 메뉴 탭이 X로 먹힘) → 모바일 미디어쿼리로 **top:92px(알약 하단 82px 아래)·right:0.75rem·42px** 이동. CEO/조직소개/성장시스템 3오버레이+레거시 #contact 공통 적용, 프로솔루션은 원래 X 없음(배경 탭 닫기). 데스크톱 원위치(24px·48px) 회귀0 실측.
 - **v=20260713g** (**main 직커밋 LIVE**, tag `v20260713g`, 2026-07-13) — 채팅 잠금 카드 모바일 세로 글자 fix + OG 메타/이미지(사용자 세션). 로컬 375/1280px DOM 실측·콘솔0 검증 후 배포.
   - **세로 글자 fix**: 채팅 잠금 CTA 카드 렌더 2곳(`_solChatAppendLockedCta` 13132·14470)이 인라인 `grid-template-columns:1fr 1fr` 강제 → 모바일 채팅 폭(~300px)에서 칸당 60~80px, CJK 한 글자씩 세로 꺾임. 모바일 미디어쿼리에 `.sol-pdf-locked-grid{grid-template-columns:1fr !important}` 추가(CSS !important가 인라인 override). 모바일 1열 281px·데스크톱 2열 367px×2 실측(회귀0).
   - **OG 메타 신규**(기존 og 태그 0 → 카카오 미리보기 generic): og:title=`인카금융서비스 프로사업단총괄` / og:description=`인카금융서비스 프로사업단총괄 AI 홈페이지입니다.` / og:image=`https://ai-branch.vercel.app/assets/images/og-image.png`(1200×630) + twitter:card. `<title>`(브라우저 탭)은 불변.
