@@ -3793,6 +3793,8 @@
       font-size: 14px;
       color: rgba(255,255,255,0.5);
     }
+    /* v=20260714a: 캡션 줄바꿈은 모바일 전용("— 같은…" 앞). 데스크톱은 한 줄 유지(br 숨김). br-keep로 brToSpace 예외. */
+    @media (min-width:769px){ .cap-mobile-br{ display:none; } }
   </style>
 </head>
 
@@ -6974,7 +6976,7 @@
         <h2 class="stories-headline">압도적 격차는 <span class="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">사람</span>이 만듭니다</h2>
         <div class="stories-divider"></div>
         <p class="stories-sub">함께 성장한 PRO 사람들의 진짜 이야기.</p>
-        <p class="stories-caption">AI 시스템 · 월례 시상식 · 교육 현장 · 1등 — 같은 출발선의 다른 결과.</p>
+        <p class="stories-caption">AI 시스템 · 월례 시상식 · 교육 현장 · 1등 <br class="br-keep cap-mobile-br">— 같은 출발선의 다른 결과.</p>
       </div>
     </section>
 
@@ -9127,6 +9129,7 @@
         },
         {
           id: 'workshop', type: 'mp4', src: '사진/KakaoTalk_20260401_160417398.mp4',
+          poster: 'assets/images/workshop-poster.jpg',
           thumb: '', label: '현장 영상', tone: 'cyan',
           title: 'PRO 7대 AI 시스템 Workshop',
           subtitle: '7대 AI 시스템으로 만드는 압도적 격차, 그 교육 현장'
@@ -9638,7 +9641,7 @@
     (function () {
       function brToSpace() {
         if (window.innerWidth > 768) return;
-        document.querySelectorAll('p br').forEach(function (b) {
+        document.querySelectorAll('p br:not(.br-keep)').forEach(function (b) {
           if (b.isConnected) b.replaceWith(document.createTextNode(' '));
         });
       }
@@ -15604,6 +15607,10 @@
         #partner-network .acc-body{position:relative;opacity:1;pointer-events:auto;padding:24px;min-width:0;right:auto !important;top:auto !important;}
         #partner-network .acc-body .top{margin-bottom:0;}
         #partner-network .acc-photo{position:relative;width:100%;height:160px;opacity:1;-webkit-mask-image:none;mask-image:none;order:-1;}
+        /* v=20260714a: 모기지리더스(02) 배너는 하단 ~40%에 "신한은행 대출모집법인/모기지리더스와 함께…" 텍스트가 베이크됨.
+           모바일 박스(317×160)에서 object-position:center 8%면 원본 62%까지 노출→텍스트 상단이 사진 밑에 삐져나옴.
+           height 150 + 상단정렬(center 0)로 원본 0~55%만 노출(텍스트 시작 60.3% 위에서 크롭). 데스크톱(inline 8%·190px) 무영향. */
+        #partner-network .acc-item:nth-child(2) .acc-photo{height:150px;object-position:center 0 !important;}
         #partner-network .acc-hint{display:none;}
       }
     </style>
@@ -16032,7 +16039,7 @@
       <!-- v=20260713a: 부제 아래 여백 1.5rem→3rem(24→48px, 조직문화 섹션과 통일·사용자 지적) + 결과 구절 "평균 생산성이 향상" 강조(조직문화 강조 스타일 #dfe7fb 동일) -->
       <div style="padding:3rem 3rem 3rem; text-align:center; max-width:700px; margin-left:auto; margin-right:auto;">
         <h2 class="pro-carousel-title" style="margin-top:8px; line-height:1.4; word-break:keep-all;">전국으로 확장하는 프로사업단총괄</h2>
-        <p style="font-size:17px; color:#b8bccb; max-width:560px; line-height:1.7; margin:12px auto 0; letter-spacing:-0.01em;">어디서든 동일한 질의 교육으로,<br>전국 거점의 <strong style="color:#dfe7fb; font-weight:700;">평균 생산성</strong>을 끌어올립니다</p>
+        <p style="font-size:17px; color:#b8bccb; max-width:560px; line-height:1.7; margin:12px auto 0; letter-spacing:-0.01em;">어디서든 동일한 질의 교육으로,<br class="br-keep">전국 거점의 <strong style="color:#dfe7fb; font-weight:700;">평균 생산성</strong>을 끌어올립니다.</p>
       </div>
       <div class="pro-carousel-mask" style="padding-bottom:2rem;">
       <!-- v=20260710h 대표님 피드백: 형광(초록/노랑) 박힌글자 이미지 5장 삭제(천안·하남·일산·다산·구미) — 흰 글자 톤과 안 맞음 -->
@@ -16106,6 +16113,8 @@
         #pro-closing .pc-globe{ order:-1; }            /* 모바일: 지구본을 위로 */
         #pro-closing .pc-globe svg{ width:min(72%,340px); }
         #pro-closing .pc-head{ font-size:clamp(2rem,8vw,2.9rem); }
+        /* v=20260714a: 모바일에서 리드 문구가 2줄로 접혀 line-height:1이 답답 → 행간 확보(데스크톱 1줄이라 무영향) */
+        #pro-closing .pc-body p.pc-lead-hero{ line-height:1.3; }
       }
       @media (prefers-reduced-motion:reduce){ #pro-closing .pc-spin{ animation:none; } }
     </style>
