@@ -13,3 +13,43 @@ Thumbs.db
 !/assets/
 사진/
 claude-code-best-practice-main/
+
+# ── 2026-07-14: git status 정리(사이트 미참조 임시/원본/개발 파일) ──
+# ⚠️ 사이트 사용 파일은 무시 안 함: assets/(!/assets/), AI 홈페이지 하위폴더(신입·관리자 등),
+#    사진/(mp4 이미 tracked), AI 홈페이지/PRO ENTERPRISE AWARD.jpg 는 아래에서 예외 처리.
+
+# 루트 원본 미디어·문서(사이트는 assets/ 가공본 사용) + 개발 부산물
+/*.jpg
+/*.avif
+/*.mp4
+/*.docx
+/diff.txt
+/bento-preview.html
+/convert-map.js
+/korea-svg-paths.txt
+/korea-topo.json
+
+# 개발/기획/녹화 자료 폴더
+scripts/
+회사 프로셔/
+
+# AI 홈페이지/ 하위에 섞여든 별도 Vite 프로젝트 + 낱장 소스 이미지(직속만)
+AI 홈페이지/src/
+AI 홈페이지/public/
+AI 홈페이지/*.json
+AI 홈페이지/*.ts
+AI 홈페이지/*.cjs
+AI 홈페이지/index.html
+AI 홈페이지/env.example
+AI 홈페이지/gitignore.txt
+AI 홈페이지/browser_logs.txt
+AI 홈페이지/*.PNG
+AI 홈페이지/*.png
+AI 홈페이지/*.jpg
+!AI 홈페이지/PRO ENTERPRISE AWARD.jpg
+
+# assets/ 내 미사용 낱장(assets/는 기본 포함이라 개별 지정)
+assets/images/logo-pro-enterprise-blue.jpg
+
+# 프로 사진/ 미사용 낱장(폴더 자체는 사이트 사용 → 개별 지정)
+프로 사진/울산 지사.jpg
