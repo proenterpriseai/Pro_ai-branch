@@ -9487,15 +9487,31 @@
       //   오버레이 class 변화를 관찰해 열리면 다크, 닫히면 스크롤 위치 기준 원복(스크롤 락 상태라 충돌 없음).
       // 흰 배경 섹션이 있는 오버레이(CEO 화이트 / 프로인트로 조직문화 흰섹션) 열림 동안 네비 pill 다크
       //   ⚠️ pro-intro-overlay 마크업은 이 스크립트보다 아래에 있어 파싱 전 → DOMContentLoaded 후 셋업
+      // v=20260714b: 성장시스템(talent)·AI시스템 체험(prosolution) = 다크 배경 오버레이. 최상단 glass·스크롤>50 다크(조직소개와 동일 규칙). 처리했으면 true.
+      function updateDarkOverlayNav() {
+        var ids = ['talent-overlay', 'prosolution-overlay'];
+        for (var i = 0; i < ids.length; i++) {
+          var o = document.getElementById(ids[i]);
+          if (o && o.classList.contains('ceo-overlay--active')) {
+            if ((o.scrollTop || 0) > 50) navDarkImportant(); else navGlassImportant();
+            return true;
+          }
+        }
+        return false;
+      }
       function setupDarkNav() {
         var ceoOv = document.getElementById('ceo-overlay');
         proOv = document.getElementById('pro-intro-overlay');
-        var darkNavOvs = [ceoOv, proOv].filter(Boolean);
+        var talentOv = document.getElementById('talent-overlay');
+        var psOv = document.getElementById('prosolution-overlay');
+        // v=20260714b: 4개 오버레이 전부 관찰(기존 CEO·조직소개만 → 성장시스템·AI체험 누락으로 전환 시 이전 색 고착 버그)
+        var darkNavOvs = [ceoOv, proOv, talentOv, psOv].filter(Boolean);
         if (!darkNavOvs.length) return;
         var applyDarkNav = function () {
           // CEO 화이트 오버레이 = 흰 알약(최상단)·스크롤 시 다크(v=20260713a) / 조직소개 = 실크 glass·흰섹션 라이트·그외 다크(updateProNav)
           if (updateCeoNav()) return;
           if (updateProNav()) return;
+          if (updateDarkOverlayNav()) return; // v=20260714b: 성장시스템·AI체험
           navBar.style.removeProperty('background');
           navBar.style.removeProperty('box-shadow');
           // v=20260712a: 닫힘 순간 brightCount 누수 재계산(닫힌 오버레이 내부 마커 제외) → 라이트 알약 고착 fix
@@ -9505,10 +9521,15 @@
         };
         var darkNavMo = new MutationObserver(applyDarkNav);
         darkNavOvs.forEach(function (o) { darkNavMo.observe(o, { attributes: true, attributeFilter: ['class'] }); });
-        // 조직소개 오버레이 내부 스크롤에 따라 glass↔다크 전환 (오버레이 자체가 스크롤러)
+        // 오버레이 내부 스크롤에 따라 glass↔다크 전환 (오버레이 자체가 스크롤러)
         if (proOv) proOv.addEventListener('scroll', updateProNav, { passive: true });
         // v=20260713a: CEO 오버레이 내부 스크롤 → 흰 알약↔다크 전환
         if (ceoOv) ceoOv.addEventListener('scroll', updateCeoNav, { passive: true });
+        // v=20260714b: 성장시스템·AI체험도 내부 스크롤 시 glass↔다크
+        if (talentOv) talentOv.addEventListener('scroll', applyDarkNav, { passive: true });
+        if (psOv) psOv.addEventListener('scroll', applyDarkNav, { passive: true });
+        // v=20260714b: navigateTo(오버레이 전환 클릭)가 옵저버 타이밍에 의존하지 않고 즉시 정확한 네비 색을 적용하도록 노출
+        window.__applyOverlayNav = applyDarkNav;
       }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupDarkNav);
       else setupDarkNav();
@@ -9795,6 +9816,8 @@
         e.preventDefault();
         var scrollTarget = link.getAttribute('data-scroll-to');
         navigateTo(link.getAttribute('data-nav'), true);
+        // v=20260714b: 오버레이 전환 시 네비 색 즉시 재적용(옵저버 async 타이밍 의존 제거) — CEO 인사말 등이 직전 오버레이 색 그대로 유지되던 버그 fix
+        if (window.__applyOverlayNav) { window.__applyOverlayNav(); requestAnimationFrame(window.__applyOverlayNav); }
         // 오버레이 열린 후 특정 섹션으로 스크롤
         if (scrollTarget) {
           setTimeout(function () {
@@ -9826,6 +9849,8 @@
           var el = document.getElementById(hash);
           if (el) scrollToContent(el);
         }
+        // v=20260714b: 뒤로/앞으로 가기로 오버레이 전환 시에도 네비 색 즉시 재적용
+        if (window.__applyOverlayNav) { window.__applyOverlayNav(); requestAnimationFrame(window.__applyOverlayNav); }
       });
     })();
 
