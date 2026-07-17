@@ -7366,15 +7366,8 @@
 
   <!-- ==================== CONTACT / 문의하기 (오버레이 — 인라인 섹션으로 대체, 코드 보존) ==================== -->
   <div class="contact-overlay" id="contact">
-    <!-- 닫기 버튼 -->
-    <button
-      onclick="document.getElementById('contact').classList.remove('active');document.body.classList.remove('contact-overlay-open');history.pushState('','',window.location.pathname+window.location.search);"
-      class="ceo-overlay__close" style="z-index:260;" aria-label="닫기">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-        stroke-width="1.5">
-        <path d="M15 5 5 15M5 5l10 10" />
-      </svg>
-    </button>
+    <!-- v=20260717d: 우측 상단 X 닫기 버튼 제거 — 네비(로고·메뉴 클릭 → closeAllOverlays)로 닫음. 시각적 중복 제거 -->
+
     <div class="contact-overlay__content max-w-3xl mx-auto px-4 sm:px-6 pt-20 pb-16">
       <div class="bg-neutral-950/80 rounded-3xl border border-white/10 p-6 sm:p-10 lg:p-12">
         <!-- 헤더 -->
@@ -7761,11 +7754,7 @@
   </style>
   <div id="ceo-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="CEO 인사말">
     <div class="ceo-overlay__bg" style="background: #ffffff;"></div>
-    <button class="ceo-overlay__close" aria-label="닫기">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
+    <!-- v=20260717d: X 닫기 버튼 제거 — ESC·배경 클릭·뒤로가기·네비로 닫힘(4중) -->
     <div class="ceo-overlay__content">
       <div class="w-full mx-auto px-6 sm:px-12 lg:px-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center py-24" id="ceo-grid">
@@ -10893,7 +10882,7 @@
         });
       });
 
-      closeBtn.addEventListener('click', function () { closeCeoOverlay(); });
+      if (closeBtn) closeBtn.addEventListener('click', function () { closeCeoOverlay(); }); // v=20260717d: X 제거로 null 가능 → 가드
 
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && overlay.classList.contains('ceo-overlay--active')) closeCeoOverlay();
@@ -15107,9 +15096,7 @@
 </style>
 <div id="talent-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="인재양성">
   <div class="ceo-overlay__bg" style="background:#050505;"></div>
-  <button class="ceo-overlay__close" aria-label="닫기" onclick="document.getElementById('talent-overlay').classList.remove('ceo-overlay--active');document.getElementById('talent-overlay').setAttribute('aria-hidden','true');document.body.classList.remove('ceo-overlay-open');">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
+  <!-- v=20260717d: X 닫기 버튼 제거 — 네비로 닫음 -->
   <div class="ceo-overlay__content" style="background:#050505;">
 
     <!-- ═══ 인재양성 스택 카드 (v=20260704 Nexora 스타일 리디자인 — 기존 섹션 1~3 콘텐츠 재구성) ═══ -->
@@ -15739,9 +15726,7 @@
 <!-- ═══ 프로사업단총괄 풀스크린 오버레이 (문 애니메이션 + 캐러셀) ═══ -->
 <div id="pro-intro-overlay" class="ceo-overlay" aria-hidden="true" role="dialog" aria-label="프로사업단총괄">
   <div class="ceo-overlay__bg" style="background:#050505;"></div>
-  <button class="ceo-overlay__close" aria-label="닫기" onclick="document.getElementById('pro-intro-overlay').classList.remove('ceo-overlay--active');document.getElementById('pro-intro-overlay').setAttribute('aria-hidden','true');document.body.style.overflow='';">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
+  <!-- v=20260717d: X 닫기 버튼 제거 — 네비로 닫음 -->
   <div class="ceo-overlay__content" style="background:#050505;">
     <!-- Section 1: 히어로 — v=20260710k 대표님 요청: 사무실 사진 슬라이드쇼 3장 제거 → 공식홈(proenterprise.co.kr) 무드의 블루 실크 풀배경 + 중앙 카피. 배경=메인 히어로와 동일 UnicornStudio 씬(오버레이 첫 오픈 시 lazy init, 4대 규칙 준수) -->
     <div>
