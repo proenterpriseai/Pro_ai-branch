@@ -15317,6 +15317,7 @@
         #talent-overlay .tsk-num{font-size:96px;right:12px;}
       }
       @media (max-width:768px){
+        #talent-overlay .tsk-num{display:none;} /* v=20260717c 모바일: 배경 숫자(01~04)가 좁은 카드에서 둥근 모서리에 잘려 보임 → 모바일만 숨김(PC 유지) */
         #talent-overlay .tsk-card{position:static;}
         #talent-overlay .tsk-stack{gap:26px;padding-bottom:60px;}
       }
@@ -15356,7 +15357,8 @@
           <div class="tsk-copy">
             <span class="lab">GROWTH</span>
             <h3><span class="hl">단계별로</span> 확실하게 키웁니다</h3>
-            <p class="body">타사가 2주 교육 후 현장에 내보낼 때,<br>PRO는 입문부터 WM전문가과정까지, <strong>5단계 시스템으로 끝까지 책임집니다.</strong><br>프로사업단총괄, 높은 생산성의 이유입니다.</p>
+            <p class="body hidden md:block">타사가 2주 교육 후 현장에 내보낼 때,<br>PRO는 입문부터 WM전문가과정까지, <strong>5단계 시스템으로 끝까지 책임집니다.</strong><br>프로사업단총괄, 높은 생산성의 이유입니다.</p>
+            <p class="body md:hidden">타사가 2주 교육 후 현장에 내보낼 때,<br class="br-keep">PRO는 입문부터 WM 전문가 과정까지,<br class="br-keep"><strong>5단계 시스템으로 끝까지 책임집니다.</strong><br class="br-keep">프로사업단총괄, 높은 생산성의 이유입니다.</p>
             <div class="tsk-pills"><span class="tsk-pill">입사 교육</span><span class="tsk-pill">신인 2주 집중</span><span class="tsk-pill">관리자 양성</span><span class="tsk-pill">전문 특화</span><span class="tsk-pill">WM 전문가 과정</span></div>
           </div>
         </div>
