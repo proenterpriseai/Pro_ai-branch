@@ -237,6 +237,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260717e** (**main 직커밋 LIVE**, tag `v20260717e`, main `f73bf84`, 2026-07-17) — 성장시스템(talent) 오버레이 **모바일 칩(`.tsk-pill`) 3개씩 정돈**(01·04 카드만). 사용자 요청. 상세 → auto-memory `session-20260717-aibranch-header-footer-polish.md`.
+  - **원인**: 4개 스택카드 칩이 전부 공유 `.tsk-pill`(`font 12.5px·padding 7px 14px`) + `.tsk-pills{flex-wrap}`. 한 줄 칩 수 = 라벨 길이가 결정 → 02(유튜브…)·03(AFPK…)은 짧아 3개/줄, **01(신인 2주 집중…)·04(통합금융계산기·건강검진 분석…)은 길어 2개/줄만**.
+  - **해결**: 01(15349)·04(15459) `.tsk-pills` 컨테이너에만 **`tsk-pills--tight` 클래스** 부착 + 모바일 스코프(`@media max-width:768px`)에 `#talent-overlay .tsk-pills--tight{gap:6px}` / `.tsk-pills--tight .tsk-pill{font-size:11.5px;padding:6px 9px}`. 칩이 좁아져 3개씩 유기적 배치 → **01=3+2, 04=3+3+1**. **02·03은 클래스 미부착=원본 그대로**(base 12.5/7px 14px/8px 유지, 사용자 명시).
+  - **검증(DOM 실측)**: 375·360px → 01=3+2·04=3+3+1 목표 달성, 02(3+2)·03(3+1@375) 미변경 확인. 320px 폭부족 시 2개/줄 폴백이나 넘침·잘림0. 1280px PC → tight·normal 칩 동일(base) = 모바일 스코프 확인. 콘솔0. ⚠️방식 선택: 유기적 플렉스 축소(A안) 채택 — 3열 그리드 강제(B안)는 균일폭 버튼화로 02·03 유기적 결과 불일치라 반려.
 - **v=20260717d** (**main 직커밋 LIVE**, tag `v20260717d`, main `eb24f64`, 2026-07-17) — **오버레이 우측 상단 X 닫기 버튼 전체 제거**(사용자 요청: 대부분 네비로 이동 → X 시각적 중복·거슬림). PC·모바일 공통(마크업 삭제라 뷰포트 무관). 상세 진실원 → auto-memory `session-20260717-aibranch-header-footer-polish.md`.
   - **X `<button class="ceo-overlay__close">` 4개 마크업 삭제**(`display:none` 아님): `#contact`(7370·인라인onclick) / `#ceo-overlay`(7764·JS바인딩) / `#talent-overlay`(15110·인라인) / `#pro-intro-overlay`(15742·인라인). 프로솔루션은 원래 X 없음(배경 탭 닫기) → **5개 오버레이 전부 X 없이 통일**. ⚠️ **이로써 v=20260713h의 "모바일 X 위치 이동 fix"는 무의미화**(X 자체가 사라짐, 관련 모바일 미디어쿼리 CSS는 죽은코드로 잔존·무해).
   - ⚠️ **CEO 컨트롤러 null 가드 필수**: `closeBtn = overlay.querySelector('.ceo-overlay__close')`(10848) 후 `closeBtn.addEventListener('click',…)`(10885)가 **null 체크 없음** → 엘리먼트 삭제 시 TypeError로 **CEO 컨트롤러 IIFE 전체 사망(열기까지 불능)** → `if(closeBtn)` 가드 추가로 해결. talent/pro-intro/contact는 인라인onclick이라 엘리먼트와 함께 제거(JS 참조 0).
