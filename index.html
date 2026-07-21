@@ -201,6 +201,8 @@
       .nxk-spark path.draw { animation: none; stroke-dasharray: none; }
       .nxk-dot7 span, .nxk-bars span { animation: none; }
     }
+    /* v=20260721a: 쇼케이스가 화면 밖이면 KPI 등 CSS 애니 일시정지(불필요 repaint·움직임 방지). JS가 #ai-showcase에 .sc-offscreen 토글 */
+    #ai-showcase.sc-offscreen * { animation-play-state: paused !important; }
     .ai-mobile-tab {
       transition: all 0.25s ease;
       cursor: pointer;
@@ -4125,266 +4127,6 @@
       </div>
     </section>
 
-    <!-- ==================== 01 | 성과 (독립 섹션) ==================== -->
-    <!-- v=20260712a 다크 통일: 흰 배경(#f5f5f7)이 다크 페이지 흐름을 끊음(사용자 결정) → 타 섹션과 동일한
-         body 검정 위 투명. data-nav-bright 마커도 제거(더 이상 라이트 네비 구간 아님). -->
-    <section class="animate-on-scroll" id="stats" style="padding:6rem 1rem;">
-      <div class="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div class="text-center mb-12">
-            <!-- v=20260706b 타이포 통일: 섹션 제목 48→44px + 한 줄 전환(공식 홈페이지 40~45px 밴드 정합) -->
-            <!-- v=20260712a: 다크 전환 — 본문 흰색 + "성장"/"행복"만 타 섹션 하이라이트와 동일한 블루 그라데이션 -->
-            <h2 class="text-4xl sm:text-[44px] font-bold text-white" style="line-height:1.25; word-break:keep-all;">영업인의 <span class="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">성장</span>과 <span class="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">행복</span>을 만드는 조직</h2>
-            <!-- v=20260706b: 섹션 부제 17px 통일(공식 홈페이지 proenterprise.co.kr 동일 문장 17px 기준) -->
-            <p class="text-zinc-400 mt-4 max-w-2xl mx-auto leading-relaxed text-[17px]">프로사업단총괄은 영업조직의 본질인 시장개발·솔루션 제공·보상 체계에<br>집중하여 전문 컨설턴트를 양성하고, 모든 영업인의 성공을 약속합니다</p>
-          </div>
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- 카드1: 마감실적 -->
-            <div class="relative rounded-2xl p-6 flex flex-col justify-between min-h-[200px] overflow-hidden"
-              style="background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%); border:1px solid rgba(59,130,246,0.25);">
-              <div>
-                <p class="text-lg leading-relaxed" style="color:rgba(255,255,255,0.85);">인카금융서비스 프로사업단총괄</p>
-                <p class="text-lg" style="color:rgba(255,255,255,0.6);">25년 12월 마감실적</p>
-              </div>
-              <div class="flex items-baseline gap-2 mt-4 whitespace-nowrap">
-                <div class="flex items-baseline gap-0.5">
-                  <span class="text-xl sm:text-2xl lg:text-3xl font-bold text-white counter" data-target="4344"
-                    data-suffix="건">0</span>
-                </div>
-                <span class="text-zinc-500 text-lg">|</span>
-                <div class="flex items-baseline gap-0.5">
-                  <span class="text-xl sm:text-2xl lg:text-3xl font-bold text-white counter" data-target="9242" data-suffix="만"
-                    data-prefix="2억 ">0</span>
-                </div>
-              </div>
-            </div>
-            <!-- 카드2: 영업가족 수 -->
-            <div class="relative rounded-2xl p-8 flex flex-col justify-between min-h-[220px]"
-              style="background:linear-gradient(135deg,#152240 0%,#1a3055 100%); border:1px solid rgba(39,57,140,0.15);">
-              <div>
-                <p class="text-lg leading-relaxed" style="color:rgba(255,255,255,0.85);">프로사업단총괄과</p>
-                <p class="text-lg" style="color:rgba(255,255,255,0.85);">함께하는 영업가족 수</p>
-              </div>
-              <div class="mt-6">
-                <span class="text-4xl sm:text-5xl font-bold text-white counter" data-target="700"
-                  data-suffix="명+">0</span>
-              </div>
-            </div>
-            <!-- 카드3: 평균 급여 + 유지율 -->
-            <div class="relative rounded-2xl overflow-hidden flex flex-col min-h-[220px]"
-              style="background:linear-gradient(135deg,#224075 0%,#33619b 100%); border:1px solid rgba(59,130,246,0.28);">
-              <div class="flex-1 p-6 sm:p-8 flex items-center justify-between whitespace-nowrap" style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                <div>
-                  <p class="text-[13px] uppercase tracking-wider" style="color:rgba(255,255,255,0.78);">2025. 12월 기준</p>
-                  <p class="text-lg mt-1 font-medium" style="color:rgba(255,255,255,0.9);">영업가족 평균 급여</p>
-                </div>
-                <div class="flex items-baseline gap-1">
-                  <span class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white counter" data-target="720"
-                    data-suffix="만원">0</span>
-                  <span class="text-white text-lg font-bold ml-1">&#8593;</span>
-                </div>
-              </div>
-              <div class="flex-1 p-6 sm:p-8 flex items-center justify-between whitespace-nowrap">
-                <div>
-                  <p class="text-[13px] uppercase tracking-wider" style="color:rgba(255,255,255,0.78);">2025. 12월 기준</p>
-                  <p class="text-lg mt-1 font-medium" style="color:rgba(255,255,255,0.9);">18th 통산유지율</p>
-                </div>
-                <div class="flex items-baseline gap-1">
-                  <span class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white counter" data-target="90.7" data-suffix="%"
-                    data-decimal="true">0</span>
-                  <span class="text-white text-lg font-bold ml-1">&#8593;</span>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-    </section>
-
-    <!-- 프로사업단총괄 오버레이는 </body> 직전에 배치 -->
-
-    <!-- [삭제됨: #pro-carousel-section — 오버레이 내 캐러셀로 이전 완료, v=20260408] -->
-    <!-- 이하 내용 삭제: 원본은 git history 참조 -->
-    <div style="display:none !important;">
-      <div class="pro-carousel-sticky">
-        <div class="pro-carousel-header">
-          <div>
-            <div class="pro-carousel-kicker">전국 네트워크</div>
-            <h2 class="pro-carousel-title" style="word-break:keep-all;">전국으로 확장하는 프로사업단총괄</h2>
-          </div>
-          <div class="pro-carousel-hint">스크롤하여 탐색 →</div>
-        </div>
-        <!-- 카드 컨테이너 -->
-        <div class="pro-carousel-container" id="pro-carousel-container">
-          <!-- 카드 1: 천안 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_480555216_18486389035044475_5864857882588538982_n.jpg" alt="천안지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">천안</span>
-              <h3>다미본부 천안지사</h3>
-              <p>신규 오픈 · 사무실 내부 세팅 완료</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 2: 하남 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_487907354_18494429746044475_6822488276694192828_n.jpg" alt="하남지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">하남</span>
-              <h3>행복지점 하남지사</h3>
-              <p>넓은 회의실 · 교육 공간 확보</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 3: 일산 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_488476436_18495026956044475_5138488651792882962_n.jpg" alt="일산지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">일산</span>
-              <h3>도약지점 일산지사</h3>
-              <p>확장 이전 · 새로운 공간</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 4: 다산 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_503658173_18510173311044475_7747044559720016238_n.jpg" alt="다산지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">다산</span>
-              <h3>다온지점 다산지사</h3>
-              <p>PRO Enterprise 간판 · 축하화환</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 5: 구미 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_505374120_18511250893044475_255991899910992209_n.jpg" alt="구미지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">구미</span>
-              <h3>구미본부 구미지사</h3>
-              <p>오픈 단체사진 · 12명 구성원</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 6: 수원 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_529685325_18519418372044475_8501219250524993644_n.jpg" alt="수원지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">수원</span>
-              <h3>워너비본부 수원 S1지점</h3>
-              <p>개소식 · 정장 단체사진</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 7: 영등포 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_534403531_18520910029044475_6003089725500412866_n.jpg" alt="영등포 확장" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">영등포</span>
-              <h3>아너사업단 확장</h3>
-              <p>100평 대형 오피스</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 8: 부산 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_542224506_18524451025044475_363482378010657968_n.jpg" alt="부산지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">부산</span>
-              <h3>원더지점 부산지사</h3>
-              <p>서면역 인근 · 신규 오픈</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 9: 성수 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_554954792_18528152494044475_1528770754987668598_n.jpg" alt="성수지점" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">성수</span>
-              <h3>성수지점 개소식</h3>
-              <p>12년차 베테랑 관리자</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 10: 구리 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_558252826_18529452004044475_2674490153879181259_n.jpg" alt="구리지점" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">구리</span>
-              <h3>구리지점 개소식</h3>
-              <p>단체사진 14명 · 여성 직원</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 11: 세종 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_564246736_18531233995044475_3317217042662909428_n.jpg" alt="세종지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">세종</span>
-              <h3>아너사업단 세종지사</h3>
-              <p>정부청사 인근 · DB영업전문</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 12: 울산 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_588648733_18544473640044475_5398755627660013981_n.jpg" alt="울산지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">울산</span>
-              <h3>써니본부 울산지사</h3>
-              <p>태화강역 · 카페풍 라운지</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 13: 광주 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_630409157_18559011022044475_7327856581181125036_n.jpg" alt="광주지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">광주</span>
-              <h3>아너사업단 광주지사</h3>
-              <p>전라도 진출 · 신규 오픈</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-          <!-- 카드 14: 경북 -->
-          <div class="pro-carousel-card">
-            <img src="프로 사진/SnapInsta.to_589907986_18543177430044475_2912944270728361731_n.jpg" alt="경북도청지사" loading="lazy">
-            <div class="pro-card-overlay"></div>
-            <div class="pro-card-action"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-            <div class="pro-card-content">
-              <span class="pro-card-badge">경북</span>
-              <h3>경북도청지사</h3>
-              <p>COT관리자 · 컨설팅 영업</p>
-              <div class="pro-card-discover"><span>Discover</span><div class="pro-card-discover-line"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- ==================== PRO SOLUTION: 7대 AI 시스템 그리드 ==================== -->
     <section class="sm:px-6 lg:px-8 sm:py-24 animate-on-scroll max-w-7xl mr-auto ml-auto pt-16 pr-4 pb-16 pl-4"
@@ -8135,41 +7877,6 @@
       });
     })();
 
-    // ─── KPI Counter animation for #stats section ───
-    (function () {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.counter[data-target]').forEach((el, i) => {
-          const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-              observer.disconnect();
-              const target = parseFloat(el.dataset.target);
-              const suffix = el.dataset.suffix || '';
-              const prefix = el.dataset.prefix || '';
-              const isDecimal = el.dataset.decimal === 'true';
-              const duration = 2000;
-              setTimeout(() => {
-                const startTime = performance.now();
-                function step(now) {
-                  const elapsed = now - startTime;
-                  const progress = Math.min(elapsed / duration, 1);
-                  const ease = 1 - Math.pow(1 - progress, 4);
-                  const current = ease * target;
-                  if (isDecimal) {
-                    el.textContent = prefix + current.toFixed(1) + suffix;
-                  } else {
-                    el.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
-                  }
-                  if (progress < 1) requestAnimationFrame(step);
-                }
-                requestAnimationFrame(step);
-              }, i * 150);
-            }
-          }, { threshold: 0.3 });
-          observer.observe(el);
-        });
-      });
-    })();
-
     // ─── Dashboard Panel Switch ───
     (function () {
       var nav = document.querySelectorAll('[data-panel]');
@@ -8957,11 +8664,15 @@
           activeIntervals = [];
           runShowcaseDemo(demoArea, cardScripts[idx], function() {
             // 데모 완료 후 3초 뒤 다음 패널로 자동 전환
-            if (autoCycleTimer !== 'paused') {
-              autoCycleTimer = setTimeout(function() {
-                setActiveEngine((currentIndex + 1) % engines.length);
-              }, 3000);
-            }
+            if (autoCycleTimer === 'paused') return; // 검색 focus 등 일시정지
+            // v=20260721a: 화면 밖이면 순환 중단(재진입 시 재개) — 쇼케이스가 계속 엔진을 재구성해 아래 섹션이 밀려 움직이던 현상 방지
+            var _sc = document.getElementById('ai-showcase'); // v=20260721a: setActiveEngine 지역 var showcase 섀도잉 회피(직접 조회)
+            var _r = _sc.getBoundingClientRect();
+            var _inView = _r.top < window.innerHeight * 0.8 && _r.bottom > window.innerHeight * 0.2;
+            if (!_inView) { autoCycleTimer = 'offscreen'; _sc.classList.add('sc-offscreen'); return; }
+            autoCycleTimer = setTimeout(function() {
+              setActiveEngine((currentIndex + 1) % engines.length);
+            }, 3000);
           });
         }, 300);
       }
@@ -9013,16 +8724,29 @@
       function _scCheckReentry() {
         var r = showcase.getBoundingClientRect();
         var vis = r.top < window.innerHeight * 0.8 && r.bottom > window.innerHeight * 0.2;
-        if (vis && !_scWasIn) {
-          _scWasIn = true;
-          if (currentIndex !== 0) {
-            var _paused = autoCycleTimer === 'paused';
-            clearTimeout(autoCycleTimer);
-            autoCycleTimer = _paused ? 'paused' : true;
-            setActiveEngine(0);
+        if (vis) {
+          if (!_scWasIn) {
+            _scWasIn = true;
+            showcase.classList.remove('sc-offscreen');
+            if (autoCycleTimer === 'offscreen') {
+              // v=20260721a: 화면 밖에서 멈췄던 순환 재개 — 엔진 0부터
+              autoCycleTimer = true;
+              setActiveEngine(0);
+            } else if (currentIndex !== 0) {
+              var _paused = autoCycleTimer === 'paused';
+              clearTimeout(autoCycleTimer);
+              autoCycleTimer = _paused ? 'paused' : true;
+              setActiveEngine(0);
+            }
           }
-        } else if (!vis) {
-          _scWasIn = false;
+        } else {
+          // v=20260721a: 화면 밖으로 나가면 순환·데모 정지(검색 focus 'paused'는 보존) → 높이 고정 → 아래 섹션 밀림 소멸. 재진입 시 재개.
+          if (_scWasIn || !showcase.classList.contains('sc-offscreen')) {
+            _scWasIn = false;
+            showcase.classList.add('sc-offscreen');
+            cancelAllDemo();
+            if (autoCycleTimer !== 'paused') { clearTimeout(autoCycleTimer); autoCycleTimer = 'offscreen'; }
+          }
         }
       }
       window.addEventListener('scroll', _scCheckReentry, { passive: true });
@@ -9032,9 +8756,14 @@
       window._aiShowcaseReset = function(){
         var _paused = autoCycleTimer === 'paused';
         clearTimeout(autoCycleTimer);
-        autoCycleTimer = _paused ? 'paused' : true;
-        _scWasIn = true;
-        if (currentIndex !== 0) setActiveEngine(0);
+        autoCycleTimer = _paused ? 'paused' : true; // 검색 일시정지만 보존, offscreen 포함 그 외는 순환 활성
+        // v=20260721a: 헤더 클릭 시점의 실제 가시성으로 상태 결정(애니메이션 스크롤 도착 전 오프스크린 래치 방지)
+        var _rsc = document.getElementById('ai-showcase');
+        var _rr = _rsc.getBoundingClientRect();
+        var _rvis = _rr.top < window.innerHeight * 0.8 && _rr.bottom > window.innerHeight * 0.2;
+        _scWasIn = _rvis;
+        if (_rvis) _rsc.classList.remove('sc-offscreen');
+        setActiveEngine(0);
       };
 
       renderSidebar();
@@ -9429,7 +9158,7 @@
       //   (#pro-closing)의 지오메트리가 그대로 남아 IntersectionObserver가 "이탈"을 못 잡음 →
       //   brightCount가 1로 고착되어 다크 섹션(메인 히어로 등) 위에 라이트 알약이 남는 버그.
       //   닫힘 순간 실제 지오메트리로 재계산하되, 닫힌 오버레이 내부 마커는 클래스로 판별해 제외한다
-      //   (visibility 트랜지션 0.5s 지연과 무관하게 즉시 정확). 메인 마커(#stats)만 헤더 밴드에 겹치면 카운트.
+      //   (visibility 트랜지션 0.5s 지연과 무관하게 즉시 정확). [data-nav-bright] 마커가 헤더 밴드에 겹치면 카운트(v=20260721a: 구 #stats 언급 정정 — #stats는 삭제됨).
       function recomputeBrightCount() {
         var H = window.innerHeight || document.documentElement.clientHeight || 0;
         var bandBottom = H * 0.1; // IO rootMargin '-60px 0 -90% 0'과 동일 밴드 [60, 0.1H]
@@ -9844,7 +9573,7 @@
       var el = document.getElementById('hero-typing-text');
       if (!el) return;
       var lines = [
-        '인카금융서비스 프로사업단총괄만의 7대 핵심 AI 시스템은|당신의 잠재력이 압도적인 숫자로 증명되는 가장 완벽한 환경을 지원합니다.'
+        '인카금융서비스 프로사업단총괄만의 7대 핵심 AI 시스템은|당신의 잠재력이 숫자로 증명되는 완벽한 환경을 지원합니다.'
       ];
       var lineIdx = 0;
       function typeLine() {
@@ -9853,7 +9582,7 @@
         el.textContent = '';
         var iv = setInterval(function () {
           if (i < text.length) {
-            if (text.charAt(i) === '|') { el.innerHTML += (window.innerWidth <= 768 ? ' ' : '<br>'); } else { el.innerHTML += text.charAt(i); }
+            if (text.charAt(i) === '|') { el.innerHTML += '<br>'; } else { el.innerHTML += text.charAt(i); }  /* v=20260721a: PC·모바일 모두 줄바꿈(구: 모바일은 공백) */
             i++;
           } else {
             clearInterval(iv);
