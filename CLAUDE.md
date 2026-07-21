@@ -237,6 +237,10 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260721a** (**main 직커밋 LIVE**, tag `v20260721a`, main `8be4e97`, 2026-07-21) — 히어로 서브문구 교체 + 성과(#stats) 섹션 삭제 + AI시스템 쇼케이스 화면밖 정지(전략실장 요청 3건). 트리플체크 A(독립 리뷰) GO·블로커0·로컬+라이브 DOM 실측·콘솔0. 상세 → auto-memory `session-20260721-aibranch-copy-stats-showcase.md`.
+  - **① 히어로 서브 문구**(`#hero-typing` 타이핑 IIFE, `lines[]`): "압도적인"·"가장" 삭제 → "…7대 핵심 AI 시스템은 / 당신의 잠재력이 숫자로 증명되는 완벽한 환경을 지원합니다." + `|` 줄바꿈 토큰을 **PC·모바일 모두 `<br>`**(구: 모바일만 공백)로 → 양쪽 두 줄 통일. 라이브 374px `<br>` 실측.
+  - **② `#stats`("영업인의 성장과 행복을 만드는 조직") 삭제**: 섹션 + 바로 뒤 숨김 죽은 캐러셀(`.pro-carousel-*` display:none 사본) + 무해해진 `.counter[data-target]` 카운터 IIFE 제거(-315줄) → **히어로 바로 다음 `#solutions`**. 네비/CSS/live 참조 0(대시보드 `.dash-counter`·라이브 `#pro-carousel-overlay`는 별개, 무손상).
+  - **③ 쇼케이스(#ai-showcase) 화면밖 정지/재개**: 근본원인=자동순환이 화면 밖에서도 3초마다 엔진 재구성→#solutions 높이 변동→**아래 섹션 밀림**. fix=`_scCheckReentry` !vis 시 `stopAutoCycle`+`cancelAllDemo`+`autoCycleTimer='offscreen'`+`.sc-offscreen`(CSS `#ai-showcase.sc-offscreen *{animation-play-state:paused}`로 KPI 정지), 재진입/`_aiShowcaseReset` 시 재개. 완료 콜백에 in-view 가드(off-screen이면 3초 예약 skip). ⚠️완료 콜백·reset은 `getElementById('ai-showcase')` 직접 조회(setActiveEngine 지역 `var showcase` 섀도잉 회피)+실제 가시성으로 상태 결정(래치 방지). round-trip 정지↔재개 실측(scroll 이벤트 기반, 스무스스크롤 최종 위치는 scroll 이벤트 도착 시 갱신).
 - **v=20260717e** (**main 직커밋 LIVE**, tag `v20260717e`, main `f73bf84`, 2026-07-17) — 성장시스템(talent) 오버레이 **모바일 칩(`.tsk-pill`) 3개씩 정돈**(01·04 카드만). 사용자 요청. 상세 → auto-memory `session-20260717-aibranch-header-footer-polish.md`.
   - **원인**: 4개 스택카드 칩이 전부 공유 `.tsk-pill`(`font 12.5px·padding 7px 14px`) + `.tsk-pills{flex-wrap}`. 한 줄 칩 수 = 라벨 길이가 결정 → 02(유튜브…)·03(AFPK…)은 짧아 3개/줄, **01(신인 2주 집중…)·04(통합금융계산기·건강검진 분석…)은 길어 2개/줄만**.
   - **해결**: 01(15349)·04(15459) `.tsk-pills` 컨테이너에만 **`tsk-pills--tight` 클래스** 부착 + 모바일 스코프(`@media max-width:768px`)에 `#talent-overlay .tsk-pills--tight{gap:6px}` / `.tsk-pills--tight .tsk-pill{font-size:11.5px;padding:6px 9px}`. 칩이 좁아져 3개씩 유기적 배치 → **01=3+2, 04=3+3+1**. **02·03은 클래스 미부착=원본 그대로**(base 12.5/7px 14px/8px 유지, 사용자 명시).
