@@ -237,6 +237,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260721b** (**main 직커밋 LIVE**, tag `v20260721b`, main `38d9dc4`, 2026-07-21) — STORIES 헤드라인(`.stories-headline`, `#stories-header`) **모바일 줄바꿈 교정**: "압도적 격차는 " 뒤에 모바일 전용 `<br class="br-keep cap-mobile-br">` 삽입 → 모바일 2줄 "압도적 격차는 / 사람이 만듭니다"(구: 자연 wrap "…사람이 / 만듭니다" 어색). 중앙정렬은 `.stories-header{text-align:center}` 그대로(두 줄 offsetFromCenter=0 실측). 데스크톱은 br 숨김(`@media(min-width:769px){.cap-mobile-br{display:none}}`)=한 줄 유지, PC 불변. 로컬+라이브 375px 2줄·중앙·콘솔0 / 1280px 1줄 실측. (마크업 전용→트리플체크 A 비대상.)
 - **v=20260721a** (**main 직커밋 LIVE**, tag `v20260721a`, main `8be4e97`, 2026-07-21) — 히어로 서브문구 교체 + 성과(#stats) 섹션 삭제 + AI시스템 쇼케이스 화면밖 정지(전략실장 요청 3건). 트리플체크 A(독립 리뷰) GO·블로커0·로컬+라이브 DOM 실측·콘솔0. 상세 → auto-memory `session-20260721-aibranch-copy-stats-showcase.md`.
   - **① 히어로 서브 문구**(`#hero-typing` 타이핑 IIFE, `lines[]`): "압도적인"·"가장" 삭제 → "…7대 핵심 AI 시스템은 / 당신의 잠재력이 숫자로 증명되는 완벽한 환경을 지원합니다." + `|` 줄바꿈 토큰을 **PC·모바일 모두 `<br>`**(구: 모바일만 공백)로 → 양쪽 두 줄 통일. 라이브 374px `<br>` 실측.
   - **② `#stats`("영업인의 성장과 행복을 만드는 조직") 삭제**: 섹션 + 바로 뒤 숨김 죽은 캐러셀(`.pro-carousel-*` display:none 사본) + 무해해진 `.counter[data-target]` 카운터 IIFE 제거(-315줄) → **히어로 바로 다음 `#solutions`**. 네비/CSS/live 참조 0(대시보드 `.dash-counter`·라이브 `#pro-carousel-overlay`는 별개, 무손상).
