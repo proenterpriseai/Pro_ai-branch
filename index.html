@@ -16,7 +16,8 @@
           : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
         var savedY = 0;
         try { savedY = parseInt(sessionStorage.getItem('proai_scrollY') || '0', 10) || 0; } catch (e) {}
-        var need = overlayHash || (isReload && savedY > 0);
+        // v=20260727b: 같은 탭 부활(type='navigate'인데 savedY 존재)도 복원 대상 → 가림막 적용
+        var need = overlayHash || savedY > 0;
         window.__proReveal = function () { document.documentElement.classList.remove('pro-restore-pending'); };
         if (!need) return;
         document.documentElement.classList.add('pro-restore-pending');
@@ -9265,17 +9266,22 @@
         t = setTimeout(function () { t = null; try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} }, 200);
       }, { passive: true });
       window.addEventListener('pagehide', function () { try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} });
-      // 복원: 새로고침·앞뒤 이동일 때만. 해시는 **오버레이 해시만 제외**(섹션 해시 #solutions·#news 등은
+      // v=20260727b: OOM 강제종료는 pagehide가 안 불릴 수 있음 → 화면 꺼짐/앱 전환 순간에도 저장
+      document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { try { sessionStorage.setItem(KEY, String(Math.round(window.scrollY))); } catch (e) {} } });
+      // 복원: 새로고침·앞뒤 이동 + **같은 탭 부활**(v=20260727b — 모바일이 메모리 회수로 죽였다 되살릴 때
+      //   type='navigate'로 보고돼도 sessionStorage 저장값이 있으면 첫 방문이 아님 → 커스텀 복원이
+      //   브라우저 auto보다 정확: 콘텐츠 높이가 늦게 자라도 rAF 재시도로 제자리를 잡음).
+      //   해시는 **오버레이 해시만 제외**(섹션 해시 #solutions·#news 등은
       //   네비 클릭 잔재라 남아있어도 실제 본 위치(savedY)로 복원해야 함 — v=20260706b 전략실장 지적 반영)
       var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
       var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
         : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
-      if (!isReload) return; // navigate-type(모바일 강제 리로드 포함) → 브라우저 기본 복원 유지
+      var y = parseInt(sessionStorage.getItem(KEY) || '', 10);
+      if (!isReload && !(y > 0)) return; // 진짜 첫 방문 → 브라우저 기본(auto) 복원 유지
       history.scrollRestoration = 'manual'; // 여기부터는 자체 복원이 책임진다
       var _h = (location.hash || '').replace('#', '');
       var _isOverlayHash = (_h === 'ceo' || _h === 'prosolution' || _h === 'pro-intro' || _h === 'talent');
       if (_isOverlayHash) return;
-      var y = parseInt(sessionStorage.getItem(KEY) || '', 10);
       if (!(y > 0)) return;
       var done = false, userMoved = false;
       function now() { return (window.performance && performance.now) ? performance.now() : Date.now(); }
