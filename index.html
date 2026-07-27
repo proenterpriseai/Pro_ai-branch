@@ -9253,9 +9253,11 @@
     // ─── F5 새로고침 시 마지막 스크롤 위치 복원 (v=20260706b) ───
     //   기본 'auto' 복원은 히어로 WebGL·CDN 폰트·이미지가 로드 후 높이를 바꿔 어긋남(맨 위로 튐).
     //   → scrollRestoration='manual'로 잡고 sessionStorage에 위치 저장, 콘텐츠 안정될 때까지 재시도 복원.
+    //   v=20260727a: 'manual' 선언을 reload/back_forward로 판정된 뒤로 이동 — 모바일 브라우저가
+    //   메모리 회수로 페이지를 죽였다 되살릴 때 type='navigate'로 보고되는 경우, 종전에는 manual만
+    //   걸어두고 자체 복원은 안 해서 최상단으로 떨어졌음. navigate면 브라우저 기본(auto) 복원에 맡긴다.
     (function () {
       if (!('scrollRestoration' in history)) return;
-      history.scrollRestoration = 'manual';
       var KEY = 'proai_scrollY';
       var t = null;
       window.addEventListener('scroll', function () {
@@ -9268,9 +9270,11 @@
       var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
       var isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
         : (performance.navigation && (performance.navigation.type === 1 || performance.navigation.type === 2));
+      if (!isReload) return; // navigate-type(모바일 강제 리로드 포함) → 브라우저 기본 복원 유지
+      history.scrollRestoration = 'manual'; // 여기부터는 자체 복원이 책임진다
       var _h = (location.hash || '').replace('#', '');
       var _isOverlayHash = (_h === 'ceo' || _h === 'prosolution' || _h === 'pro-intro' || _h === 'talent');
-      if (!isReload || _isOverlayHash) return;
+      if (_isOverlayHash) return;
       var y = parseInt(sessionStorage.getItem(KEY) || '', 10);
       if (!(y > 0)) return;
       var done = false, userMoved = false;
