@@ -3,6 +3,7 @@
 ## Overview
 Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 8대 AI 대시보드 인터랙티브 데모.
 - **Deploy**: Vercel (GitHub: `proenterpriseai/Pro_ai-branch`)
+- **도메인 (2026-07-28~)**: **`proenterpriseai.com`** = 대표 주소(Production). `www.proenterpriseai.com` = 308 → 메인. `ai-branch.vercel.app` = 병행 유지(Production alias). Vercel에서 구입(팀 ProEnterprise-Team). **공유·홍보 링크는 proenterpriseai.com만 사용.**
 - **Dev Server**: `node _serve.js` (port 3098)
 
 ## Tech Stack
@@ -237,6 +238,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260728a** (**main 직커밋 LIVE**, tag `v20260728a`, main `081277d`, 2026-07-28) — **커스텀 도메인 `proenterpriseai.com` 전환**. ①도메인 Vercel 구입+연결(전략실장, 대시보드): 메인=Production·`www`=308 redirect·`ai-branch.vercel.app` 병행 유지. ②`ALLOWED_ORIGINS` 환경변수 신설 `https://proenterpriseai.com,https://www.proenterpriseai.com`(Production+Preview, Sensitive) — api/chat.js Origin 화이트리스트용, **없으면 새 도메인에서 챗봇 전부 403**. ③코드=OG 메타 2줄(og:url·og:image) 새 도메인 교체. 검증=새 도메인 로드·OG 신값·**`/api/chat` POST 200+CORS 반사 실측**·www→메인 리다이렉트·콘솔0. 잔여: ⓐ카카오 OG 캐시 초기화(developers.kakao.com/tool/debugger/sharing) ⓑ채널톡 신설 시 도메인 등록에 proenterpriseai.com 사용 ⓒ홍보물/대시보드 링크 신 도메인으로.
 - **v=20260727b** (**main 직커밋 LIVE**, tag `v20260727b`, main `8c9da6a`, 2026-07-27) — **스크롤 복원 "같은 탭 부활" 확장**(v=20260727a 후속·전 기종 동일 품질). ①navigate 타입이어도 sessionStorage `proai_scrollY`가 있으면(=진짜 첫 방문 아님, 모바일 강제 리로드 부활) `manual`+커스텀 rAF 재시도 복원 실행 — 무거운 페이지에서 브라우저 auto 복원이 어긋나는 약점(v=20260706b를 만든 이유)까지 커버. 첫 방문(저장값 없음)만 auto 유지. ②`visibilitychange` hidden 시 위치 저장 추가(OOM 강제종료 시 pagehide 미발화 대비). ③head 플래시 가림막 게이트 `overlayHash || savedY>0`로 동기화(부활 복원도 가림막 적용). 검증=로컬 3098 ①첫방문 auto·가림막 미적용 ②navigate+savedY→manual+복원 ③F5 회귀 정상·콘솔0 + 라이브 grep 4/4. ⚠️엣지(수용됨): 외부 사이트 갔다 링크로 재방문 시에도 이전 위치 복원(자연스러운 UX로 판단). ⚠️시뮬레이션 함정: y=0에서 location.href로 떠나면 pagehide가 savedY를 0으로 덮어씀 → 부활 테스트는 반드시 스크롤 내린 상태에서 이탈.
 - **v=20260727a** (**main 직커밋 LIVE**, tag `v20260727a`, main `27d61fd`, 2026-07-27) — **모바일 유휴 후 최상단 튐 fix**(전략실장 제보: 폰에서 메인 페이지에 머물러 있으면 최상단으로 이동). 원인=F5 복원 IIFE(v=20260706b, ~9256)가 `history.scrollRestoration='manual'`을 **무조건** 선언 → 모바일 브라우저가 메모리 회수로 페이지를 죽였다 되살릴 때 nav.type=`navigate`로 보고되면 자체 복원은 조기 return하는데 브라우저 기본 복원은 이미 꺼놔서 **아무도 복원 안 함=최상단**. fix=`manual` 선언을 `isReload`(reload/back_forward) 판정 **뒤로** 이동 — navigate면 브라우저 기본(auto) 복원에 맡김. F5 복원·오버레이 해시 경로 기존 동작 불변(로직 무수정, 순서만). 검증=라이브 계측(scrollTo/scrollIntoView/scrollTop 후킹+0.5s 샘플링, idle 70s 스크롤 호출 0=페이지 생존 중 튐 아님 실증) + 로컬 3098 ①navigate→auto 유지 ②F5 reload→y2500 복원 ③#ceo reload→오버레이 재개방·콘솔0 + 라이브 배포본 grep. ⚠️기종별 빈도 상이(iOS Safari·저RAM 기종에서 잦음)=정상.
 - **v=20260721b** (**main 직커밋 LIVE**, tag `v20260721b`, main `38d9dc4`, 2026-07-21) — STORIES 헤드라인(`.stories-headline`, `#stories-header`) **모바일 줄바꿈 교정**: "압도적 격차는 " 뒤에 모바일 전용 `<br class="br-keep cap-mobile-br">` 삽입 → 모바일 2줄 "압도적 격차는 / 사람이 만듭니다"(구: 자연 wrap "…사람이 / 만듭니다" 어색). 중앙정렬은 `.stories-header{text-align:center}` 그대로(두 줄 offsetFromCenter=0 실측). 데스크톱은 br 숨김(`@media(min-width:769px){.cap-mobile-br{display:none}}`)=한 줄 유지, PC 불변. 로컬+라이브 375px 2줄·중앙·콘솔0 / 1280px 1줄 실측. (마크업 전용→트리플체크 A 비대상.)
