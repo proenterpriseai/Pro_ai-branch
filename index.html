@@ -7639,13 +7639,23 @@
         var FINAL = l1.replace('AI 어시스턴트', '<span class="text-blue-400 font-medium">AI 어시스턴트</span>') + '<br>' + l2;
         var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var timer = null;
+        // v=20260728b: 350ms 지연 핸들도 추적 — 열기·닫기·열기를 350ms 안에 연타하면
+        //   두 setInterval이 같은 노드를 두고 경쟁해 인사말이 중간에서 멈추던 문제 방지.
+        var pending = null;
         function run() {
+          // v=20260728b: 매 실행마다 재조회 — 오버레이 닫힘 풀 리셋(_solProOverlayReset)이
+          //   채팅 영역 innerHTML을 복원하면 #sol-main-greeting이 새 노드로 바뀌므로
+          //   DOMContentLoaded 시점에 잡아둔 참조는 detached가 됨.
+          var target = document.getElementById('sol-main-greeting');
+          if (!target) return;
+          if (pending) { clearTimeout(pending); pending = null; }
           if (reduce) { target.innerHTML = FINAL; return; }
           if (timer) { clearInterval(timer); timer = null; }
           var plain = l1 + '\n' + l2;
           var i = 0, speed = 32;
           target.innerHTML = '<span class="sol-typing-cursor">▍</span>';
-          setTimeout(function () {
+          pending = setTimeout(function () {
+            pending = null;
             timer = setInterval(function () {
               if (i >= plain.length) {
                 clearInterval(timer); timer = null;
@@ -8726,20 +8736,24 @@
       function _scCheckReentry() {
         var r = showcase.getBoundingClientRect();
         var vis = r.top < window.innerHeight * 0.8 && r.bottom > window.innerHeight * 0.2;
+        // v=20260728b: 풀스크린 오버레이가 덮고 있으면 화면 밖 취급 — 오버레이 뒤에서 시연이
+        //   계속 돌던 것 정지, 닫고 돌아오면 아래 재진입 리셋. `#contact`는 클래스 체계가
+        //   달라(`.active`) 별도 포함(현재 진입 경로는 채널톡 폴백뿐이나 열리면 화면 전체를 덮음).
+        if (vis && document.querySelector('.ceo-overlay--active, #contact.active')) vis = false;
         if (vis) {
           if (!_scWasIn) {
             _scWasIn = true;
             showcase.classList.remove('sc-offscreen');
-            if (autoCycleTimer === 'offscreen') {
-              // v=20260721a: 화면 밖에서 멈췄던 순환 재개 — 엔진 0부터
-              autoCycleTimer = true;
-              setActiveEngine(0);
-            } else if (currentIndex !== 0) {
-              var _paused = autoCycleTimer === 'paused';
-              clearTimeout(autoCycleTimer);
-              autoCycleTimer = _paused ? 'paused' : true;
-              setActiveEngine(0);
+            // v=20260728b: 재진입=항상 최초 상태(전략실장 요청) — 검색어·일시정지('paused') 잔존 제거,
+            //   엔진 0부터 순환 재시작 (구: 'paused' 보존 + 검색어 유지 → 이전 작업이 남아 보이던 원인)
+            if (searchInput) {
+              if (document.activeElement === searchInput) searchInput.blur();
+              searchInput.value = '';
+              searchInput.style.color = '';
             }
+            clearTimeout(autoCycleTimer);
+            autoCycleTimer = true;
+            setActiveEngine(0);
           }
         } else {
           // v=20260721a: 화면 밖으로 나가면 순환·데모 정지(검색 focus 'paused'는 보존) → 높이 고정 → 아래 섹션 밀림 소멸. 재진입 시 재개.
@@ -8753,12 +8767,20 @@
       }
       window.addEventListener('scroll', _scCheckReentry, { passive: true });
       _scCheckReentry();
+      // v=20260728b: 오버레이 열림/닫힘은 scroll 이벤트가 없어 즉시 재판정 불가 → 외부(오버레이 관찰자)에서 호출
+      window._aiShowcaseVisCheck = _scCheckReentry;
 
       /* v=20260704o — 헤더 "AI 시스템" 클릭 등 외부에서 강제 1번(PRO 대시보드) 리셋 (전략실장: 헤더 클릭=항상 첫 화면) */
       window._aiShowcaseReset = function(){
-        var _paused = autoCycleTimer === 'paused';
+        // v=20260728b: 완전 최초 상태(전략실장 요청) — 검색어·일시정지('paused') 잔존 제거 후 순환 재시작
+        //   (구: 'paused' 보존 → 검색하다 나갔다 오면 순환이 영구 정지 + 검색어가 남아 있던 원인)
+        if (searchInput) {
+          if (document.activeElement === searchInput) searchInput.blur();
+          searchInput.value = '';
+          searchInput.style.color = '';
+        }
         clearTimeout(autoCycleTimer);
-        autoCycleTimer = _paused ? 'paused' : true; // 검색 일시정지만 보존, offscreen 포함 그 외는 순환 활성
+        autoCycleTimer = true;
         // v=20260721a: 헤더 클릭 시점의 실제 가시성으로 상태 결정(애니메이션 스크롤 도착 전 오프스크린 래치 방지)
         var _rsc = document.getElementById('ai-showcase');
         var _rr = _rsc.getBoundingClientRect();
@@ -8771,6 +8793,26 @@
       renderSidebar();
       renderMobileTabs();
       setActiveEngine(0);
+    })();
+
+    /* ── v=20260728b — 오버레이 열림/닫힘 → 쇼케이스 가시성 즉시 재판정 (독립 블록) ──
+       풀스크린 오버레이는 scroll 이벤트를 발생시키지 않아 _scCheckReentry가 안 불림 →
+       열리면 뒤에서 시연이 계속 돌고, 닫혀도 리셋이 안 됨. 오버레이 5종(#contact 포함) class 변화를 관찰해
+       window._aiShowcaseVisCheck 호출(열림=오프스크린 정지 / 닫힘=엔진 0 풀 리셋 재시작).
+       ⚠️ pro-intro/talent 마크업은 이 스크립트보다 아래 → DOMContentLoaded 후 등록(v=20260711c 교훈). */
+    (function () {
+      function setup() {
+        if (!window.MutationObserver) return;
+        ['prosolution-overlay', 'ceo-overlay', 'pro-intro-overlay', 'talent-overlay', 'contact'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          new MutationObserver(function () {
+            if (typeof window._aiShowcaseVisCheck === 'function') window._aiShowcaseVisCheck();
+          }).observe(el, { attributes: true, attributeFilter: ['class'] });
+        });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup);
+      else setup();
     })();
 
     // ─── Glow border 마우스 추적 (메인 대시보드 동일 방식) ───
@@ -10888,6 +10930,10 @@
         var streamDone = false;
         var finalized = false;
         var revealTimer = null;
+        // v=20260728b: 응답 대기 중 오버레이를 닫으면(세대 변경) 늦게 도착한 답변·CTA를
+        //   새 화면에 그리지 않는다. 캐시된 말풍선은 이미 DOM에서 제거된 상태.
+        var _gen = window._solSessionGen;
+        function _stale() { return _gen !== window._solSessionGen; }
         function ensureBubble() {
           if (bubble) return bubble;
           removeTyping(typingId); // 첫 토큰 도착 → 진행 멘트(경과초) 제거
@@ -10899,6 +10945,7 @@
           if (finalized) return;
           finalized = true;
           stopReveal();
+          if (_stale()) return; // 닫힌 세션의 응답 — 렌더 없이 종료
           removeTyping(typingId);
           if (!target) { _solRenderReplyFallback(sys, userText); return; }
           var b = ensureBubble();
@@ -10917,7 +10964,7 @@
         function startReveal() {
           if (revealTimer || finalized) return;
           revealTimer = setInterval(function () {
-            if (finalized) { stopReveal(); return; }
+            if (finalized || _stale()) { stopReveal(); return; }
             if (shown < target.length) {
               var remaining = target.length - shown;
               // 멀리 뒤처지면 빨리, 가까우면 한 자씩 (부드러운 마무리)
@@ -10932,6 +10979,9 @@
         }
         _solStreamChat(requestBody, {
           onDelta: function (full) {
+            // v=20260728b: 닫힌 세션이면 말풍선 자체를 만들지 않는다.
+            //   (구: ensureBubble()이 먼저 실행돼 리셋된 채팅에 본문 없는 빈 말풍선이 남았음)
+            if (_stale()) { stopReveal(); return; }
             ensureBubble();
             target = full;
             startReveal();
@@ -10944,6 +10994,7 @@
           },
           onError: function () {
             stopReveal();
+            if (_stale()) { finalized = true; return; } // 닫힌 세션 — 폴백 답변도 그리지 않음
             if (bubble && bubble.pEl && (target || bubble.pEl.textContent)) {
               finalized = true;
               removeTyping(typingId);
@@ -10961,6 +11012,7 @@
           }
         }).catch(function () {
           stopReveal();
+          if (_stale()) { finalized = true; return; } // 닫힌 세션 — 폴백 답변도 그리지 않음
           if (bubble && bubble.pEl && (target || bubble.pEl.textContent)) {
             finalized = true;
             removeTyping(typingId);
@@ -11118,12 +11170,27 @@
       var systemNameMap = {
         '보장분석 시스템': 'coverage',
         'DB 영업관리': 'dbsales',
-        '통합금융계산기': 'calculator',
+        '통합 금융계산기': 'calculator',
         '상담 코칭 AI': 'coaching',
         '보험금 산출 AI': 'insurance-calc',
         '완전판매 AI': 'complete-sales',
         '건강검진 분석 AI': 'healthcheck'
       };
+      /* v=20260728b — 🐛 계산기 카드 매칭 깨짐 fix + 재발 방지.
+         원인: v=20260628g에서 카드 라벨만 '통합금융계산기'→'통합 금융계산기'(띄어쓰기)로 바꾸고
+         이 map 키는 그대로 둬서 매칭 실패 → sysKey='all' → 9모듈 계산기 패널이 안 열리고
+         기본 인사말만 표시(2026-06-28부터 한 달간). 키를 현재 라벨로 정정하고,
+         추가로 **공백 무시 매칭 폴백**을 둬서 앞으로 라벨 띄어쓰기가 바뀌어도 안 깨지게 함. */
+      var _solSysKeyNoSpace = {};
+      Object.keys(systemNameMap).forEach(function (k) {
+        _solSysKeyNoSpace[k.replace(/\s+/g, '')] = systemNameMap[k];
+      });
+      function _solResolveSysKey(name) {
+        if (!name) return 'all';
+        return systemNameMap[name]
+          || _solSysKeyNoSpace[String(name).replace(/\s+/g, '')]
+          || 'all';
+      }
 
       // ── 시스템별 빠른 액션 / placeholder / 인사말 데이터 (Phase 1) ──
       // v=20260520f — all 시스템도 빠른 액션 미표시 (사용자 요청, 모든 시스템 통일)
@@ -11544,11 +11611,17 @@
 
         // 3) 진행률 바 시작
         var progressInterval = _solPdfStartFakeProgress();
+        // v=20260728b: 오버레이 닫힘 시 강제 정지용 참조 + 세대 스냅샷(늦게 온 결과 차단)
+        window._solPdfProgressInterval = progressInterval;
+        var _pdfGen = window._solSessionGen;
 
         try {
           // 4) base64 인코딩
           _solPdfShowProgress(15, '파일 변환 중...');
           var base64 = await _solPdfBlobToBase64(file);
+          // v=20260728b: 변환 중 이탈했으면 여기서 종료 — 리셋이 감춘 진행률 바를 다시 띄우지 않고,
+          //   버려질 게 확실한 Gemini 분석 호출(과금)도 하지 않는다.
+          if (_pdfGen !== window._solSessionGen) { removeTyping('sol-pdf-typing'); _solPdfHideProgress(); return; }
           _solPdfShowProgress(30, 'AI 분석 중...');
 
           // 5) API 호출 (activeSystem에 따라 보장분석/건강검진 분기)
@@ -11557,6 +11630,9 @@
 
           // 6) 진행률 마무리
           clearInterval(progressInterval);
+          if (window._solPdfProgressInterval === progressInterval) window._solPdfProgressInterval = null;
+          // v=20260728b: 분석 중 오버레이를 닫았으면(세대 변경) 새 화면에 옛 결과를 그리지 않는다
+          if (_pdfGen !== window._solSessionGen) { removeTyping('sol-pdf-typing'); _solPdfHideProgress(); return; }
           removeTyping('sol-pdf-typing'); // 회전 멘트 정리 (interval 클린업 포함)
           _solPdfShowProgress(100, '완료');
           setTimeout(_solPdfHideProgress, 600);
@@ -11567,7 +11643,9 @@
           _solPdfRenderReport(data, sysKey);
         } catch (err) {
           clearInterval(progressInterval);
+          if (window._solPdfProgressInterval === progressInterval) window._solPdfProgressInterval = null;
           removeTyping('sol-pdf-typing'); // 에러 시에도 회전 멘트 정리
+          if (_pdfGen !== window._solSessionGen) { _solPdfHideProgress(); return; } // 닫힌 세션의 에러는 표시 안 함
           _solPdfHandleError(err);
         }
       }
@@ -13177,10 +13255,15 @@
           _solInsCalcAppendSystemMsg('⚠️ 최대 5개 PDF까지만 첨부 가능합니다');
           return;
         }
+        // v=20260728b: 변환/추출(수십 초) 도중 오버레이를 닫으면(세대 변경) 리셋된 채팅에
+        //   첨부 칩·단계 안내가 다시 그려지고 _solInsCalcPdfs에 stale 파일이 남던 문제 차단.
+        var _fileGen = window._solSessionGen;
+        function _fileStale() { return _fileGen !== window._solSessionGen; }
         try {
           if (file.size <= 4 * 1024 * 1024) {
             // 작은 PDF (보험 내역 등): base64 inline_data — Gemini가 시각 분석 가능
             var base64 = await _solPdfBlobToBase64(file);
+            if (_fileStale()) return;
             _solInsCalcPdfs.push({ filename: file.name, base64: base64 });
           } else {
             // 큰 PDF (약관 등 15MB+): PDF.js로 텍스트 추출 → 텍스트만 서버 전송
@@ -13189,6 +13272,7 @@
               // 진행률 로깅만 (UI 갱신은 채팅 메시지로 안 함 — 노이즈 방지)
               if (cur === total && window.console) console.log('[약관 텍스트 추출] ' + cur + '/' + total + ' 페이지 완료');
             });
+            if (_fileStale()) return; // v=20260728b: 추출 도중 닫힘 → 새 화면에 그리지 않음
             // 이미지 기반 스캔본 약관은 텍스트가 거의 안 나옴 — 임계값 1,000자 미만이면 fallback
             if (!extractedText || extractedText.length < 1000) {
               _solInsCalcAppendSystemMsg('⚠️ ' + file.name + ' — 텍스트 추출이 거의 안 됐습니다 (이미지 기반 스캔 약관일 수 있음). 텍스트 기반 PDF 또는 5MB 이하로 압축 후 다시 업로드해 주세요.');
@@ -13201,6 +13285,7 @@
           }
           _solInsCalcAppendChip(file.name, _solInsCalcPdfs.length);
         } catch (e) {
+          if (_fileStale()) return; // v=20260728b: 닫힌 세션의 에러는 새 화면에 표시 안 함
           _solInsCalcAppendSystemMsg('⚠️ 파일 처리 실패: ' + file.name + ' — ' + (e && e.message ? e.message : ''));
         }
       }
@@ -13474,15 +13559,21 @@
           _solComplAppendSystemMsg('⚠️ 파일이 너무 큽니다 (20MB 이하): ' + file.name + ' — 현재 ' + (file.size/1024/1024).toFixed(1) + 'MB. 💡 [SmallPDF] (smallpdf.com/compress-pdf) 또는 [ILovePDF] (ilovepdf.com/compress_pdf) 등 무료 PDF 압축 서비스로 20MB 이하로 줄인 후 다시 업로드해 주세요.');
           return;
         }
+        // v=20260728b: 변환/추출 도중 오버레이를 닫으면(세대 변경) 리셋된 채팅에 칩·안내가
+        //   다시 그려지고 _solComplPdf에 stale 파일이 남던 문제 차단.
+        var _fileGen = window._solSessionGen;
+        function _fileStale() { return _fileGen !== window._solSessionGen; }
         try {
           if (file.size <= 4 * 1024 * 1024) {
             // 작은 PDF: base64 inline_data
             var base64 = await _solPdfBlobToBase64(file);
+            if (_fileStale()) return;
             _solComplPdf = { filename: file.name, base64: base64 };
           } else {
             // 큰 PDF: PDF.js 텍스트 추출
             _solComplAppendSystemMsg('📄 ' + file.name + ' 텍스트 추출 중... (' + (file.size/1024/1024).toFixed(1) + 'MB, 잠시만 기다려 주세요)');
             var extractedText = await _solExtractPdfText(file);
+            if (_fileStale()) return; // v=20260728b: 추출 도중 닫힘 → 새 화면에 그리지 않음
             if (!extractedText || extractedText.length < 1000) {
               _solComplAppendSystemMsg('⚠️ ' + file.name + ' — 텍스트 추출이 거의 안 됐습니다 (이미지 기반 스캔본일 수 있음). 텍스트 기반 PDF 또는 5MB 이하로 압축 후 다시 업로드해 주세요.');
               return;
@@ -13498,6 +13589,7 @@
             14
           );
         } catch (e) {
+          if (_fileStale()) return; // v=20260728b: 닫힌 세션의 에러는 새 화면에 표시 안 함
           _solComplAppendSystemMsg('⚠️ 파일 처리 실패: ' + file.name + ' — ' + (e && e.message ? e.message : ''));
         }
       }
@@ -14489,7 +14581,7 @@
           var nameEl = item.querySelector('.text-white.font-medium');
           if (!nameEl) return;
           var name = nameEl.textContent.trim();
-          var sysKey = systemNameMap[name] || 'all';
+          var sysKey = _solResolveSysKey(name); // v=20260728b: 공백 무시 폴백 포함(계산기 매칭 fix)
           activeSystem = sysKey;
           // 채팅 헤더 업데이트 (이미 'AI' 접미사 포함이면 중복 회피)
           if (chatHeader) chatHeader.textContent = /AI$/.test(name) ? name : name + ' AI';
@@ -14505,6 +14597,76 @@
           chatInput.focus();
         });
       });
+
+      /* ── v=20260728b — 프로솔루션 오버레이 풀 리셋 (전략실장 요청, 독립 블록) ──
+         PRO 로고·다른 헤더 메뉴로 나갔다가 다시 들어오면 이전 시연(채팅 내역·선택 시스템·
+         분석 리포트·진행 중 타이핑)이 그대로 남아 있던 문제 → 닫히는 순간 최초 상태로 복원.
+         재열림 시 인사말 타이핑은 기존 v=20260706b 관찰자가 새 노드에 재생(run() 재조회로 호환). */
+      var _solInitialChatHTML = chatMessages ? chatMessages.innerHTML : '';
+      var _solInitialHeaderText = chatHeader ? chatHeader.textContent : '';
+      // v=20260728b: DB영업관리 입력값(모듈 레벨 상태라 오버레이를 닫아도 살아남음)의 초기 스냅샷.
+      //   전략실장 정의 "최초 상태 = 인사말 타이핑 화면부터 다시" → 이전 시연 입력 숫자도 남으면 안 됨.
+      var _solDbsInitialState = null;
+      try { if (typeof DBSALES_STATE !== 'undefined') _solDbsInitialState = JSON.stringify(DBSALES_STATE); } catch (e) {}
+      // 세션 세대 — 닫을 때 +1. 진행 중이던 스트리밍/PDF 분석이 나중에 완료돼도
+      // 세대가 다르면 새 화면에 결과를 그리지 않는다(늦게 도착한 이전 시연 결과 차단).
+      window._solSessionGen = 0;
+      window._solProOverlayReset = function () {
+        try {
+          window._solSessionGen++;
+          // ① 진행 중 타이핑/진행멘트/진행률 타이머 정지 (이전 시연이 계속 작동하던 원인)
+          if (_solTypingInterval) { clearInterval(_solTypingInterval); _solTypingInterval = null; }
+          if (_solTypingMentInterval) { clearInterval(_solTypingMentInterval); _solTypingMentInterval = null; }
+          if (window._solPdfProgressInterval) { clearInterval(window._solPdfProgressInterval); window._solPdfProgressInterval = null; }
+          // ② 채팅 영역을 최초 마크업(인사말 1개)으로 복원 + 분석 리포트 패널 제거
+          if (chatMessages) { chatMessages.innerHTML = _solInitialChatHTML; chatMessages.style.display = ''; chatMessages.scrollTop = 0; }
+          var _rep = document.getElementById('sol-pdf-report-inline');
+          if (_rep && _rep.parentNode) _rep.parentNode.removeChild(_rep);
+          if (typeof _solPdfHideProgress === 'function') _solPdfHideProgress();
+          // v=20260728b: 계산기 모듈 모달은 body 직속 fixed(z-index 100000) → 열어둔 채
+          //   오버레이를 닫으면 메인 화면 위에 그대로 남던 문제 차단.
+          if (typeof _solCalcCloseModal === 'function') _solCalcCloseModal();
+          // v=20260728b: DB영업관리 입력 숫자 초기화 — 참조는 유지한 채 속성만 초기 스냅샷으로 복원
+          //   (재선택 시 _solDbsInjectPanel이 이 상태로 폼을 다시 그리므로 기본값 화면이 나온다)
+          if (_solDbsInitialState && typeof DBSALES_STATE !== 'undefined') {
+            var _dbsFresh = JSON.parse(_solDbsInitialState);
+            Object.keys(_dbsFresh).forEach(function (k) { DBSALES_STATE[k] = _dbsFresh[k]; });
+          }
+          // ③ 시스템 선택/채팅 헤더/입력창 초기화
+          activeSystem = 'all';
+          systemItems.forEach(function (si) { si.classList.remove('active'); });
+          if (chatHeader) chatHeader.textContent = _solInitialHeaderText;
+          if (chatInput) chatInput.value = '';
+          // ④ 누적 PDF·플러스 버튼·placeholder 초기화
+          if (typeof _solInsCalcReset === 'function') _solInsCalcReset();
+          if (typeof _solComplReset === 'function') _solComplReset();
+          if (typeof _isProsolutionPdfOn === 'function' && _isProsolutionPdfOn()) {
+            _solUpdatePlaceholder('all');
+            _solUpdatePlusButton('all');
+          }
+          var _fi = document.getElementById('sol-pdf-file-input');
+          if (_fi) _fi.value = '';
+        } catch (e) { if (window.console) console.warn('[solReset]', e); /* 리셋 실패해도 기존 동작은 유지 */ }
+      };
+      // 닫힘 감지 → 풀 리셋 (독립 관찰자, 기존 열림 관찰자들과 무간섭)
+      //   ⚠️ "직전 상태 기억" 방식은 MutationObserver가 마이크로태스크로 묶여 열림·닫힘이
+      //      한 배치로 합쳐지면 전환을 놓친다 → **닫혀 있고 잔존 상태가 있으면 리셋**(멱등)으로 판정.
+      (function () {
+        var _ov = document.getElementById('prosolution-overlay');
+        if (!_ov || !window.MutationObserver) return;
+        function _isDirty() {
+          if (activeSystem !== 'all') return true;
+          if (chatInput && chatInput.value) return true;
+          if (document.getElementById('sol-pdf-report-inline')) return true;
+          if (chatMessages && chatMessages.children.length !== 1) return true;
+          if (document.querySelectorAll('#prosolution-overlay .sol-system-item.active').length) return true;
+          return false;
+        }
+        new MutationObserver(function () {
+          if (_ov.classList.contains('ceo-overlay--active')) return; // 열려 있으면 유지
+          if (_isDirty()) window._solProOverlayReset();
+        }).observe(_ov, { attributes: true, attributeFilter: ['class'] });
+      })();
 
       function appendMessage(role, text) {
         var div = document.createElement('div');
