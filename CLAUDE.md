@@ -39,7 +39,7 @@ _serve.js           — Dev server (port 3098)
 | dashboard | 메인 대시보드 | Counter animation, live activity feed (4s interval), 8 system status dots |
 | coverage | 보장분석 시스템 | AI chat + 리포트 뷰 토글, PDF 업로드 → 샘플 리포트 (SVG 레이더, 37/100 점수, 8카테고리, TOP10), Gemini fallback |
 | dbsales | DB 영업관리 | Search filter, status toggle, add row + 전환율 분석 (CSS donut, funnel progress, 병목 badge) |
-| calculator | 통합금융계산기 | 9 sub-tabs 전부 동작: 예적금/대출/은퇴/부동산(취득·보유·양도)/상속증여(증여·상속)/목적자금/달러/전월세/종합소득세 |
+| calculator | 통합금융계산기 | **11개 메인 모듈**(+서브탭 5) 전부 동작: 예적금/대출/은퇴/부동산(취득·보유·양도)/상속증여(증여·상속)/목적자금/달러종신/전월세/실손갱신/갱신vs비갱신/종합소득세. ⚠️v=20260517c에서 9→11 확장 — **"9개" 표기 금지**(v=20260728c에서 화면 문구 11곳 정정) |
 | coaching | 상담 코칭 | 8개 키워드셋 + free input + Gemini API fallback |
 | insurance-calc | 보험금 산출 | 진단명/입원/비급여 + 사고경위 텍스트 + PDF 업로드 → 산출표 + 전략/방어 카드 + Gemini 분석 |
 | healthcheck | 건강검진 분석 | PDF 업로드 → 샘플 리포트 (SVG 원형게이지, 검사항목 테이블, 질병리스크, 권장담보) + 수동 슬라이더 |
@@ -258,6 +258,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260728c** (**main 직커밋 LIVE**, tag `v20260728c`, main `9b4af96`, 2026-07-28) — **계산기 모듈 수 문구 "9개" → "11개" 정정**(전략실장 요청, 숫자만·구조 불변). 실제 `CALC_MODULES`는 11개(v=20260517c에서 9→11 확장)인데 문구가 9개로 남아 있었고, v=20260728b에서 계산기 카드 매칭이 복구되며 **카드 11장 바로 위 "9개" 표기가 노출**됨. **두 곳 모두 반영**: ①**7대 AI 시스템**(`#ai-showcase`) 엔진 배지 `9모듈`→`11모듈`·desc·핵심지표 "모듈 수"·인사이트·데모 대사 5곳 ②**AI 시스템 시연**(`#prosolution-overlay`) 시스템 현황 카드 부제·계산기 인사말(`SYSTEM_GREETINGS.calculator`)·`systemResponses.calculator`·패널 부제(`.sol-calc-intro-sub`)·약식 데모 배지·모달 잠금 CTA 6곳 + CSS 주석 1곳. **문자열 치환만, 로직 무수정**. ⚠️미변경=죽은 코드 2곳(구 대시보드 패널 ~5237 / 미실행 데모 시나리오 ~7945 — `#dashboard-container` 부재로 IIFE early-return, 렌더 경로 없음). ⚠️잔여 표기 불일치: 인사말은 여전히 `통합금융계산기`(붙여쓰기) vs 헤더 `통합 금융계산기` — 전략실장 "숫자만" 지시로 보류. **검증(R1 적용)**: 로컬 3098 + 라이브 **PC 1280·모바일 375 양쪽** 렌더 텍스트 실측 — 두 곳 전부 11개, `9개` 잔존 0, 모듈 카드 11장, 리셋 회귀 정상(모달 닫힘·채팅 1·활성카드 0), 콘솔 0.
 - **v=20260728b** (**main 직커밋 LIVE ✅전략실장 PC·모바일 양쪽 확인 완료**, tag `v20260728b`, main `34d1f47`, 2026-07-28) — **AI 시스템 시연 재진입 시 "최초 상태" 리셋 + 계산기 매칭 fix**(전략실장 요청: PC·모바일 모두 시연 후 PRO 로고/다른 헤더 오버레이를 다녀오면 이전 작업이 남아 있고 이전 시연이 계속 작동). **전략실장 정의: "최초 상태" = 인사말("안녕하세요! …시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.")이 타이핑되는 화면 → 끝나면 우측 시스템 현황에서 시연 대상 선택**. 트리플체크 A 3라운드(1차 NO-GO 블로커 2건 → 수정 후 GO → 델타 GO). 상세 → auto-memory `session-20260728-aibranch-demo-reset.md`.
   - **① 오버레이 풀 리셋** `window._solProOverlayReset()` 신설 + prosolution-overlay 닫힘 감지. ⚠️판정은 "직전 상태 기억"이 아니라 **`_isDirty()` 멱등 판정**(MutationObserver가 열림·닫힘을 한 배치로 묶으면 전환을 놓침). 복원 범위=채팅 최초 innerHTML·리포트 패널 제거·헤더/입력창/파일input·누적 PDF(`_solInsCalcReset`/`_solComplReset`)·placeholder/+버튼·진행 중 타이머 3종(`_solTypingInterval`/`_solTypingMentInterval`/`_solPdfProgressInterval`).
   - **② 세션 세대 가드** `window._solSessionGen`(닫을 때 +1). 닫은 뒤 **늦게 도착한 결과가 새 화면을 오염**시키던 경로 차단 — 스트리밍(`_stale()`: `onDelta` 진입부·`finalize`·reveal 틱·`onError`·`catch`) / PDF 분석(`_pdfGen`: base64 직후·API 직후·catch) / PDF 첨부(`_fileStale()`: `_solInsCalcAddFile`·`_solComplAddFile` 각 await 직후·catch). ⚠️**`onDelta`는 `ensureBubble()` 앞에 가드**해야 함(뒤면 본문 없는 빈 말풍선이 남음 — 1차 리뷰 블로커). ⚠️**base64 직후 가드는 과금 방지 겸용**(없으면 버려질 Gemini 호출이 그대로 나감).
