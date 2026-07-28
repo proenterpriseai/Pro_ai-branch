@@ -91,6 +91,26 @@ _serve.js           — Dev server (port 3098)
 3. **CDN/외부 스크립트 비동기 필수** — 신규 `<script>` 태그는 `async`/`defer` 필수
 4. **Lazy Init 필수** — 외부 의존성 모듈 레벨 즉시 초기화 금지
 
+## 🚨 검증 규칙 (영구, v=20260728b 신설 — 전략실장 지시)
+
+### R1. **PC·모바일 양쪽 실측 없이 "완료" 보고 금지**
+- 한쪽만 확인하고 끝내지 말 것. **데스크톱 + 375×812(최소)** 두 뷰포트에서 같은 시나리오를 각각 돌린다.
+- 모바일은 **UI가 아예 다른 경로**가 있다 → 반드시 별도 확인: `#mobile-nav-overlay`(햄버거 메뉴) / `.ai-mobile-tab`(쇼케이스 탭, PC는 `.ai-nav-item`) / `md:hidden`·`lg:hidden` 전용 버튼 / 오버레이 세로 스택 레이아웃.
+- **터치 이벤트도 확인**(`touchstart`/`touchend` 디스패치) — 마우스 `click`만으로는 실기기와 다를 수 있음.
+- 가로 오버플로우(`documentElement.scrollWidth > innerWidth`) 매번 체크.
+- ⚠️ **뷰포트 축소는 실기기가 아니다** — iOS Safari 엔진·저RAM 강제 리로드는 재현 불가. 최종 확인은 실기기(전략실장/대표님 폰) 요청.
+
+### R2. 배포 후 **라이브 실측**까지가 검증
+로컬만 보고 끝내지 말 것. `?cb=timestamp` 캐시버스터로 ①라이브 HTML == main HEAD 바이트 동일 ②핵심 식별자 grep ③실제 클릭 동작 ④콘솔 0.
+
+### R3. 회귀 방지 체크리스트 (v=20260728b에서 실제로 터진 것들)
+- **라벨(문구)을 바꾸면 그 문구를 키로 쓰는 map을 반드시 동반 확인.** `systemNameMap['통합금융계산기']`가 라벨 띄어쓰기 변경(v=20260628g)으로 깨져 계산기 패널이 **한 달간 안 열림**. 문자열 키 매칭은 정규화 폴백을 기본으로.
+- **`await` 뒤에는 세대 가드**(`window._solSessionGen` 패턴). 화면을 리셋해도 이미 날아간 요청의 콜백이 새 화면을 오염시킨다. 가드는 **부작용(append/push/ensureBubble)보다 앞**에.
+- **과금 경로도 가드 대상** — 버려질 게 확실한 Gemini 호출은 쏘지 않는다(₩726k 사고 이력).
+- **죽어 있던 기능을 되살리면 그 하위 경로를 전수 감사.** 계산기 매칭을 고치자 "모달이 메인 화면에 잔존"이 즉시 드러났다.
+- **오버레이는 `display:none`이 아니라 클래스 토글** → 스크롤 이벤트가 안 나므로 `scroll` 기반 로직은 **class MutationObserver로 별도 재판정** 필요.
+- **프리뷰 탭이 hidden이면 계측이 거짓말을 한다**(rAF 정지·scroll 미발화·`focus()` 무효·setInterval 1회/초 스로틀). "동작 안 함"으로 오판 금지 → 합성 이벤트·타이머 래핑 카운트로 대체.
+
 ## Section Structure (v=20260406b)
 - Hero → 성과(#stats) → 7대 AI 시스템(#solutions) → **왜 PRO인가(#why-pro, 허브 레이아웃)** → 모집공고(#recruit) → 관리자 소개(#about) → 소식(#news) → 지도(#branch-map)
 - **기존 대시보드 패널(#dashboard-container) 삭제됨** — display:none으로 숨김 처리, 코드 보존
@@ -238,7 +258,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
-- **v=20260728b** (**main 직커밋 LIVE**, tag `v20260728b`, main `34d1f47`, 2026-07-28) — **AI 시스템 시연 재진입 시 "최초 상태" 리셋 + 계산기 매칭 fix**(전략실장 요청: PC·모바일 모두 시연 후 PRO 로고/다른 헤더 오버레이를 다녀오면 이전 작업이 남아 있고 이전 시연이 계속 작동). **전략실장 정의: "최초 상태" = 인사말("안녕하세요! …시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.")이 타이핑되는 화면 → 끝나면 우측 시스템 현황에서 시연 대상 선택**. 트리플체크 A 3라운드(1차 NO-GO 블로커 2건 → 수정 후 GO → 델타 GO). 상세 → auto-memory `session-20260728-aibranch-demo-reset.md`.
+- **v=20260728b** (**main 직커밋 LIVE ✅전략실장 PC·모바일 양쪽 확인 완료**, tag `v20260728b`, main `34d1f47`, 2026-07-28) — **AI 시스템 시연 재진입 시 "최초 상태" 리셋 + 계산기 매칭 fix**(전략실장 요청: PC·모바일 모두 시연 후 PRO 로고/다른 헤더 오버레이를 다녀오면 이전 작업이 남아 있고 이전 시연이 계속 작동). **전략실장 정의: "최초 상태" = 인사말("안녕하세요! …시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.")이 타이핑되는 화면 → 끝나면 우측 시스템 현황에서 시연 대상 선택**. 트리플체크 A 3라운드(1차 NO-GO 블로커 2건 → 수정 후 GO → 델타 GO). 상세 → auto-memory `session-20260728-aibranch-demo-reset.md`.
   - **① 오버레이 풀 리셋** `window._solProOverlayReset()` 신설 + prosolution-overlay 닫힘 감지. ⚠️판정은 "직전 상태 기억"이 아니라 **`_isDirty()` 멱등 판정**(MutationObserver가 열림·닫힘을 한 배치로 묶으면 전환을 놓침). 복원 범위=채팅 최초 innerHTML·리포트 패널 제거·헤더/입력창/파일input·누적 PDF(`_solInsCalcReset`/`_solComplReset`)·placeholder/+버튼·진행 중 타이머 3종(`_solTypingInterval`/`_solTypingMentInterval`/`_solPdfProgressInterval`).
   - **② 세션 세대 가드** `window._solSessionGen`(닫을 때 +1). 닫은 뒤 **늦게 도착한 결과가 새 화면을 오염**시키던 경로 차단 — 스트리밍(`_stale()`: `onDelta` 진입부·`finalize`·reveal 틱·`onError`·`catch`) / PDF 분석(`_pdfGen`: base64 직후·API 직후·catch) / PDF 첨부(`_fileStale()`: `_solInsCalcAddFile`·`_solComplAddFile` 각 await 직후·catch). ⚠️**`onDelta`는 `ensureBubble()` 앞에 가드**해야 함(뒤면 본문 없는 빈 말풍선이 남음 — 1차 리뷰 블로커). ⚠️**base64 직후 가드는 과금 방지 겸용**(없으면 버려질 Gemini 호출이 그대로 나감).
   - **③ 쇼케이스 오버레이 가드**: `_scCheckReentry`에서 `.ceo-overlay--active, #contact.active`가 있으면 **화면 밖 취급** → 오버레이 뒤에서 순환·데모가 계속 돌던 것 정지. 재진입/`_aiShowcaseReset`은 **검색어 clear + 'paused' 잔존 제거 + 엔진 0 재시작**(구: `'paused'` 보존 → 검색하다 이탈하면 순환 **영구 정지** + 검색어 잔존). 오버레이는 scroll 이벤트가 없어 **class 관찰자 5종**(prosolution/ceo/pro-intro/talent/contact) → `window._aiShowcaseVisCheck` 호출.
