@@ -3813,7 +3813,10 @@
           <!-- 중앙: 네비 메뉴 -->
           <div class="hidden md:flex items-center gap-12">
             <a href="#" data-nav="pro-intro" class="text-[16px] font-bold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">조직 소개</a>
-            <a href="#" data-nav="ai-system" class="text-[16px] font-bold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">AI 시스템</a>
+            <!-- v=20260728e: 헤더 "AI 시스템" = 시연 오버레이 직행(구: #solutions 섹션 스크롤).
+                 체험까지 2클릭 → 1클릭. #solutions 섹션의 "체험하기" 버튼도 같은 경로 유지(진입 2갈래).
+                 ⚠️ navigateTo('ai-system') 분기·popstate '#solutions' 해시 처리는 기존 공유 링크·뒤로가기 호환 위해 존치. -->
+            <a href="#" data-nav="prosolution-open" class="text-[16px] font-bold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">AI 시스템</a>
             <a href="#" data-nav="ceo" class="text-[16px] font-bold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">CEO 인사말</a>
             <a href="#" data-nav="talent-open" class="text-[16px] font-bold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">성장 시스템</a>
             <a href="#" data-nav="contact" class="text-[16px] font-bold text-white hover:text-white/80 transition-colors whitespace-nowrap pb-0.5 border-b border-transparent hover:border-white/50">문의하기</a>
@@ -13461,7 +13464,8 @@
     </div>
     <div style="padding:8px 28px 40px;">
       <a href="#" data-nav="pro-intro" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#27398c; font-size:18px; font-weight:700; padding:22px 0; border-bottom:1px solid rgba(39,57,140,0.2); text-decoration:none;">조직 소개</a>
-      <a href="#" data-nav="ai-system" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#27398c; font-size:18px; font-weight:700; padding:22px 0; border-bottom:1px solid rgba(39,57,140,0.2); text-decoration:none;">AI 시스템</a>
+      <!-- v=20260728e: 모바일 메뉴 "AI 시스템"도 시연 오버레이 직행(PC 헤더와 동일) -->
+      <a href="#" data-nav="prosolution-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#27398c; font-size:18px; font-weight:700; padding:22px 0; border-bottom:1px solid rgba(39,57,140,0.2); text-decoration:none;">AI 시스템</a>
       <a href="#" data-nav="ceo" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#27398c; font-size:18px; font-weight:700; padding:22px 0; border-bottom:1px solid rgba(39,57,140,0.2); text-decoration:none;">CEO 인사말</a>
       <a href="#" data-nav="talent-open" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#27398c; font-size:18px; font-weight:700; padding:22px 0; border-bottom:1px solid rgba(39,57,140,0.2); text-decoration:none;">성장 시스템</a>
       <a href="#" data-nav="contact" onclick="document.getElementById('mobile-nav-overlay').style.display='none';" style="display:block; color:#27398c; font-size:18px; font-weight:700; padding:22px 0; text-decoration:none;">문의하기</a>
