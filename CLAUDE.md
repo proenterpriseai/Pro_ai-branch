@@ -68,6 +68,7 @@ _serve.js           — Dev server (port 3098)
 - 오버레이 종류: CEO(`ceo-overlay`), AI시스템(`prosolution-overlay`), 문의하기(`contact`)
 - `body.ceo-overlay-open` / `body.contact-overlay-open` → `overflow:hidden` 설정됨, **반드시 해제 필요**
 - **네비 타겟 ID 매핑**: news(프로사업단총괄), about(관리자 소개), recruit(모집공고), top(로고)
+- 🔀 **헤더 "AI 시스템" = `data-nav="prosolution-open"`**(v=20260728e~, 시연 오버레이 직행). PC 헤더·모바일 메뉴 동일. **`ai-system`은 헤더에서 미사용** — `navigateTo` 분기·popstate 해시 처리만 구 링크 호환용으로 존치. 시연 진입점 4개(헤더/모바일메뉴/사이드바 체험하기/모바일 체험하기 버튼).
 - **⚠️ `#team` ID 없음** — 관리자 소개는 `#about` 섹션임. `#ceo` ID도 없음(오버레이 방식)
 
 ## ⚠️ 레이아웃 높이/패딩 규칙 (절대 원복 금지)
@@ -260,6 +261,11 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260728e** (**main 직커밋 LIVE**, tag `v20260728e`, main `43b3fab`, 2026-07-28) — **헤더 "AI 시스템" = 시연 오버레이 직행**(전략실장 요청: 체험까지 2클릭 → **1클릭**). 시연 진입은 **2갈래 유지** — ①헤더/모바일 메뉴 ②`#solutions` 섹션의 "체험하기" 버튼.
+  - 변경 = **`data-nav` 속성 2곳 교체, 신규 로직 0줄**: PC 헤더(3816)·모바일 메뉴(13464) `ai-system` → `prosolution-open`. 이미 검증된 기존 경로 재사용이라 새 코드 없음. 사이드바 "체험하기"·모바일 "AI 시스템 체험하기"는 원래 같은 경로 = **무수정**. → `data-nav="prosolution-open"` 진입점 **4개**.
+  - ⚠️ **존치(호환)**: `navigateTo('ai-system')` 분기(7571)와 popstate `#solutions`/`#ai-system` 해시 처리(7639)는 **삭제하지 않음** — 기존에 공유된 `#solutions` 링크·뒤로가기 경로가 그대로 동작해야 하므로. 헤더에서 섹션으로 가는 링크만 없어짐(섹션은 히어로 다음이라 스크롤로 도달, 전략실장 승인).
+  - **검증(R1·R2)**: 로컬+라이브 PC 1280·모바일 375 — 헤더/메뉴 클릭 시 오버레이 열림·해시 `#prosolution`·인사말 타이핑·활성카드 0(최초 상태) / 섹션 "체험하기"도 동일 진입(2갈래) / **뒤로가기** 오버레이 닫힘·`body.overflow` 복원 / **`#solutions` 링크 직접 진입 시 섹션 도달**(y644·섹션상단 156 = 변경 전 라이브 기준선과 동일) / 가로overflow 0 · 콘솔 0.
+  - ℹ️ 검증 함정: 같은 문서에서 `location.hash`만 바꾸면 앵커 스크롤이 안 일어나 "회귀처럼" 보임 → **해시 링크 검증은 반드시 새 로드로**.
 - **v=20260728d** (**main 직커밋 LIVE**, tag `v20260728d`, main `169d283`, 2026-07-28) — **구 대시보드 죽은 코드 2,952줄 제거 + `통합 금융계산기` 표기 통일**(전략실장 승인: "전체 삭제" + "띄어쓰기로 통일"). 파일 **16,410 → 13,502줄**. 트리플체크 A GO(블로커 0).
   - **A. 죽은 코드 전량 제거**: ①마크업 `<div style="display:none;">` 구 대시보드 블록(8개 패널) **1,727줄** ②죽은 JS **14블록 1,171줄**(패널 스위처`[data-panel]` / Live AI Demo 엔진`demo-chat` / Live Activity Feed ×2 / System Search / Coverage 뷰토글·챗 / DB Sales / Calculator(구 9모듈) / Coaching / Insurance Calc / Health Check(+`evalHealth` hoist) / Complete Sales / `runDashCounters`) ③`SCROLL EFFECTS` 내 `dashboardContainer` 선언 + `Dashboard reveal cards` 블록만 제거(**스크롤 진행바 보존**) ④CSS `.dashboard-reveal`/`.revealed`.
   - **B. 표기 통일 → `통합 금융계산기`(띄어쓰기) 4곳**: 쇼케이스 엔진명(`name:`, 사이드바·헤더·모바일탭 노출)·계산기 인사말·`systemResponses.calculator`·성장시스템 04카드 칩. 주석 5곳 미변경(1605/6179/**8282=v=20260628g 사고 이력, 보존 필수**/8580/9185).
