@@ -1,7 +1,9 @@
 # AI Branch — Pro Enterprise AI Landing Page
 
 ## Overview
-Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 8대 AI 대시보드 인터랙티브 데모.
+Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 7대 AI 시스템 쇼케이스 + AI 시스템 시연 오버레이.
+- 🗂️ **로컬 경로 (2026-07-28~)**: `바탕 화면\기타\ai-branch` — 바탕화면 정리로 `기타\` 아래로 이동(구 경로 `바탕 화면\ai-branch` 없음). 데스크톱 루트 `.claude\launch.json`도 `기타\.claude\`로 이동.
+- ⚠️ **구 대시보드 8패널은 v=20260728d에서 완전 삭제**(마크업+JS+CSS 2,952줄). 아래 "Dashboard 8 Panels" 표는 **이력 기록**이며 현재 코드에 존재하지 않음.
 - **Deploy**: Vercel (GitHub: `proenterpriseai/Pro_ai-branch`)
 - **도메인 (2026-07-28~)**: **`proenterpriseai.com`** = 대표 주소(Production). `www.proenterpriseai.com` = 308 → 메인. `ai-branch.vercel.app` = 병행 유지(Production alias). Vercel에서 구입(팀 ProEnterprise-Team). **공유·홍보 링크는 proenterpriseai.com만 사용.**
 - **Dev Server**: `node _serve.js` (port 3098)
@@ -258,6 +260,14 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260728d** (**main 직커밋 LIVE**, tag `v20260728d`, main `169d283`, 2026-07-28) — **구 대시보드 죽은 코드 2,952줄 제거 + `통합 금융계산기` 표기 통일**(전략실장 승인: "전체 삭제" + "띄어쓰기로 통일"). 파일 **16,410 → 13,502줄**. 트리플체크 A GO(블로커 0).
+  - **A. 죽은 코드 전량 제거**: ①마크업 `<div style="display:none;">` 구 대시보드 블록(8개 패널) **1,727줄** ②죽은 JS **14블록 1,171줄**(패널 스위처`[data-panel]` / Live AI Demo 엔진`demo-chat` / Live Activity Feed ×2 / System Search / Coverage 뷰토글·챗 / DB Sales / Calculator(구 9모듈) / Coaching / Insurance Calc / Health Check(+`evalHealth` hoist) / Complete Sales / `runDashCounters`) ③`SCROLL EFFECTS` 내 `dashboardContainer` 선언 + `Dashboard reveal cards` 블록만 제거(**스크롤 진행바 보존**) ④CSS `.dashboard-reveal`/`.revealed`.
+  - **B. 표기 통일 → `통합 금융계산기`(띄어쓰기) 4곳**: 쇼케이스 엔진명(`name:`, 사이드바·헤더·모바일탭 노출)·계산기 인사말·`systemResponses.calculator`·성장시스템 04카드 칩. 주석 5곳 미변경(1605/6179/**8282=v=20260628g 사고 이력, 보존 필수**/8580/9185).
+  - ⚠️ **함정 ① `</div>` 3개는 load-bearing**: 블록 뒤 `</div>` 3개가 고아처럼 보이지만 **상위 래퍼(`.content-layer` 등)를 닫는 태그**. 통째 삭제 시 `#recruit`·`#about`·`#news`·`#branch-map`·`#join-contact`·`#contact`·`FOOTER`가 `.content-layer` **안으로 재부모화**(body 최상위 27→18) → 삭제 범위를 **div 균형(net 0) 지점**까지로 정정하고 3개 보존 + 정체 주석 추가. **삭제 전 DOM 스냅샷을 떠두지 않았으면 못 잡았을 사고.**
+  - ⚠️ **함정 ② 자동 분석기 오탐**: "전부 죽은 IIFE" 탐지기가 **F5 오버레이 복원 IIFE(v=20260706b)를 죽은 코드로 분류**(내부 `getElementById('ceo-video')`가 null-safe 잔재라 오탐). 육안 확인으로 제외 — 지웠으면 새로고침 복원이 통째로 사망. **휴리스틱 결과는 반드시 블록 첫 줄 육안 확인.**
+  - **검증**: 삭제 전후 DOM 구조 대조(body 최상위 27개·태그/id/클래스 **순서까지 동일**, `section[id]` 13개, `.content-layer` 자식 3개, 9개 섹션 body 직계) / 잔존 죽은 참조 0(`dashboard-container`·`dashboard-reveal`·`runDashCounters`·`evalHealth`·`dash-counter`·`demo-chat`·`live-activity-feed`·`[data-panel]`) / 스크립트 8블록 파싱 0 / **라이브 PC 1280·모바일 375 양쪽**(계산기 11카드·엔진명·모듈 수 11개·리셋·모달 동반종료·진행바 `scaleX` 동작·가로overflow 0) / 콘솔 0. 리뷰가 삭제분 식별자 전수 기계 대조(function 33·var 222·id 191) → **살아있는 코드 유입 0건**, 중복명 `removeTyping`은 죽은 복사본만 제거(라이브 정의·호출 14곳 무손상) 확인.
+  - **롤백**: 백업 브랜치 `dead-code-backup-20260728` 또는 `git revert 169d283`.
+  - ℹ️ 부수 효과(무해): 쇼케이스 검색은 `name+short+desc` 부분일치라 이제 "통합금융계산기"(붙여쓰기)로는 안 잡히고 "계산기"·"통합 금융계산기"로 잡힘 — 화면 라벨과 정합.
 - **v=20260728c** (**main 직커밋 LIVE**, tag `v20260728c`, main `9b4af96`, 2026-07-28) — **계산기 모듈 수 문구 "9개" → "11개" 정정**(전략실장 요청, 숫자만·구조 불변). 실제 `CALC_MODULES`는 11개(v=20260517c에서 9→11 확장)인데 문구가 9개로 남아 있었고, v=20260728b에서 계산기 카드 매칭이 복구되며 **카드 11장 바로 위 "9개" 표기가 노출**됨. **두 곳 모두 반영**: ①**7대 AI 시스템**(`#ai-showcase`) 엔진 배지 `9모듈`→`11모듈`·desc·핵심지표 "모듈 수"·인사이트·데모 대사 5곳 ②**AI 시스템 시연**(`#prosolution-overlay`) 시스템 현황 카드 부제·계산기 인사말(`SYSTEM_GREETINGS.calculator`)·`systemResponses.calculator`·패널 부제(`.sol-calc-intro-sub`)·약식 데모 배지·모달 잠금 CTA 6곳 + CSS 주석 1곳. **문자열 치환만, 로직 무수정**. ⚠️미변경=죽은 코드 2곳(구 대시보드 패널 ~5237 / 미실행 데모 시나리오 ~7945 — `#dashboard-container` 부재로 IIFE early-return, 렌더 경로 없음). ⚠️잔여 표기 불일치: 인사말은 여전히 `통합금융계산기`(붙여쓰기) vs 헤더 `통합 금융계산기` — 전략실장 "숫자만" 지시로 보류. **검증(R1 적용)**: 로컬 3098 + 라이브 **PC 1280·모바일 375 양쪽** 렌더 텍스트 실측 — 두 곳 전부 11개, `9개` 잔존 0, 모듈 카드 11장, 리셋 회귀 정상(모달 닫힘·채팅 1·활성카드 0), 콘솔 0.
 - **v=20260728b** (**main 직커밋 LIVE ✅전략실장 PC·모바일 양쪽 확인 완료**, tag `v20260728b`, main `34d1f47`, 2026-07-28) — **AI 시스템 시연 재진입 시 "최초 상태" 리셋 + 계산기 매칭 fix**(전략실장 요청: PC·모바일 모두 시연 후 PRO 로고/다른 헤더 오버레이를 다녀오면 이전 작업이 남아 있고 이전 시연이 계속 작동). **전략실장 정의: "최초 상태" = 인사말("안녕하세요! …시스템 현황에서 해당 AI 시스템을 클릭 후 사용해보세요.")이 타이핑되는 화면 → 끝나면 우측 시스템 현황에서 시연 대상 선택**. 트리플체크 A 3라운드(1차 NO-GO 블로커 2건 → 수정 후 GO → 델타 GO). 상세 → auto-memory `session-20260728-aibranch-demo-reset.md`.
   - **① 오버레이 풀 리셋** `window._solProOverlayReset()` 신설 + prosolution-overlay 닫힘 감지. ⚠️판정은 "직전 상태 기억"이 아니라 **`_isDirty()` 멱등 판정**(MutationObserver가 열림·닫힘을 한 배치로 묶으면 전환을 놓침). 복원 범위=채팅 최초 innerHTML·리포트 패널 제거·헤더/입력창/파일input·누적 PDF(`_solInsCalcReset`/`_solComplReset`)·placeholder/+버튼·진행 중 타이머 3종(`_solTypingInterval`/`_solTypingMentInterval`/`_solPdfProgressInterval`).
