@@ -3523,6 +3523,13 @@
     .edu-hp-course.active { border-left-color:rgba(255,255,255,0.7); }
     .edu-hp-course.active h4 { color:#fff; }
     .edu-hp-course.active p { color:rgba(255,255,255,0.7); }
+    /* v=20260826a: 교육 패널 1·2·4 제목 y를 패널3(전문역량, 과정 4개=가장 김)과 일치(전략실장 지정 — 4패널 제목 높이 통일).
+       .edu-hp-text가 세로 중앙정렬이라 과정 수가 적으면 제목이 내려감 → 하단 패딩으로 콘텐츠 높이차만큼 보정(과정 1개≈74px).
+       콘텐츠 높이차는 고정 px라 뷰포트 높이와 무관하게 일치 유지. 데스크톱 한정. */
+    @media (min-width:769px){
+      .edu-hp-text--3courses { padding-bottom:calc(3rem + 74px); }  /* 패널1·2 (과정 3개) */
+      .edu-hp-text--2courses { padding-bottom:calc(3rem + 148px); } /* 패널4 (과정 2개) */
+    }
     .edu-hp-dots { position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:5; }
     .edu-hp-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.2); transition:background 0.3s; cursor:pointer; }
     .edu-hp-dot.active { background:rgba(255,255,255,0.8); }
@@ -12771,7 +12778,7 @@
 
           <!-- Panel 01: 신인 / 저차월 교육 -->
           <div class="edu-horiz-panel" style="background:#060610;">
-            <div class="edu-hp-text">
+            <div class="edu-hp-text edu-hp-text--3courses">
               <div class="edu-hp-num">01</div>
               <div class="edu-hp-kicker">01 — Education</div>
               <h2 class="edu-hp-title">신인 / 저차월 교육</h2>
@@ -12792,7 +12799,7 @@
 
           <!-- Panel 02: 관리자 양성과정 -->
           <div class="edu-horiz-panel" style="background:#080814;">
-            <div class="edu-hp-text">
+            <div class="edu-hp-text edu-hp-text--3courses">
               <div class="edu-hp-num">02</div>
               <div class="edu-hp-kicker">02 — Education</div>
               <h2 class="edu-hp-title">관리자 양성과정</h2>
@@ -12835,24 +12842,24 @@
             </div>
           </div>
 
-          <!-- Panel 04: 경제 / 법인 전문가 과정 -->
+          <!-- Panel 04: WM센터 주관 전문가 양성과정 (v=20260826a — 구 "경제/법인 전문가 과정"에서 개편: 헥사곤 삭제, WM센터 재무설계·법인컨설팅 2과정 + 포스터/커리큘럼 4장 연동) -->
           <div class="edu-horiz-panel" style="background:#050510;">
-            <div class="edu-hp-text">
+            <div class="edu-hp-text edu-hp-text--2courses">
               <div class="edu-hp-num">04</div>
               <div class="edu-hp-kicker">04 — Education</div>
-              <h2 class="edu-hp-title">경제 / 법인 전문가 과정</h2>
-              <p class="edu-hp-desc">CFP·AFPK 사내 교수진의 직강과 헥사곤 투자자문의 거시경제 통찰.<br>보험을 넘어 종합 자산관리 전문가로 도약하는 최상위 과정입니다.</p>
+              <h2 class="edu-hp-title">WM센터 주관 전문가 양성과정</h2>
+              <p class="edu-hp-desc">WM센터장이 직접 이끄는 개인 재무설계와 법인 컨설팅 전문 과정으로,<br>보험을 넘어 종합 자산관리 전문가로 도약하는 최상위 과정입니다.</p>
               <div class="edu-hp-courses">
-                <div class="edu-hp-course"><h4>펀드투자권유대행인 자격 특강</h4><p>자격증 연계 · 단기 집중 완성</p></div>
-                <div class="edu-hp-course"><h4>헥사곤 투자자문</h4><p>거시경제 분석 · 금융상품 설계</p></div>
-                <div class="edu-hp-course"><h4>법인컨설팅 아카데미</h4><p>법인 절세 · CEO 플랜 · 상속/증여</p></div>
+                <div class="edu-hp-course"><h4>재무설계 전문가 과정</h4><p>자산관리 · 투자 컨설팅</p></div>
+                <div class="edu-hp-course"><h4>법인컨설팅 전문가 과정</h4><p>법인 절세 · 가업승계 컨설팅</p></div>
               </div>
-              <div class="edu-hp-tags"><span class="edu-hp-tag">#법인컨설팅</span><span class="edu-hp-tag">#CFP직강</span><span class="edu-hp-tag">#경제전망</span></div>
+              <div class="edu-hp-tags"><span class="edu-hp-tag">#WM센터</span><span class="edu-hp-tag">#재무설계</span><span class="edu-hp-tag">#법인컨설팅</span></div>
             </div>
             <div class="edu-hp-img" data-slideshow>
-              <img src="AI 홈페이지/법인/2026-04-12 15;08;23.PNG" alt="Hexagon AI 글로벌 자산배분" data-course="1" style="opacity:1;">
-              <img src="AI 홈페이지/법인/2026-hexagon-roadshow.jpg" alt="2026 첫 번째 헥사곤 로드쇼" data-course="1" style="opacity:0;">
-              <img src="AI 홈페이지/법인/SnapInsta.to_625842837_18555626203044475_4854604312253705588_n.jpg" alt="법인컨설팅 니즈파악 공식" data-course="2" style="opacity:0;">
+              <img src="AI 홈페이지/WM센터/wm센터 주관 재무설계 전문가 과정 1.jpg" alt="WM센터 재무설계 전문가 과정 — 재무 DB 영업 전문가 과정 포스터" data-course="0" style="opacity:1;">
+              <img src="AI 홈페이지/WM센터/wm센터 주관 재무설계 전문가 과정 2.jpg" alt="재무설계 전문가 과정 8주 커리큘럼" data-course="0" style="opacity:0;">
+              <img src="AI 홈페이지/WM센터/wm센터 주관 법인컨설팅 전문가 과정 1.jpg" alt="WM센터 법인컨설팅 전문가양성과정 포스터" data-course="1" style="opacity:0;">
+              <img src="AI 홈페이지/WM센터/wm센터 주관 법인컨설팅 전문가 과정 2.jpg" alt="법인컨설팅 전문가양성과정 8주 커리큘럼" data-course="1" style="opacity:0;">
             </div>
           </div>
 
