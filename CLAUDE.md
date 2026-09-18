@@ -261,6 +261,11 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260918b** (**main 직커밋 LIVE**, tag `v20260918b`, 2026-09-18) — **푸터 이메일 위치 개편**(전략실장 요청): PC는 우측 TEL 아래 `EMAIL. proenterprise@incarproent.com`(**TEL과 동일 폰트** clamp 18~24px/700, 간격 12px, 우측 정렬), 모바일(<768px)은 375px에서 회사명+이메일이 한 행에 물리적으로 안 들어가(회사명 min-content 126px+이메일 ~300px>343px) v=20260918a의 정보 블록 4번째 줄 유지. 분기=Tailwind `hidden md:flex`(우측 행) / `md:hidden`(정보 블록 줄) — v=20260717c PC/모바일 분리 선례. 6곳 전부(메인+오버레이 5), 마크업 전용·JS 무수정.
+  - ⚠️ 인라인 스타일 요소에 반응형 display를 주려면 **display만 클래스로 빼고**(`class="hidden md:flex"`) 나머지(align-items 등)는 인라인 유지 — 인라인 `display:flex`가 있으면 클래스 `hidden`이 영원히 진다.
+  - ⚠️ **계측 함정**: talent 오버레이엔 v=20260717c의 GROWTH 인트로 `<p class="body md:hidden">`이 선재 → `querySelector('p.md\\:hidden')`이 푸터 이메일 줄 대신 그걸 집어 "4줄 104px"로 오판할 뻔. **md:hidden 검증 셀렉터는 mailto 포함 여부로 한정**할 것.
+  - ⚠️ 10sp 푸터 2곳(talent/pro-intro)은 TEL 행이 **여러 줄 포맷**(한 줄 아님) — 일괄 치환 시 포맷 상이 주의.
+  - **검증(R1)**: 로컬 3098, 뷰포트 에뮬레이션 PC 1280(6곳 전수: 이메일 24px/700=TEL 동일·gap 12px·우측 정렬·정보 블록 숨김) + 모바일 375(6곳 전수: 우측 행 숨김·정보 블록 한 줄 표시), 가로 overflow 0, 콘솔 0. contact는 `active` 클래스 경로로 열어 실측.
 - **v=20260918a** (**main 직커밋 LIVE**, tag `v20260918a`, 2026-09-18) — **푸터 이메일 추가**(전략실장 요청, A안=정보 블록 4번째 줄). `이메일 proenterprise@incarproent.com`(mailto 링크, 라벨 흰색+값 70% 톤 기존 위계 동일)을 등록번호 줄 아래에 추가 — **6곳 전부**(메인 footer + 오버레이 5: 문의하기 `#contact`/프로솔루션/CEO/성장시스템/조직소개). 마크업 전용, JS·CSS 무수정 → 트리플체크 A 비대상(v=20260721b 선례).
   - ⚠️ **함정(이번에 실제로 터짐)**: 동일 마크업이 들여쓰기만 다르게 6곳 복제돼 있어, 들여쓰기 얕은(10sp) 패턴으로 replace_all 하면 **깊은(12/14sp) 줄에도 부분 매칭**되어 중복 삽입됨(3곳 중복 발생 → 즉시 제거). 푸터류 일괄 치환은 **들여쓰기 그룹별로 나눠서** 할 것, 치환 후 반드시 `grep -c`로 기대 개수 대조.
   - ℹ️ `#contact` 오버레이는 v=20260704w부터 `data-nav="contact"`가 인라인 `#join-contact` 스크롤로 변경 — 오버레이 자체는 채팅상담 fallback(`classList.add('active')`) 등으로만 열림. 검증 시 이 경로로 열어 실측.
