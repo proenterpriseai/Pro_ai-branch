@@ -261,6 +261,8 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20260918c** (**main 직커밋 LIVE**, tag `v20260918c`, 2026-09-18) — **푸터 상단 개편**(전략실장 요청, 공식홈 푸터 레퍼런스): ①상단 좌측=회사명 → **로고**(`logo-pro-enterprise.png` 122px, 헤더와 동일 흰 로고) ②**회사명은 정보 블록 첫 줄**로 이동(18px/700 흰색, 이하 주소/총괄대표/등록번호/모바일 이메일) ③우측 연락처 블록 **좌측 정렬**(`align-items:flex-start`), 라벨 `TEL.`/`E-MAIL.`(구 `EMAIL.`) 공용 클래스 `.ftr-label`(14px/500/white60) + **PC에서만 `min-width:64px`로 값 시작점 정렬**(모바일은 자연폭 — 375에서 로고 122+TEL 행이 359px로 fit, min-width 주면 초과). 상단 행 `align-items:center→flex-start`. 6곳 전부, 마크업+CSS 클래스 1종, JS 무수정.
+  - **검증(R1)**: 로컬 3098 에뮬레이션 PC 1280(6곳: 로고 122px 렌더+naturalWidth 754 로드·라벨/값 좌측 시작점 정렬·TEL↔EMAIL 12px·회사명=정보 블록 firstElementChild) + 모바일 375(6곳: 로고+TEL 한 행 우측 343~359≤375·EMAIL 행 숨김·정보 블록 이메일 표시), overflow 0·콘솔 0. ℹ️닫힌 오버레이의 `<img>`는 로드 직후 rect 0으로 순간 측정될 수 있음 — 로고 검증은 naturalWidth와 rect를 분리 판정.
 - **v=20260918b** (**main 직커밋 LIVE**, tag `v20260918b`, 2026-09-18) — **푸터 이메일 위치 개편**(전략실장 요청): PC는 우측 TEL 아래 `EMAIL. proenterprise@incarproent.com`(**TEL과 동일 폰트** clamp 18~24px/700, 간격 12px, 우측 정렬), 모바일(<768px)은 375px에서 회사명+이메일이 한 행에 물리적으로 안 들어가(회사명 min-content 126px+이메일 ~300px>343px) v=20260918a의 정보 블록 4번째 줄 유지. 분기=Tailwind `hidden md:flex`(우측 행) / `md:hidden`(정보 블록 줄) — v=20260717c PC/모바일 분리 선례. 6곳 전부(메인+오버레이 5), 마크업 전용·JS 무수정.
   - ⚠️ 인라인 스타일 요소에 반응형 display를 주려면 **display만 클래스로 빼고**(`class="hidden md:flex"`) 나머지(align-items 등)는 인라인 유지 — 인라인 `display:flex`가 있으면 클래스 `hidden`이 영원히 진다.
   - ⚠️ **계측 함정**: talent 오버레이엔 v=20260717c의 GROWTH 인트로 `<p class="body md:hidden">`이 선재 → `querySelector('p.md\\:hidden')`이 푸터 이메일 줄 대신 그걸 집어 "4줄 104px"로 오판할 뻔. **md:hidden 검증 셀렉터는 mailto 포함 여부로 한정**할 것.

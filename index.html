@@ -3802,6 +3802,9 @@
     }
     /* v=20260714a: 캡션 줄바꿈은 모바일 전용("— 같은…" 앞). 데스크톱은 한 줄 유지(br 숨김). br-keep로 brToSpace 예외. */
     @media (min-width:769px){ .cap-mobile-br{ display:none; } }
+    /* v=20260918c: 푸터 연락처 라벨(TEL./E-MAIL.) — PC에서만 min-width로 값 시작점 정렬, 모바일은 자연폭(375 가로 여유 확보) */
+    .ftr-label{ font-size:14px; font-weight:500; color:rgba(255,255,255,0.6); }
+    @media (min-width:768px){ .ftr-label{ min-width:64px; } }
   </style>
 </head>
 
@@ -5508,14 +5511,15 @@
       <!-- 문의하기 오버레이 하단 푸터 -->
       <div style="background:#27398c; margin-top:48px; width:100vw; position:relative; margin-left:calc(-50vw + 50%); margin-right:calc(-50vw + 50%); margin-bottom:-64px;">
         <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
-            <p style="font-size:18px; font-weight:700; color:#fff; margin:0; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
-            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
-              <div style="display:flex; align-items:baseline; gap:8px;"><span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">TEL.</span><a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a></div>
-              <div class="hidden md:flex" style="align-items:baseline; gap:8px;"><span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">EMAIL.</span><a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a></div>
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:32px;">
+            <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise" style="width:122px; height:auto;">
+            <div style="display:flex; flex-direction:column; align-items:flex-start; gap:12px;">
+              <div style="display:flex; align-items:baseline; gap:10px;"><span class="ftr-label">TEL.</span><a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a></div>
+              <div class="hidden md:flex" style="align-items:baseline; gap:10px;"><span class="ftr-label">E-MAIL.</span><a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a></div>
             </div>
           </div>
           <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:2; display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+            <p style="margin:0 0 2px; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
             <p style="margin:0;"><span style="font-weight:500; color:#fff;">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
             <p style="margin:0;"><span style="font-weight:500; color:#fff;">총괄대표</span> 임형준</p>
             <p style="margin:0;"><span style="font-weight:500; color:#fff;">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
@@ -5532,22 +5536,23 @@
   <!-- ==================== FOOTER ==================== -->
   <footer class="z-10 relative" style="background:#27398c;">
     <div class="max-w-7xl mx-auto px-6 py-10">
-      <!-- 상단: 로고 + 전화번호 (모바일: 세로, PC: 가로) -->
-      <div class="flex items-center justify-between mb-8">
-        <p class="text-lg font-bold text-white">인카금융서비스 프로사업단총괄</p>
-        <div class="flex flex-col items-end gap-3">
-          <div class="flex items-baseline gap-2">
-            <span class="text-xs font-medium text-white/60">TEL.</span>
+      <!-- 상단: 로고(좌) + 연락처 TEL/E-MAIL 좌측 정렬(우) — v=20260918c -->
+      <div class="flex items-start justify-between mb-8">
+        <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise" class="w-[122px] h-auto">
+        <div class="flex flex-col items-start gap-3">
+          <div class="flex items-baseline gap-2.5">
+            <span class="ftr-label">TEL.</span>
             <a href="tel:0507-1379-0640" class="text-lg sm:text-2xl font-bold text-white tracking-tight whitespace-nowrap">0507-1379-0640</a>
           </div>
-          <div class="hidden md:flex items-baseline gap-2">
-            <span class="text-xs font-medium text-white/60">EMAIL.</span>
+          <div class="hidden md:flex items-baseline gap-2.5">
+            <span class="ftr-label">E-MAIL.</span>
             <a href="mailto:proenterprise@incarproent.com" class="text-lg sm:text-2xl font-bold text-white tracking-tight whitespace-nowrap">proenterprise@incarproent.com</a>
           </div>
         </div>
       </div>
       <!-- 회사 정보 -->
       <div class="space-y-1.5 text-sm text-white/70 mb-6">
+        <p class="text-lg font-bold text-white">인카금융서비스 프로사업단총괄</p>
         <p><span class="font-medium text-white">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
         <p><span class="font-medium text-white">총괄대표</span> 임형준</p>
         <p><span class="font-medium text-white">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
@@ -5763,14 +5768,15 @@
         <!-- 프로솔루션 오버레이 하단 푸터 -->
         <div style="background:#27398c; margin-top:48px; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
           <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
-              <p style="font-size:18px; font-weight:700; color:#fff; margin:0; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
-              <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
-                <div style="display:flex; align-items:baseline; gap:8px;"><span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">TEL.</span><a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a></div>
-                <div class="hidden md:flex" style="align-items:baseline; gap:8px;"><span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">EMAIL.</span><a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a></div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:32px;">
+              <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise" style="width:122px; height:auto;">
+              <div style="display:flex; flex-direction:column; align-items:flex-start; gap:12px;">
+                <div style="display:flex; align-items:baseline; gap:10px;"><span class="ftr-label">TEL.</span><a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a></div>
+                <div class="hidden md:flex" style="align-items:baseline; gap:10px;"><span class="ftr-label">E-MAIL.</span><a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a></div>
               </div>
             </div>
             <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:2; display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+              <p style="margin:0 0 2px; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
               <p style="margin:0;"><span style="font-weight:500; color:#fff;">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
               <p style="margin:0;"><span style="font-weight:500; color:#fff;">총괄대표</span> 임형준</p>
               <p style="margin:0;"><span style="font-weight:500; color:#fff;">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
@@ -5879,14 +5885,15 @@
         <!-- CEO 오버레이 하단 푸터 -->
         <div style="background:#27398c; margin-top:48px; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
           <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
-              <p style="font-size:18px; font-weight:700; color:#fff; margin:0; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
-              <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
-                <div style="display:flex; align-items:baseline; gap:8px;"><span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">TEL.</span><a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a></div>
-                <div class="hidden md:flex" style="align-items:baseline; gap:8px;"><span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">EMAIL.</span><a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a></div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:32px;">
+              <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise" style="width:122px; height:auto;">
+              <div style="display:flex; flex-direction:column; align-items:flex-start; gap:12px;">
+                <div style="display:flex; align-items:baseline; gap:10px;"><span class="ftr-label">TEL.</span><a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a></div>
+                <div class="hidden md:flex" style="align-items:baseline; gap:10px;"><span class="ftr-label">E-MAIL.</span><a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a></div>
               </div>
             </div>
             <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:2; display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+              <p style="margin:0 0 2px; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
               <p style="margin:0;"><span style="font-weight:500; color:#fff;">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
               <p style="margin:0;"><span style="font-weight:500; color:#fff;">총괄대표</span> 임형준</p>
               <p style="margin:0;"><span style="font-weight:500; color:#fff;">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
@@ -12737,20 +12744,21 @@
     <!-- v=20260706b: 오버레이 하단 푸터 — 다른 오버레이(프로솔루션/CEO/프로인트로)와 동일, 유일하게 누락돼 있던 것 보강 -->
     <div style="background:#27398c; margin-top:48px; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
       <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
-          <p style="font-size:18px; font-weight:700; color:#fff; margin:0; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
-            <div style="display:flex; align-items:baseline; gap:8px;">
-              <span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">TEL.</span>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:32px;">
+          <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise" style="width:122px; height:auto;">
+          <div style="display:flex; flex-direction:column; align-items:flex-start; gap:12px;">
+            <div style="display:flex; align-items:baseline; gap:10px;">
+              <span class="ftr-label">TEL.</span>
               <a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a>
             </div>
-            <div class="hidden md:flex" style="align-items:baseline; gap:8px;">
-              <span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">EMAIL.</span>
+            <div class="hidden md:flex" style="align-items:baseline; gap:10px;">
+              <span class="ftr-label">E-MAIL.</span>
               <a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a>
             </div>
           </div>
         </div>
         <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:2; display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+          <p style="margin:0 0 2px; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
           <p style="margin:0;"><span style="font-weight:500; color:#fff;">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
           <p style="margin:0;"><span style="font-weight:500; color:#fff;">총괄대표</span> 임형준</p>
           <p style="margin:0;"><span style="font-weight:500; color:#fff;">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
@@ -13238,20 +13246,21 @@
     <!-- 오버레이 하단 푸터 (메인 페이지 동일 스타일) -->
     <div style="background:#27398c; margin-top:0; width:var(--ov-w,100vw); position:relative; margin-left:calc(var(--ov-w,100vw) / -2 + 50%); margin-right:calc(var(--ov-w,100vw) / -2 + 50%); margin-bottom:0;">
       <div style="max-width:1280px; margin:0 auto; padding:40px 24px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
-          <p style="font-size:18px; font-weight:700; color:#fff; margin:0; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
-            <div style="display:flex; align-items:baseline; gap:8px;">
-              <span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">TEL.</span>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:32px;">
+          <img src="assets/images/logo-pro-enterprise.png" alt="Pro Enterprise" style="width:122px; height:auto;">
+          <div style="display:flex; flex-direction:column; align-items:flex-start; gap:12px;">
+            <div style="display:flex; align-items:baseline; gap:10px;">
+              <span class="ftr-label">TEL.</span>
               <a href="tel:0507-1379-0640" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">0507-1379-0640</a>
             </div>
-            <div class="hidden md:flex" style="align-items:baseline; gap:8px;">
-              <span style="font-size:12px; font-weight:500; color:rgba(255,255,255,0.6);">EMAIL.</span>
+            <div class="hidden md:flex" style="align-items:baseline; gap:10px;">
+              <span class="ftr-label">E-MAIL.</span>
               <a href="mailto:proenterprise@incarproent.com" style="font-size:clamp(18px,2vw,24px); font-weight:700; color:#fff; text-decoration:none; letter-spacing:-0.02em; white-space:nowrap;">proenterprise@incarproent.com</a>
             </div>
           </div>
         </div>
         <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:2; display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+          <p style="margin:0 0 2px; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.01em;">인카금융서비스 프로사업단총괄</p>
           <p style="margin:0;"><span style="font-weight:500; color:#fff;">주소</span> 서울 성동구 아차산로17길 49, 209~210</p>
           <p style="margin:0;"><span style="font-weight:500; color:#fff;">총괄대표</span> 임형준</p>
           <p style="margin:0;"><span style="font-weight:500; color:#fff;">보험대리점 명 및 보험대리점 등록번호</span> 2007121497</p>
