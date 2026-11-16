@@ -518,6 +518,37 @@ export default async function handler(req, res) {
 - 즉 합계가 10,000원(만원) 미만이면 그냥 0으로 표기 (정밀 추출 생략 처리)
 - 합리적 추출만 신뢰함 — 의심스러우면 0`;
 
+  // v=20261116a — 법인 CEO 컨설팅: 세무조정계산서 · 크레탑 기업분석 리포트에서 [숫자만 읽기] (JSON).
+  //   계산(법인세 지방소득세·주식가치 약식·인정이자·리스크)은 화면에서 정해진 공식으로 한다 → AI는 계산하지 않음.
+  const ceoPdfPrompt = `당신은 법인 세무 서류에서 숫자를 정확히 옮겨 적는 회계 담당자입니다.
+첨부 자료는 한 법인의 (1) 세무조정계산서(법인세 신고서 — 과세표준및세액조정계산서·표준재무상태표·표준손익계산서·재무상태표·손익계산서·주식등변동상황명세서 등 일부 쪽) 그리고/또는 (2) 크레탑(CRETOP) 기업분석 리포트입니다.
+서류에 [적혀 있는 숫자만] 아래 JSON으로 옮기세요. 계산·추정·반올림 금지. JSON 외 텍스트 절대 금지.
+
+{
+  "docs": { "taxAdjustment": true|false, "cretop": true|false },
+  "company": { "name": "법인명", "industry": "업종(없으면 null)", "fiscalYearEnd": "YYYY-MM" },
+  "years": [
+    { "year": 2025, "revenue": 원, "operatingIncome": 원, "netIncome": 원, "totalAssets": 원, "totalLiabilities": 원, "totalEquity": 원, "capitalStock": 원, "retainedEarnings": 원 }
+  ],
+  "tax": { "year": 2025, "taxBase": 원, "calculatedTax": 원, "deductions": 원, "totalTaxBurden": 원 },
+  "shares": { "issuedShares": 정수(주), "parValue": 원 },
+  "largestShareholderPct": 숫자(%)|null,
+  "officerLoans": 원|null,
+  "notFound": ["찾지 못한 항목 이름"],
+  "chatSummary": "이 법인의 재무·세금 상황을 두 문장으로 (친근한 존댓말, 숫자는 억·만 원 단위)"
+}
+
+[규칙]
+- 금액은 모두 [원] 단위 정수. 표 머리에 (단위: 천원)·(단위: 백만원)이 있으면 반드시 원으로 바꿔 적을 것(천원 ×1,000 · 백만원 ×1,000,000). 손실·음수는 음수로.
+- years: 최근 연도부터 최대 3개(당기·전기·전전기). 서류에 없는 연도는 넣지 말 것. 항목이 없으면 null.
+- 세무조정계산서와 크레탑 숫자가 다르면 [세무조정계산서] 숫자를 쓸 것.
+- tax: 법인세 과세표준 및 세액조정계산서의 과세표준(113)·산출세액(115)·공제감면세액 합계(121+123)·총부담세액(125 또는 '총부담세액'). 법인지방소득세 금액을 넣지 말 것. 없으면 각 항목 null.
+- shares.issuedShares: 발행주식총수(주식등변동상황명세서 기말 주식수 또는 크레탑 발행주식수). 없으면 null.
+- largestShareholderPct: 대표이사(또는 최대주주 1인)의 지분율. 개인 이름은 적지 말 것.
+- officerLoans: 대표·임원·주주에 대한 가지급금(대여금) 잔액. 확인되지 않으면 null (0으로 추측 금지).
+- 대표자 이름·주민번호·사업자번호·주소는 어디에도 적지 말 것.
+- 모르는 값은 null. 절대 추측하지 말 것.`;
+
   try {
     // 모드 분기: PDF 있으면 보장분석 모드, 없으면 기존 텍스트 채팅 모드
     const isPdfMode = !!pdfPart;
@@ -533,6 +564,7 @@ export default async function handler(req, res) {
     const selectedPdfPrompt = (context === 'healthcheck-pdf') ? healthcheckPrompt
                             : (context === 'insurance-calc-pdf') ? insuranceCalcPrompt
                             : (context === 'complete-sales-pdf') ? completeSalesPrompt
+                            : (context === 'ceo-pdf') ? ceoPdfPrompt // v=20261116a 법인 CEO 컨설팅 (JSON)
                             : pdfAnalysisPrompt;
     // 보험금 산출 + 완전판매는 마크다운 응답 (JSON 강제 X)
     const isMarkdownPdfMode = (context === 'insurance-calc-pdf') || (context === 'complete-sales-pdf');
