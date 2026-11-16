@@ -1,7 +1,7 @@
 # AI Branch — Pro Enterprise AI Landing Page
 
 ## Overview
-Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 7대 AI 시스템 쇼케이스 + AI 시스템 시연 오버레이.
+Pro Enterprise AI 채용/홍보 랜딩 페이지. Hero + 8섹션 스크롤 + 8대 AI 시스템 쇼케이스(v=20261116a~, 종전 7대) + AI 시스템 시연 오버레이.
 - 🗂️ **로컬 경로 (2026-07-28~)**: `바탕 화면\기타\ai-branch` — 바탕화면 정리로 `기타\` 아래로 이동(구 경로 `바탕 화면\ai-branch` 없음). 데스크톱 루트 `.claude\launch.json`도 `기타\.claude\`로 이동.
 - ⚠️ **구 대시보드 8패널은 v=20260728d에서 완전 삭제**(마크업+JS+CSS 2,952줄). 아래 "Dashboard 8 Panels" 표는 **이력 기록**이며 현재 코드에 존재하지 않음.
 - **Deploy**: Vercel (GitHub: `proenterpriseai/Pro_ai-branch`)
@@ -261,6 +261,7 @@ sessionStorage._flag_sol_pdf='true'; location.reload();
 
 ## Version
 
+- **v=20261116a** (**main LIVE**, tag `v20261116a`, 2026-11-16) — **8번째 시스템 '법인 CEO 컨설팅' 추가(7대→8대, 전략실장 요청)**: ①쇼케이스 `engines` 9번째(color `amber`)·`cardScripts[8]`·`resultBuilders.__CEO__`(시연 회사 ○○산업피팅 실제 서류 계산값 — 시연 영상 대본 대조값) ②체험 오버레이 카드(라벨 '법인 CEO 컨설팅' = `systemNameMap` 키 'ceo')·인사말 타이핑·+버튼(`PDF_ENABLED_SYSTEMS`·`PDF_SYSTEM_CONTEXTS.ceo` multi) → `_solCeoAddFiles`(PDF.js 글자 위치로 붙여 읽기 — 더존 세무조정계산서는 글자를 한 자씩 그려 ' ' 이으면 숫자가 갈라짐 · 핵심 쪽 우선순위 45,000자 · 크레탑 30,000자 · `_solCeoMask` 주민·사업자번호 + 주민번호 앞·'대표자(성)명' 뒤 이름을 모아 전체 가림) → 두 종류 모이면 자동 분석 `_solCeoAnalyze` → `/api/chat` context `ceo-pdf`(`ceoPdfPrompt` = AI는 숫자만 JSON) → `_solCeoCompute`(법인지방소득세 = 산출세액 10% 약식 · 비상장주식 보충적 평가 약식 3:2:1 가중 ÷10% · 3:2 · 순자산 80% 하한 · 인정이자 4.6% · 리스크 규칙) → `_solCeoRenderReport` + 잠금 6 + 입사 상담 CTA · 서류가 없으면 '샘플 결과 먼저 보기'(`_solCeoInjectPanel` 메뉴 6종, AI 호출 없음) ③문구 7대→8대 22곳(Workshop 영상 제목 'PRO 7대 AI 시스템 Workshop'은 과거 행사라 유지)·KPI 막대 8개(`nxk-dot7` 8번째 span). 세대 가드 = `_solSessionGen` + `_solCeoRun`(시스템 왕복). ⚠️4대 규칙 예외(전략실장 승인 11-16): Feature Flag 없음(7대→8대 문구는 반쪽 공개 불가) · 기존 함수 분기 추가 `doSend`·`_solResetForSystem`·`getAIResponse`·`_solProOverlayReset`. 검증: 트리플 A 2회 CONDITIONAL GO → 🟡 전부 반영 · playwright PC 1440/375(`scratchpad rec/aib_ceo_test.js`·`aib_ceo_upload_test.js`, /api/chat 가로채기) · 프리뷰 `feat/ceo-8th-system` 실제 AI 시험 = 실장 Chrome에서 과세표준·산출세액 원본 일치. 기존 버그 발견(미수정): 쇼케이스 결과 뒤 3초 자동 넘김 타이머 중 클릭 시 다음 항목으로 넘어감 · IME Enter 가드 없음.
 - **v=20260918c** (**main 직커밋 LIVE**, tag `v20260918c`, 2026-09-18) — **푸터 상단 개편**(전략실장 요청, 공식홈 푸터 레퍼런스): ①상단 좌측=회사명 → **로고**(`logo-pro-enterprise.png` 122px, 헤더와 동일 흰 로고) ②**회사명은 정보 블록 첫 줄**로 이동(18px/700 흰색, 이하 주소/총괄대표/등록번호/모바일 이메일) ③우측 연락처 블록 **좌측 정렬**(`align-items:flex-start`), 라벨 `TEL.`/`E-MAIL.`(구 `EMAIL.`) 공용 클래스 `.ftr-label`(14px/500/white60) + **PC에서만 `min-width:64px`로 값 시작점 정렬**(모바일은 자연폭 — 375에서 로고 122+TEL 행이 359px로 fit, min-width 주면 초과). 상단 행 `align-items:center→flex-start`. 6곳 전부, 마크업+CSS 클래스 1종, JS 무수정.
   - **검증(R1)**: 로컬 3098 에뮬레이션 PC 1280(6곳: 로고 122px 렌더+naturalWidth 754 로드·라벨/값 좌측 시작점 정렬·TEL↔EMAIL 12px·회사명=정보 블록 firstElementChild) + 모바일 375(6곳: 로고+TEL 한 행 우측 343~359≤375·EMAIL 행 숨김·정보 블록 이메일 표시), overflow 0·콘솔 0. ℹ️닫힌 오버레이의 `<img>`는 로드 직후 rect 0으로 순간 측정될 수 있음 — 로고 검증은 naturalWidth와 rect를 분리 판정.
 - **v=20260918b** (**main 직커밋 LIVE**, tag `v20260918b`, 2026-09-18) — **푸터 이메일 위치 개편**(전략실장 요청): PC는 우측 TEL 아래 `EMAIL. proenterprise@incarproent.com`(**TEL과 동일 폰트** clamp 18~24px/700, 간격 12px, 우측 정렬), 모바일(<768px)은 375px에서 회사명+이메일이 한 행에 물리적으로 안 들어가(회사명 min-content 126px+이메일 ~300px>343px) v=20260918a의 정보 블록 4번째 줄 유지. 분기=Tailwind `hidden md:flex`(우측 행) / `md:hidden`(정보 블록 줄) — v=20260717c PC/모바일 분리 선례. 6곳 전부(메인+오버레이 5), 마크업 전용·JS 무수정.
